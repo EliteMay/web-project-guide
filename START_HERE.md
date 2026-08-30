@@ -19,7 +19,12 @@
 2. README / 仕様 / 作業報告を必要範囲だけ確認
 3. [GitHub中心のプロジェクト管理](docs/10-project-management.md)の影響確認を行う
 4. [Failure Catalog](catalog/failures.md)に類似事故がないか確認
-5. 修正後に該当範囲だけRegression確認
+5. 変更経路を選ぶ
+   - 小規模で変更箇所が明確 → GitHub上の対象ファイルを直接更新
+   - 複数ファイル・高リスク・設計変更 → Branch / Pull Requestを優先
+   - GitHub Actions → 継続的な自動化そのものが目的の場合に使い、単発のファイル書換え手段として安易に増やさない
+6. 実装後、一時Script / 一時Workflow / Debug資産が残っていないか確認
+7. **最終Commitの状態**で該当範囲のRegression / CI / Pages確認を行う
 
 小規模修正でフル要件定義をやり直す必要はありません。
 
@@ -70,4 +75,6 @@
 1. [Quality Checklist](templates/QUALITY_CHECKLIST.md)をプロジェクト種別に合わせて実施
 2. README / 仕様 / 作業報告を更新
 3. 未確認を未確認のまま記録
-4. 重大な既知バグが残る場合は完成扱いにしない
+4. 一時Script / 一時Workflow / Debug資産が本番Repoへ残っていないことを確認
+5. Cleanup後の**最終Commit**でCI / Pages / Regression結果を確認
+6. 重大な既知バグが残る場合は完成扱いにしない
