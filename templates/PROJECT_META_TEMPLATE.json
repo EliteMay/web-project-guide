@@ -1,0 +1,20 @@
+{
+  "project": "PROJECT_NAME",
+  "guideVersion": "1.2.1",
+  "profiles": ["STATIC"],
+  "sourceOfTruth": {
+    "runtimeVersion": "",
+    "projectSpecification": "SPEC.md",
+    "currentOverview": "README.md",
+    "workHistory": "CHANGELOG.md"
+  },
+  "storage": {
+    "schemaVersion": null,
+    "primary": "none",
+    "storesMedia": false
+  },
+  "deployment": {
+    "type": "github-pages",
+    "basePath": "/REPOSITORY_NAME/"
+  }
+}
