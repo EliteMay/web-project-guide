@@ -56,8 +56,10 @@ Guide Versionの正本は [`guide-version.json`](guide-version.json)、変更履
 
 - 同じ情報の正本を複数作らない。
 - 保存データを壊す変更はMigration / Backup / Rollbackを考える。
+- 既存データを置換するImportは、全体Validation前に現在データを消さない。
 - 大容量MediaをlocalStorageへ直接保存しない。
 - Versioned Patch JSを恒久構造にしない。
+- 正式RuntimeのPathとVersion / Build Metadataを必要に応じて分離する。
 - GitHub Pagesでは相対パスとサブパスを前提にする。
 - 未実装機能を完成済みのように見せない。
 - 外部サービス失敗時の状態を設計する。
@@ -80,9 +82,13 @@ Guide Versionの正本は [`guide-version.json`](guide-version.json)、変更履
 
 このRepoはpush / pull request時に [`tests/validate-guide.mjs`](tests/validate-guide.mjs) を実行し、次を確認します。
 
-- 必須ファイル
-- `guide-version.json`形式
+- 正本として必要なDocs / Catalog / Template / Workflowの存在
+- `guide-version.json`形式とstatus
+- `guide-version.json`とCHANGELOG最新Version / 日付の一致
 - Markdown相対リンク切れ
+- Markdown H1不足
+- Failure / Success / Anti-Pattern Catalog IDの重複
+- Markdown内の未定義Catalog ID参照
 - READMEからSTART HEREへの導線
 
 Workflow: [Validate Guide](.github/workflows/validate-guide.yml)

@@ -2,6 +2,34 @@
 
 Guide Versionの正本は [`guide-version.json`](guide-version.json) です。
 
+## 1.2.0 - 2026-08-30
+
+### Added
+
+- 既存サイトの構造整理 / Patch統合ルートを`START_HERE.md`へ追加
+- Backup / Import / Restore専用ルートを`START_HERE.md`へ追加
+- 正式Runtime PathとVersion Metadataを分離するルールを追加
+- 破壊的Importの `validate → backup → replace → verify → rollback` 手順を追加
+- `Renderer owns its DOM` 原則をArchitectureへ追加
+- Failure CatalogへF-017〜F-019を追加
+- Success Pattern CatalogへS-021〜S-023を追加
+- Anti-Pattern CatalogへAP-024〜AP-025を追加
+
+### Changed
+
+- Quality ChecklistへStable Runtime、Import Rollback、MutationObserver後付け、Version整合性検証を追加
+- Guide自身のValidatorを強化し、正本ファイル全件、H1、Guide VersionとCHANGELOG一致、Catalog ID重複、未定義Catalog ID参照を検査
+- READMEの最低限原則と自己検証内容を現在のGuide仕様へ更新
+
+### Source
+
+English Worksheet Lab v0.6.2の実運用で見つかった以下の問題をGuideへ還元した。
+
+- Versioned Patchを統合した後も`js/v060/`等のVersion付き正式Runtimeが残る
+- Session等へ古いApp Version hardcodeが残る
+- Backup ImportがTop-level schema確認後にStoreをclearし、途中失敗時に既存データを失える
+- 自前RendererのDOMを別ModuleがMutationObserverで後付けしていた
+
 ## 1.1.1 - 2026-08-30
 
 ### Added

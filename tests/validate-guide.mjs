@@ -12,9 +12,14 @@ const requiredFiles = [
   '作業報告書.md',
   'docs/00-governance.md',
   'docs/01-requirements.md',
+  'docs/02-architecture.md',
   'docs/03-data-storage.md',
+  'docs/04-ui-ux-accessibility.md',
+  'docs/05-performance-reliability.md',
+  'docs/06-security.md',
   'docs/07-testing-quality.md',
   'docs/08-github-pages.md',
+  'docs/09-maintenance.md',
   'docs/10-project-management.md',
   'docs/11-electron-distribution.md',
   'docs/12-project-profiles.md',
@@ -28,7 +33,10 @@ const requiredFiles = [
   'templates/README_TEMPLATE.md',
   'templates/SPEC_TEMPLATE.md',
   'templates/ADR_TEMPLATE.md',
-  'templates/PROJECT_RULES_TEMPLATE.md'
+  'templates/PROJECT_RULES_TEMPLATE.md',
+  'templates/CHANGELOG_TEMPLATE.md',
+  'references/web-standards.md',
+  '.github/workflows/validate-guide.yml'
 ];
 
 for (const file of requiredFiles) {
@@ -37,13 +45,20 @@ for (const file of requiredFiles) {
   }
 }
 
+let guideVersion = null;
+let guideUpdated = null;
 try {
   const version = JSON.parse(fs.readFileSync(path.join(root, 'guide-version.json'), 'utf8'));
-  if (!/^\d+\.\d+\.\d+$/.test(version.guideVersion ?? '')) {
+  guideVersion = version.guideVersion ?? null;
+  guideUpdated = version.updated ?? null;
+  if (!/^\d+\.\d+\.\d+$/.test(guideVersion ?? '')) {
     errors.push('guide-version.json: guideVersion must be SemVer-like X.Y.Z');
   }
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(version.updated ?? '')) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(guideUpdated ?? '')) {
     errors.push('guide-version.json: updated must be YYYY-MM-DD');
+  }
+  if (!['active', 'deprecated'].includes(version.status)) {
+    errors.push('guide-version.json: status must be active or deprecated');
   }
 } catch (error) {
   errors.push(`guide-version.json is invalid: ${error.message}`);
@@ -65,6 +80,9 @@ const linkPattern = /\[[^\]]*\]\(([^)]+)\)/g;
 
 for (const file of markdownFiles) {
   const text = fs.readFileSync(file, 'utf8');
+  if (!/^#\s+\S/m.test(text)) {
+    errors.push(`${path.relative(root, file)}: missing H1 heading`);
+  }
   for (const match of text.matchAll(linkPattern)) {
     let target = match[1].trim();
     if (!target || target.startsWith('#') || /^(https?:|mailto:)/i.test(target)) continue;
@@ -87,10 +105,50 @@ if (!readme.includes('[START HERE](START_HERE.md)')) {
   errors.push('README.md must link to START_HERE.md');
 }
 
+try {
+  const changelog = fs.readFileSync(path.join(root, 'CHANGELOG.md'), 'utf8');
+  const latest = changelog.match(/^##\s+(\d+\.\d+\.\d+)\s+-\s+(\d{4}-\d{2}-\d{2})/m);
+  if (!latest) {
+    errors.push('CHANGELOG.md: latest release heading not found');
+  } else {
+    if (guideVersion && latest[1] !== guideVersion) {
+      errors.push(`CHANGELOG latest version ${latest[1]} does not match guide-version ${guideVersion}`);
+    }
+    if (guideUpdated && latest[2] !== guideUpdated) {
+      errors.push(`CHANGELOG latest date ${latest[2]} does not match guide-version updated ${guideUpdated}`);
+    }
+  }
+} catch (error) {
+  errors.push(`CHANGELOG.md validation failed: ${error.message}`);
+}
+
+const catalogSpecs = [
+  ['F', 'catalog/failures.md'],
+  ['S', 'catalog/success-patterns.md'],
+  ['AP', 'catalog/anti-patterns.md']
+];
+const catalogIds = new Map();
+for (const [prefix, rel] of catalogSpecs) {
+  const text = fs.readFileSync(path.join(root, rel), 'utf8');
+  const ids = [...text.matchAll(new RegExp(`^##\\s+(${prefix}-\\d{3})\\b`, 'gm'))].map((m) => m[1]);
+  if (!ids.length) errors.push(`${rel}: no ${prefix} catalog IDs found`);
+  if (new Set(ids).size !== ids.length) errors.push(`${rel}: duplicate ${prefix} catalog ID`);
+  for (const id of ids) catalogIds.set(id, rel);
+}
+
+for (const file of markdownFiles) {
+  const rel = path.relative(root, file);
+  const text = fs.readFileSync(file, 'utf8');
+  for (const match of text.matchAll(/\b(?:AP|F|S)-\d{3}\b/g)) {
+    const id = match[0];
+    if (!catalogIds.has(id)) errors.push(`${rel}: references undefined catalog ID ${id}`);
+  }
+}
+
 if (errors.length) {
   console.error('Guide validation failed:\n');
-  for (const error of errors) console.error(`- ${error}`);
+  for (const error of [...new Set(errors)]) console.error(`- ${error}`);
   process.exit(1);
 }
 
-console.log(`Guide validation passed: ${markdownFiles.length} Markdown files checked.`);
+console.log(`Guide validation passed: ${markdownFiles.length} Markdown files checked / ${catalogIds.size} catalog IDs validated / version ${guideVersion}.`);

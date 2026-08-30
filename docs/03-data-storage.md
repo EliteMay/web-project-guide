@@ -171,8 +171,54 @@ Tab A: 古い状態をそのまま保存
 
 Importデータは信頼せずSchema検証します。
 
+### 破壊的Import / Restoreの順序
+
+CONDITIONAL: Importが既存のlocalStorage / IndexedDB / Cloud stateを**置き換える**場合、単に`schema`文字列を確認するだけでは不十分です。
+
+原則として次の順序を使います。
+
+```text
+1. Fileをparse
+2. Top-level Schema / Version確認
+3. 全Store / RecordをValidation
+4. 現在データをBackup / Recovery Snapshot
+5. Import用データをnormalize
+6. 置換を実行
+7. 読み戻してValidation
+8. 成功なら完了
+9. 途中失敗ならBackupからRollback
+```
+
+重要なのは、**既存StoreをclearしてからImportデータの不正に気付かないこと**です。
+
+複数Storeを扱う場合、ブラウザStorage全体を1 Transactionにできないことがあります。その場合はアプリ側でRollback用Snapshotを持ちます。
+
+最低限Validationする例:
+
+- Schema / Version
+- 必須Top-level key
+- Array / Object等の型
+- Record ID
+- 参照先ID
+- Store名
+- 数値範囲
+- 想定外の巨大Data URL / Blob相当
+- 現在Versionで扱えない将来Schema
+
+Import失敗時は「一部だけ新データ、一部だけ旧データ」の状態を残さないことを優先します。
+
+### Import Regression Test
+
+重要データを置き換えるImportでは、少なくとも次をTest候補にします。
+
+- 正常Backup → Restore → 再読込
+- 不正JSONを渡しても現在データが変わらない
+- Schema違いで現在データが変わらない
+- IndexedDB書き込み途中を失敗させてもRollbackできる
+- Restore後に主要画面が読める
+
 ## 関連Catalog
 
-- Failure: [F-002 / F-003](../catalog/failures.md)
-- Success: [IndexedDB / Schema / Snapshot](../catalog/success-patterns.md)
-- Anti-pattern: [Large Data in localStorage / Absolute Coordinates](../catalog/anti-patterns.md)
+- Failure: [F-002 / F-003 / F-018](../catalog/failures.md)
+- Success: [S-004 / S-005 / S-006 / S-007 / S-022](../catalog/success-patterns.md)
+- Anti-pattern: [AP-005 / AP-006 / AP-025](../catalog/anti-patterns.md)

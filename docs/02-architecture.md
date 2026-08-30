@@ -70,6 +70,45 @@ UIは「今の再生元が何か」を直接意識しすぎない構造を優先
 
 本来のrender処理を変更できるなら、正式なrender pathへ統合します。
 
+### Renderer owns its DOM
+
+アプリ自身が生成しているDOMは、原則として**そのRenderer / Component自身が最終形を生成する**ようにします。
+
+悪い例:
+
+```text
+practice.js が回答Headerをrender
+↓
+review-layout.js がMutationObserverでHeaderを検出
+↓
+後から保存Buttonを差し込む
+```
+
+推奨:
+
+```text
+practice.js が回答Header + 保存Buttonを一緒にrender
+↓
+review-layout.js はサイズ計算だけ担当
+```
+
+この分離により、次の問題を減らせます。
+
+- Renderのたびに後付け処理が必要
+- Observer timing依存
+- DOM構造変更でSelectorが壊れる
+- 同じButtonが二重生成される
+- 「誰がこのDOMを作ったか」が不明になる
+
+例外:
+
+- 第三者Widget
+- Browser Extension
+- 自分で変更できない外部DOM
+- Legacy互換レイヤー
+
+例外でもObserver側の責務を狭くし、正式Rendererへ移せる処理は残し続けません。
+
 ## 状態更新
 
 元stateを直接壊してから検証しません。
@@ -91,3 +130,9 @@ validate
 ## 外部機能の境界
 
 外部API/CDN/Supabase/YouTube等はAdapter層へ閉じ込め、UI全体と密結合させないことを優先します。
+
+## 関連Catalog
+
+- Failure: [F-001 / F-008 / F-010 / F-019](../catalog/failures.md)
+- Success: [S-003 / S-023](../catalog/success-patterns.md)
+- Anti-pattern: [AP-001 / AP-002 / AP-003](../catalog/anti-patterns.md)

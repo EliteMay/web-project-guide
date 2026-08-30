@@ -10,6 +10,7 @@
 
 - [ ] README / 仕様が現在実装と致命的に矛盾していない
 - [ ] 同じ機能の旧Runtimeが本番で重複していない
+- [ ] 正式RuntimeがVersion別Folder / Patch Fileの増殖構造になっていない
 - [ ] 変更対象と影響範囲を確認した
 - [ ] 一時Script / 一時Workflow / Debug資産が本番Repoへ残っていない
 
@@ -44,6 +45,7 @@
 ### Data / State
 
 - [ ] Single Source of Truthが明確
+- [ ] Version / Build / Schema / 件数等の重複hardcodeがない
 - [ ] ID重複なし
 - [ ] Import前Validation
 - [ ] Migrationが必要なら実装または方針明記
@@ -61,6 +63,7 @@
 - [ ] ページ全体の不要な横overflowなし
 - [ ] fixed / stickyが主要操作を隠さない
 - [ ] 小画面・低い縦解像度で致命的に崩れない
+- [ ] 自前DOMを別ModuleのMutationObserverで恒久的に完成させていない
 
 ### Accessibility
 
@@ -95,6 +98,10 @@ Project Profileや高リスク変更に該当する場合のみ実施します�
 - [ ] Schema Validation
 - [ ] Migration Test
 - [ ] Backup → Restore Test
+- [ ] 破壊的Importは全payload Validation後に既存Dataを変更する
+- [ ] Import前Recovery / Backupがある
+- [ ] Import途中失敗時にRollbackまたは元Data維持を確認
+- [ ] 不正Importで現在Dataが変わらないTestがある
 - [ ] 編集→保存→再読込E2E
 - [ ] 複数タブ競合を考慮（重要データの場合）
 
@@ -133,6 +140,7 @@ Project Profileや高リスク変更に該当する場合のみ実施します�
 - [ ] Unit Test成功（該当時）
 - [ ] Browser Smoke / E2E成功（該当時）
 - [ ] 一度直した重大BugにRegression Guardあり
+- [ ] Version / Build / Schema等の正本と派生値が自動検証される（該当時）
 - [ ] 途中Commitではなく最終Commit / Merge Commitの結果を確認した
 
 ## Verification State
