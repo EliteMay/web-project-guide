@@ -16,6 +16,59 @@ export const VERSION = {
 
 サイト内の各ページへVersionを手入力しません。
 
+Version / Build / Schemaを複数箇所へ置く必要がある場合も、**正本を1か所に決め、他は正本から参照・生成・検証**します。
+
+特に次の値は古いhardcodeが残りやすいため注意します。
+
+- 画面に表示するVersion
+- Session / Exportへ記録するApp Version
+- Cache Busting用文字列
+- `package.json` Version
+- Schema Version
+- Build ID
+
+Static Validatorで一致を確認できる場合は自動化を優先します。
+
+## Runtime名はVersionと分離する
+
+Versionを持つことと、**RuntimeのPathへVersionを埋め込むことは別**です。
+
+継続運用する正式Runtimeは、特別な理由がなければ安定したPathを優先します。
+
+```text
+推奨:
+js/app/app.js
+css/app.css
+
+避けたい恒久構造:
+js/v060/app.js
+js/v061/app.js
+css/app-v060.css
+```
+
+`js/v060/`の中身が整理されていても、次回修正時に`v061/`をコピーして増やす運用へ戻ると、Versioned Patchと同じ問題を再発しやすくなります。
+
+Versionは`meta.js` / `version.js` / manifest等の**Metadata**で表し、実行Pathはできるだけ安定させます。
+
+例外:
+
+- Migration検証用に旧Runtimeを明示的に隔離する
+- 複数Major Versionを同時配信する明確な要件がある
+- Release Artifact自体をVersion付きDirectoryへ固定する必要がある
+
+例外時も、どれが現在の正式Runtimeかを明記します。
+
+## Cache Busting
+
+`?v=123`や`?b=20260830-1`を使う場合、HTMLへ別のVersion文字列を手入力し続けません。
+
+- Build stepから生成する
+- manifestから参照する
+- 必要な時だけ使う
+- Service WorkerやHTTP Cacheの更新戦略と整合させる
+
+単純なGitHub Pagesサイトでは、手動Cache Bustingを増やすより安定Path + 通常の再読み込みで十分かを先に確認します。
+
 ## SemVer
 
 目安:
@@ -72,6 +125,8 @@ migrations/
 
 一定段階で正式実装へ統合します。
 
+統合後は「旧Patchを読み込んでいない」だけでなく、**旧Patchを増やしやすいVersion付きRuntime構造そのものが残っていないか**も確認します。
+
 ## Documentation
 
 READMEには「現在仕様」を書き、過去履歴を延々追加しません。
@@ -83,3 +138,9 @@ READMEには「現在仕様」を書き、過去履歴を延々追加しませ�
 実機・外部通信・長期利用など確認できなかった項目は必ず明記します。
 
 「コード上は問題なさそう」と「確認済み」を区別します。
+
+## 関連Catalog
+
+- Failure: [F-001 / F-004 / F-017](../catalog/failures.md)
+- Success: [S-001 / S-021](../catalog/success-patterns.md)
+- Anti-pattern: [AP-001 / AP-004 / AP-024](../catalog/anti-patterns.md)
