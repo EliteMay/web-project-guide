@@ -173,3 +173,21 @@ Static Check成功をYouTube再生・Codec・ペンタブ・スマホ・Windows�
 - **例外:** 継続的な自動化が最終成果物である場合、または直接更新できない明確な技術制約がある場合。
 - **代替:** 小規模変更は対象ファイルを直接更新。高リスク・複数ファイル変更はBranch / PR。Workflowを使った場合もCleanup後の最終Commitを再検証する。
 - **Related:** [F-016](failures.md) / [S-020](success-patterns.md) / [Project Management](../docs/10-project-management.md)
+
+## AP-024 Permanent Versioned Runtime Path
+
+正式Runtimeを`js/v060/`, `js/v061/`, `app-v060.css`のようなVersion付きPathへ置き、更新ごとにコピーして増やす。
+
+- **なぜ危険:** 中身がModule化されていても「次VersionのFolderを複製する」運用になり、旧Runtime混在・Metadata重複・Patch積層へ戻りやすい。
+- **例外:** 複数Major Versionを同時配信する、またはRelease Artifact自体をVersion付きDirectoryで固定する要件がある場合。
+- **代替:** `js/app/app.js` / `css/app.css`等の安定Path + `meta.js` / manifestでVersion管理。
+- **Related:** [F-017](failures.md) / [S-021](success-patterns.md) / [Maintenance](../docs/09-maintenance.md)
+
+## AP-025 Clear Before Full Import Validation
+
+Backup / Import時に、Import payload全体のValidationが終わる前に既存localStorage / IndexedDBをclear・上書きする。
+
+- **なぜ危険:** 後半のRecord不正やIndexedDB書き込み失敗で、既存データだけ失われる可能性がある。
+- **例外:** 既存データへ影響しない一時Storeや、完全に再生成可能なCache。
+- **代替:** parse → 全体validate → current backup → replace → read-back verify → rollback on failure。
+- **Related:** [F-018](failures.md) / [S-022](success-patterns.md) / [Data / Storage](../docs/03-data-storage.md)
