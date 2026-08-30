@@ -113,6 +113,24 @@ Project Profileや高リスク変更に該当する場合のみ実施します�
 - [ ] 大容量データ時の性能
 - [ ] Canvas / Geometry
 
+### AI-HANDOFF
+
+- [ ] Input / ReturnのSchema名とSchema Versionが定義されている
+- [ ] App Version / Package Version / Algorithm Versionを必要に応じて分離している
+- [ ] ManifestまたはPackage入口が明確
+- [ ] Import前にSchema / Version / required / Enum / RangeをValidation
+- [ ] Unsupported Versionを無言で解釈しない
+- [ ] ZIP / Archiveの最大Size / Entry数 / JSONサイズ等を必要に応じて制限
+- [ ] Archive Path / duplicate entry等をValidation
+- [ ] 集計に不要な大容量Mediaを無駄にMemoryへ展開しない
+- [ ] AI返却値を確定事実として直接Source of Truthへ上書きしない
+- [ ] Human correction / confidence / needs-reviewを必要に応じて用意
+- [ ] 元MediaをPackageへ含める範囲とPrivacyを確認
+- [ ] 現行VersionのExport → Import Round Trip
+- [ ] 対応中の旧Package互換またはUnsupported方針を確認
+
+詳細: [AI Handoff / Package Contract](../docs/14-ai-handoff.md)
+
 ### CLOUD
 
 - [ ] Auth / Guest境界
