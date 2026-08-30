@@ -182,3 +182,43 @@ return.schema.json
 - **Trade-off:** 小規模修正でPRを必須化すると遅くなり、大規模修正を直接mainへ積むと追跡性が落ちる。変更規模で使い分ける。
 - **Final check:** 途中Commitではなく、ユーザーへ渡す最終Commit / Merge Commitの結果を基準にする。
 - **Related:** [F-016](failures.md) / [AP-023](anti-patterns.md) / [Project Management](../docs/10-project-management.md) / [Testing](../docs/07-testing-quality.md)
+
+## S-021 Stable Runtime Path + Version Metadata
+
+**Pattern:** 正式RuntimeのPathは安定させ、Version / Build / SchemaはMetadataの正本へ分離する。
+
+```text
+js/app/app.js
+css/app.css
+js/app/meta.js  ← Version / Build / Schema
+```
+
+- **Use when:** 継続的に更新するWeb / Electron Project。
+- **Avoid when:** Release ArtifactそのものをVersion別Directoryで同時配信する明確な要件がある。
+- **効果:** `v060`をコピーして`v061`を増やすPatch運用への逆戻りを防ぎやすい。
+- **Trade-off:** Cache Bustingを使う場合はBuild生成やmanifestとの整合が必要。
+- **Related:** [F-001 / F-004 / F-017](failures.md) / [AP-024](anti-patterns.md) / [Maintenance](../docs/09-maintenance.md)
+
+## S-022 Validate → Backup → Replace → Verify → Rollback
+
+**Pattern:** 既存ユーザーデータを置き換えるImport / Restoreは、全体Validation後にBackupし、置換後の読み戻しValidationまで行う。
+
+```text
+parse → validate all → backup current → replace → verify → rollback on failure
+```
+
+- **Use when:** localStorage / IndexedDB / Cloud dataをImportで置き換える。
+- **Avoid when:** 読み取り専用Importや、失敗しても既存データへ影響しない追加Import。
+- **効果:** Import途中失敗による「一部だけ新、一部だけ旧」を防ぎやすい。
+- **Trade-off:** Backup容量とRollback実装が必要。
+- **Related:** [F-018](failures.md) / [AP-025](anti-patterns.md) / [Data / Storage](../docs/03-data-storage.md)
+
+## S-023 Renderer Owns Its DOM
+
+**Pattern:** 自分で生成するDOMの最終形は、そのRenderer / Component自身が生成する。Layout Moduleは測定・配置計算等へ責務を限定する。
+
+- **Use when:** 自前UIをrenderし、その後別ModuleがObserverで要素を差し込んでいる。
+- **Avoid when:** 第三者WidgetやBrowser ExtensionなどDOM生成元を変更できない。
+- **効果:** Timing依存、二重生成、Selector破損、責務不明を減らす。
+- **Trade-off:** Rendererの引数やComponent境界を整理する必要がある。
+- **Related:** [F-019](failures.md) / [AP-003](anti-patterns.md) / [Architecture](../docs/02-architecture.md)
