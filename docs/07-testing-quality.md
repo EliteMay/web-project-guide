@@ -94,12 +94,36 @@ CIで代替できないもの:
 - 旧Runtime再混入
 - 誤った件数hardcode
 
+## Final-state Validation
+
+テスト結果は、**ユーザーへ渡す最終Commit / Merge Commit**に対して成立している必要があります。
+
+途中CommitでCIが成功していても、その後に以下を変更した場合は最終状態で再確認します。
+
+- 一時Workflow / Scriptの削除
+- Cache Revision
+- Version / Build
+- Asset Path
+- README以外の設定ファイル
+- Deployment設定
+- Cleanup Commit
+
+特にGitHub Pagesでは、途中のDeploy成功を最終状態のDeploy成功として扱いません。
+
+可能なら次を確認します。
+
+1. 最終Commit SHAを確認
+2. そのCommitに対するCI結果を確認
+3. GitHub Pages対応時は同じ最終CommitのDeploy結果を確認
+4. 一時ファイルが残っていないことを確認
+
 # 完成前チェック
 
 ## ファイル
 
 - [ ] 必要ファイルが存在する
 - [ ] 不要な重複Runtime / Patchがない
+- [ ] 一時Script / 一時Workflow / Debug資産が残っていない
 - [ ] ファイルPathが正しい
 - [ ] 文字化けがない
 - [ ] GitHub Pagesで404にならない構成になっている
@@ -132,6 +156,7 @@ CIで代替できないもの:
 - [ ] `localhost`依存がない
 - [ ] PC固有絶対Pathがない
 - [ ] 公開ファイルへ秘密情報が入っていない
+- [ ] 最終Commitに対するPages Deploy結果を確認した
 
 ## 既存機能
 
@@ -148,6 +173,13 @@ CIで代替できないもの:
 - [ ] 作業報告書を更新した
 - [ ] 既知の問題を記録した
 - [ ] 確認できなかった項目を記録した
+
+## Final State
+
+- [ ] 最終Commit / Merge Commitを特定した
+- [ ] 最終Commitに対するCI結果を確認した
+- [ ] Cleanup後の状態でRegression確認した
+- [ ] 途中Commitの成功結果を最終確認として流用していない
 
 # 確認状態
 
@@ -173,6 +205,7 @@ Static Validation成功だけで「実機動作確認済み」と扱いません
 - 必要なREADME等が更新済み
 - GitHub Pages対応サイトは公開可能な構成になっている
 - 保存データを壊さない
+- 一時資産をCleanupした最終状態で検証済み
 - 未確認事項が明示されている
 
 主要機能が未実装の場合や、重大部分が未確認の場合は完成扱いにしません。

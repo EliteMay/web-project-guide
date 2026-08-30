@@ -11,6 +11,7 @@
 - [ ] README / 仕様が現在実装と致命的に矛盾していない
 - [ ] 同じ機能の旧Runtimeが本番で重複していない
 - [ ] 変更対象と影響範囲を確認した
+- [ ] 一時Script / 一時Workflow / Debug資産が本番Repoへ残っていない
 
 ### HTML / CSS / JS
 
@@ -30,11 +31,13 @@
 - [ ] Pages対応プロジェクトでは相対Path / fetch先が正常
 - [ ] localhost / PC固有絶対Pathに依存していない
 - [ ] 公開Artifactへ秘密情報を入れていない
+- [ ] Pagesを確認した場合、その結果がユーザーへ渡す最終Commitに対応している
 
 ### 完了記録
 
 - [ ] 必要なREADME / 作業報告を更新
 - [ ] 確認できなかったことを未確認として記録
+- [ ] CIがある場合、Cleanup後の最終Commit / Merge Commitに対する結果を確認
 
 ## Standard — 通常のWebアプリで推奨
 
@@ -130,6 +133,7 @@ Project Profileや高リスク変更に該当する場合のみ実施します�
 - [ ] Unit Test成功（該当時）
 - [ ] Browser Smoke / E2E成功（該当時）
 - [ ] 一度直した重大BugにRegression Guardあり
+- [ ] 途中Commitではなく最終Commit / Merge Commitの結果を確認した
 
 ## Verification State
 

@@ -33,11 +33,81 @@ Web制作ではGitHubリポジトリを基本の保存・管理先とします�
 2. README・仕様を確認
 3. 変更対象を特定
 4. 影響範囲を確認
-5. 実装・修正
-6. 関連ファイルとの整合性確認
-7. 動作確認
-8. README・作業報告更新
-9. 未確認事項を記録
+5. 変更経路を選ぶ
+6. 実装・修正
+7. 関連ファイルとの整合性確認
+8. 一時Script / 一時Workflow / Debug資産をCleanup
+9. **Cleanup後の最終Commit**で動作確認・Regression・CI / Pages確認
+10. README・作業報告更新
+11. 未確認事項を記録
+
+## GitHubへの変更経路を選ぶ
+
+変更内容に対して最も小さく安全な経路を選びます。
+
+### SHOULD: 小規模で変更箇所が明確な場合
+
+GitHub上の対象ファイルを直接更新して構いません。
+
+例:
+
+- 文言修正
+- 1〜数ファイルの明確なバグ修正
+- README / JSON / CSSの局所変更
+- 既存テストで十分に回帰確認できる変更
+
+**単発のファイル書換えのためだけにGitHub Actionsや補助Scriptを新設しません。**
+
+### SHOULD: 複数ファイル・高リスク・設計変更の場合
+
+Branch / Pull Requestを優先します。
+
+例:
+
+- 保存形式やSchema変更
+- 共通Runtime変更
+- 大規模UI変更
+- 複数の主要機能へ影響する変更
+- Guide / CI / Deployment等、プロジェクト全体の運用を変える変更
+
+PRを使う場合は、CI結果とDiffを確認してからMergeします。
+
+### CONDITIONAL: GitHub Actionsを使う場合
+
+GitHub Actionsは、**継続的に必要な自動化そのもの**が目的の場合に使います。
+
+例:
+
+- Static Validation
+- Test
+- Build
+- Deploy
+- Release
+- 定期的な自動処理
+
+一方で、ChatGPTやGitHub API等から対象ファイルを直接更新できる状況で、単発修正のPatch EngineとしてWorkflowを追加するのは避けます。
+
+やむを得ず一時Workflow / Scriptを使う場合は以下を守ります。
+
+- 目的と削除条件を明確にする
+- 本番Runtimeへ影響しない場所へ置く
+- 作業終了前に削除する
+- 削除Commit後の最終状態でもう一度CI / Pagesを確認する
+
+## Final Stateを基準にする
+
+途中CommitのCI成功やPages成功は、**最終Commitの品質保証ではありません**。
+
+次のような変更が後から入った場合は、最終状態で再確認します。
+
+- 一時Workflow / Script削除
+- Cache Revision変更
+- README / 設定ファイル更新
+- Asset Path変更
+- Build / Version整合修正
+- Cleanup Commit
+
+「途中では通っていた」ではなく、ユーザーへ渡す最終main / Merge Commitの状態を確認済みにします。
 
 ## 原則としてそのまま改善してよい範囲
 
@@ -101,6 +171,7 @@ Web制作ではGitHubリポジトリを基本の保存・管理先とします�
 - 共通コンポーネント
 - Service Worker / Cache
 - Version / Build表示
+- GitHub Actions / Deployment trigger
 
 ## README.md
 
