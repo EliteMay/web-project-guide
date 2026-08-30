@@ -196,13 +196,49 @@
 - **検出:** Git diff / Workflow一覧 / Final Commit CI / Pages確認。
 - **Related:** [AP-023](anti-patterns.md) / [S-020](success-patterns.md) / [Project Management](../docs/10-project-management.md) / [Testing](../docs/07-testing-quality.md)
 
+## F-017 正式RuntimeまでVersion付きPathで固定
+
+- **Category:** Architecture / Maintenance
+- **発生:** English
+- **Severity / Cost:** Medium / 中〜高
+- **症状:** Patch Runtimeを整理した後も`js/v060/`・`app-v060.css`が正式構造として残り、次回更新で`v061`を複製する運用へ戻りやすかった。Session側には`appVersion:'v0.6.0'`の古いhardcodeも残った。
+- **Root Cause:** 「Versioned Patchを削除する」と「Runtime PathからVersionを分離する」を同じ問題として扱っていなかった。
+- **最終対応:** `js/app/` / `css/app.css`へ安定Path化し、Version / Build / Schemaを`meta.js`へ一本化。
+- **予防:** 正式RuntimeのPathとVersion Metadataを分離し、Export / Session / package等のVersion一致をStatic Validationする。
+- **検出:** Runtime ref検査 / hardcode search / Metadata consistency test。
+- **Related:** [AP-024](anti-patterns.md) / [S-021](success-patterns.md) / [Maintenance](../docs/09-maintenance.md)
+
+## F-018 Backup Importが途中失敗すると既存データを失える
+
+- **Category:** Storage / Data Integrity
+- **発生:** English
+- **Severity / Cost:** Critical / 非常に高い
+- **症状:** Backup ImportがTop-level `schema`だけ確認した後にIndexedDB Storeをclearしており、後半のRecord不正や書き込み失敗時に既存データを部分的に失える構造だった。
+- **Root Cause:** Import ValidationとRollbackを「ある/なし」で見ており、破壊的置換の順序を定義していなかった。
+- **最終対応:** 全payload Validation → 現在データBackup → 置換 → 読み戻しValidation → 失敗時Rollbackへ変更。
+- **予防:** 既存データを置換するImportではclear前に全体Validationし、複数StoreではRollback Snapshotを持つ。
+- **検出:** Invalid import unit test / interrupted restore test / Backup→Restore E2E。
+- **Related:** [AP-025](anti-patterns.md) / [S-022](success-patterns.md) / [Data / Storage](../docs/03-data-storage.md)
+
+## F-019 自前DOMをMutationObserverで後から完成させる
+
+- **Category:** Architecture / UI
+- **発生:** English
+- **Severity / Cost:** Medium / 中
+- **症状:** 答え合わせHeaderをRendererが生成した後、別Layout ModuleがMutationObserverで監視して保存Buttonを差し込んでいた。
+- **Root Cause:** Layout修正を素早く入れるため、DOMの最終所有者をRendererへ戻さず後付け処理を恒久化した。
+- **最終対応:** 保存Buttonを正式Rendererが最初から生成し、Layout Moduleは紙面のサイズ計算だけへ責務を縮小。
+- **予防:** 自分で生成できるDOMはRenderer自身が最終形を作る。Observerは第三者DOM / Legacy互換等へ限定する。
+- **検出:** Architecture review / MutationObserver search / render E2E。
+- **Related:** [AP-003](anti-patterns.md) / [S-023](success-patterns.md) / [Architecture](../docs/02-architecture.md)
+
 ---
 
 ## 修正コストの目安
 
-- **非常に高い:** 保存Schema、座標体系、Runtime構造、複数Player/Provider統合
+- **非常に高い:** 保存Schema、座標体系、Runtime構造、複数Player/Provider統合、破壊的Importのデータ消失
 - **高い:** 大容量保存方式、主要Layout、既存データMigration
-- **中:** Navigation、Version一元化、Fixed UI、Error State、変更経路の整理
+- **中:** Navigation、Version一元化、Stable Runtime化、Fixed UI、Error State、Renderer責務整理、変更経路の整理
 - **低い:** 文言、余白、単純な配色・表示調整
 
 高コスト項目ほど要件定義段階で決めます。
@@ -211,8 +247,9 @@
 
 | 問題種類 | Static | Unit | Browser E2E | 実機 / Human |
 |---|---:|---:|---:|---:|
-| Link / JSON / hardcode | 強い | - | 補助 | - |
-| Migration / normalize | 補助 | 強い | 補助 | - |
+| Link / JSON / hardcode / Runtime Path | 強い | - | 補助 | - |
+| Migration / normalize / Import Validation | 補助 | 強い | 補助 | - |
+| Import途中失敗 / Rollback | 弱い | 強い | 強い | 補助 |
 | Geometry / overflow | 弱い | 弱い | 強い | 強い |
 | Media / Codec | 弱い | 弱い | 中 | 強い |
 | OS固有Electron | 弱い | 補助 | 弱い | 必須 |
