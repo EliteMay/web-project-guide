@@ -164,3 +164,12 @@ Static Check成功をYouTube再生・Codec・ペンタブ・スマホ・Windows�
 
 - **なぜ危険:** 小規模サイトを不必要に複雑化する。
 - **代替:** Success PatternのUse when / Avoid when / Trade-offを確認する。
+
+## AP-023 Workflow as Patch Engine
+
+対象ファイルを直接更新できるのに、単発の修正を適用するためだけのGitHub Actions / Patch ScriptをRepoへ追加する。
+
+- **なぜ危険:** 作業用Commit・Cleanup Commit・余分なDeployが増え、途中CIと最終mainの状態が分離する。Workflow自体の失敗が本来の修正とは無関係なノイズになる。
+- **例外:** 継続的な自動化が最終成果物である場合、または直接更新できない明確な技術制約がある場合。
+- **代替:** 小規模変更は対象ファイルを直接更新。高リスク・複数ファイル変更はBranch / PR。Workflowを使った場合もCleanup後の最終Commitを再検証する。
+- **Related:** [F-016](failures.md) / [S-020](success-patterns.md) / [Project Management](../docs/10-project-management.md)
