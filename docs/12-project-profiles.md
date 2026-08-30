@@ -42,10 +42,17 @@ ChatGPT等へZIP / JSON /画像を渡して分析結果を戻すサイト。
 
 主な確認:
 - 固定Schema
-- manifest
-- 入出力Version
+- Manifest
+- App / Schema / Package Versionの分離
+- Import前Validation
+- Package size / entry数 / path等のArchive制限
 - Human correction
 - AI結果を未検証の事実として扱わない
+- 旧Package互換性またはUnsupported方針
+- 元Mediaを含める範囲とPrivacy
+- Export → Import Round Trip
+
+詳細は [14 AI Handoff / Package Contract](14-ai-handoff.md) を正本とします。
 
 ## CLOUD
 
@@ -106,9 +113,11 @@ Profiles: STATIC + DATA + TOOL
 
 ```json
 {
-  "guideVersion": "1.1.0",
+  "guideVersion": "1.2.1",
   "profiles": ["STATIC", "DATA", "TOOL"]
 }
 ```
+
+複数のSource of Truthや保存方式を持つ継続プロジェクトでは、[Project Meta Template](../templates/PROJECT_META_TEMPLATE.json)を基に、Runtime Version・仕様書・保存Schema・Deployment等の入口も記録できます。
 
 Guide VersionをJSONへ重複コピーする場合は、それは「そのプロジェクトが採用したVersionの記録」であり、Guide本体のVersion正本ではありません。
