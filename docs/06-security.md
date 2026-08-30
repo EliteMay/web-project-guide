@@ -22,18 +22,56 @@
 - URL Parameter
 - User Input
 - Import JSON
+- Import ZIP / Archive
 - localStorage
 - IndexedDB
 - 外部API Response
+- AI Return Data
 - Supabase Response
 
 保存済みデータでも破損・旧形式・書き換えを想定します。
+
+## ZIP / Archive Import
+
+CONDITIONAL: ZIP等をImportする場合、Browser内だけの処理でも無制限に信頼しません。
+
+最低限、用途に応じて以下を確認します。
+
+- Archive全体サイズ
+- Entry数
+- JSON / Textの個別サイズ
+- 必須ファイル
+- 対応Compression Method
+- Pathが想定範囲か
+- `../`、絶対Path、異常な重複Entry等がないか
+- Schema / Version
+
+集計に不要な大容量画像・動画をすべてMemoryへ展開しないことを優先します。
+
+Import途中で失敗した場合、既存の正式データを先に削除しません。
+
+AI-HANDOFF Packageの詳細は [14 AI Handoff / Package Contract](14-ai-handoff.md) を参照します。
 
 ## DOMへの文字列挿入
 
 文字列表示は原則`textContent`を優先します。
 
 外部入力をそのまま`innerHTML`へ入れません。HTMLとして挿入する必要がある場合は、信頼できる生成元または適切にsanitizeされた内容だけを扱います。
+
+## AI返却値
+
+AIがJSON形式で返した場合でも、自サイトが生成した確定データとは扱いません。
+
+- JSON parse
+- Schema / Version
+- ID
+- Enum
+- Range
+- required field
+
+等を確認してから利用します。
+
+AI出力に含まれる説明文・ファイル名・URL等も外部入力として扱います。
 
 ## 外部リンク
 
