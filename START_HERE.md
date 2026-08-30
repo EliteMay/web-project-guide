@@ -65,6 +65,16 @@
 
 既存データを置き換える場合は、**parse → 全体Validation → 現在Backup → 置換 → 読み戻し確認 → 失敗時Rollback**を基本とします。
 
+### ChatGPT等へZIP / JSON /画像を渡して結果を戻す
+
+- [AI Handoff / Package Contract](docs/14-ai-handoff.md)
+- [Data / Storage](docs/03-data-storage.md)
+- [Security](docs/06-security.md)
+- [Testing / Quality](docs/07-testing-quality.md)
+- Package / Return DataのSchema名・Version・Manifestを先に決める
+- ImportデータやAI返却値を信頼せずValidationする
+- Human correctionと未検証状態を設計する
+
 ### GitHub Pagesで動かない
 
 - [GitHub Pages](docs/08-github-pages.md)
