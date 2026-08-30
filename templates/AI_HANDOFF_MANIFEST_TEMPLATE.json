@@ -1,0 +1,22 @@
+{
+  "schema": "PROJECT-HANDOFF-PACKAGE",
+  "schemaVersion": 1,
+  "packageVersion": 1,
+  "createdAt": "YYYY-MM-DDTHH:mm:ssZ",
+  "appVersion": "0.1.0",
+  "source": {
+    "id": "SOURCE_ID",
+    "name": "",
+    "snapshotVersion": null
+  },
+  "files": {
+    "input": "input.json",
+    "notes": "notes.txt",
+    "returnSchema": "return.schema.json"
+  },
+  "counts": {},
+  "settingsSnapshot": {},
+  "compatibility": {
+    "minimumImporterVersion": null
+  }
+}
