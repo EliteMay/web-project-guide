@@ -28,6 +28,23 @@
 
 小規模修正でフル要件定義をやり直す必要はありません。
 
+### 既存サイトの構造を整理する / Patchを統合する
+
+- [Architecture](docs/02-architecture.md)
+- [Version / Maintenance](docs/09-maintenance.md)
+- [GitHub中心のプロジェクト管理](docs/10-project-management.md)
+- [Failure Catalog](catalog/failures.md) の Runtime / hardcode / DOM patch系を確認
+
+重点確認:
+
+- 旧Version JS / CSSを新Version Folderへコピーして増やしていないか
+- 正式Runtime PathとVersion Metadataが分離されているか
+- Version / Build / Schema / 件数の正本が1つか
+- 自前DOMをMutationObserverで後から完成させていないか
+- 旧Runtimeを消した後もMigration / Legacy互換が必要か
+
+構造整理だけを理由に保存Schemaや主要UIまで同時に壊さないよう、変更単位を分けます。
+
 ### UIだけ直す
 
 - [UI / UX / Accessibility](docs/04-ui-ux-accessibility.md)
@@ -40,6 +57,13 @@
 - [Version / Maintenance](docs/09-maintenance.md)
 - 既存データがある場合はMigration / Backup / Rollbackを先に決める
 - 大きな判断は[ADR](templates/ADR_TEMPLATE.md)へ記録する
+
+### Backup / Import / Restoreを作る・直す
+
+- [Data / Storage](docs/03-data-storage.md) の破壊的Import / Restore順序を確認
+- [Quality Checklist](templates/QUALITY_CHECKLIST.md) のDATA / TOOL項目を確認
+
+既存データを置き換える場合は、**parse → 全体Validation → 現在Backup → 置換 → 読み戻し確認 → 失敗時Rollback**を基本とします。
 
 ### GitHub Pagesで動かない
 
