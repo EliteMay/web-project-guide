@@ -41,34 +41,19 @@ localStorageには軽い参照や設定だけを持たせます。
 
 ## JSON
 
-データは可能な限りHTMLやJavaScriptへ大量に直接記述せず、JSON等へ分離します。
-
-例:
+データ量が多い場合は用途別に分けます。
 
 ```text
 data/
 ├─ manifest.json
-├─ agents.json
-├─ maps.json
-├─ lineups.json
+├─ items/
 ├─ settings.json
-├─ questions.json
 └─ schema.json
 ```
 
-データ量が多い場合は用途ごとに分割します。
-ただし、小さなデータまで過剰に細分化しません。
-
-分割時は以下を考慮します。
-
-- 読み込み速度
-- 管理しやすさ
-- Git差分の見やすさ
-- 一部破損時の影響範囲
-- 将来の拡張
-- 更新単位
-
 Manifestで実行時に読むファイル一覧や期待件数を管理すると、JSへのhardcodeを減らせます。
+
+小さなデータまで過剰に分割せず、読み込み速度・Git差分・破損時の影響・将来拡張のバランスを取ります。
 
 ## Schema Version
 
@@ -105,8 +90,7 @@ validate
 - 移行失敗時に元データを残す
 - 破損JSONは上書き前にRecoveryコピーを作る
 - 大きな変更はSchema / README / 作業報告を同時更新
-
-保存形式変更はデータ互換性へ直結するため、既存プロジェクトでは原則として確認が必要な変更として扱います。
+- 高リスク変更ではRollback可能性を検討
 
 ## Snapshot
 
@@ -128,6 +112,52 @@ y: 0.00〜1.00
 
 画面サイズや上部要素の高さ変更でずれにくくなります。
 
+## 保存状態を設計する
+
+編集を伴うサイトでは、必要に応じて以下を区別します。
+
+- 保存済み
+- 保存中
+- 未保存変更あり
+- 保存失敗
+
+保存失敗を成功扱いしたり、エラーを黙って無視しません。
+
+重要な編集では、画面移動・タブ閉じ・データ切替で未保存内容を失う可能性を考慮します。
+
+## Storage失敗
+
+CONDITIONAL: ユーザーデータが重要な場合、次を想定します。
+
+- localStorage quota / write failure
+- IndexedDB open / transaction failure
+- Browser storage制限
+- Import途中の失敗
+- Migration途中の失敗
+
+失敗時に元データを消してから再試行する設計は避けます。
+
+## 複数タブ競合
+
+CONDITIONAL: 同じデータを複数タブから編集でき、上書きが問題になる場合は競合を考慮します。
+
+例:
+
+```text
+Tab A: revision 5を読込
+Tab B: revision 5を読込 → revision 6として保存
+Tab A: 古い状態をそのまま保存
+```
+
+必要に応じて以下を使います。
+
+- updatedAt / revision比較
+- BroadcastChannel
+- storage event
+- 保存前の競合警告
+
+単純な閲覧サイトでは過剰実装しません。
+
 ## Backup / Restore
 
 ユーザーデータを保存するサイトでは、重要度に応じて以下を用意します。
@@ -141,32 +171,8 @@ y: 0.00〜1.00
 
 Importデータは信頼せずSchema検証します。
 
-## 外部サービス導入
+## 関連Catalog
 
-GitHub Pagesだけで十分な場合は、不要な外部サービスを追加しません。
-
-以下が必要な場合に限って検討します。
-
-- ログイン
-- DB
-- サーバー処理
-- APIキー秘匿
-- 大容量ファイル
-- リアルタイム同期
-- 複数人共有
-- メール
-- AI API
-- 高度な画像・動画処理
-
-導入前に以下を確認します。
-
-- 無料枠
-- 維持費
-- GitHub / GitHub Pagesとの相性
-- サービス停止リスク
-- 移行しやすさ
-- Vendor Lock-in
-- 本当に必要か
-- 外部サービスが落ちた時のFallback
-
-有料サービス導入や外部サービスへの大きな移行は、勝手に確定しません。
+- Failure: [F-002 / F-003](../catalog/failures.md)
+- Success: [IndexedDB / Schema / Snapshot](../catalog/success-patterns.md)
+- Anti-pattern: [Large Data in localStorage / Absolute Coordinates](../catalog/anti-patterns.md)
