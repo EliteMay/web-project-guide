@@ -171,3 +171,14 @@ return.schema.json
 - **Use when:** 共通Guideを複数種類のプロジェクトへ使う。
 - **効果:** Checklistが儀式化するのを防ぐ。
 - **Rule:** [Project Profiles](../docs/12-project-profiles.md)
+
+## S-020 Smallest Safe Change Path + Final-state Verification
+
+**Pattern:** 変更規模に合う最小のGitHub変更経路を選び、Cleanup後の最終CommitでCI / Pages / Regressionを確認する。
+
+- **Use when:** GitHub上の既存プロジェクトを修正するすべての作業。
+- **Small change:** 対象ファイルを直接更新し、不要なWorkflowやPatch Scriptを増やさない。
+- **Risky / multi-file change:** Branch / Pull RequestでDiffとCIを確認してからMergeする。
+- **Trade-off:** 小規模修正でPRを必須化すると遅くなり、大規模修正を直接mainへ積むと追跡性が落ちる。変更規模で使い分ける。
+- **Final check:** 途中Commitではなく、ユーザーへ渡す最終Commit / Merge Commitの結果を基準にする。
+- **Related:** [F-016](failures.md) / [AP-023](anti-patterns.md) / [Project Management](../docs/10-project-management.md) / [Testing](../docs/07-testing-quality.md)
