@@ -184,13 +184,25 @@
 - **検出:** Human usability review。
 - **Related:** [AP-010 / AP-020](anti-patterns.md) / [UI / UX](../docs/04-ui-ux-accessibility.md)
 
+## F-016 一時Workflow / Scriptが修正経路になる
+
+- **Category:** GitHub / Maintenance / Testing
+- **発生:** LyricTube
+- **Severity / Cost:** Medium / 中
+- **症状:** 単発修正のために一時GitHub ActionsやPatch Scriptを追加し、途中CommitのCI成功と最終mainの状態が分離する。Cleanup用Commitも増え、どの状態が完成なのか分かりにくくなる。
+- **Root Cause:** 対象ファイルを直接更新できるのに、Workflowをファイル書換えEngineとして利用した。さらに途中Commitの成功結果を最終確認と混同しやすかった。
+- **最終対応:** 小規模修正は対象ファイルを直接更新。複数ファイル・高リスク変更はBranch / PR。Workflowは継続的自動化に限定し、最終CommitでCI / Pagesを再確認。
+- **予防:** 実装前に変更経路を選び、一時資産には削除条件を持たせる。完成判定はCleanup後の最終Commitを基準にする。
+- **検出:** Git diff / Workflow一覧 / Final Commit CI / Pages確認。
+- **Related:** [AP-023](anti-patterns.md) / [S-020](success-patterns.md) / [Project Management](../docs/10-project-management.md) / [Testing](../docs/07-testing-quality.md)
+
 ---
 
 ## 修正コストの目安
 
 - **非常に高い:** 保存Schema、座標体系、Runtime構造、複数Player/Provider統合
 - **高い:** 大容量保存方式、主要Layout、既存データMigration
-- **中:** Navigation、Version一元化、Fixed UI、Error State
+- **中:** Navigation、Version一元化、Fixed UI、Error State、変更経路の整理
 - **低い:** 文言、余白、単純な配色・表示調整
 
 高コスト項目ほど要件定義段階で決めます。
@@ -205,3 +217,4 @@
 | Media / Codec | 弱い | 弱い | 中 | 強い |
 | OS固有Electron | 弱い | 補助 | 弱い | 必須 |
 | UX過密 / 分かりやすさ | 弱い | - | 補助 | Human必須 |
+| 一時Workflow / Final Commit不一致 | 強い | - | - | 補助 |
