@@ -66,6 +66,25 @@ Manifestで実行時に読むファイル一覧や期待件数を管理すると
 }
 ```
 
+継続編集・Backup・複数タブ競合を扱うTOOLでは、必要に応じてEnvelope形式を使います。
+
+```json
+{
+  "schema": "project-storage",
+  "schemaVersion": 1,
+  "revision": 12,
+  "updatedAt": "2026-08-30T09:00:00Z",
+  "data": {}
+}
+```
+
+- `schemaVersion`: Data構造の互換性判定
+- `revision`: 同じDataの更新順・競合検出
+- `updatedAt`: 診断・競合表示・Backup選択の補助
+- `data`: 実データ
+
+Theme設定等の小さい安定DataまでEnvelope化する必要はありません。Migration・Backup・競合確認の価値がある場合に使います。
+
 読み込みは以下の順にします。
 
 ```text
@@ -91,6 +110,8 @@ validate
 - 破損JSONは上書き前にRecoveryコピーを作る
 - 大きな変更はSchema / README / 作業報告を同時更新
 - 高リスク変更ではRollback可能性を検討
+
+旧形式が単純で安全にnormalizeできるなら、一定期間Backward Compatibilityを持たせることを検討します。旧Dataを読んだ瞬間に元Keyを削除する設計は避けます。
 
 ## Snapshot
 
@@ -171,6 +192,20 @@ Tab A: 古い状態をそのまま保存
 
 Importデータは信頼せずSchema検証します。
 
+### 新規開始 / Reset
+
+同じ対象へ新規作業を始めるとき、既存データがユーザー作業の成果なら、単純な`remove()`より次を優先します。
+
+```text
+現在Data
+↓
+Backup / Snapshot
+↓
+新規Dataを開始
+```
+
+Backupが存在する場合は、復元導線や保存日時を必要に応じて表示します。
+
 ### 破壊的Import / Restoreの順序
 
 CONDITIONAL: Importが既存のlocalStorage / IndexedDB / Cloud stateを**置き換える**場合、単に`schema`文字列を確認するだけでは不十分です。
@@ -217,8 +252,14 @@ Import失敗時は「一部だけ新データ、一部だけ旧データ」の�
 - IndexedDB書き込み途中を失敗させてもRollbackできる
 - Restore後に主要画面が読める
 
+## AI-HANDOFFとの境界
+
+AIへ渡すPackageやAI返却JSONは「保存済みだから信頼できるData」とは扱いません。
+
+Package / Return DataのVersion・Manifest・Archive制限・Import Validationは [14 AI Handoff / Package Contract](14-ai-handoff.md) を参照します。
+
 ## 関連Catalog
 
 - Failure: [F-002 / F-003 / F-018](../catalog/failures.md)
-- Success: [S-004 / S-005 / S-006 / S-007 / S-022](../catalog/success-patterns.md)
-- Anti-pattern: [AP-005 / AP-006 / AP-025](../catalog/anti-patterns.md)
+- Success: [S-004 / S-005 / S-006 / S-007 / S-022 / S-024](../catalog/success-patterns.md)
+- Anti-pattern: [AP-005 / AP-006 / AP-025 / AP-026](../catalog/anti-patterns.md)
