@@ -32,6 +32,8 @@ Pure Functionにできる処理はブラウザUIから切り離してテスト�
 - Normalize / Validate
 - URL解析
 - Detector後処理
+- Package Manifest Validation
+- Import Version Compatibility
 
 ## E2E / Smoke Test
 
@@ -60,6 +62,56 @@ UIが重要なサイトでは以下も確認します。
 - Button visibility
 - Canvas/対象DOM geometry
 - Main navigation
+
+## Browser Validation Checklist
+
+MEDIA / TOOL / UI geometryが重要なサイトでは、確認内容を毎回会話だけに残さずChecklist化すると再利用しやすくなります。
+
+特に有効:
+
+- Firefox / Chromium
+- 100 / 125 / 150% Zoom
+- 低い縦解像度
+- Narrow viewport
+- fixed / sticky / 独立Scroll
+- Media Codec / seek
+- 保存 → 再読込 → 復元
+- Console Error
+
+Template: [Browser Validation Checklist](../templates/BROWSER_CHECKLIST_TEMPLATE.md)
+
+Checklistを作っただけではBrowser Validated扱いにしません。実際に通したBrowser / OS / Commitを記録します。
+
+## AI-HANDOFF / Import Test
+
+CONDITIONAL: AI-HANDOFF ProfileやZIP / JSON Importがある場合は、正常系だけでなく壊れた入力をFixture化します。
+
+優先Fixture:
+
+- 現行Version正常Package
+- 対応中の旧Version
+- Unsupported Version
+- 必須ファイル欠落
+- 壊れたJSON
+- 不正Enum / Range
+- 過大件数 / 過大サイズ
+- 重複Entry / 不正Path
+
+ExportとImportの両方がある場合はRound Tripを確認します。
+
+```text
+Export
+↓
+Package
+↓
+Import
+↓
+Validate
+↓
+元と同じ意味のData
+```
+
+詳細は [14 AI Handoff / Package Contract](14-ai-handoff.md) を参照します。
 
 ## 対応ブラウザ
 
@@ -93,6 +145,8 @@ CIで代替できないもの:
 - 横overflow
 - 旧Runtime再混入
 - 誤った件数hardcode
+- Import Validation bypass
+- 未対応Package Versionの誤解釈
 
 ## Final-state Validation
 
