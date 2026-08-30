@@ -191,3 +191,12 @@ Backup / Import時に、Import payload全体のValidationが終わる前に既�
 - **例外:** 既存データへ影響しない一時Storeや、完全に再生成可能なCache。
 - **代替:** parse → 全体validate → current backup → replace → read-back verify → rollback on failure。
 - **Related:** [F-018](failures.md) / [S-022](success-patterns.md) / [Data / Storage](../docs/03-data-storage.md)
+
+## AP-026 Blind Package Import
+
+「自分のサイトが出力したZIP / JSON」「AIが指定形式で返したJSON」だから安全だと考え、Version・Size・Path・Schema等を確認せずImportする。
+
+- **なぜ危険:** 壊れたPackage、旧Version、過大Archive、不正値、外部入力文字列がそのまま正式DataやDOMへ入り得る。Browser内処理でもMemory圧迫や部分反映が起こる。
+- **例外:** 完全に固定されたBuild-time Assetで、ユーザーImport経路が存在しない場合。
+- **代替:** Manifest + Versioned Schema + Size / Entry / Path制限 + Validation + Compatibility方針。AI返却値は未検証Dataとして扱う。
+- **Related:** [S-024](success-patterns.md) / [AI Handoff](../docs/14-ai-handoff.md) / [Security](../docs/06-security.md)
