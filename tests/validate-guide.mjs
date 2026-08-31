@@ -43,8 +43,7 @@ const requiredFiles = [
   'templates/DIAGNOSTICS_SCHEMA_TEMPLATE.json',
   'templates/CHANGELOG_TEMPLATE.md',
   'references/web-standards.md',
-  '.github/workflows/validate-guide.yml',
-  '.github/workflows/reusable-web-baseline.yml'
+  '.github/workflows/validate-guide.yml'
 ];
 
 for (const file of requiredFiles) {
@@ -190,9 +189,12 @@ if (!/Remote Diagnostic Handoff/.test(agentsTemplate) || !/service_role/.test(ag
   errors.push('templates/AGENTS_TEMPLATE.md must route agents to remote diagnostics without exposing service_role');
 }
 
-const reusableWorkflow = fs.readFileSync(path.join(root, '.github/workflows/reusable-web-baseline.yml'), 'utf8');
-if (!/workflow_call:/.test(reusableWorkflow) || !/permissions:\n\s+contents: read/.test(reusableWorkflow)) {
-  errors.push('reusable-web-baseline.yml must remain a workflow_call workflow with read-only contents permission');
+const crossRepoGuide = fs.readFileSync(path.join(root, 'docs/16-cross-repository-github-infrastructure.md'), 'utf8');
+if (!/EliteMay\/\.github/.test(crossRepoGuide) || !/Commit SHA/.test(crossRepoGuide) || !/Project固有Validator/.test(crossRepoGuide)) {
+  errors.push('docs/16 must keep the EliteMay/.github shared-infrastructure, SHA-pinning, and project-specific validator boundaries');
+}
+if (!/EliteMay\/\.github/.test(readme)) {
+  errors.push('README.md must point shared GitHub implementation to EliteMay/.github');
 }
 
 try {
