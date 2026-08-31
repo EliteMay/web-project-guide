@@ -39,6 +39,19 @@ https://<user>.github.io/<repo>/
 - PC固有絶対Pathが残っていない
 - GitHub Pages公開対象に不要なDesktop/Electronファイルを含めない
 
+## 404 / Recovery
+
+複数Page、外部からのDirect Link、URL共有がある公開Siteでは、必要に応じて`404.html`を用意します。
+
+404画面は装飾だけで終わらせず、少なくとも次のいずれかへ戻れるようにします。
+
+- Home
+- Search
+- Main navigation
+- 主要一覧
+
+単一Pageの極小Siteへ機械的に追加する必要はありません。
+
 ## file://との違い
 
 `fetch()`やES Modules等を使う場合、`file://`直開きでは正常動作しないことがあります。
