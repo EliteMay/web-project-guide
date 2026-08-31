@@ -11,9 +11,10 @@
   "repositoryReviewPriority": [
     "PROJECT_LEARNINGS.md",
     "recent commits and changed files",
-    "README and specification",
+    "README AGENTS.md project rules and specification",
     "work reports and changelog",
     "visual design direction, layout structure, repeated UI patterns and DesignShelf usage",
+    "AI-generated code review evidence and test results",
     "diagnostics design and exported schema when committed",
     "tests and GitHub Actions",
     "storage schema and migration"
@@ -27,17 +28,17 @@
     {
       "name": "MDN Web Docs",
       "url": "https://developer.mozilla.org/",
-      "topics": ["HTML", "CSS", "JavaScript", "Web APIs", "security", "compatibility", "diagnostics", "performance"]
+      "topics": ["HTML", "CSS", "JavaScript", "Web APIs", "security", "compatibility", "diagnostics", "performance", "internationalization"]
     },
     {
       "name": "web.dev",
       "url": "https://web.dev/",
-      "topics": ["performance", "Core Web Vitals", "responsive", "reliability"]
+      "topics": ["performance", "Core Web Vitals", "responsive", "reliability", "forms"]
     },
     {
       "name": "OWASP Cheat Sheet Series",
       "url": "https://cheatsheetseries.owasp.org/",
-      "topics": ["web security", "storage", "XSS", "third-party code", "logging"]
+      "topics": ["web security", "storage", "XSS", "third-party code", "logging", "privacy"]
     },
     {
       "name": "GitHub Docs",
@@ -50,6 +51,21 @@
       "topics": ["visual design", "layout", "typography", "navigation", "design systems", "accessibility"]
     },
     {
+      "name": "Anthropic Frontend Design Skill",
+      "url": "https://github.com/anthropics/claude-plugins-official/blob/main/plugins/frontend-design/skills/frontend-design/SKILL.md",
+      "topics": ["AI frontend design", "subject grounded design", "typography", "layout", "design critique", "generic AI aesthetics"]
+    },
+    {
+      "name": "Microsoft Agent Academy Frontend Design",
+      "url": "https://github.com/microsoft/agent-academy/blob/main/.github/skills/frontend-design/SKILL.md",
+      "topics": ["AI frontend design", "design direction", "differentiation", "typography", "motion"]
+    },
+    {
+      "name": "Microsoft Frontend Design Review",
+      "url": "https://github.com/microsoft/skills/blob/main/.github/skills/frontend-design-review/SKILL.md",
+      "topics": ["frontend review", "visual quality", "design system", "accessibility", "friction", "trust"]
+    },
+    {
       "name": "Microsoft Fluent 2",
       "url": "https://fluent2.microsoft.design/",
       "topics": ["visual design", "layout", "spacing", "typography", "design tokens", "components"]
@@ -58,6 +74,16 @@
       "name": "Apple Human Interface Guidelines",
       "url": "https://developer.apple.com/design/human-interface-guidelines/",
       "topics": ["design principles", "hierarchy", "layout", "typography", "platform design"]
+    },
+    {
+      "name": "AGENTS.md",
+      "url": "https://agents.md/",
+      "topics": ["AI coding agents", "project instructions", "test commands", "nested instructions"]
+    },
+    {
+      "name": "Front-End Checklist",
+      "url": "https://github.com/thedaviddias/Front-End-Checklist",
+      "topics": ["checklist gaps", "testing", "images", "privacy", "internationalization", "accessibility"]
     },
     {
       "name": "Electron Documentation",
@@ -83,7 +109,8 @@
       "priority order changed",
       "governance changed",
       "existing project compatibility policy changed",
-      "default deployment or storage strategy changed"
+      "default deployment or storage strategy changed",
+      "fixed visual layout imposed on all projects"
     ],
     "requireAuthoritativeSourceForGeneralWebRule": true,
     "requireConcreteEvidenceForProjectDerivedRule": true,
