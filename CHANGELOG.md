@@ -2,6 +2,49 @@
 
 Guide Versionの正本は [`guide-version.json`](guide-version.json) です。
 
+## 1.4.0 - 2026-08-31
+
+### Added
+
+- `docs/15-development-observability.md` を追加
+- 全Projectで長期的な失敗・成功を残す `PROJECT_LEARNINGS.md` 方針を追加
+- `templates/PROJECT_LEARNINGS_TEMPLATE.md` を追加
+- `templates/DIAGNOSTICS_SCHEMA_TEMPLATE.json` を追加
+- Interactive Project向けにDevelopment Diagnostics標準を追加
+  - App Version / Build / Schema
+  - JavaScript Error / Unhandled Promise Rejection
+  - Fetch / API Failure
+  - Storage Failure
+  - Import / Migration / Restore結果
+  - 重要操作Breadcrumb
+  - Feature Flag状態
+- One-click Diagnostic Export / Copy Report方針を追加
+- Error ID、Health / Diagnostics View、Performance Diagnostics、Experimental Feature Flagの指針を追加
+- 高コストBugは Project Learning + Regression Guard + Work Report をセットで残すルールを追加
+
+### Changed
+
+- `START_HERE.md` に「診断データから調査する」ルートを追加
+- 新規制作ルートへProject Learnings / Diagnostics設計を追加
+- `REQUIREMENTS_TEMPLATE.md` にDevelopment Diagnostics / Project Memory項目を追加
+- `README_TEMPLATE.md` にDiagnostics / Project Memory項目を追加
+- `QUALITY_CHECKLIST.md` にError capture、Breadcrumb、Log rotation、Secret exclusion、Diagnostic Export等を追加
+- Continuous Improvement Reviewで各Projectの `PROJECT_LEARNINGS.md` を重要Evidenceとして確認する方針を追加
+- Guide Validatorへ新規Doc / Template / Diagnostics Schemaの存在・構造検査を追加
+
+### Safety / Privacy
+
+- Diagnostic LogはLocal-firstを原則とする
+- Token / Password / API Key / Secret / User入力全文 / Media bodyをLogへ直接記録しない
+- Breadcrumb / Diagnostic LogはRing Buffer等で保持上限を持たせる
+- 実際の個人Diagnostic Logは公開Repositoryへ原則Commitしない
+
+### Source
+
+- ユーザー要望: 毎回状況を説明し直さなくても、Project自身の記録から原因調査を始められる共通基盤
+- MDN: Window `error` / `unhandledrejection` とPerformance API / PerformanceObserver
+- OWASP Logging Cheat Sheet: Application loggingの一貫性とSensitive Data除外
+
 ## 1.3.0 - 2026-08-31
 
 ### Added
