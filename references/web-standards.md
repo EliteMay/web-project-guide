@@ -53,6 +53,29 @@
 
 - OWASP HTML5 Security Cheat Sheet
   - https://cheatsheetseries.owasp.org/cheatsheets/HTML5_Security_Cheat_Sheet.html
+- OWASP Logging Cheat Sheet
+  - https://cheatsheetseries.owasp.org/cheatsheets/Logging_Cheat_Sheet.html
+- Supabase Row Level Security
+  - https://supabase.com/docs/guides/database/postgres/row-level-security
+- Supabase Data API Security
+  - https://supabase.com/docs/guides/api/securing-your-api
+
+Remote DiagnosticsをSupabase等へ保存する場合は、公開Frontendへ`service_role`を置かず、RLSだけでなくGrantと実際の操作権限を確認します。
+
+## Free / Hosted Service Constraints
+
+無料必須Projectの外部依存を見直すReferenceです。数値は変化するため、Guideへ恒久値として固定せず導入時に最新ページを確認します。
+
+- Supabase Pricing
+  - https://supabase.com/pricing
+- Supabase Billing / Usage
+  - https://supabase.com/docs/guides/platform/billing-on-supabase
+- Supabase Free Project Pausing
+  - https://supabase.com/docs/guides/platform/free-project-pausing
+- GitHub Actions Billing / Usage
+  - https://docs.github.com/en/actions/concepts/billing-and-usage
+
+無料枠を理由に1 Site = 1 Backendを機械的に増やさず、Shared Store / Local-first / Fallbackを含めて設計します。
 
 ## GitHub Pages / Public Content
 
@@ -118,6 +141,8 @@ AIへDesignを任せるときのThinking / Review方法を研究するReference�
 
 `AGENTS.md`はAgent向けの予測可能な入口として有用ですが、本GuideではProject仕様のSource of Truthを増やさないため、README / Spec / Project Rules / Test commandへ案内するRouterとして利用します。
 
+Remote Diagnostic Handoffを使うProjectでは、秘密情報を含めずProvider / projectKey / 読取範囲 / FallbackもRouterから辿れるようにできます。
+
 ## Community / Checklist References
 
 以下は網羅性や候補発見に有用ですが、一般RuleをMUSTへする根拠は可能な限り一次資料で再確認します。
@@ -132,6 +157,7 @@ AIへDesignを任せるときのThinking / Review方法を研究するReference�
 - ブログ記事や個人のTipsより、まずW3C / MDN / web.dev / OWASP / GitHub /公式Design System等の一次資料を優先する。
 - Anthropic / Microsoft等のAgent Skillは「AIへどう考えさせるか」のReferenceとして扱い、Style preferenceまで共通Ruleへコピーしない。
 - Community Checklistは抜け発見に使い、重要Ruleは可能なら公式Sourceへ戻って確認する。
+- Hosted ServiceのPricing / Quota / Pause条件は変化するため、無料必須Projectでは導入・定期Review時に公式情報を再確認する。
 - Web標準・Design Systemは変化するため、新しいAPIやVisual Ruleを共通ルールへ追加する前に最新の公式情報を確認する。
 - 特定BrandのVisual表現をそのままGuideのDefaultへしない。
 - このファイルのURL自体を仕様の代わりにせず、実際に採用したルールは`docs/`側へ日本語で明文化する。
