@@ -46,6 +46,18 @@
 - localhost依存:
 - 公開対象変更:
 
+## Visual Quality
+
+User-facing UIがある場合は [Visual Quality Baseline](../docs/17-visual-quality-baseline.md) を基準に記録します。
+
+- User-facing UI: Yes / No
+- Visual Ambition: baseline / high / flagship / Not applicable
+- Visual Quality Baseline: Pass / Needs work / Not verified / Not applicable
+- 最終Visual確認: Browser / Screenshot / Real device / Not verified
+- 主Viewport:
+- Visual Review（high / flagship時）: Pass / Needs work / Not applicable
+- Blocking / Major Finding:
+
 ## 自動確認
 
 - [ ] JS構文
