@@ -8,6 +8,15 @@
     "includeArchived": false,
     "otherRepositoriesWriteMode": "read-only"
   },
+  "repositoryReviewPriority": [
+    "PROJECT_LEARNINGS.md",
+    "recent commits and changed files",
+    "README and specification",
+    "work reports and changelog",
+    "diagnostics design and exported schema when committed",
+    "tests and GitHub Actions",
+    "storage schema and migration"
+  ],
   "webSources": [
     {
       "name": "W3C Web Accessibility Initiative",
@@ -17,7 +26,7 @@
     {
       "name": "MDN Web Docs",
       "url": "https://developer.mozilla.org/",
-      "topics": ["HTML", "CSS", "JavaScript", "Web APIs", "security", "compatibility"]
+      "topics": ["HTML", "CSS", "JavaScript", "Web APIs", "security", "compatibility", "diagnostics", "performance"]
     },
     {
       "name": "web.dev",
@@ -27,7 +36,7 @@
     {
       "name": "OWASP Cheat Sheet Series",
       "url": "https://cheatsheetseries.owasp.org/",
-      "topics": ["web security", "storage", "XSS", "third-party code"]
+      "topics": ["web security", "storage", "XSS", "third-party code", "logging"]
     },
     {
       "name": "GitHub Docs",
@@ -37,7 +46,7 @@
     {
       "name": "Electron Documentation",
       "url": "https://www.electronjs.org/docs/latest/",
-      "topics": ["Electron", "security", "packaging", "updates"]
+      "topics": ["Electron", "security", "packaging", "updates", "logging"]
     },
     {
       "name": "WHATWG HTML Living Standard",
