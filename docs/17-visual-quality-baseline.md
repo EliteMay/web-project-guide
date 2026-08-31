@@ -45,6 +45,24 @@ Landing Page、Portfolio、Showcase、Media、一般公開Product、Visual自体
 
 **HighでないからVisualを省略する、とは扱いません。**
 
+## Validated Visual Directions
+
+### SHOULD: 実Projectで良かったVisualを「複数の正解候補」として蓄積する
+
+Userから見た目について明確な肯定的Feedbackがあり、実Project上でも再利用価値を説明できる場合、そのDesignを**万能TemplateではなくValidated Visual Direction**として記録できます。
+
+正本は [Validated Visual Direction Catalog](../catalog/validated-visual-directions.md) です。
+
+重要なのは、1つの成功例を全Projectの標準Layoutへしないことです。
+
+- Purpose / Workflow / Content model / Densityが近いProjectだけで参考にする。
+- Accent Colorや具体的なCSS値ではなく、成功した構造・Hierarchy・Navigation・Component semanticsを抽出する。
+- 別のProjectで別の良いDirectionが見つかったら、既存Directionへ無理に寄せず新しい候補を増やす。
+- User validationがあっても、Responsive / Accessibility / Stability等の共通Baselineは別途満たす。
+- 色違いだけは新しいDirectionとして数えない。
+
+Guideの目標は「正解の見た目を1つ決めること」ではなく、**用途別に複数の強いVisual Directionを持ち、Projectごとに正しく選べること**です。
+
 ## Minimum Visual Quality Gate
 
 User-facing UIでは、完成前に少なくとも次を確認します。

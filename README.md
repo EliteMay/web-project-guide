@@ -46,6 +46,7 @@ Guide Versionの正本は [`guide-version.json`](guide-version.json)、変更履
 - [Failure Catalog](catalog/failures.md) — 実際に発生した高コスト失敗
 - [Success Pattern Catalog](catalog/success-patterns.md) — 再利用価値の高い設計
 - [Anti-Pattern Catalog](catalog/anti-patterns.md) — 原則避ける実装
+- [Validated Visual Direction Catalog](catalog/validated-visual-directions.md) — 実Projectでユーザー評価された「複数の正解候補」。万能Templateにはしない
 
 ## Templates
 
@@ -77,6 +78,7 @@ Guide Versionの正本は [`guide-version.json`](guide-version.json)、変更履
 - Electron指定のプロジェクトを勝手にWeb版へ変更しない。
 - 公開GitHub / GitHub Pagesへ秘密情報を置かない。
 - User-facing UIはVisual Quality Baselineを満たす。見た目が優先順位6位でも完成条件からは外さない。
+- ユーザー評価されたVisualは「唯一の正解Template」にせず、用途付きのValidated Visual Directionとして蓄積し、別の正解も探し続ける。
 - 各Projectは再発防止価値の高い失敗・成功を `PROJECT_LEARNINGS.md` に残す。
 - 状態を持つInteractive Projectは、開発中にError / Breadcrumb / Version / Storage failure等を診断できる仕組みを持つ。
 - Diagnostic LogへToken、Password、秘密情報、ユーザー入力全文を残さない。
