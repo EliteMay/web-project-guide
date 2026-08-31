@@ -27,6 +27,7 @@ const requiredFiles = [
   'docs/14-continuous-improvement.md',
   'docs/15-development-observability.md',
   'docs/16-cross-repository-github-infrastructure.md',
+  'docs/17-visual-quality-baseline.md',
   'maintenance/review-policy.json',
   'catalog/failures.md',
   'catalog/success-patterns.md',
@@ -175,11 +176,34 @@ if (!readme.includes('[15 Development Observability / Project Memory](docs/15-de
 if (!readme.includes('[16 Cross-Repository GitHub Infrastructure](docs/16-cross-repository-github-infrastructure.md)')) {
   errors.push('README.md must link to docs/16-cross-repository-github-infrastructure.md');
 }
+if (!readme.includes('[17 Visual Quality Baseline](docs/17-visual-quality-baseline.md)')) {
+  errors.push('README.md must link to docs/17-visual-quality-baseline.md');
+}
 if (!readme.includes('[Project Learnings](templates/PROJECT_LEARNINGS_TEMPLATE.md)')) {
   errors.push('README.md must link to templates/PROJECT_LEARNINGS_TEMPLATE.md');
 }
 if (!readme.includes('[AGENTS](templates/AGENTS_TEMPLATE.md)')) {
   errors.push('README.md must link to templates/AGENTS_TEMPLATE.md');
+}
+
+const governance = fs.readFileSync(path.join(root, 'docs/00-governance.md'), 'utf8');
+if (!governance.includes('[Visual Quality Baseline](17-visual-quality-baseline.md)') || !/Baseline自体はUser-facing UIで必須/.test(governance)) {
+  errors.push('docs/00-governance.md must keep the user-facing Visual Quality Baseline mandatory');
+}
+
+const visualBaseline = fs.readFileSync(path.join(root, 'docs/17-visual-quality-baseline.md'), 'utf8');
+if (!/MUST: User-facing UIはVisual Quality Baselineを満たす/.test(visualBaseline) || !/Visual Verification/.test(visualBaseline)) {
+  errors.push('docs/17-visual-quality-baseline.md must define mandatory baseline and visual verification');
+}
+
+const requirementsTemplate = fs.readFileSync(path.join(root, 'templates/REQUIREMENTS_TEMPLATE.md'), 'utf8');
+if (!/Visual Quality Baseline: Required \/ Not applicable/.test(requirementsTemplate) || !/Visual Ambition: baseline \/ high \/ flagship/.test(requirementsTemplate)) {
+  errors.push('REQUIREMENTS_TEMPLATE.md must separate mandatory Visual Quality Baseline from Visual Ambition');
+}
+
+const qualityChecklist = fs.readFileSync(path.join(root, 'templates/QUALITY_CHECKLIST.md'), 'utf8');
+if (!/### Visual Quality Baseline — User-facing UIでは必須/.test(qualityChecklist) || !/最終状態をBrowser \/ Screenshot等で確認/.test(qualityChecklist)) {
+  errors.push('QUALITY_CHECKLIST.md must keep visual baseline in Minimum and require final visual verification');
 }
 
 const agentsTemplate = fs.readFileSync(path.join(root, 'templates/AGENTS_TEMPLATE.md'), 'utf8');
