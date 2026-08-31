@@ -9,6 +9,7 @@
 | 公開共通データ | GitHub上のJSON |
 | 一時セッション | sessionStorage / memory |
 | 複数端末同期 | Supabase等を必要時のみ |
+| AIへ渡す短期Runtime Diagnostics | Local-first + 必要時のみShared Remote Store |
 | Electronユーザー設定 | Electron `userData` |
 
 ## localStorage
@@ -36,8 +37,29 @@ localStorageには軽い参照や設定だけを持たせます。
 - Canvas/ペン履歴
 - Snapshot
 - 大量履歴
+- Local detailed diagnostics
 
 削除時は参照されなくなったBlob等の孤児データも掃除します。
+
+## Remote Diagnostic Snapshot
+
+CONDITIONAL: ChatGPT等へRuntime診断を繰り返し渡すProjectでは、詳細Logを端末内へ残しつつ、Sanitize済みの小さいSnapshotだけをSupabase等のRemote Storeへ保存できます。
+
+Remote Diagnosticsは本体データ同期と分離します。
+
+原則:
+
+- Remoteへ保存するのはJSON Summary中心
+- Media / File body / Storage全Dumpを自動保存しない
+- `projectKey`で複数Projectを分類できるShared Storeを検討
+- Snapshot最大SizeとRetentionを持つ
+- Provider停止時はLocal Diagnostics / ExportへFallback
+- 無料必須の場合、導入時点の無料枠を再確認
+- 1 SiteごとにBackend Projectを量産しない
+
+Remote Snapshotは短期Runtime Evidenceです。高コストな失敗・成功は`PROJECT_LEARNINGS.md`へ昇格してGitHub側へ残します。
+
+詳細は[Development Observability / Project Memory](15-development-observability.md)を参照してください。
 
 ## JSON
 
@@ -134,8 +156,11 @@ CONDITIONAL: ユーザーデータが重要な場合、次を想定します。
 - Browser storage制限
 - Import途中の失敗
 - Migration途中の失敗
+- Remote Diagnostic Store unavailable / paused / quota reached
 
 失敗時に元データを消してから再試行する設計は避けます。
+
+Remote Diagnostics保存失敗はCore機能の保存失敗と分離し、Remote Providerが使えないだけでアプリ本体を利用不能にしません。
 
 ## 複数タブ競合
 

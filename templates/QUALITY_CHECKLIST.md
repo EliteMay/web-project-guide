@@ -71,6 +71,7 @@ Interactive Projectでは必要範囲を確認します。
 - [ ] Token / Password / Secret / User入力全文をLogへ残さない
 - [ ] Diagnostic Dataを公開Repositoryへ誤Commitしない
 - [ ] 問題発生時にDiagnostic Export / Copy Reportできる（中規模以上）
+- [ ] Remote Handoff採用時もLocal Diagnostics / ExportがFallbackとして残る
 
 ### UI / UX
 
@@ -164,9 +165,32 @@ AIへ大きく実装を任せる場合。
 
 - [ ] AIが提案したArchitecture / Dependency / Storageを理由なく採用していない
 - [ ] `AGENTS.md`がある場合はSoTを複製せず、正本とTest commandへのRouterになっている
+- [ ] Remote Diagnostic Handoffが有効なら最新Runtime Evidenceを確認してから原因推測した
 - [ ] 未経験TechnologyをAIへ任せた場合、Architecture / Security / Deployment / Data persistenceを追加Reviewした
 - [ ] 大規模生成 / 移植ではReference / Golden Output / Contract / Regression Dataset等のOracleを利用できるか検討した
 - [ ] AI生成Codeにも通常と同じStatic / Browser / Regression基準を適用した
+
+### REMOTE DIAGNOSTIC HANDOFF
+
+ZIPを繰り返しAIへ渡しているInteractive ProjectでRemote Handoffを導入する場合。
+
+- [ ] 無料必須Projectでは現在のProvider無料枠を確認した
+- [ ] Remote Handoffのために有料Planを必須化していない
+- [ ] 1 Site = 1 Backendを機械的に増やさずShared Store + `projectKey`を検討した
+- [ ] Remoteへ保存するのはSanitize済みCompact Snapshotだけ
+- [ ] 画像 / 動画 / 音声 / File body / Storage全Dumpを自動Remote保存していない
+- [ ] Snapshot最大Sizeを決めた
+- [ ] Normal / Error SnapshotのRetentionまたは最大件数を決めた
+- [ ] Remote write TriggerをManual / Major Error等へ絞った
+- [ ] `service_role` / Secret / private keyを公開Frontendへ置いていない
+- [ ] Supabase等の公開TableではRLSとGrantを確認した
+- [ ] `projectKey`だけをAuthorizationに使っていない
+- [ ] 無制限匿名InsertをDefaultにしていない
+- [ ] Remote write失敗時もLocal Diagnosticsが残る
+- [ ] Provider Pause / Offline / 未接続でもCore機能を使える
+- [ ] `AGENTS.md`等に秘密情報なしでProvider / projectKey / 読取範囲 / Fallbackを記録した
+- [ ] AI更新時は最新Error少数 + 最近のNormal少数から読み、全履歴を毎回取得しない
+- [ ] 長期価値のある知見はRemote Snapshotだけに残さず`PROJECT_LEARNINGS.md`へ昇格する
 
 ### DATA / TOOL
 
@@ -197,6 +221,7 @@ AIへ大きく実装を任せる場合。
 - [ ] Offline / Provider outage
 - [ ] Secret / Environment設定
 - [ ] Authorization Header / TokenをLogへ残さない
+- [ ] 無料必須の場合はPricing / quota / Active Project / Pause条件を導入時点で再確認
 
 ### ELECTRON
 

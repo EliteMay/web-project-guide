@@ -195,6 +195,178 @@ OWASPもApplication LoggingではToken、Password、暗号鍵、機密個人情�
 
 ---
 
+## CONDITIONAL SHOULD: Remote Diagnostic HandoffでZIP依存を減らす
+
+ChatGPT / Codex / Claude等へ診断ZIPを繰り返し渡しているInteractive Projectでは、必要に応じて**Sanitize済みの小さなDiagnostic SnapshotだけをRemote Storeへ保存し、次回の更新・不具合調査時にAIが先に読める構成**を使えます。
+
+これは本番Analyticsや全操作Telemetryではありません。目的は、毎回ZIPを作ったり、同じ症状を長文で説明し直したりする負担を減らすことです。
+
+### 推奨する3層
+
+```text
+Level 1: Local detailed diagnostics
+IndexedDB / localStorage等
+↓
+直近の詳細Breadcrumb / Error / State
+
+Level 2: Remote compact handoff snapshot
+Supabase等の無料Remote Store
+↓
+AIが次回修正時に読む小さいSanitized JSON
+
+Level 3: Durable project memory
+GitHub PROJECT_LEARNINGS.md
+↓
+高コスト失敗 / 成功 / 再発防止だけを長期保存
+```
+
+Remote Storeを`PROJECT_LEARNINGS.md`の代替にしません。Remote Snapshotは短期的なRuntime Evidence、Project Learningsは長期知識です。
+
+### MUST: Free-only条件を壊さない
+
+「無料で使えること」がProject要件の場合、Remote Diagnostic Handoffのために有料Planを必須化しません。
+
+- Providerの**現在の無料枠を導入時に確認**する
+- 無料枠が足りない / 利用できない場合はRemote保存を無効化できる
+- Remote停止時もLocal Diagnostics / One-click Exportを使える
+- Providerの有料化・枠変更を理由にCore機能が止まらない
+- Diagnostics専用Backendをサイトごとに量産しない
+
+Supabase Free等はActive Project数・Database・Egress・Storage・Function呼出し等に上限があり、条件は将来変わり得ます。数値をGuideへ恒久hardcodeせず、導入時に公式Pricing / Billingを再確認します。
+
+複数の小規模ProjectでDiagnosticsだけを保存する場合、**1 Site = 1 Backend**をDefaultにせず、1つのShared Diagnostics Storeへ`projectKey`で分離する方式を優先的に検討します。
+
+`projectKey`はRouting /分類用であり、認証情報として扱いません。
+
+### SHOULD: Remoteへ送るのはCompact Snapshotだけ
+
+Remoteへ保存する基本対象:
+
+- Project key / Project name
+- App Version / Build / Schema
+- capturedAt
+- capture reason
+- severity / Error ID
+- current route / screen
+- Browser / viewportの最小Summary
+- Recent Breadcrumb
+- Sanitized Error
+- Sanitized Network Failure
+- Storage件数 / 利用可否 / 容量Summary
+- Feature Flag
+
+Remoteへ送らないもの:
+
+- 画像 / 動画 / 音声本体
+- Screenshotの自動常時保存
+- File body
+- IndexedDB全Dump
+- localStorage全Dump
+- API Response全文
+- Token / Secret / Cookie
+- User入力全文
+- mousemove / scroll等の高頻度Event
+
+開始時の目安として、1 Snapshotを**数KB〜数十KB程度**へ収めます。実装上の上限を設ける場合は、例えば64 KiB前後から始め、実際の必要性を確認して調整します。
+
+### SHOULD: Remote保存のTriggerを絞る
+
+Defaultで全Session・全操作をRemoteへ送りません。
+
+優先順の例:
+
+1. `Save for ChatGPT` / `Save diagnostic snapshot` の明示操作
+2. Blocking / Major Error発生時の自動Snapshot（安全な書込経路がある場合）
+3. 開発ModeのSession終了時Summary（必要な場合のみ）
+
+通常操作ごとのRemote書込、heartbeat、mousemove、scroll等は避けます。
+
+### MUST: Remote retention / quota guardを持つ
+
+Remote Diagnostics自身が無料枠を圧迫しないようにします。
+
+- 正常Sessionは短期間で削除
+- Error Snapshotは必要な期間だけ残す
+- Projectごとの最大件数を持つ
+- 最大Payload sizeを持つ
+- 古いRecordを削除できる
+- 容量 / 件数をDiagnostics Viewで確認できるとよい
+
+開始時の例:
+
+```text
+normal snapshots: 14〜30日
+error snapshots: 30〜90日
+max rows/project: 100〜200
+```
+
+これは固定Ruleではなく、無料枠と実運用を見て調整します。
+
+### MUST: 公開Frontendへ秘密Keyを置かない
+
+Remote StoreがSupabase等の場合:
+
+- `service_role` / Secret KeyをFrontendへ置かない
+- 公開SchemaのTableはRLSとGrantを確認する
+- `projectKey`だけでSelect / Delete / Updateを許可しない
+- 無制限の匿名InsertをDefaultにしない
+- Browserから書く場合は、認証済みDeveloper session等の安全な書込主体を使う
+- Server / Edge Functionを使う場合も認証・Payload size・Schema・RateをValidationする
+- AIが読む場合は、可能ならユーザーの接続済みProvider権限を使い、公開APIへ管理権限を埋め込まない
+
+Public Siteから誰でも無制限にInsertできる設計は、第三者Spamで無料Quotaを消費される可能性があります。安全なRemote write pathを用意できない場合、**Remote auto-uploadを行わずLocal ExportへFallback**します。
+
+### SHOULD: AIが更新前にRemote Evidenceを読む
+
+ProjectがRemote Diagnostic Handoffを採用しており、AIからそのProviderへ接続できる場合、既存Projectの更新・不具合調査では、ユーザーへ同じ状況を再質問する前に次を確認します。
+
+```text
+GitHub current repository / AGENTS / Spec
+↓
+PROJECT_LEARNINGS.md
+↓
+最新のRemote Error Snapshot
+↓
+最近のNormal / Success Snapshot
+↓
+対象Code / Test
+```
+
+必要以上の全履歴を読みません。例えば「最新Error 5〜10件 + 最近のNormal 1〜3件」程度から始め、必要な場合だけ範囲を広げます。
+
+ProviderがPause / Offline / 未接続の場合は調査を止めず、GitHubとLocal Exportで進めます。
+
+### Remote Handoffの識別情報
+
+Projectの`AGENTS.md`またはProject Rulesへ、秘密情報を含まない範囲で次を記録できます。
+
+- Remote handoff: enabled / disabled
+- Provider: Supabase / Other
+- Shared Store名 / Project ref
+- `projectKey`
+- Table / collection名
+- Retention概要
+- AIが読む最初の範囲
+- Fallback: local export / diagnostics.json
+
+API Secretや`service_role`は書きません。
+
+### ZIPを残すケース
+
+Remote Diagnostic Handoffを導入してもZIPを全面禁止しません。
+
+ZIP / File handoffが適する例:
+
+- Screenshot比較が本質的
+- 動画 / 音声 / Canvas等のBinaryが必要
+- Import Fileそのものが再現条件
+- Remote Providerが利用できない
+- ユーザーが明示的に完全Packageを渡したい
+
+通常のError / Version / Breadcrumb / Storage Summaryだけなら、Remote Snapshotを優先できます。
+
+---
+
 ## SHOULD: One-click Diagnostic Export
 
 中規模以上のInteractive Projectでは、「診断情報を書き出す」「Copy Diagnostic Report」等を用意します。
@@ -277,6 +449,7 @@ DATA / MEDIA / CLOUD / ELECTRONなど複雑なProjectでは、通常UIとは分�
 - Feature support
 - Recent errors
 - Diagnostic export
+- Remote handoff status / last sync（採用時）
 - Clear diagnostics
 
 未実装機能のDashboardと混同しないよう、`Diagnostics` / `Development`等と明示します。
@@ -326,6 +499,7 @@ Diagnosticsを全部削除するのではなく、次を分類します。
 - Migration result
 - Diagnostic Export
 - Data Integrity / Health Check
+- Remote compact handoff（安全な書込経路がある場合）
 
 ### Development onlyになりやすい
 
@@ -344,6 +518,8 @@ Productionで残す場合も、秘密情報・容量上限・Performanceへの�
 
 ```text
 Runtime Diagnostic
+↓
+Local / Remote Snapshot
 ↓
 再現・Root Cause特定
 ↓

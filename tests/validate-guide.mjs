@@ -105,14 +105,20 @@ try {
 
 try {
   const diagnostics = JSON.parse(fs.readFileSync(path.join(root, 'templates/DIAGNOSTICS_SCHEMA_TEMPLATE.json'), 'utf8'));
-  if (diagnostics.schemaVersion !== 1) {
-    errors.push('templates/DIAGNOSTICS_SCHEMA_TEMPLATE.json: schemaVersion must currently be 1');
+  if (diagnostics.schemaVersion !== 2) {
+    errors.push('templates/DIAGNOSTICS_SCHEMA_TEMPLATE.json: schemaVersion must currently be 2');
   }
-  for (const key of ['project', 'capture', 'environment', 'runtime', 'breadcrumbs', 'errors', 'networkFailures', 'storage']) {
+  for (const key of ['project', 'capture', 'environment', 'runtime', 'breadcrumbs', 'errors', 'networkFailures', 'storage', 'handoff']) {
     if (!(key in diagnostics)) errors.push(`templates/DIAGNOSTICS_SCHEMA_TEMPLATE.json: missing ${key}`);
   }
   if (!Array.isArray(diagnostics.breadcrumbs) || !Array.isArray(diagnostics.errors) || !Array.isArray(diagnostics.networkFailures)) {
     errors.push('templates/DIAGNOSTICS_SCHEMA_TEMPLATE.json: breadcrumbs/errors/networkFailures must be arrays');
+  }
+  if (diagnostics.handoff?.sanitized !== true) {
+    errors.push('templates/DIAGNOSTICS_SCHEMA_TEMPLATE.json: handoff.sanitized must default to true');
+  }
+  if (diagnostics.handoff?.containsBinary !== false || diagnostics.handoff?.containsSecrets !== false) {
+    errors.push('templates/DIAGNOSTICS_SCHEMA_TEMPLATE.json: handoff binary/secret flags must default to false');
   }
 } catch (error) {
   errors.push(`templates/DIAGNOSTICS_SCHEMA_TEMPLATE.json is invalid: ${error.message}`);
@@ -174,6 +180,9 @@ if (!readme.includes('[AGENTS](templates/AGENTS_TEMPLATE.md)')) {
 const agentsTemplate = fs.readFileSync(path.join(root, 'templates/AGENTS_TEMPLATE.md'), 'utf8');
 if (!/Router|入口/.test(agentsTemplate) || !/Source of Truth/.test(agentsTemplate)) {
   errors.push('templates/AGENTS_TEMPLATE.md must clearly remain a router, not a duplicated Source of Truth');
+}
+if (!/Remote Diagnostic Handoff/.test(agentsTemplate) || !/service_role/.test(agentsTemplate)) {
+  errors.push('templates/AGENTS_TEMPLATE.md must route agents to remote diagnostics without exposing service_role');
 }
 
 try {
