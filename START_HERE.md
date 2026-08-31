@@ -22,16 +22,17 @@
 1. 現在のGitHubリポジトリを確認
 2. README / 仕様 / Project Rules / 作業報告 / `PROJECT_LEARNINGS.md` を必要範囲だけ確認
 3. `AGENTS.md`がある場合はAgent向け入口として確認する
-4. [GitHub中心のプロジェクト管理](docs/10-project-management.md)の影響確認を行う
-5. [Failure Catalog](catalog/failures.md)に類似事故がないか確認
-6. Diagnostics / Error ID / Breadcrumbがある場合は、ユーザー説明より先にそのEvidenceを確認
-7. 変更経路を選ぶ
+4. Remote Diagnostic Handoffが設定されている場合は最新Error Snapshotを先に確認する
+5. [GitHub中心のプロジェクト管理](docs/10-project-management.md)の影響確認を行う
+6. [Failure Catalog](catalog/failures.md)に類似事故がないか確認
+7. Diagnostics / Error ID / Breadcrumbがある場合は、ユーザー説明より先にそのEvidenceを確認
+8. 変更経路を選ぶ
    - 小規模で変更箇所が明確 → GitHub上の対象ファイルを直接更新
    - 複数ファイル・高リスク・設計変更 → Branch / Pull Requestを優先
    - GitHub Actions → 継続的な自動化そのものが目的の場合に使い、単発のファイル書換え手段として安易に増やさない
-8. 実装後、一時Script / 一時Workflow / Debug資産が残っていないか確認
-9. 高コストBugなら `PROJECT_LEARNINGS.md` とRegression Guardを更新
-10. **最終Commitの状態**で該当範囲のRegression / CI / Pages確認を行う
+9. 実装後、一時Script / 一時Workflow / Debug資産が残っていないか確認
+10. 高コストBugなら `PROJECT_LEARNINGS.md` とRegression Guardを更新
+11. **最終Commitの状態**で該当範囲のRegression / CI / Pages確認を行う
 
 小規模修正でフル要件定義をやり直す必要はありません。
 
@@ -40,10 +41,11 @@
 1. [GitHub中心のプロジェクト管理](docs/10-project-management.md) のAI Coding Agent / Specification・Oracle方針を確認
 2. Agentへ渡す入口が必要なら[AGENTS Template](templates/AGENTS_TEMPLATE.md)を利用
 3. `AGENTS.md`へ仕様全文を複製せず、README / Spec / Project Rules / Guideへ案内する
-4. Technology / Architecture / Storage等の高コスト判断はAI提案でも影響確認する
-5. 移植・大量生成・互換性重視ではGolden Output / Reference / Contract / Regression Dataset等のOracleを先に用意できるか検討
-6. AI生成Codeも通常のStatic / Browser / Regression / Security基準を通す
-7. Visualが重要ならAI Promptで完成Layoutを先に固定しすぎず、Design Directionを比較する
+4. Remote Diagnostic Handoff採用時は、Providerへ接続できるなら最新Runtime Evidenceを読む
+5. Technology / Architecture / Storage等の高コスト判断はAI提案でも影響確認する
+6. 移植・大量生成・互換性重視ではGolden Output / Reference / Contract / Regression Dataset等のOracleを先に用意できるか検討
+7. AI生成Codeも通常のStatic / Browser / Regression / Security基準を通す
+8. Visualが重要ならAI Promptで完成Layoutを先に固定しすぎず、Design Directionを比較する
 
 AIの利用量ではなく、**正しい状態を定義し、最終結果を検証できること**を品質基準にします。
 
@@ -54,10 +56,26 @@ AIの利用量ではなく、**正しい状態を定義し、最終結果を検�
 - Recent Breadcrumbを確認
 - JavaScript Error / Unhandled Rejectionを確認
 - Fetch / Storage / Migration failureを確認
+- Remote Diagnostic Handoffがある場合は最新Error Snapshotを確認
 - 必要なら`diagnostics.json`またはDiagnostic PackageをExport
 - Error IDが表示されている場合は同じIDをログから検索
 
 診断機能の目的は、ユーザーが毎回状況を長文で再説明しなくても、直前状態から調査を開始できるようにすることです。
+
+### ZIPを毎回作らずChatGPTへ診断を渡す
+
+1. [Development Observability / Project Memory](docs/15-development-observability.md) のRemote Diagnostic Handoffを確認
+2. 詳細LogはLocal-firstのまま維持する
+3. RemoteへはSanitize済みCompact Snapshotだけを保存する
+4. 無料必須Projectでは現在のProvider無料枠を確認し、有料化を必須にしない
+5. 複数Siteで1 Site = 1 BackendをDefaultにせず、Shared Diagnostics Store + `projectKey`を検討する
+6. Public Frontendへ`service_role` / Secretを置かない
+7. 無制限匿名Insertを避け、安全な書込経路がなければLocal ExportへFallbackする
+8. Normal Snapshotは短期保持、Error Snapshotも件数 / 保存期間 / Payload sizeへ上限を持つ
+9. AI更新時はGitHub / Project Learnings / 最新Remote Snapshotを先に読む
+10. Screenshot / Video / Audio / Import File等Binaryが本当に必要な場合だけZIP / File handoffを残す
+
+Remote ProviderがPause / Offline / 未接続でもCore機能と調査を止めないことを優先します。
 
 ### 既存サイトの構造を整理する / Patchを統合する
 
@@ -147,6 +165,7 @@ Findingは必要に応じて`Blocking / Major / Minor`へ分け、Blockingが残
 - [Dependencies / Assets](docs/13-dependencies-assets.md)
 - [Development Observability / Project Memory](docs/15-development-observability.md)
 - 本当にGitHub Pagesだけでは不足するかを先に確認する
+- 無料必須の場合は現在の無料枠 / Active Project制限 / Pause条件を確認する
 - Network failureを診断できるようにする
 
 ### Guide自体を定期的に改善する
