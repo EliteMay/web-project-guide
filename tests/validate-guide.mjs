@@ -24,6 +24,8 @@ const requiredFiles = [
   'docs/11-electron-distribution.md',
   'docs/12-project-profiles.md',
   'docs/13-dependencies-assets.md',
+  'docs/14-continuous-improvement.md',
+  'maintenance/review-policy.json',
   'catalog/failures.md',
   'catalog/success-patterns.md',
   'catalog/anti-patterns.md',
@@ -62,6 +64,36 @@ try {
   }
 } catch (error) {
   errors.push(`guide-version.json is invalid: ${error.message}`);
+}
+
+try {
+  const policy = JSON.parse(fs.readFileSync(path.join(root, 'maintenance/review-policy.json'), 'utf8'));
+  if (policy.schemaVersion !== 1) {
+    errors.push('maintenance/review-policy.json: schemaVersion must currently be 1');
+  }
+  if (policy.targetRepository !== 'EliteMay/web-project-guide') {
+    errors.push('maintenance/review-policy.json: targetRepository must be EliteMay/web-project-guide');
+  }
+  if (policy.repositoryDiscovery?.owner !== 'EliteMay') {
+    errors.push('maintenance/review-policy.json: repositoryDiscovery.owner must be EliteMay');
+  }
+  if (policy.repositoryDiscovery?.otherRepositoriesWriteMode !== 'read-only') {
+    errors.push('maintenance/review-policy.json: other repositories must remain read-only');
+  }
+  if (!Array.isArray(policy.webSources) || policy.webSources.length < 5) {
+    errors.push('maintenance/review-policy.json: define authoritative webSources');
+  } else {
+    for (const source of policy.webSources) {
+      if (!source?.name || !/^https:\/\//.test(source?.url ?? '')) {
+        errors.push('maintenance/review-policy.json: every webSource requires name and https URL');
+      }
+    }
+  }
+  if (policy.changePolicy?.noChangeNoCommit !== true) {
+    errors.push('maintenance/review-policy.json: noChangeNoCommit must remain true');
+  }
+} catch (error) {
+  errors.push(`maintenance/review-policy.json is invalid: ${error.message}`);
 }
 
 function walk(dir) {
@@ -103,6 +135,9 @@ for (const file of markdownFiles) {
 const readme = fs.readFileSync(path.join(root, 'README.md'), 'utf8');
 if (!readme.includes('[START HERE](START_HERE.md)')) {
   errors.push('README.md must link to START_HERE.md');
+}
+if (!readme.includes('[14 Continuous Improvement](docs/14-continuous-improvement.md)')) {
+  errors.push('README.md must link to docs/14-continuous-improvement.md');
 }
 
 try {
