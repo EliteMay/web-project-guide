@@ -26,6 +26,7 @@ const requiredFiles = [
   'docs/13-dependencies-assets.md',
   'docs/14-continuous-improvement.md',
   'docs/15-development-observability.md',
+  'docs/16-cross-repository-github-infrastructure.md',
   'maintenance/review-policy.json',
   'catalog/failures.md',
   'catalog/success-patterns.md',
@@ -42,7 +43,8 @@ const requiredFiles = [
   'templates/DIAGNOSTICS_SCHEMA_TEMPLATE.json',
   'templates/CHANGELOG_TEMPLATE.md',
   'references/web-standards.md',
-  '.github/workflows/validate-guide.yml'
+  '.github/workflows/validate-guide.yml',
+  '.github/workflows/reusable-web-baseline.yml'
 ];
 
 for (const file of requiredFiles) {
@@ -170,6 +172,9 @@ if (!readme.includes('[14 Continuous Improvement](docs/14-continuous-improvement
 if (!readme.includes('[15 Development Observability / Project Memory](docs/15-development-observability.md)')) {
   errors.push('README.md must link to docs/15-development-observability.md');
 }
+if (!readme.includes('[16 Cross-Repository GitHub Infrastructure](docs/16-cross-repository-github-infrastructure.md)')) {
+  errors.push('README.md must link to docs/16-cross-repository-github-infrastructure.md');
+}
 if (!readme.includes('[Project Learnings](templates/PROJECT_LEARNINGS_TEMPLATE.md)')) {
   errors.push('README.md must link to templates/PROJECT_LEARNINGS_TEMPLATE.md');
 }
@@ -183,6 +188,11 @@ if (!/Router|入口/.test(agentsTemplate) || !/Source of Truth/.test(agentsTempl
 }
 if (!/Remote Diagnostic Handoff/.test(agentsTemplate) || !/service_role/.test(agentsTemplate)) {
   errors.push('templates/AGENTS_TEMPLATE.md must route agents to remote diagnostics without exposing service_role');
+}
+
+const reusableWorkflow = fs.readFileSync(path.join(root, '.github/workflows/reusable-web-baseline.yml'), 'utf8');
+if (!/workflow_call:/.test(reusableWorkflow) || !/permissions:\n\s+contents: read/.test(reusableWorkflow)) {
+  errors.push('reusable-web-baseline.yml must remain a workflow_call workflow with read-only contents permission');
 }
 
 try {

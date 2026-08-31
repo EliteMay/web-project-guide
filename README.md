@@ -36,6 +36,7 @@ Guide Versionの正本は [`guide-version.json`](guide-version.json)、変更履
 - [13 Dependencies / Assets](docs/13-dependencies-assets.md)
 - [14 Continuous Improvement](docs/14-continuous-improvement.md) — 実ProjectとWeb標準からGuideを定期改善
 - [15 Development Observability / Project Memory](docs/15-development-observability.md) — 失敗・成功・診断ログを次回修正へ引き継ぐ
+- [16 Cross-Repository GitHub Infrastructure](docs/16-cross-repository-github-infrastructure.md) — `.github` / Reusable Workflow / Ruleset / Dependabot / Projectsの役割分担
 
 ## 過去事例から学ぶ
 
@@ -115,6 +116,8 @@ Guideは固定された完成品として扱わず、実際のProjectとWeb標�
 - READMEからSTART HEREへの導線
 
 Workflow: [Validate Guide](.github/workflows/validate-guide.yml)
+
+共通CIのPilot用に [Reusable Web Baseline](.github/workflows/reusable-web-baseline.yml) も保持します。利用側はCommit SHA固定を基本とし、Project固有Validatorは各Repositoryへ残します。
 
 ## 完成の考え方
 

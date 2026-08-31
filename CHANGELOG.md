@@ -2,6 +2,56 @@
 
 Guide Versionの正本は [`guide-version.json`](guide-version.json) です。
 
+## 1.10.0 - 2026-08-31
+
+### Added
+
+- `docs/16-cross-repository-github-infrastructure.md`を追加
+  - `.github`共通Repository / Reusable Workflow / Ruleset / Dependabot / Issue Forms / GitHub Projectsの役割分担
+  - Account共通GitHub運用とProject固有仕様のSource of Truthを分離
+- `.github/workflows/reusable-web-baseline.yml`を追加
+  - `workflow_call`対応
+  - Node.js Version統一
+  - JavaScript / MJS Syntax Check
+  - JSON Parse Baseline
+  - `contents: read`のみの最小Permission
+- Reusable WorkflowのVersion / Blast Radiusルールを追加
+  - 外部Repositoryから呼ぶ場合はCommit SHA固定を優先
+  - `@main`恒久依存を避ける
+  - Pilot 1〜2件 → 段階展開 → Rollback可能な旧SHA保持
+- RulesetをProject Risk別に扱う方針を追加
+  - 静的SiteとRelease自動公開Electronを同じ強度にしない
+  - `osu-hub`のようなSetup.exe / Update Channel連動Projectは高い保護を推奨
+- Dependabot運用方針を追加
+  - npm / Electron / GitHub Actions等で条件付き導入
+  - Dependency PRの無条件Auto Mergeを避ける
+  - ElectronではWindows Build / Installer / Update Metadataまで通常の品質Gateを通す
+- Issue FormsとRemote Diagnostics Snapshot IDの連携案を追加
+- GitHub ProjectsはIssue / PRの横断Viewとし、仕様のSource of Truthにしない方針を追加
+
+### Changed
+
+- `START_HERE.md`へ複数RepositoryのGitHub運用共通化Routeを追加
+- READMEへCross-Repository GitHub Infrastructure入口とReusable Web Baselineを追加
+- `references/web-standards.md`へGitHub公式のDefault Community Health / Reusable Workflow / Rulesets / Dependabot / Projectsを追加
+- Guide Validatorで`docs/16`とReusable Workflowの存在・`workflow_call`・read-only contents permissionを確認
+
+### Current Repository Review
+
+2026-08-31時点で`EliteMay`配下の11 Repositoryを再確認しました。
+
+- `.github`共通Repositoryは未作成
+- `ap-study-notes` / `english` / `asmrtube` / `DesignShelf`等でNode setup + JavaScript syntax + Project固有Validatorの重複が存在
+- `osu-hub`のRulesetは未設定
+- `osu-hub`は`electron` / `electron-builder` / `electron-updater`を利用しておりDependabotとの相性が高い
+
+### Compatibility
+
+- 既存Project Workflowを一括で中央化しない
+- Project固有Validator / E2E / Release Logicを中央Workflowへ移さない
+- 既存のSmallest Safe Change方針を維持し、全RepositoryへPR必須を一律強制しない
+- GitHub Projects / `.github` Repositoryを既存仕様の新しいSource of Truthにしない
+
 ## 1.9.0 - 2026-08-31
 
 ### Added
