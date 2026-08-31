@@ -2,6 +2,39 @@
 
 Guide Versionの正本は [`guide-version.json`](guide-version.json) です。
 
+## 1.6.0 - 2026-08-31
+
+### Added
+
+- `docs/11-electron-distribution.md`へ継続配布するインストール型Electronアプリ向けのOne-click Update方針を追加
+  - App起動時にBackgroundで更新確認
+  - 新Versionがある場合に「今すぐ更新 / あとで」を提示
+  - 1回の明示操作でDownload / Install / Restartまで進める導線を原則として優先
+  - 更新時も`userData`等のユーザーデータを維持
+- GitHub Releases + NSIS配布時のUpdate Artifact整合ルールを追加
+  - Setup.exe
+  - `.blockmap`
+  - `latest.yml`
+  - Release Tag / `package.json#version` / MetadataのVersion一致
+- Auto Updateの安全性とFallbackを追加
+  - Update Provider固定 / Allowlist
+  - Hash / Integrity利用
+  - 公開配布ではCode Signingを強く推奨
+  - 未署名配布では制約を明記
+  - Update失敗時は手動Release導線と現Version継続利用を維持
+- Auto Update導入・変更時の旧Version → 新Version実機Update確認項目を追加
+
+### Changed
+
+- `START_HERE.md` のElectronルートにOne-click Update / Update Metadata / Release整合確認を追加
+- Guide Versionを `1.6.0` へ更新
+
+### Source
+
+- ユーザー要望: Setup.exeを毎回手動実行するのではなく、アプリ起動時に更新通知し1回の操作で更新できる共通方針へしたい
+- `EliteMay/osu-hub`: Setup LauncherをGitHub Releases + NSISで継続配布している実Project
+- electron-builder公式Auto Update Documentation: `electron-updater`、NSIS、GitHub Provider、`latest.yml`等のUpdate Metadata
+
 ## 1.5.0 - 2026-08-31
 
 ### Added
