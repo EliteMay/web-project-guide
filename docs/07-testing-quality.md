@@ -4,7 +4,22 @@
 
 「コードが書けた」と「使える」は別です。
 
-自動テストで防げる問題と、実ブラウザ・実機でしか確認できない問題を分けます。
+自動テストで防げる問題と、実ブラウザ・実機・人間のReviewでしか確認できない問題を分けます。
+
+Testを完成直前だけにまとめず、主要機能を追加した段階で小さく確認し、問題を積み上げない方を優先します。
+
+## Ruleには可能な範囲で確認方法を持たせる
+
+「高速にする」「Accessibleにする」「崩れないようにする」だけでは、完了判定が曖昧です。
+
+測定・確認できるRuleでは、可能な範囲で次を定義します。
+
+- 何を確認するか
+- 自動 / Manual / Browser / Real-deviceのどれで確認するか
+- 期待結果
+- 許容範囲またはFailure条件
+
+全項目へ数値Thresholdを強制する必要はありませんが、**確認方法を書けるものを一般論のまま残さない**ことを優先します。
 
 ## 最低限のStatic Validation
 
@@ -61,6 +76,52 @@ UIが重要なサイトでは以下も確認します。
 - Canvas/対象DOM geometry
 - Main navigation
 
+## AI-generated / AI-assisted Code Review Gate
+
+### SHOULD: AIの最初の出力を完成品として無条件に採用しない
+
+ChatGPT / Codex / Claude等を実装に使う場合も、最終判断は現在のRepo・仕様・Test結果を基準にします。
+
+AI生成物は少なくとも変更規模に応じて次を確認します。
+
+- 既存Architecture / Design Systemへ沿っているか
+- 同じ機能・CSS・Dataを新しく重複していないか
+- File / Function / Componentを不必要に巨大化していないか
+- 固定px / inline style / global override等、Prototype向けShortcutが恒久化していないか
+- Error / Empty / Loading / Async double-submitを考慮しているか
+- Security / Storage / Migration / Secretへ影響していないか
+- 既存Testと新しいRegression Testが通るか
+- AI自身の「動くはず」を検証結果として扱っていないか
+
+特に初心者が未知のTechnologyをAIだけで実装する場合、ArchitectureやDeployment手順は公式Documentationと実環境で確認します。
+
+推奨Loop:
+
+```text
+AI Draft / Implementation
+→ Diff / Architecture Review
+→ Static / Unit / Browser Test
+→ Human or independent Review
+→ Adapt / Simplify
+→ Final-state Validation
+```
+
+## Visual Regression
+
+### CONDITIONAL: UI変更が多いProjectではScreenshot比較を検討する
+
+Visual Regression Testは、機能Testでは拾いにくい次の事故に有効です。
+
+- Layout shift / overflow
+- Fixed UI重なり
+- Typography / Spacingの意図しない変化
+- Component stateの崩れ
+- Desktop修正によるMobile回帰
+
+毎回Pixel-perfect比較を必須にしません。Animation、Dynamic content、Font rendering差でNoiseが大きい場合は、主要画面だけScreenshotを残す、Thresholdを持たせる、Manual比較にする等、維持コストに合わせます。
+
+Visual Qualityが重要なProjectでは、[UI / UX / Accessibility](04-ui-ux-accessibility.md) の **Visual Design Review Gate** と組み合わせます。
+
 ## 対応ブラウザ
 
 最低でも主要用途に合わせてFirefox / Chromiumを意識します。
@@ -93,6 +154,18 @@ CIで代替できないもの:
 - 横overflow
 - 旧Runtime再混入
 - 誤った件数hardcode
+
+## Manual Test Evidence
+
+自動化しにくい重要項目を繰り返し確認するProjectでは、必要に応じてWork Report、`testing.md`、Issue等へ次を残します。
+
+| Feature / State | Test | Expected | Result |
+|---|---|---|---|
+| | | | |
+
+専用`testing.md`を全Projectへ必須にはしません。重要なのは、後から「何をどう確認したか」を再利用できることです。
+
+API Failure、Rapid click、Offline、Orientation、Import失敗など、通常操作だけでは出ないStateも対象にします。
 
 ## Final-state Validation
 
@@ -188,12 +261,13 @@ CIで代替できないもの:
 - Implemented: 実装済み
 - Static Validated: 構文・参照・Schema等を自動確認済み
 - Browser Validated: 実ブラウザで主要導線確認済み
+- Visual Reviewed: Design Direction / hierarchy / responsive / polishを画面で確認済み
 - Real Device Validated: 実機 / OS固有機能確認済み
 - User Validated: 実際の利用者が確認済み
 - Unverified: 未確認
 - Known Issue: 既知問題あり
 
-Static Validation成功だけで「実機動作確認済み」と扱いません。
+Static Validation成功だけで「実機動作確認済み」「Visual Quality確認済み」と扱いません。
 
 # 完成条件
 
@@ -206,6 +280,7 @@ Static Validation成功だけで「実機動作確認済み」と扱いません
 - GitHub Pages対応サイトは公開可能な構成になっている
 - 保存データを壊さない
 - 一時資産をCleanupした最終状態で検証済み
+- Visual Qualityが成果物の重要部分ならVisual Review済み
 - 未確認事項が明示されている
 
 主要機能が未実装の場合や、重大部分が未確認の場合は完成扱いにしません。
