@@ -176,6 +176,10 @@ Project Profileや高リスク変更に該当する場合のみ実施します�
 - [ ] start.bat失敗時ログ
 - [ ] Setup.exe / install / uninstall（該当時）
 - [ ] 起動失敗 / IPC failureを診断できる
+- [ ] 継続配布するインストール型Appでは起動時更新確認 + One-click Updateを導入できるか確認
+- [ ] Auto Update使用時、ReleaseにInstaller / Update Metadata / blockmapが同Versionで揃っている
+- [ ] Auto Update失敗時に手動Release導線と現Version継続利用ができる
+- [ ] Auto Update導入・方式変更時、旧Version → 新Versionの実機Update / Restart / userData維持を確認
 
 ### PUBLIC-CONTENT
 
