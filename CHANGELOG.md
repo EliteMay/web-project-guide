@@ -2,6 +2,30 @@
 
 Guide Versionの正本は [`guide-version.json`](guide-version.json) です。
 
+## 1.3.0 - 2026-08-31
+
+### Added
+
+- `docs/14-continuous-improvement.md` を追加
+- `maintenance/review-policy.json` を追加し、定期レビュー対象・公式Web Source・変更ポリシーを一元化
+- GitHub上でアクセス可能な `EliteMay` Repositoryを毎回再発見し、差分中心でReviewする方針を追加
+- W3C / MDN / web.dev / OWASP / GitHub / Electron / WHATWGを中心としたWeb Standards Reviewを追加
+- Project Feedback Loop / Web Standards Loopを追加
+- No Change / No Commit方針を追加
+- 高影響Rule変更は自動確定せずBranch / Proposalを優先するSafety Ruleを追加
+- `START_HERE.md` にGuide定期改善ルートを追加
+
+### Changed
+
+- READMEへContinuous Improvement入口を追加
+- Guideを固定文書ではなく、実ProjectとWeb標準から継続改善するSource of Truthとして明文化
+- 定期レビューによる他Projectの扱いをRead-onlyとし、自動更新先を `web-project-guide` に限定
+
+### Automation
+
+- ChatGPT側の定期Reviewから `maintenance/review-policy.json` を参照し、Project差分と公式Web情報を確認して、共通化価値がある場合だけGuideを更新する運用を想定
+- 一般Web Ruleは公式Source、Project由来Ruleは具体的な失敗・成功Evidenceを要求
+
 ## 1.2.0 - 2026-08-30
 
 ### Added
