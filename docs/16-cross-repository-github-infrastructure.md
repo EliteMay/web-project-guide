@@ -12,7 +12,7 @@
 web-project-guide
 = 何を共通化するか / 品質基準 / 判断ルール
 
-EliteMay/.github（利用可能になった場合）
+EliteMay/.github
 = Account共通のIssue / PR / Community Health / Reusable Workflow
 
 各Project Repository
@@ -28,7 +28,7 @@ GitHub Projectsへ仕様本文を移して新しいSource of Truthを作りま�
 
 SHOULD: 複数Repositoryで同じGitHub運用を繰り返す場合、Personal AccountまたはOrganizationのPublic `.github` Repositoryを共通入口として利用できます。
 
-候補:
+現在の`EliteMay/.github`では次をAccount共通Defaultとして管理します。
 
 - `.github/ISSUE_TEMPLATE/bug.yml`
 - `.github/ISSUE_TEMPLATE/feature.yml`
@@ -37,7 +37,8 @@ SHOULD: 複数Repositoryで同じGitHub運用を繰り返す場合、Personal Ac
 - `SECURITY.md`
 - `SUPPORT.md`
 - `CONTRIBUTING.md`
-- `.github/workflows/` のReusable Workflow
+- `.github/workflows/reusable-web-baseline.yml`
+- `.github/workflows/validate-defaults.yml`
 
 各Repositoryに同名の有効なTemplate / Community Health Fileがある場合はProject固有側を優先します。
 
@@ -80,12 +81,23 @@ Reusable Workflowは**Common Baseline**、各RepositoryのWorkflowは**Project C
 ```yaml
 jobs:
   baseline:
-    uses: EliteMay/web-project-guide/.github/workflows/reusable-web-baseline.yml@<commit-sha>
+    uses: EliteMay/.github/.github/workflows/reusable-web-baseline.yml@<commit-sha>
 ```
 
 `@main`を恒久利用して中央変更を即時全Projectへ伝播させません。
 
 運用上Tagを使う場合は、`v1`等の互換範囲とBreaking Change方針を明確にします。
+
+### 現在のPilot
+
+`DesignShelf`と`ASMRTube`で、`EliteMay/.github`のReusable Web Baselineを確定Commit SHAへ固定して利用し、次を確認済みです。
+
+- Common Baseline成功
+- Project固有Validator成功
+- Pull Request確認後にmainへMerge
+- mainの最終Commitでも両方成功
+
+この結果は「全Projectへ一括展開してよい」という意味ではありません。各Repositoryの既存WorkflowとProject Contractを確認しながら段階的に導入します。
 
 ### Upgrade方針
 
@@ -100,6 +112,8 @@ Reusable Workflow更新
 ```
 
 全Repositoryを同時に新Versionへ切り替える必要はありません。
+
+`.github` Repository自体も`validate-defaults.yml`で必須ファイル、Issue Form YAML、Reusable Workflowの`workflow_call`とread-only permission等を確認します。
 
 ## Rulesets / Branch Protection
 
@@ -163,6 +177,8 @@ Dependabot PR
 → Merge
 ```
 
+`osu-hub`ではnpmとGitHub ActionsのWeekly Version Updateを導入済みです。Electron toolchainのminor / patchはまとめ、major updateは個別にReviewできる形を使います。
+
 ### SHOULD: PRノイズを抑える
 
 個人Projectでは毎日大量の更新PRを作るより、Weekly等のまとまったScheduleを優先できます。
@@ -173,21 +189,21 @@ Dependabot PR
 
 SHOULD: Bug / Feature Issueを継続利用するProjectでは、自由記述だけでなくIssue Formsで必要Evidenceを揃えることを検討します。
 
-Bug Form候補:
+`EliteMay/.github`の共通Bug Formは次を扱います。
 
-- Project / Version / Build
+- Version / Build
 - 発生画面
-- 実行した操作
+- 実行した操作 / 再現手順
 - Expected / Actual
 - 再現性
 - Error ID
 - Diagnostic Snapshot ID
-- Screenshot /補足
-- User Test結果
+- Environment
+- Screenshot / 補足
 
 Remote Diagnostic Handoff採用Projectでは、実Log全文をIssueへ貼るのではなく、Sanitize済みSnapshot IDを関連付ける方式を優先します。
 
-Secret / Token /個人情報をIssue Formへ要求しません。
+Secret / Token / Cookie / Password / 個人情報をIssue Formへ要求しません。
 
 ## GitHub Projects
 
@@ -261,6 +277,7 @@ AIが自動で判断してIssue / PR / Codeを変更する範囲は、決め打�
 - [ ] 共通化対象とProject固有対象を分けた
 - [ ] Reusable Workflowを`@main`へ恒久依存していない
 - [ ] 中央Workflow更新をPilotしてから展開した
+- [ ] `.github`共通Repository自体のValidationがある
 - [ ] Ruleset強度がProject Riskに合う
 - [ ] Dependabot PRを無条件Auto Mergeしない
 - [ ] Issue FormへSecret /個人情報を要求しない
