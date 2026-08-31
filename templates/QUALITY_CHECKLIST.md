@@ -78,6 +78,7 @@ Interactive Projectでは必要範囲を確認します。
 - [ ] Empty State + 復帰導線
 - [ ] Error State + Retry / Fallback
 - [ ] Success State
+- [ ] 主要Interactive Componentのfocus / pressed / disabled / loading等、実際に存在するStateを確認
 - [ ] ページ全体の不要な横overflowなし
 - [ ] fixed / stickyが主要操作を隠さない
 - [ ] 小画面・低い縦解像度で致命的に崩れない
@@ -97,6 +98,7 @@ Visual Qualityが重要なProjectでは確認します。
 - [ ] 巨大Hero → 3 Feature Cards → CTAをAIのDefaultだけで採用していない
 - [ ] 長い本文や高密度UIまで機械的に中央揃えしていない
 - [ ] Project内のComponentは一貫しつつ、他ProjectとPage Compositionまで同じにしていない
+- [ ] Generic Marketing CopyをVisualの水増し目的で追加していない
 
 ### Accessibility
 
@@ -132,11 +134,39 @@ Project Profileや高リスク変更に該当する場合のみ実施します�
 新規Project / 大規模UI刷新 / Landing / Showcase / Media等でVisual Directionが重要な場合。
 
 - [ ] CSS実装前にDesign Concept / Navigation / Density / Typography / Component / Effect方針を決めた
+- [ ] ProjectのContent / Task / AudienceからDirectionを導いた
 - [ ] Wireframe / StructureをVisual Polishより先に確認した
 - [ ] 色違いではなく構造的に異なる2〜3案を必要に応じて比較した
+- [ ] 1つのSignatureまたはProject固有のVisual理由がある
+- [ ] PromptでHero / Card Grid / Effect等を先に固定しすぎて探索余地を消していない
+- [ ] 実装前に「別Projectにもそのまま使えるGeneric Planではないか」を自己Reviewした
 - [ ] 採用Directionと却下案の理由を要件 / ADR / 作業報告のいずれかへ残した
 - [ ] DesignShelfを使った場合、Layoutを完成TemplateとしてコピーせずProject固有構造へ変形した
 - [ ] Reference Siteを使った場合、特定企業のLayout / Brand表現をそのままコピーしていない
+
+### VISUAL REVIEW
+
+Visual完成を要求するProjectではBuild後に確認します。
+
+- [ ] Purpose / User TaskとFirst Viewが一致
+- [ ] Primary Action / Hierarchy / Navigationが明確
+- [ ] Typography / Spacing / DensityがContentへ合う
+- [ ] Card / List / Table / Tabs等の選択が情報の性質へ合う
+- [ ] ResponsiveがDesktopの単純縮小ではなくPriorityを再構成している
+- [ ] Generic AI Template Lookが再発していない
+- [ ] Findingを必要に応じてBlocking / Major / Minorへ分類した
+- [ ] Blocking Findingが0件、または未解決理由が明示されている
+- [ ] Visual Review結果をPass / Needs workで記録した
+
+### AI-ASSISTED DEVELOPMENT
+
+AIへ大きく実装を任せる場合。
+
+- [ ] AIが提案したArchitecture / Dependency / Storageを理由なく採用していない
+- [ ] `AGENTS.md`がある場合はSoTを複製せず、正本とTest commandへのRouterになっている
+- [ ] 未経験TechnologyをAIへ任せた場合、Architecture / Security / Deployment / Data persistenceを追加Reviewした
+- [ ] 大規模生成 / 移植ではReference / Golden Output / Contract / Regression Dataset等のOracleを利用できるか検討した
+- [ ] AI生成Codeにも通常と同じStatic / Browser / Regression基準を適用した
 
 ### DATA / TOOL
 
@@ -185,7 +215,12 @@ Project Profileや高リスク変更に該当する場合のみ実施します�
 
 - [ ] Asset License / Attribution
 - [ ] 公開してはいけない個人情報なし
-- [ ] 必要ならtitle / metadata / SEO
+- [ ] `<html lang>`が内容と一致
+- [ ] 主要Pageに意味の分かる`title`
+- [ ] 検索流入が重要なら必要なMetadata / SEOを確認
+- [ ] 複数Page / Direct Linkが重要なら404時の復帰導線がある
+- [ ] 多言語時、長い翻訳Text / Language / RTLを必要に応じて確認
+- [ ] Analytics / Form / Third-party ScriptのPrivacy影響を確認
 
 ### Test / Learning
 
@@ -204,6 +239,7 @@ Project Profileや高リスク変更に該当する場合のみ実施します�
 - Implemented
 - Static validated
 - Browser validated
+- Visual reviewed
 - Real-device validated
 - User validated
 - Known limitation
