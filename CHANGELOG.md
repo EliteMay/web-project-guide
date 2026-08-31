@@ -2,6 +2,54 @@
 
 Guide Versionの正本は [`guide-version.json`](guide-version.json) です。
 
+## 1.5.0 - 2026-08-31
+
+### Added
+
+- `docs/04-ui-ux-accessibility.md`へVisual Design Qualityを追加
+  - Information Architecture / Layout / Typography / SpacingをColor / Effectより優先
+  - 色違いだけの同一構造をDesign差分として扱わない
+  - Visual重視ProjectではCSS実装前にDesign Directionを決める
+  - Wireframe / Structure → Visual Polishの順序を明文化
+  - Project TypeごとにVisual Structureを変え、固定Layoutを公式感のDefaultにしない
+- AI Template Look回避ルールを追加
+  - 巨大Hero + 3 Feature Cards + CTAの機械的採用を避ける
+  - Gradient / Glassmorphism / Glow / Shadow / Rounded Corner / Card自体は全面禁止しない
+  - Effectごとに役割を説明できることを目安にする
+- Anti-Pattern Catalogへ以下を追加
+  - `AP-026 Palette-Swap Clone`
+  - `AP-027 Decorative Cardification`
+  - `AP-028 AI Landing Page Default`
+- Success Pattern Catalogへ以下を追加
+  - `S-024 Structure-first Visual Design`
+  - `S-025 Contrastive Design Direction`
+- DesignShelfを完成Template集ではなく、構造探索用Companion Toolとして使うWorkflowを追加
+- Visual重視Project向けのDesign Direction比較項目をRequirements / Quality Checklistへ追加
+
+### Changed
+
+- `START_HERE.md`へ「Visual Designを決める / AI Template感を減らす」ルートを追加
+- `docs/01-requirements.md`へVisual Design Directionを追加
+- `templates/REQUIREMENTS_TEMPLATE.md`へDesign Concept / Layout / Navigation / Density / Typography / Effect Policy等を追加
+- `templates/QUALITY_CHECKLIST.md`へVisual Design / Visual Direction検証を追加
+- `references/web-standards.md`へGitHub Primer / Microsoft Fluent 2 / Apple HIGを追加
+- `maintenance/review-policy.json`へ公式Design System SourceとVisual Pattern Reviewを追加
+- `docs/14-continuous-improvement.md`でVisual Designの長期的なTemplate収束もReview対象に追加
+
+### DesignShelf
+
+- 現在のDesignShelfはPalette → Layoutの順だが、Guide運用ではStructure-firstで利用可能と明記
+- 24 Layoutを正解一覧や完成Templateとして扱わず、比較・混合・変形する方針を追加
+- 将来改善候補としてLayout-first mode / Design Direction / 複数Layout比較 / AI Template Risk表示を整理
+
+### Source
+
+- ユーザー要望: AI生成サイトが色違いでも巨大Hero / Gradient / Glass / Card Grid等の同型Templateへ収束する問題
+- GitHub Primer: Layout / Typography / Navigation / Foundations
+- Microsoft Fluent 2: Layout / Spacing / Typography / Design Tokens
+- Apple Human Interface Guidelines: Purpose / Simplicity / Hierarchy / Craft
+- `EliteMay/DesignShelf`: 現在の24 Layout骨格とPalette-first Workflowを実運用候補として確認
+
 ## 1.4.0 - 2026-08-31
 
 ### Added
@@ -68,7 +116,7 @@ Guide Versionの正本は [`guide-version.json`](guide-version.json) です。
 ### Automation
 
 - ChatGPT側の定期Reviewから `maintenance/review-policy.json` を参照し、Project差分と公式Web情報を確認して、共通化価値がある場合だけGuideを更新する運用を想定
-- 一般Web Ruleは公式Source、Project由来Ruleは具体的な失敗・成功Evidenceを要求
+- 一般Web Ruleは公式Source、Project由来Ruleは具体的なProject Evidenceを要求
 
 ## 1.2.0 - 2026-08-30
 
