@@ -1,15 +1,16 @@
 # 14 Continuous Improvement / 定期レビュー
 
-`web-project-guide` を一度作って終わりにせず、実プロジェクトの経験とWeb標準の変化から継続的に改善するための運用ルールです。
+`web-project-guide` を一度作って終わりにせず、実プロジェクトの経験、Web標準、Design System、AI制作手法の変化から継続的に改善するための運用ルールです。
 
 設定の正本は [`maintenance/review-policy.json`](../maintenance/review-policy.json) とします。
 
 ## 目的
 
-定期レビューでは次の2種類の情報を集めます。
+定期レビューでは次の3種類の情報を集めます。
 
 1. **Project Feedback Loop** — 実際に制作したサイトから、繰り返した失敗・高コスト修正・再利用価値のある設計を抽出する。
 2. **Web Standards / Design Systems Loop** — W3C / MDN / web.dev / OWASP / GitHub / Electron / 公式Design System等の一次資料を確認し、Guideに不足・陳腐化がないか確認する。
+3. **AI Development Practice Loop** — Anthropic / Microsoft / OpenAI等のAI向けFrontend / Coding Agent Guidanceと、実際のAI-assisted Projectを確認し、AIへ任せたとき特有の失敗・Review方法・Context設計を更新する。
 
 ## MUST: 他プロジェクトは原則Read-only
 
@@ -27,9 +28,10 @@
 
 - `PROJECT_LEARNINGS.md` — 存在する場合は最優先Evidenceの1つ
 - 前回レビュー以降のCommit / 変更ファイル
-- README / 仕様書 / 作業報告 / CHANGELOG
+- README / `AGENTS.md` / Project Rule / 仕様書 / 作業報告 / CHANGELOG
 - Visual Design Direction / Layout Structure / 同じAI Template Patternの反復
-- DesignShelfを使った場合の採用LayoutとProject固有への変形
+- DesignShelfを使った場合の採用DirectionとProject固有への変形
+- AI生成量が大きい変更で、独立Review / Testが実施されているか
 - Diagnostic設計 / Export Schema / Error ID / Breadcrumb
 - 保存Schema / Storage Key / Migration
 - GitHub Actions / Test
@@ -56,18 +58,64 @@ Diagnostic LogそのものがGitHubへ保存されていない場合でも、作
 - MDN Web Docs
 - web.dev
 - OWASP Cheat Sheet Series
-- GitHub Docs
-- GitHub Primer
+- GitHub Docs / GitHub Primer
 - Microsoft Fluent 2
 - Apple Human Interface Guidelines
 - Electron Documentation
 - WHATWG HTML Living Standard
 
-Visual Designの調査では、実在企業Siteの表層をコピーするのではなく、公式Design System等からLayout / Typography / Spacing / Hierarchy / Navigation / Component consistencyの一般化可能な考え方を確認します。
+Visual Designの調査では、実在企業Siteの表層をコピーするのではなく、公式Design Systemや実際のProduct PageからLayout / Typography / Spacing / Hierarchy / Navigation / Component consistency / Content Strategyの一般化可能な考え方を確認します。
 
 個人BlogやSNSの流行だけを根拠にGuideのMUSTへ昇格させません。
 
 Community情報は候補発見に利用しても、一般ルールへする前に公式仕様・実測・複数Projectでの再現性を確認します。
+
+## AI Frontend / Coding Agent Review
+
+AI向けGuideは、一般Web標準とは別の価値があります。特に次を確認します。
+
+- AIがGeneric Patternへ収束しないためのContext / Design Thinking
+- Promptで固定すべき条件と、探索させるべきCreative Axis
+- Build前 / Build後のSelf CritiqueやDesign Review
+- AI生成CodeをHuman / Test / ToolでReviewする手順
+- Repo固有のCommand / Architecture / Safety RuleをAgentへ渡す方法
+- `AGENTS.md`等、Agent向けInstruction Fileの運用
+
+ただし、あるAI VendorのSkillに書かれた特定Font禁止・特定Style推奨等を、そのまま全ProjectのMUSTへしません。
+
+### AI制作Case Studyの扱い
+
+公開Repoで「ChatGPTで作成」「Claudeで作成」「AI-assisted」等が明示されているProjectは、Pattern発見のCase Studyとして利用できます。
+
+Case Studyから直接「AIは必ずこうなる」と結論づけません。
+
+次のように扱います。
+
+```text
+Case Studyで仮説発見
+→ 自Projectや別Projectで同様のPatternがあるか確認
+→ 公式Guidance / Test / Code Evidenceと照合
+→ 共通化価値があればGuide候補
+```
+
+外部Projectの個別Bugを `Failure Catalog` の自Project実績と混ぜません。外部事例だけならReferenceとして保持し、再現性のある一般PatternはAnti-Pattern / Success Patternへ抽象化します。
+
+## Checklist Review
+
+大規模Checklistは、Guideを同じ大きさにするためではなく**Coverage Gapを探すため**に使います。
+
+例:
+
+- Internationalization
+- Privacy / Data minimization
+- Images / Media
+- Forms / Component states
+- Visual Regression
+- SEO / Metadata
+
+見つけた項目はProject ProfileやCONDITIONALへ落とせるかを先に判断します。
+
+「外部Checklistにあるから全Projectで必須」にはしません。
 
 ## 変更を採用する条件
 
@@ -90,6 +138,14 @@ Community情報は候補発見に利用しても、一般ルールへする前�
 - Security / Accessibility / Performanceで重要な変更があった
 - GitHub Pages / Electron等、利用中Platformの仕様変更がある
 - Visual Designの公式Guidanceで、Layout / Typography / Spacing / Navigation等の重要な変化や新しい知見がある
+
+### AI Development Practice由来
+
+- 複数のAI Guide / Projectで同じ失敗対策が確認できる
+- 現在のGuideではAI生成物を無検証で採用する余地がある
+- AgentがProject固有Ruleへ到達しにくい
+- Promptの詳細化がGeneric Template固定化を招いている
+- AI Design / Code Reviewを独立Gateにすると再発防止価値が高い
 
 ## Rule Strengthをむやみに上げない
 
