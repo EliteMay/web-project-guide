@@ -22,6 +22,21 @@
 - [ ] 変更した主要Button / Linkが反応
 - [ ] UIが画面外へ致命的にはみ出さない
 
+### Visual Quality Baseline — User-facing UIでは必須
+
+詳細は [Visual Quality Baseline](../docs/17-visual-quality-baseline.md) を正本とします。
+
+- [ ] Primary Action / Main Content / Secondary InformationのVisual Hierarchyが分かる
+- [ ] TypographyのSize / Weight / Line-height / Colorが同じ役割で一貫している
+- [ ] Spacing / Alignmentが場当たり的でなく、Group関係を表している
+- [ ] Button / Input / Dialog / Tab等の同じ役割が一貫したVisual languageを使う
+- [ ] Browser defaultとCustom UIが無計画に混在した未完成状態になっていない
+- [ ] 明らかなText clipping / unintended overflow / broken alignmentがない
+- [ ] Focus / selected / disabled等、実際に存在する主要Stateが見分けられる
+- [ ] Contrastや操作Targetを見た目のために犠牲にしていない
+- [ ] Temporary label / placeholder / Debug UI / Prototype感が通常画面に残っていない
+- [ ] UIを変更した場合、最終状態をBrowser / Screenshot等で確認した、またはVisual未確認と記録した
+
 ### Data / Storage
 
 - [ ] JSON構文正常
@@ -85,9 +100,9 @@ Interactive Projectでは必要範囲を確認します。
 - [ ] 小画面・低い縦解像度で致命的に崩れない
 - [ ] 自前DOMを別ModuleのMutationObserverで恒久的に完成させていない
 
-### Visual Design
+### Visual Design — high / flagshipまたは大規模UI変更で追加確認
 
-Visual Qualityが重要なProjectでは確認します。
+MinimumのVisual Quality Baselineを満たした上で、Visual Ambitionがhigh / flagship、または新規Page / 大規模UI刷新では確認します。
 
 - [ ] Accent Color / Gradient変更だけで別Design扱いしていない
 - [ ] 色・Shadow・Gradientを外しても主要なInformation Hierarchyが読める
@@ -147,7 +162,7 @@ Project Profileや高リスク変更に該当する場合のみ実施します�
 
 ### VISUAL REVIEW
 
-Visual完成を要求するProjectではBuild後に確認します。
+Visual Ambitionがhigh / flagship、またはVisual完成自体が価値になるProjectではBuild後に確認します。
 
 - [ ] Purpose / User TaskとFirst Viewが一致
 - [ ] Primary Action / Hierarchy / Navigationが明確

@@ -28,6 +28,29 @@
 - Electron → Electron専用ルールを適用
 - 一般公開 → Asset LicenseやSecurity確認を強化
 
+## 基本優先順位の読み方
+
+Project内で複数の要求が衝突した場合、原則として次の順でTrade-offを判断します。
+
+1. 操作性
+2. 分かりやすさ
+3. 安定性
+4. 軽量化
+5. 保守・修正しやすさ
+6. 見た目
+
+ここで「見た目」が6番目なのは、**完成条件から外してよいという意味ではありません。**
+
+User-facing UIがあるProjectでは、[Visual Quality Baseline](17-visual-quality-baseline.md)をMUSTとして扱います。
+
+つまり:
+
+- 見た目のために保存互換性を壊さない
+- 見た目のために主要操作を分かりにくくしない
+- しかし機能が動くだけの未調整UI、Prototype感、崩れたTypography / Spacing / Responsiveを完成扱いにしない
+
+Visual Ambitionの`high / flagship`は条件付きですが、**Baseline自体はUser-facing UIで必須**です。
+
 ## 指示・仕様が衝突した場合の優先順位
 
 原則として以下の順に扱います。

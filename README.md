@@ -15,6 +15,8 @@ Guide Versionの正本は [`guide-version.json`](guide-version.json)、変更履
 5. 保守・修正しやすさ
 6. 見た目
 
+この順番はTrade-off時の優先順位です。**User-facing UIの見た目を未調整のまま完成扱いしてよい、という意味ではありません。** User-facing UIは [Visual Quality Baseline](docs/17-visual-quality-baseline.md) を最低品質として満たします。
+
 詳細な優先ルール、MUST / SHOULD / MAY / CONDITIONAL、仕様衝突時の扱いは [Guide Governance](docs/00-governance.md) を正本とします。
 
 ## 主な入口
@@ -37,6 +39,7 @@ Guide Versionの正本は [`guide-version.json`](guide-version.json)、変更履
 - [14 Continuous Improvement](docs/14-continuous-improvement.md) — 実ProjectとWeb標準からGuideを定期改善
 - [15 Development Observability / Project Memory](docs/15-development-observability.md) — 失敗・成功・診断ログを次回修正へ引き継ぐ
 - [16 Cross-Repository GitHub Infrastructure](docs/16-cross-repository-github-infrastructure.md) — `.github` / Reusable Workflow / Ruleset / Dependabot / Projectsの役割分担
+- [17 Visual Quality Baseline](docs/17-visual-quality-baseline.md) — User-facing UIで必須の見た目の最低品質
 
 ## 過去事例から学ぶ
 
@@ -73,6 +76,7 @@ Guide Versionの正本は [`guide-version.json`](guide-version.json)、変更履
 - 主要機能・保存形式・公開方式の大変更を勝手に確定しない。
 - Electron指定のプロジェクトを勝手にWeb版へ変更しない。
 - 公開GitHub / GitHub Pagesへ秘密情報を置かない。
+- User-facing UIはVisual Quality Baselineを満たす。見た目が優先順位6位でも完成条件からは外さない。
 - 各Projectは再発防止価値の高い失敗・成功を `PROJECT_LEARNINGS.md` に残す。
 - 状態を持つInteractive Projectは、開発中にError / Breadcrumb / Version / Storage failure等を診断できる仕組みを持つ。
 - Diagnostic LogへToken、Password、秘密情報、ユーザー入力全文を残さない。
@@ -107,6 +111,7 @@ Guideは固定された完成品として扱わず、実際のProjectとWeb標�
 このRepoはpush / pull request時に [`tests/validate-guide.mjs`](tests/validate-guide.mjs) を実行し、次を確認します。
 
 - 正本として必要なDocs / Catalog / Template / Workflowの存在
+- Visual Quality Baselineの正本とMinimum Checklistが残っていること
 - `guide-version.json`形式とstatus
 - `guide-version.json`とCHANGELOG最新Version / 日付の一致
 - Markdown相対リンク切れ
@@ -124,6 +129,8 @@ Workflow: [Validate Guide](.github/workflows/validate-guide.yml)
 「コードを書いた」「CIが通った」だけでは完成扱いにしません。
 
 要求された主要機能が通常利用でき、重大な既知バグがなく、保存互換性を壊さず、必要な文書が現行実装と一致し、未確認事項が明記されている状態を完成の基準とします。
+
+User-facing UIがある場合は、これに加えて**明らかな未調整・Prototype感・Typography / Spacing / Responsiveの崩れがなく、Visual Quality Baselineを満たすこと**を完成条件に含めます。
 
 具体的な確認項目は [Quality Checklist](templates/QUALITY_CHECKLIST.md) を利用してください。
 

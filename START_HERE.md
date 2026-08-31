@@ -10,12 +10,13 @@
 2. [要件定義](docs/01-requirements.md)
 3. [Project Profile](docs/12-project-profiles.md)
 4. Interactive Projectなら[Development Observability / Project Memory](docs/15-development-observability.md)で診断方式を決める
-5. Visual Qualityが重要なら[UI / UX / Accessibility](docs/04-ui-ux-accessibility.md)でDesign Directionを決める
-6. 必要な設計章だけ確認
-7. [要件定義テンプレート](templates/REQUIREMENTS_TEMPLATE.md)を使う
-8. `PROJECT_LEARNINGS.md` を [Template](templates/PROJECT_LEARNINGS_TEMPLATE.md) から作る
-9. AI Coding Agentを継続利用するなら必要に応じて[AGENTS Template](templates/AGENTS_TEMPLATE.md)を使う
-10. 完成前に[Quality Checklist](templates/QUALITY_CHECKLIST.md)を使う
+5. User-facing UIがあるなら[Visual Quality Baseline](docs/17-visual-quality-baseline.md)を必須品質として確認する
+6. Visual Ambitionがhigh / flagshipなら[UI / UX / Accessibility](docs/04-ui-ux-accessibility.md)でDesign Directionを決める
+7. 必要な設計章だけ確認
+8. [要件定義テンプレート](templates/REQUIREMENTS_TEMPLATE.md)を使う
+9. `PROJECT_LEARNINGS.md` を [Template](templates/PROJECT_LEARNINGS_TEMPLATE.md) から作る
+10. AI Coding Agentを継続利用するなら必要に応じて[AGENTS Template](templates/AGENTS_TEMPLATE.md)を使う
+11. 完成前に[Quality Checklist](templates/QUALITY_CHECKLIST.md)を使う
 
 ### 既存サイトのバグを直す
 
@@ -32,7 +33,8 @@
    - GitHub Actions → 継続的な自動化そのものが目的の場合に使い、単発のファイル書換え手段として安易に増やさない
 9. 実装後、一時Script / 一時Workflow / Debug資産が残っていないか確認
 10. 高コストBugなら `PROJECT_LEARNINGS.md` とRegression Guardを更新
-11. **最終Commitの状態**で該当範囲のRegression / CI / Pages確認を行う
+11. UIへ触れた場合は変更箇所が[Visual Quality Baseline](docs/17-visual-quality-baseline.md)を悪化させていないか確認
+12. **最終Commitの状態**で該当範囲のRegression / CI / Pages確認を行う
 
 小規模修正でフル要件定義をやり直す必要はありません。
 
@@ -45,7 +47,8 @@
 5. Technology / Architecture / Storage等の高コスト判断はAI提案でも影響確認する
 6. 移植・大量生成・互換性重視ではGolden Output / Reference / Contract / Regression Dataset等のOracleを先に用意できるか検討
 7. AI生成Codeも通常のStatic / Browser / Regression / Security基準を通す
-8. Visualが重要ならAI Promptで完成Layoutを先に固定しすぎず、Design Directionを比較する
+8. User-facing UIはAI生成でも[Visual Quality Baseline](docs/17-visual-quality-baseline.md)を必ず通す
+9. Visual Ambitionがhigh / flagshipならAI Promptで完成Layoutを先に固定しすぎず、Design Directionを比較する
 
 AIの利用量ではなく、**正しい状態を定義し、最終結果を検証できること**を品質基準にします。
 
@@ -110,32 +113,36 @@ Remote ProviderがPause / Offline / 未接続でもCore機能と調査を止め�
 
 ### UIだけ直す
 
+- [Visual Quality Baseline](docs/17-visual-quality-baseline.md)
 - [UI / UX / Accessibility](docs/04-ui-ux-accessibility.md)
 - [Testing / Quality](docs/07-testing-quality.md)
 - fixed / sticky / overflow / zoom / small viewportを重点確認
+- 見た目を変更した場合は最終状態を実ブラウザまたはScreenshotで確認し、できなければVisual未確認と記録する
 
 ### Visual Designを決める / AI Template感を減らす
 
-1. [UI / UX / Accessibility](docs/04-ui-ux-accessibility.md) のVisual Design Qualityを正本として確認
-2. Purpose / Workflow / Information Architectureを先に決める
-3. ProjectのContent / Task / AudienceからDesign Directionを考える
-4. 色・Gradient・ShadowなしのWireframe / Structureを考える
-5. Visual Qualityが重要なら、色違いではなく構造的に異なる2〜3 Design Directionを比較
-6. 必要なら [DesignShelf](https://github.com/EliteMay/DesignShelf) でDirection候補を探索する
-7. DesignShelfのLayoutを完成Templateとしてコピーせず、Project固有のNavigation / Density / Primary Action / Contentへ変形する
-8. 実装前にGenericなPlanになっていないかCritiqueする
-9. Structure決定後にTypography / Spacing / Color / Effectを詰める
-10. [Anti-Pattern Catalog](catalog/anti-patterns.md) の `AP-026`〜`AP-028` を確認する
+1. まず[Visual Quality Baseline](docs/17-visual-quality-baseline.md)を全User-facing UIの最低品質として確認
+2. [UI / UX / Accessibility](docs/04-ui-ux-accessibility.md) のVisual Design Qualityを詳細ルールの正本として確認
+3. Purpose / Workflow / Information Architectureを先に決める
+4. ProjectのContent / Task / AudienceからDesign Directionを考える
+5. 色・Gradient・ShadowなしのWireframe / Structureを考える
+6. Visual Ambitionがhigh / flagshipなら、色違いではなく構造的に異なる2〜3 Design Directionを比較
+7. 必要なら [DesignShelf](https://github.com/EliteMay/DesignShelf) でDirection候補を探索する
+8. DesignShelfのLayoutを完成Templateとしてコピーせず、Project固有のNavigation / Density / Primary Action / Contentへ変形する
+9. 実装前にGenericなPlanになっていないかCritiqueする
+10. Structure決定後にTypography / Spacing / Color / Effectを詰める
+11. [Anti-Pattern Catalog](catalog/anti-patterns.md) の `AP-026`〜`AP-028` を確認する
 
 Gradient / Card / Rounded Corner等は全面禁止ではありません。目的・情報関係・Brandに必要なら使用できます。
 
 ### 完成したVisual DesignをReviewする
 
+- [Visual Quality Baseline](docs/17-visual-quality-baseline.md)
 - [Visual Design Review Gate](docs/04-ui-ux-accessibility.md#visual-design-review-gate)
 - [Testing / Quality](docs/07-testing-quality.md)
 - [Quality Checklist](templates/QUALITY_CHECKLIST.md) のVISUAL REVIEW
 
-機能Testとは別にPurpose / Hierarchy / Navigation / Typography / Spacing / Component Semantics / Responsive / Accessibility / AI Template Regressionを確認します。
+User-facing UIはBaselineを必ず確認し、high / flagshipでは機能Testとは別にPurpose / Hierarchy / Navigation / Typography / Spacing / Component Semantics / Responsive / Accessibility / AI Template Regressionを確認します。
 
 Findingは必要に応じて`Blocking / Major / Minor`へ分け、Blockingが残る場合はVisual完成扱いにしません。
 
@@ -207,10 +214,11 @@ Findingは必要に応じて`Blocking / Major / Minor`へ分け、Blockingが残
 ## 完成前
 
 1. [Quality Checklist](templates/QUALITY_CHECKLIST.md)をプロジェクト種別に合わせて実施
-2. README / 仕様 / 作業報告を更新
-3. 高コストBug / 重要成功があれば `PROJECT_LEARNINGS.md` を更新
-4. Visual完成が重要ならVisual Design Review結果を確認
-5. 未確認を未確認のまま記録
-6. 一時Script / 一時Workflow / Debug資産が本番Repoへ残っていないことを確認
-7. Cleanup後の**最終Commit**でCI / Pages / Regression結果を確認
-8. 重大な既知バグが残る場合は完成扱いにしない
+2. User-facing UIがある場合は[Visual Quality Baseline](docs/17-visual-quality-baseline.md)を確認
+3. README / 仕様 / 作業報告を更新
+4. 高コストBug / 重要成功があれば `PROJECT_LEARNINGS.md` を更新
+5. Visual Ambitionがhigh / flagshipならVisual Design Review結果を確認
+6. 未確認を未確認のまま記録
+7. 一時Script / 一時Workflow / Debug資産が本番Repoへ残っていないことを確認
+8. Cleanup後の**最終Commit**でCI / Pages / Regression結果を確認
+9. 重大な既知バグが残る場合は完成扱いにしない

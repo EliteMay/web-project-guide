@@ -42,9 +42,13 @@
 |---|---|---|---|
 | | | | Loading / Empty / Error / Success |
 
-## 5A. Visual Design Direction（必要時）
+## 5A. Visual Quality / Design Direction
 
-- Visual Quality重要度: low / normal / high
+User-facing UIがある場合、[Visual Quality Baseline](../docs/17-visual-quality-baseline.md)は必須です。
+
+- User-facing UI: Yes / No
+- Visual Quality Baseline: Required / Not applicable
+- Visual Ambition: baseline / high / flagship
 - Design Concept:
 - Reference Direction:
 - Layout Type:
@@ -55,13 +59,16 @@
 - Component Rule:
 - Decorative Effect Policy:
 - Wireframeを先に作る: Yes / No
-- 構造的に異なるDesign Directionを比較する: Yes / No
+- 構造的に異なるDesign Directionを比較する: Yes / No / Not needed
 - 比較案A:
 - 比較案B:
 - 比較案C:
 - 採用Directionと理由:
 - DesignShelfを構造探索に使う: Yes / No
 - 避けたいAI Template Pattern:
+- 最終Visual確認方法: Browser / Screenshot / Real device / Other
+
+`baseline`は「見た目を省略する」という意味ではなく、全User-facing UIに必要な最低品質です。`high / flagship`ではより強いDirection比較・Signature・Visual Reviewを追加します。
 
 ## 6. データ構成
 
@@ -153,8 +160,11 @@
 - [ ] README / 仕様 / 作業報告更新
 - [ ] `PROJECT_LEARNINGS.md`を用意
 - [ ] Interactive Projectでは必要なDiagnostics / Exportを確認
-- [ ] Visual重視Projectでは採用Design Directionと理由を記録
-- [ ] Visual重視Projectでは色 / Effectを外しても主要Hierarchyが成立
+- [ ] User-facing UIではVisual Quality Baselineを満たす
+- [ ] User-facing UIを変更した場合、最終状態をBrowser / Screenshot等で確認、またはVisual未確認と明記
+- [ ] Visual Ambitionがhigh / flagshipでは採用Design Directionと理由を記録
+- [ ] Visual Ambitionがhigh / flagshipでは色 / Effectを外しても主要Hierarchyが成立
+- [ ] Visual Ambitionがhigh / flagshipではVisual Design Review結果を記録
 - [ ] 未確認事項が明示されている
 
 ## 15. 未確認予定
