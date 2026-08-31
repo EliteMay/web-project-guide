@@ -150,6 +150,65 @@ Visual AmbitionがHigh / Flagshipの場合は、[Visual Design Review Gate](04-u
 
 Blocking Findingが残る場合はVisual完成扱いにしません。
 
+## Visual Foundation Reset
+
+### SHOULD: 局所修正を重ねても良くならない場合はPatchを止め、基礎から再設計する
+
+見た目の問題に対して、小さなCSS修正・余白調整・色変更・Card追加・Effect追加を繰り返しても全体品質が上がらない場合、**既存UIを守りながらPatchを続けること自体を目的にしません。**
+
+次のような状態では、部分修正よりFoundation Resetを優先して検討します。
+
+- 同じ画面を何度直しても「まだ微妙」という状態が続く
+- 問題が1 Componentではなく、Information Architecture / Layout / Density / Typography / Hierarchy / Navigationへ広がっている
+- 1箇所のSpacingやSizeを直すと別の場所のBalanceが崩れる
+- Component単体は整っているのに、Page Composition全体として弱い
+- Override / 例外CSS / 個別Patchが増え、何が正しいLayoutか分かりにくくなっている
+- Decorative Effectを足すほど見た目は変わるが、使いやすさや構造の納得感が上がらない
+
+Foundation Resetでは、原則として次の順に戻ります。
+
+```text
+Purpose / User Task
+→ Content / Data / State
+→ Information Architecture
+→ Navigation / Main Structure
+→ Wireframe
+→ Design Direction
+→ Typography / Spacing / Hierarchy
+→ Color / Effect
+→ Rebuild UI
+→ Visual Verification
+```
+
+重要なのは、**「一から作り直す」= Project全体のコードを捨てる、ではない**ことです。
+
+原則として保持するもの:
+
+- 正しく動いている機能
+- Data / Storage / Migration Contract
+- API / URL / Release Contract
+- 検証済みBusiness Logic
+- Accessibility / Performance / Security上の既存要件
+- 再利用価値のあるComponentやAsset
+
+白紙に戻してよいもの:
+
+- Page Composition
+- Header / Navigation構造
+- Content Width / Grid / Columns
+- Density
+- Visual Hierarchy
+- Typography direction
+- Card / List / Table等の表現方法
+- Spacing rhythm
+- Color / Decorative Effect
+
+つまり、**安定している中身は残し、失敗している見た目の土台だけを再設計する**ことを基本とします。
+
+小規模な崩れや原因が明確なComponent Bugまで毎回全面Redesignする必要はありません。一方で、基礎構造が原因だと分かっているのに「今まで作ったから」という理由だけでPatch Loopを続けることも避けます。
+
+目安として、局所修正の追加コストと複雑さが、Wireframeから再設計するコストを上回り始めたら、Foundation Resetへ切り替えます。
+
 ## 変更規模ごとの適用
 
 ### 小規模Bug Fix
@@ -170,7 +229,9 @@ Baseline全項目を確認し、必要に応じてHigh / FlagshipのDesign Direc
 
 別目的のBug修正だけで全面Redesignはしません。
 
-ただしVisual debtを既知Issue / Work Reportへ残し、次の意味あるUI改修時に段階的に改善します。
+ただしVisual debtを既知Issue / Work Reportへ残します。次の意味あるUI改修時には、局所改善で十分か、[Visual Foundation Reset](#visual-foundation-reset)へ切り替えるべきかを先に判断します。
+
+同じ種類のVisual修正を複数回行っても全体評価が改善しない場合は、段階的PatchをDefaultにせず、Purpose / Information Architecture / Layoutからの再設計を優先します。
 
 ## 完成判定
 
