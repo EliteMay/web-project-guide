@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 1,
+  "targetRepository": "EliteMay/web-project-guide",
+  "repositoryDiscovery": {
+    "owner": "EliteMay",
+    "mode": "all-accessible-repositories",
+    "exclude": ["EliteMay/web-project-guide"],
+    "includeArchived": false,
+    "otherRepositoriesWriteMode": "read-only"
+  },
+  "webSources": [
+    {
+      "name": "W3C Web Accessibility Initiative",
+      "url": "https://www.w3.org/WAI/",
+      "topics": ["accessibility", "WCAG"]
+    },
+    {
+      "name": "MDN Web Docs",
+      "url": "https://developer.mozilla.org/",
+      "topics": ["HTML", "CSS", "JavaScript", "Web APIs", "security", "compatibility"]
+    },
+    {
+      "name": "web.dev",
+      "url": "https://web.dev/",
+      "topics": ["performance", "Core Web Vitals", "responsive", "reliability"]
+    },
+    {
+      "name": "OWASP Cheat Sheet Series",
+      "url": "https://cheatsheetseries.owasp.org/",
+      "topics": ["web security", "storage", "XSS", "third-party code"]
+    },
+    {
+      "name": "GitHub Docs",
+      "url": "https://docs.github.com/",
+      "topics": ["GitHub Pages", "Actions", "repository management", "security"]
+    },
+    {
+      "name": "Electron Documentation",
+      "url": "https://www.electronjs.org/docs/latest/",
+      "topics": ["Electron", "security", "packaging", "updates"]
+    },
+    {
+      "name": "WHATWG HTML Living Standard",
+      "url": "https://html.spec.whatwg.org/",
+      "topics": ["HTML platform behavior"]
+    }
+  ],
+  "reviewCadence": {
+    "repositoryDeltaReview": "weekly",
+    "webStandardsDeltaReview": "weekly",
+    "deepReview": "monthly"
+  },
+  "changePolicy": {
+    "lowRiskGuideChange": "may-update-directly-after-validation",
+    "highImpactRuleChange": "proposal-or-branch-review",
+    "highImpactExamples": [
+      "MUST rule added or removed",
+      "priority order changed",
+      "governance changed",
+      "existing project compatibility policy changed",
+      "default deployment or storage strategy changed"
+    ],
+    "requireAuthoritativeSourceForGeneralWebRule": true,
+    "requireConcreteEvidenceForProjectDerivedRule": true,
+    "noChangeNoCommit": true
+  }
+}
