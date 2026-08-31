@@ -10,8 +10,9 @@
 2. `仕様書.md` またはProjectの現行Spec
 3. `PROJECT_RULES.md` / Project固有ルール
 4. `PROJECT_LEARNINGS.md`
-5. 採用している `web-project-guide` の `START_HERE.md` と関連章
-6. 変更対象のCode / Data / Test
+5. Remote Diagnostic Handoff（有効な場合）
+6. 採用している `web-project-guide` の `START_HERE.md` と関連章
+7. 変更対象のCode / Data / Test
 
 ## Project
 
@@ -36,6 +37,23 @@
 ```
 
 実行できなかったCommandは成功扱いにせず、未確認として報告してください。
+
+## Runtime Evidence / Remote Diagnostics
+
+Remote Diagnostic Handoffを使わない場合は`disabled`とします。
+
+- Remote handoff: disabled / enabled
+- Provider: Supabase / Other / None
+- Shared store / Project ref:
+- Project key:
+- Table / collection:
+- Read first: latest errors 5-10 / recent normal 1-3 / other
+- Retention summary:
+- Fallback: local `diagnostics.json` / Diagnostic Export / Other
+
+ここへAPI Secret、`service_role`、Access Token等を書きません。
+
+Remote handoffが有効でProviderへ接続できる場合、同じ症状をユーザーへ再質問する前に最新Runtime Evidenceを確認します。Providerが利用できない場合は作業を止めず、Local ExportへFallbackします。
 
 ## Non-breakable Rules
 
@@ -64,6 +82,7 @@
 - Storage / Migration:
 - External API / Provider:
 - Authentication / Secret:
+- Remote Diagnostics / Telemetry:
 - Media / Large data:
 - Electron / OS integration:
 - Other:
@@ -77,6 +96,7 @@
 - 既存保存データ / URL /主要機能を壊す変更は事前に影響を整理する。
 - 一時Script / Debug / Workflowを残さない。
 - AI生成Codeも最終状態のTest / Validationを通す。
+- Remote Diagnosticsを導入していても、Provider障害をCore機能の障害へしない。
 
 ## Completion
 
@@ -84,6 +104,7 @@
 - [ ] 関連するRegression / Validationを実行
 - [ ] 最終Commit / Merge Commitの状態を確認
 - [ ] README / Spec / Work Report / Project Learningsを必要に応じて更新
+- [ ] Remote Diagnostics採用時、最新EvidenceとFallbackの整合を確認
 - [ ] 未確認事項を明示
 
 ## Nested AGENTS.md
