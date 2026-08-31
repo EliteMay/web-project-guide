@@ -83,6 +83,16 @@
 - [Dependencies / Assets](docs/13-dependencies-assets.md)
 - 本当にGitHub Pagesだけでは不足するかを先に確認する
 
+### Guide自体を定期的に改善する
+
+- [Continuous Improvement](docs/14-continuous-improvement.md)
+- [`maintenance/review-policy.json`](maintenance/review-policy.json) に従ってProjectと公式Web情報を確認する
+- 他Projectは調査対象としてRead-only、定期更新先は `web-project-guide` のみ
+- 最近変更されたProjectを先に見て、必要な場合だけ深掘りする
+- W3C / MDN / web.dev / OWASP / GitHub / Electron / WHATWG等を優先する
+- 新しい知見がなければ変更Commitを作らない
+- MUST / Governance等の高影響変更は自動確定せずBranch / Proposalを優先する
+
 ## ルールの読み方
 
 このガイドではルールを4段階で扱います。
