@@ -37,6 +37,7 @@ const requiredFiles = [
   'templates/SPEC_TEMPLATE.md',
   'templates/ADR_TEMPLATE.md',
   'templates/PROJECT_RULES_TEMPLATE.md',
+  'templates/AGENTS_TEMPLATE.md',
   'templates/PROJECT_LEARNINGS_TEMPLATE.md',
   'templates/DIAGNOSTICS_SCHEMA_TEMPLATE.json',
   'templates/CHANGELOG_TEMPLATE.md',
@@ -162,6 +163,18 @@ if (!readme.includes('[15 Development Observability / Project Memory](docs/15-de
 }
 if (!readme.includes('[Project Learnings](templates/PROJECT_LEARNINGS_TEMPLATE.md)')) {
   errors.push('README.md must link to templates/PROJECT_LEARNINGS_TEMPLATE.md');
+}
+if (!readme.includes('[AGENTS](templates/AGENTS_TEMPLATE.md)')) {
+  errors.push('README.md must link to templates/AGENTS_TEMPLATE.md');
+}
+
+try {
+  const agentsTemplate = fs.readFileSync(path.join(root, 'templates/AGENTS_TEMPLATE.md'), 'utf8');
+  for (const token of ['## Read First', '## Source of Truth', '## Commands', '## After Changes']) {
+    if (!agentsTemplate.includes(token)) errors.push(`templates/AGENTS_TEMPLATE.md: missing ${token}`);
+  }
+} catch (error) {
+  errors.push(`templates/AGENTS_TEMPLATE.md validation failed: ${error.message}`);
 }
 
 try {
