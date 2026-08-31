@@ -34,6 +34,7 @@ GitHub Pages中心の通常Webサイト。
 - Media codec
 - 大容量データ
 - Thumbnail / lazy loading
+- Responsive image / dimensions（該当時）
 - 実ブラウザ確認
 
 ## AI-HANDOFF
@@ -58,6 +59,7 @@ Supabase等の外部DB・認証・同期を使うサイト。
 - Sync競合
 - サービス停止時の挙動
 - 無料枠 / 維持費
+- 個人Data / Privacy（扱う場合）
 
 ## ELECTRON
 
@@ -95,6 +97,31 @@ Windows等のDesktop機能を使うElectronアプリ。
 - Privacy
 - 公開してはいけない個人データ
 - 必要ならSEO
+
+### CONDITIONAL: 多言語公開
+
+複数言語・地域を正式対応する場合だけ追加確認します。
+
+- `lang` / text direction
+- TranslationによるText expansion
+- Locale-aware date / number / currency
+- RTL Layout（該当時）
+- Locale切替とURL / SEO方針（必要時）
+- Image / Icon / Exampleの文化依存
+
+単一言語Projectへi18n frameworkを機械的に導入しません。
+
+### CONDITIONAL: Analytics / Form / Account / Tracking
+
+User DataやTrackingを扱う場合だけ追加確認します。
+
+- 収集Dataの必要性
+- 外部送信先
+- Retention
+- Consent / Opt-outの要否
+- Diagnostic Dataとの分離
+
+詳細は [Security](06-security.md) を参照します。
 
 ## Project Profileの記録例
 
