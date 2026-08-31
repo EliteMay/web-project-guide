@@ -44,13 +44,31 @@
 
 - 
 
+## Development Diagnostics
+
+- Runtime Diagnostics: Yes / No
+- Diagnostic保存先:
+- Diagnostic Export:
+- Error ID:
+- Log保持上限:
+- Productionで残す診断機能:
+- 記録禁止データ:
+
+## Project Memory
+
+- Long-term learning: `PROJECT_LEARNINGS.md`
+- Work history: `作業報告書.md`
+- Major decisions: `ADR`（必要時）
+
 ## 外部サービス / Dependencies
 
 - 
 
 ## 開発・更新時の注意
 
-- 
+- 高コストBug / 再利用価値の高い成功は `PROJECT_LEARNINGS.md` へ記録
+- Interactive ProjectではDiagnostics / Breadcrumb / Error捕捉を壊さない
+- Diagnostic LogへToken / Password / Secret / User入力全文を残さない
 
 ## 既知の問題
 
