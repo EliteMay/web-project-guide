@@ -1,8 +1,8 @@
 # Web Standards / References
 
-このガイドの一般Web制作部分を見直す際の一次情報です。
+このガイドの一般Web制作部分を見直す際の一次情報・主要Referenceです。
 
-## Accessibility
+## Accessibility / Internationalization
 
 - W3C WCAG 2.2
   - https://www.w3.org/TR/WCAG22/
@@ -14,6 +14,8 @@
   - https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html
 - Error Identification
   - https://www.w3.org/WAI/WCAG22/Understanding/error-identification.html
+- W3C Internationalization — Authoring HTML & CSS
+  - https://www.w3.org/International/techniques/authoring-html
 
 ## Browser / Web APIs
 
@@ -52,6 +54,13 @@
 - OWASP HTML5 Security Cheat Sheet
   - https://cheatsheetseries.owasp.org/cheatsheets/HTML5_Security_Cheat_Sheet.html
 
+## GitHub Pages / Public Content
+
+- GitHub Docs — Custom 404 Page
+  - https://docs.github.com/en/pages/getting-started-with-github-pages/creating-a-custom-404-page-for-your-github-pages-site
+- Google Search Central
+  - https://developers.google.com/search/docs
+
 ## Visual Design / Design Systems
 
 特定企業の外観をコピーするためではなく、Layout / Typography / Spacing / Hierarchy / Component consistencyを学ぶReferenceとして利用します。
@@ -68,8 +77,8 @@
   - https://fluent2.microsoft.design/typography
 - Microsoft Fluent 2 — Design Tokens
   - https://fluent2.microsoft.design/design-tokens
-- Apple Human Interface Guidelines — Design Principles
-  - https://developer.apple.com/design/human-interface-guidelines/design-principles
+- Apple Human Interface Guidelines
+  - https://developer.apple.com/design/human-interface-guidelines/
 
 これらから共通Ruleへ取り込むのは「GitHub風にする」「Microsoft風にする」といった表層表現ではなく、以下のような一般化可能な考え方です。
 
@@ -80,9 +89,49 @@
 - Component / Tokenは一貫性を作る
 - DesignはPurposeと利用Contextから決める
 
+## AI向けFrontend Design / Review
+
+AIへDesignを任せるときのThinking / Review方法を研究するReferenceです。特定Skillの美的好みをそのまま共通Ruleへしません。
+
+- Anthropic — Frontend Design Skill
+  - https://github.com/anthropics/claude-plugins-official/blob/main/plugins/frontend-design/skills/frontend-design/SKILL.md
+- Microsoft Agent Academy — Frontend Design
+  - https://github.com/microsoft/agent-academy/blob/main/.github/skills/frontend-design/SKILL.md
+- Microsoft Skills — Frontend Design Review
+  - https://github.com/microsoft/skills/blob/main/.github/skills/frontend-design-review/SKILL.md
+
+共通化しやすい観点:
+
+- Purpose / Audience / SubjectからDirectionを作る
+- 何がProject固有かを実装前に言語化する
+- Typography / Layout / Color / Effectsを意図的に選ぶ
+- AIの時点ごとのDefault Aestheticを完成形として採用しない
+- Build前とBuild後の両方でCritiqueする
+- Copy / Empty / Error StateもDesign Materialとして扱う
+
+「特定Fontを避ける」「必ず大胆なEffectを使う」等のStyle preferenceは、すべてのProjectへ適用するRuleにはしません。
+
+## AI Coding Agent Instructions
+
+- AGENTS.md open format
+  - https://agents.md/
+
+`AGENTS.md`はAgent向けの予測可能な入口として有用ですが、本GuideではProject仕様のSource of Truthを増やさないため、README / Spec / Project Rules / Test commandへ案内するRouterとして利用します。
+
+## Community / Checklist References
+
+以下は網羅性や候補発見に有用ですが、一般RuleをMUSTへする根拠は可能な限り一次資料で再確認します。
+
+- Front-End Checklist
+  - https://github.com/thedaviddias/Front-End-Checklist
+- Front-End Design Checklist
+  - https://github.com/thedaviddias/Front-End-Design-Checklist
+
 ## 運用ルール
 
-- ブログ記事や個人のTipsより、まずW3C / MDN / web.dev / OWASP / 公式Design System等の一次資料を優先する。
+- ブログ記事や個人のTipsより、まずW3C / MDN / web.dev / OWASP / GitHub /公式Design System等の一次資料を優先する。
+- Anthropic / Microsoft等のAgent Skillは「AIへどう考えさせるか」のReferenceとして扱い、Style preferenceまで共通Ruleへコピーしない。
+- Community Checklistは抜け発見に使い、重要Ruleは可能なら公式Sourceへ戻って確認する。
 - Web標準・Design Systemは変化するため、新しいAPIやVisual Ruleを共通ルールへ追加する前に最新の公式情報を確認する。
 - 特定BrandのVisual表現をそのままGuideのDefaultへしない。
 - このファイルのURL自体を仕様の代わりにせず、実際に採用したルールは`docs/`側へ日本語で明文化する。
