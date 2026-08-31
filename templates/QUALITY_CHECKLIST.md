@@ -9,6 +9,7 @@
 ### 構成
 
 - [ ] README / 仕様が現在実装と致命的に矛盾していない
+- [ ] `PROJECT_LEARNINGS.md` が存在する
 - [ ] 同じ機能の旧Runtimeが本番で重複していない
 - [ ] 正式RuntimeがVersion別Folder / Patch Fileの増殖構造になっていない
 - [ ] 変更対象と影響範囲を確認した
@@ -37,6 +38,7 @@
 ### 完了記録
 
 - [ ] 必要なREADME / 作業報告を更新
+- [ ] 高コストBug / 重要な成功パターンを `PROJECT_LEARNINGS.md` へ反映
 - [ ] 確認できなかったことを未確認として記録
 - [ ] CIがある場合、Cleanup後の最終Commit / Merge Commitに対する結果を確認
 
@@ -53,6 +55,22 @@
 - [ ] 重要データにBackup / Export / Recoveryを必要に応じて用意
 - [ ] 保存失敗時に無言で成功扱いしない
 - [ ] 編集サイトでは未保存状態を必要に応じて扱う
+
+### Development Diagnostics
+
+Interactive Projectでは必要範囲を確認します。
+
+- [ ] App Version / Build / Schemaを診断情報から確認できる
+- [ ] JavaScript Errorを捕捉できる
+- [ ] Unhandled Promise Rejectionを捕捉できる
+- [ ] Fetch / API Failureを必要に応じて記録できる
+- [ ] Storage read / write Failureを必要に応じて記録できる
+- [ ] 重要操作のBreadcrumbが残る
+- [ ] Breadcrumbが無制限に増えない
+- [ ] Diagnostic LogのClear / Rotation方法がある
+- [ ] Token / Password / Secret / User入力全文をLogへ残さない
+- [ ] Diagnostic Dataを公開Repositoryへ誤Commitしない
+- [ ] 問題発生時にDiagnostic Export / Copy Reportできる（中規模以上）
 
 ### UI / UX
 
@@ -82,6 +100,7 @@
 - [ ] 長時間同期LoopでUIを固めない
 - [ ] Blob URL / Timer / ListenerをCleanup
 - [ ] 第三者API/CDN失敗時の影響を確認
+- [ ] Diagnostics自体がStorage / Performanceを大きく悪化させていない
 
 ### Browser
 
@@ -104,6 +123,7 @@ Project Profileや高リスク変更に該当する場合のみ実施します�
 - [ ] 不正Importで現在Dataが変わらないTestがある
 - [ ] 編集→保存→再読込E2E
 - [ ] 複数タブ競合を考慮（重要データの場合）
+- [ ] Import / Migration / Restore結果がDiagnosticsへ残る
 
 ### MEDIA
 
@@ -112,6 +132,7 @@ Project Profileや高リスク変更に該当する場合のみ実施します�
 - [ ] Object URL cleanup
 - [ ] 大容量データ時の性能
 - [ ] Canvas / Geometry
+- [ ] Media本体をDiagnostic Exportへ誤って含めない
 
 ### CLOUD
 
@@ -119,6 +140,7 @@ Project Profileや高リスク変更に該当する場合のみ実施します�
 - [ ] Sync失敗
 - [ ] Offline / Provider outage
 - [ ] Secret / Environment設定
+- [ ] Authorization Header / TokenをLogへ残さない
 
 ### ELECTRON
 
@@ -127,6 +149,7 @@ Project Profileや高リスク変更に該当する場合のみ実施します�
 - [ ] userData維持
 - [ ] start.bat失敗時ログ
 - [ ] Setup.exe / install / uninstall（該当時）
+- [ ] 起動失敗 / IPC failureを診断できる
 
 ### PUBLIC-CONTENT
 
@@ -134,12 +157,13 @@ Project Profileや高リスク変更に該当する場合のみ実施します�
 - [ ] 公開してはいけない個人情報なし
 - [ ] 必要ならtitle / metadata / SEO
 
-### Test
+### Test / Learning
 
 - [ ] Static Validation成功
 - [ ] Unit Test成功（該当時）
 - [ ] Browser Smoke / E2E成功（該当時）
 - [ ] 一度直した重大BugにRegression Guardあり
+- [ ] 高コストBugのRoot Cause / Preventionを `PROJECT_LEARNINGS.md` に記録
 - [ ] Version / Build / Schema等の正本と派生値が自動検証される（該当時）
 - [ ] 途中Commitではなく最終Commit / Merge Commitの結果を確認した
 
