@@ -9,24 +9,40 @@
 1. [ルールの優先順位と強さ](docs/00-governance.md)
 2. [要件定義](docs/01-requirements.md)
 3. [Project Profile](docs/12-project-profiles.md)
-4. 必要な設計章だけ確認
-5. [要件定義テンプレート](templates/REQUIREMENTS_TEMPLATE.md)を使う
-6. 完成前に[Quality Checklist](templates/QUALITY_CHECKLIST.md)を使う
+4. Interactive Projectなら[Development Observability / Project Memory](docs/15-development-observability.md)で診断方式を決める
+5. 必要な設計章だけ確認
+6. [要件定義テンプレート](templates/REQUIREMENTS_TEMPLATE.md)を使う
+7. `PROJECT_LEARNINGS.md` を [Template](templates/PROJECT_LEARNINGS_TEMPLATE.md) から作る
+8. 完成前に[Quality Checklist](templates/QUALITY_CHECKLIST.md)を使う
 
 ### 既存サイトのバグを直す
 
 1. 現在のGitHubリポジトリを確認
-2. README / 仕様 / 作業報告を必要範囲だけ確認
+2. README / 仕様 / 作業報告 / `PROJECT_LEARNINGS.md` を必要範囲だけ確認
 3. [GitHub中心のプロジェクト管理](docs/10-project-management.md)の影響確認を行う
 4. [Failure Catalog](catalog/failures.md)に類似事故がないか確認
-5. 変更経路を選ぶ
+5. Diagnostics / Error ID / Breadcrumbがある場合は、ユーザー説明より先にそのEvidenceを確認
+6. 変更経路を選ぶ
    - 小規模で変更箇所が明確 → GitHub上の対象ファイルを直接更新
    - 複数ファイル・高リスク・設計変更 → Branch / Pull Requestを優先
    - GitHub Actions → 継続的な自動化そのものが目的の場合に使い、単発のファイル書換え手段として安易に増やさない
-6. 実装後、一時Script / 一時Workflow / Debug資産が残っていないか確認
-7. **最終Commitの状態**で該当範囲のRegression / CI / Pages確認を行う
+7. 実装後、一時Script / 一時Workflow / Debug資産が残っていないか確認
+8. 高コストBugなら `PROJECT_LEARNINGS.md` とRegression Guardを更新
+9. **最終Commitの状態**で該当範囲のRegression / CI / Pages確認を行う
 
 小規模修正でフル要件定義をやり直す必要はありません。
+
+### 「こうなった」と説明する前に診断データを使う
+
+- [Development Observability / Project Memory](docs/15-development-observability.md)
+- App Version / Build / Schemaを確認
+- Recent Breadcrumbを確認
+- JavaScript Error / Unhandled Rejectionを確認
+- Fetch / Storage / Migration failureを確認
+- 必要なら`diagnostics.json`またはDiagnostic PackageをExport
+- Error IDが表示されている場合は同じIDをログから検索
+
+診断機能の目的は、ユーザーが毎回状況を長文で再説明しなくても、直前状態から調査を開始できるようにすることです。
 
 ### 既存サイトの構造を整理する / Patchを統合する
 
@@ -73,6 +89,7 @@
 ### Electronを作る・直す
 
 - [Electron / Distribution](docs/11-electron-distribution.md)
+- [Development Observability / Project Memory](docs/15-development-observability.md)
 - Web版へ勝手に変更しない
 - `userData`、preload / IPC、起動失敗ログ、更新時のデータ維持を確認する
 
@@ -81,7 +98,9 @@
 - [Performance / Reliability](docs/05-performance-reliability.md)
 - [Security](docs/06-security.md)
 - [Dependencies / Assets](docs/13-dependencies-assets.md)
+- [Development Observability / Project Memory](docs/15-development-observability.md)
 - 本当にGitHub Pagesだけでは不足するかを先に確認する
+- Network failureを診断できるようにする
 
 ### Guide自体を定期的に改善する
 
@@ -89,6 +108,7 @@
 - [`maintenance/review-policy.json`](maintenance/review-policy.json) に従ってProjectと公式Web情報を確認する
 - 他Projectは調査対象としてRead-only、定期更新先は `web-project-guide` のみ
 - 最近変更されたProjectを先に見て、必要な場合だけ深掘りする
+- `PROJECT_LEARNINGS.md` があるProjectでは最優先Evidenceの1つとして確認する
 - W3C / MDN / web.dev / OWASP / GitHub / Electron / WHATWG等を優先する
 - 新しい知見がなければ変更Commitを作らない
 - MUST / Governance等の高影響変更は自動確定せずBranch / Proposalを優先する
@@ -108,7 +128,8 @@
 
 1. [Quality Checklist](templates/QUALITY_CHECKLIST.md)をプロジェクト種別に合わせて実施
 2. README / 仕様 / 作業報告を更新
-3. 未確認を未確認のまま記録
-4. 一時Script / 一時Workflow / Debug資産が本番Repoへ残っていないことを確認
-5. Cleanup後の**最終Commit**でCI / Pages / Regression結果を確認
-6. 重大な既知バグが残る場合は完成扱いにしない
+3. 高コストBug / 重要成功があれば `PROJECT_LEARNINGS.md` を更新
+4. 未確認を未確認のまま記録
+5. 一時Script / 一時Workflow / Debug資産が本番Repoへ残っていないことを確認
+6. Cleanup後の**最終Commit**でCI / Pages / Regression結果を確認
+7. 重大な既知バグが残る場合は完成扱いにしない
