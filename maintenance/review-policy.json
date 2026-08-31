@@ -11,9 +11,10 @@
   "repositoryReviewPriority": [
     "PROJECT_LEARNINGS.md",
     "recent commits and changed files",
-    "README and specification",
+    "README, specification, PROJECT_RULES and AGENTS.md",
     "work reports and changelog",
-    "visual design direction, layout structure, repeated UI patterns and DesignShelf usage",
+    "visual design direction, post-build visual review, repeated UI patterns and DesignShelf usage",
+    "AI-assisted architecture decisions and available oracle or regression tests",
     "diagnostics design and exported schema when committed",
     "tests and GitHub Actions",
     "storage schema and migration"
@@ -23,6 +24,11 @@
       "name": "W3C Web Accessibility Initiative",
       "url": "https://www.w3.org/WAI/",
       "topics": ["accessibility", "WCAG"]
+    },
+    {
+      "name": "W3C Internationalization",
+      "url": "https://www.w3.org/International/",
+      "topics": ["language", "internationalization", "RTL"]
     },
     {
       "name": "MDN Web Docs",
@@ -50,6 +56,21 @@
       "topics": ["visual design", "layout", "typography", "navigation", "design systems", "accessibility"]
     },
     {
+      "name": "Anthropic Frontend Design Skill",
+      "url": "https://github.com/anthropics/claude-plugins-official/blob/main/plugins/frontend-design/skills/frontend-design/SKILL.md",
+      "topics": ["AI frontend design", "design critique", "copy", "differentiation"]
+    },
+    {
+      "name": "Microsoft Agent Academy Frontend Design",
+      "url": "https://github.com/microsoft/agent-academy/blob/main/.github/skills/frontend-design/SKILL.md",
+      "topics": ["AI frontend design", "design direction", "differentiation"]
+    },
+    {
+      "name": "Microsoft Frontend Design Review",
+      "url": "https://github.com/microsoft/skills/blob/main/.github/skills/frontend-design-review/SKILL.md",
+      "topics": ["visual review", "design quality", "review severity"]
+    },
+    {
       "name": "Microsoft Fluent 2",
       "url": "https://fluent2.microsoft.design/",
       "topics": ["visual design", "layout", "spacing", "typography", "design tokens", "components"]
@@ -60,6 +81,16 @@
       "topics": ["design principles", "hierarchy", "layout", "typography", "platform design"]
     },
     {
+      "name": "Google Search Central",
+      "url": "https://developers.google.com/search/docs",
+      "topics": ["public content", "metadata", "SEO"]
+    },
+    {
+      "name": "AGENTS.md",
+      "url": "https://agents.md/",
+      "topics": ["coding agents", "project instructions", "nested instructions"]
+    },
+    {
       "name": "Electron Documentation",
       "url": "https://www.electronjs.org/docs/latest/",
       "topics": ["Electron", "security", "packaging", "updates", "logging"]
@@ -68,6 +99,16 @@
       "name": "WHATWG HTML Living Standard",
       "url": "https://html.spec.whatwg.org/",
       "topics": ["HTML platform behavior"]
+    }
+  ],
+  "discoveryReferences": [
+    {
+      "name": "Front-End Checklist",
+      "url": "https://github.com/thedaviddias/Front-End-Checklist"
+    },
+    {
+      "name": "Front-End Design Checklist",
+      "url": "https://github.com/thedaviddias/Front-End-Design-Checklist"
     }
   ],
   "reviewCadence": {
@@ -83,7 +124,8 @@
       "priority order changed",
       "governance changed",
       "existing project compatibility policy changed",
-      "default deployment or storage strategy changed"
+      "default deployment or storage strategy changed",
+      "fixed visual style or layout imposed across projects"
     ],
     "requireAuthoritativeSourceForGeneralWebRule": true,
     "requireConcreteEvidenceForProjectDerivedRule": true,
