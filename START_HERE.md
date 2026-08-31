@@ -132,8 +132,13 @@ Findingは必要に応じて`Blocking / Major / Minor`へ分け、Blockingが残
 - [Development Observability / Project Memory](docs/15-development-observability.md)
 - Web版へ勝手に変更しない
 - `userData`、preload / IPC、起動失敗ログ、更新時のデータ維持を確認する
-- Setup.exe等で継続配布する場合は、起動時更新確認 + One-click Updateを導入できるか確認する
-- Auto Update導入時はInstallerだけでなくUpdate Metadata / Release整合 / 失敗Fallback / 実機更新を確認する
+- Setup.exe等で継続配布する場合は、Installer単体ではなくVersion / Release Channel / Update Metadata / userData / Signing / Fallbackを含むRelease Contractを決める
+- 起動時更新確認 + One-click Updateを導入できるか確認する
+- Updaterを途中Versionから導入する場合はBootstrap Versionを決め、それ以前のVersionに1回だけ手動Setup.exe更新が必要か明記する
+- PR BuildとStable Releaseを分け、未Merge BuildをUpdate Channelへ出さない
+- Auto Update導入時はInstallerだけでなくUpdate Metadata / blockmap / Release整合 / 失敗Fallback / 実機更新を確認する
+- サポート対象の最古Auto-update Version → 最新VersionのUpdate Pathを確認、または未確認と記録する
+- 公開配布ではCode Signingを優先し、未署名ならSmartScreen / Publisher検証の制約を明記する
 
 ### 外部API・CDN・Supabase等を導入する
 

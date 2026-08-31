@@ -202,14 +202,23 @@ AIへ大きく実装を任せる場合。
 
 - [ ] 実Windows起動
 - [ ] preload / IPC
-- [ ] userData維持
+- [ ] `userData`等のユーザーデータがInstaller更新で消えない
 - [ ] start.bat失敗時ログ
 - [ ] Setup.exe / install / uninstall（該当時）
 - [ ] 起動失敗 / IPC failureを診断できる
 - [ ] 継続配布するインストール型Appでは起動時更新確認 + One-click Updateを導入できるか確認
-- [ ] Auto Update使用時、ReleaseにInstaller / Update Metadata / blockmapが同Versionで揃っている
+- [ ] Installer配布のVersion正本 / Release Channel / Update Provider / Fallbackが明確
+- [ ] Auto Update使用時、ReleaseにInstaller / Update Metadata / blockmap等の必要Artifactが同Versionで揃っている
+- [ ] Metadataが現在Versionの実Installerを参照している
+- [ ] Installer / Metadataを同じBuild / Release Pipelineから生成し、別BuildのArtifactを混ぜていない
+- [ ] PR BuildはStable Releaseを作らず、main / approved tag等の公開経路と分離されている
+- [ ] `package.json#version` / `app.getVersion()` / Release Tag / Installer / MetadataのVersionが整合する
+- [ ] Updater導入前Versionがある場合、Updater搭載のBootstrap Versionと1回手動Installの要否を明記した
+- [ ] サポート対象の最古Auto-update Version → 最新VersionのUpdate Pathを確認した、または未確認と記録した
 - [ ] Auto Update失敗時に手動Release導線と現Version継続利用ができる
 - [ ] Auto Update導入・方式変更時、旧Version → 新Versionの実機Update / Restart / userData維持を確認
+- [ ] Code Signingの有無を明示し、公開配布で未署名ならSmartScreen / Publisher検証の制約を記録した
+- [ ] Broken Releaseを同Version差し替えだけで解決せず、必要ならより大きい修正版Versionを発行する方針がある
 
 ### PUBLIC-CONTENT
 
