@@ -2,6 +2,56 @@
 
 Guide Versionの正本は [`guide-version.json`](guide-version.json) です。
 
+## 1.8.0 - 2026-08-31
+
+### Added
+
+- `docs/11-electron-distribution.md`へInstaller Release Contractを追加
+  - Setup.exe単体生成ではなく、Version / Installer / Update Metadata / Release Channel / userData / Signing / Fallback /実機更新を1つの配布契約として扱う
+  - `Setup.exeが生成できた`、`CIが通った`、`Releaseが存在する`の1条件だけで配布成功扱いにしない
+- Updater Bootstrap方針を追加
+  - Updater導入前Versionは自力でAuto Updateできないことを明示
+  - Updater搭載の最初のVersionをBootstrap Versionとして扱う
+  - それ以前の利用者には1回だけ手動Setup.exe更新が必要な場合がある
+  - Bootstrap後はApp内One-click Updateへ移行
+  - サポート対象の最古Auto-update Version → 最新VersionのUpdate Pathを確認
+- Build / Release Pipeline分離方針を追加
+  - Pull RequestではInstaller + MetadataをBuild / ValidateしてArtifact保存、Stable Releaseは作らない
+  - main / approved tagで同じ検証後にReleaseへInstaller / MetadataをUpload
+  - 未Merge BuildをStable Update Channelへ誤配信しない
+- Release Artifactの整合確認を拡張
+  - Installer / `latest.yml` / `.blockmap`等の必要Artifact存在
+  - `package.json#version` / `app.getVersion()` / Release Tag / Metadata / Installer名のVersion一致
+  - Metadataが実際のInstallerを参照していること
+  - MetadataとInstallerを同一Build / Pipelineから生成し、別BuildのArtifactを混ぜない
+- Broken Release対応を追加
+  - 一部利用者へ配信済みの壊れたReleaseは同Version差し替えだけに頼らず、原則としてより大きい修正版Versionを発行
+- Windows Code Signing / Update互換性の注意を拡張
+  - 公開配布ではCode Signingを強く推奨
+  - 未署名配布ではSmartScreen / Publisher検証の制約を明示
+  - Updater / electron-builder互換範囲変更時は既存Installed Appからの更新を確認
+
+### Source
+
+- `EliteMay/osu-hub` `osu Setup Launcher v0.18.2`
+  - v0.18.1以前はUpdaterなしのためv0.18.2 Setup.exeを1回手動InstallするBootstrap運用
+  - PRでInstaller / `latest.yml` / `.blockmap`を検証し、mainだけGitHub Releaseへ公開
+  - Auto Update失敗時は現在Version継続 + GitHub Releases手動Fallback
+  - Electron `userData`をInstaller更新から分離
+- electron-builder Auto Update / Troubleshooting / Security公式Documentation
+  - NSIS + `electron-updater`
+  - `latest.yml`等のRelease Metadata
+  - MetadataとArtifactを同じBuildから生成する重要性
+  - Installed Windows AppでのAuto Update実機Test推奨
+- Electron Code Signing公式Documentation
+
+### Compatibility
+
+- 既存Electron ProjectへAuto Updateを一律強制しない
+- 単発Tool / Portable /更新頻度が低いProjectは条件付き判断を維持
+- 既存Storage / Deployment Default変更なし
+- `osu-hub`本体Codeは今回変更しない
+
 ## 1.7.0 - 2026-08-31
 
 ### Added
@@ -233,8 +283,8 @@ Guide Versionの正本は [`guide-version.json`](guide-version.json) です。
 - 破壊的Importの `validate → backup → replace → verify → rollback` 手順を追加
 - `Renderer owns its DOM` 原則をArchitectureへ追加
 - Failure CatalogへF-017〜F-019を追加
-- Success Pattern CatalogへS-021〜S-023を追加
-- Anti-Pattern CatalogへAP-024〜AP-025を追加
+- Success PatternへS-021〜S-023を追加
+- Anti-PatternへAP-024〜AP-025を追加
 
 ### Changed
 
@@ -263,7 +313,7 @@ English Worksheet Lab v0.6.2の実運用で見つかった以下の問題をGuid
 - 一時Script / 一時Workflow / Debug資産のCleanup確認をQuality Checklistへ追加
 - Failure Catalogへ `F-016 一時Workflow / Scriptが修正経路になる` を追加
 - Anti-Pattern Catalogへ `AP-023 Workflow as Patch Engine` を追加
-- Success Pattern Catalogへ `S-020 Smallest Safe Change Path + Final-state Verification` を追加
+- Success Patternへ `S-020 Smallest Safe Change Path + Final-state Verification` を追加
 
 ### Changed
 
