@@ -49,6 +49,7 @@ Guide Versionの正本は [`guide-version.json`](guide-version.json)、変更履
 - [README](templates/README_TEMPLATE.md)
 - [Specification](templates/SPEC_TEMPLATE.md)
 - [Project Rules](templates/PROJECT_RULES_TEMPLATE.md)
+- [AGENTS](templates/AGENTS_TEMPLATE.md) — Coding Agent向けの運用Router
 - [ADR](templates/ADR_TEMPLATE.md)
 - [Work Report](templates/WORK_REPORT_TEMPLATE.md)
 - [Project Learnings](templates/PROJECT_LEARNINGS_TEMPLATE.md)
@@ -74,6 +75,7 @@ Guide Versionの正本は [`guide-version.json`](guide-version.json)、変更履
 - 各Projectは再発防止価値の高い失敗・成功を `PROJECT_LEARNINGS.md` に残す。
 - 状態を持つInteractive Projectは、開発中にError / Breadcrumb / Version / Storage failure等を診断できる仕組みを持つ。
 - Diagnostic LogへToken、Password、秘密情報、ユーザー入力全文を残さない。
+- AIが大きく生成したCode / Designは、最初の出力をFinal扱いせず既存Repo・Test・Visual Review等で検証する。
 
 詳細ルールは各docsを正本とし、READMEへ重複して増やし続けません。
 
