@@ -34,6 +34,7 @@ Guide Versionの正本は [`guide-version.json`](guide-version.json)、変更履
 - [11 Electron / Distribution](docs/11-electron-distribution.md)
 - [12 Project Profiles](docs/12-project-profiles.md)
 - [13 Dependencies / Assets](docs/13-dependencies-assets.md)
+- [14 Continuous Improvement](docs/14-continuous-improvement.md) — 実ProjectとWeb標準からGuideを定期改善
 
 ## 過去事例から学ぶ
 
@@ -77,6 +78,19 @@ Guide Versionの正本は [`guide-version.json`](guide-version.json)、変更履
 `STATIC` / `DATA` / `MEDIA` / `AI-HANDOFF` / `CLOUD` / `ELECTRON` / `TOOL` / `PUBLIC-CONTENT`
 
 詳細は [Project Profiles](docs/12-project-profiles.md) を参照してください。
+
+## Continuous Improvement
+
+Guideは固定された完成品として扱わず、実際のProjectとWeb標準の変化から継続改善します。
+
+- GitHub上でアクセス可能な `EliteMay` のProjectを定期的に再発見し、最近の変更・高コスト修正・成功設計を確認
+- W3C / MDN / web.dev / OWASP / GitHub / Electron / WHATWG等の公式情報を定期確認
+- 他Projectは原則Read-onlyで、定期レビューが自動更新するのは `web-project-guide` のみ
+- 根拠の弱い流行や言い換えだけではGuideを変更しない
+- MUST / Governance等の高影響変更は直接確定せず、Branch / Proposalを優先
+- 新しい知見がなければCommitしない
+
+運用ルールは [Continuous Improvement](docs/14-continuous-improvement.md)、Review Source設定は [`maintenance/review-policy.json`](maintenance/review-policy.json) を正本とします。
 
 ## Guide自身の品質確認
 
