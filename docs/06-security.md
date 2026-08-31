@@ -35,6 +35,28 @@
 
 外部入力をそのまま`innerHTML`へ入れません。HTMLとして挿入する必要がある場合は、信頼できる生成元または適切にsanitizeされた内容だけを扱います。
 
+## Privacy / Data Minimization
+
+### CONDITIONAL: Analytics / Form / Account / Cloud / TelemetryでUser Dataを扱う場合
+
+「取れるから取る」ではなく、機能・診断・改善に必要なDataだけを扱います。
+
+最低限確認します。
+
+- 何を収集するか
+- なぜ必要か
+- 端末内だけか、外部送信するか
+- どのServiceへ送るか
+- どのくらい保持するか
+- Userが削除 / Export / Opt-outできる必要があるか
+- Cookie / Tracking / AnalyticsでConsentが必要な地域・用途か
+
+Development Diagnosticsは原則Local-firstとし、実ユーザーの入力全文やMedia本体をTelemetry代わりに送信しません。
+
+第三者Analytics / Ad / Trackingを使わないProjectへConsent UIを形だけ追加する必要はありません。
+
+法的要件は公開地域・Service・Data種類で変わるため、一般公開Serviceで個人DataやTrackingを扱う場合は現行の公式情報を確認します。
+
 ## 外部リンク
 
 新規タブを開く場合は必要に応じて`rel="noopener noreferrer"`を使用します。
@@ -47,6 +69,7 @@
 - 使う数を抑える
 - 対応可能ならSRIを使う
 - 重要機能にはFallbackを持たせる
+- Analytics / TrackingならPrivacyへの影響も確認する
 
 ## 削除・リセット
 
