@@ -60,7 +60,7 @@ OSコマンドやファイル操作など危険性の高い処理は、入力値
 
 失敗時には可能な限りログを残し、手動確認・Fallback方法を用意します。
 
-## Setup.exe
+## Setup.exe / Installer配布
 
 Setup.exe化する場合は`electron-builder`等を検討します。
 
@@ -74,6 +74,23 @@ Setup.exe化する場合は`electron-builder`等を検討します。
 - 更新時のユーザーデータ維持
 
 配布方法としてGitHub Releasesも検討します。
+
+### SHOULD: Installer配布を「Setup.exe 1個」ではなくRelease Contractとして設計する
+
+継続配布するElectronアプリでは、Installer生成だけを配布設計の完成としません。最低限、次を1つのRelease Contractとして整理します。
+
+- Versionの正本
+- Installer / Portable等の配布形式
+- Update Provider / Release Channel
+- Auto Update用Metadata / Blockmap等の必要Artifact
+- Updaterを搭載した最初のVersion
+- それ以前のVersionからの移行方法
+- `userData`等の永続データ保存場所
+- Code Signingの有無
+- 更新失敗時の手動Download導線
+- どのVersionからどのVersionへの実機更新を確認したか
+
+`Setup.exeが生成できた`、`CIが通った`、`GitHub Releaseが存在する`のどれか1つだけで配布成功扱いにしません。
 
 ## 更新
 
@@ -116,6 +133,40 @@ Appを終了してInstall
 
 利用者が重要な作業中の場合に、同意なしで突然再起動させないようにします。更新を開始する操作自体をInstall / Restartへの明示的な同意として扱えるUIにします。
 
+必要に応じて次も用意します。
+
+- 起動時自動確認のON / OFF
+- 手動の「更新を確認」
+- Download進捗
+- 「あとで」選択後も現在Versionを通常利用できる状態
+
+### Updater Bootstrap / 旧Versionからの移行
+
+Auto Updateは、**Updaterを持っていない既存Versionへ後から遠隔で生やすことはできません。**
+
+途中VersionからUpdaterを導入する場合は、Updater搭載の最初のVersionをBootstrap Versionとして扱います。
+
+例:
+
+```text
+v1.4.0以前: Updaterなし
+↓
+ユーザーがv1.5.0 Setup.exeを1回手動Install
+↓
+v1.5.0: Updaterあり
+↓
+v1.5.1以降: App内One-click Update
+```
+
+この場合は次をREADME / Release Notes / App内案内等の適切な場所へ明記します。
+
+- Auto Update対応開始Version
+- それ以前のVersionは1回だけ手動Installer更新が必要であること
+- Bootstrap後はどのChannelから更新されるか
+- 古いVersionを「自動更新対応済み」と誤表示しないこと
+
+継続運用では「最新版へ更新できるか」だけでなく、**サポート対象の最古Auto-update Version → 最新Version**のUpdate Pathを意識します。
+
 ### electron-builder / GitHub Releasesを使う場合
 
 WindowsのNSIS配布では、条件に合えば`electron-updater`等の標準的なUpdate機構を優先できます。
@@ -131,9 +182,55 @@ v1.2.3 Release
 └─ latest.yml
 ```
 
-`package.json#version`、Release Tag、Installer、Update Metadataが別Versionを指さないようにします。
+`package.json#version`、`app.getVersion()`、Release Tag、Installer名、Update Metadataが別Versionを指さないようにします。
 
 CIでReleaseを作る場合は、**Setup.exe生成成功だけでなくUpdate Metadata生成・Uploadまで確認**します。
+
+MetadataとInstallerは可能な限り同じBuild / Release Pipelineから生成し、別BuildのArtifactを混ぜません。Checksum mismatch等が起きたときに、MetadataとInstallerの組み合わせを追跡できる状態にします。
+
+GitHub ProviderではDraft / Pre-release / Stable等のRelease状態がUpdate Channelの挙動へ影響するため、対象利用者から見えるReleaseになっているかを確認します。
+
+### SHOULD: Build PipelineとRelease Pipelineを分ける
+
+継続配布では、Pull Requestの検証Buildと実際の公開Releaseを分ける構成を推奨します。
+
+例:
+
+```text
+Pull Request
+↓
+Syntax / Unit / Regression
+↓
+Windows Installer Build
+↓
+Installer + Update Metadata整合確認
+↓
+Actions Artifact保存
+↓
+Releaseは作らない
+
+main / approved tag
+↓
+同じ検証
+↓
+Installer + Metadata生成
+↓
+Release作成
+↓
+同じVersionのArtifactをUpload
+```
+
+これにより、未MergeのPRや実験BuildがStable利用者のUpdate Channelへ誤配信されるリスクを下げます。
+
+Release成功条件には、必要に応じて次を含めます。
+
+- Installerが存在する
+- Update Metadataが存在する
+- Blockmap等の必要Artifactが存在する
+- Metadataが現在VersionのInstallerを参照している
+- Artifactが空・明らかに異常なサイズではない
+- Version正本 / Release Tag / Metadataが一致する
+- Upload後のRelease Assetsが揃っている
 
 ### 更新の安全性
 
@@ -147,6 +244,9 @@ Auto UpdateはRemoteから実行ファイルを取得して実行するため、
 - 未署名Installerを使う場合は、署名済みと誤認させず制約をREADME / Releaseへ明記する
 - Update MetadataとInstallerを同じRelease Pipelineから生成する
 - Pre-releaseをStable利用者へ誤配布しない
+- Updater / electron-builderの互換範囲を変更した場合は、既存Installed Appからの更新互換を確認する
+
+WindowsでCode Signingを使う場合は、Installerの見た目だけでなくUpdate時の署名検証にも関係するため、証明書更新・Publisher変更時の互換性も確認します。
 
 Code Signingを導入していないことを理由に、Hash検証やRelease整合確認まで省略しません。
 
@@ -164,6 +264,14 @@ Auto Updateが失敗してもアプリ本体を利用不能にしません。
 
 更新途中の失敗を「最新版です」と表示しません。
 
+### Broken Release / Rollback
+
+すでに一部利用者へ配信された壊れたReleaseを、同じVersionのArtifact差し替えだけで完全に解決できると考えません。
+
+Auto Update利用者が壊れたVersionへ到達している可能性がある場合は、通常は**より大きい新Versionを発行して修正版へ進ませる**方が追跡しやすく安全です。
+
+必要に応じてRelease Notesへ既知問題と修正版Versionを記載し、利用者が現在どのVersionにいるか判断できるようにします。
+
 ### Update導入・変更時の確認
 
 Auto Updateの実装追加またはUpdate方式変更時は、Static Buildだけでなく可能な範囲で次を確認します。
@@ -171,14 +279,19 @@ Auto Updateの実装追加またはUpdate方式変更時は、Static Buildだけ
 - Installer生成
 - Update Metadata生成
 - ReleaseへInstaller / Metadataが揃っている
+- Update対象Releaseが正しいChannel / 公開状態になっている
 - 旧Versionから新Versionを検出できる
 - Download完了
 - Install / Restart
 - 更新後のApp Version
 - `userData` / 設定維持
 - Update失敗時のFallback
+- Updater Bootstrap Versionより古いVersionの手動移行案内
+- サポート対象の最古Auto-update Versionから最新Versionへの更新
 
 Windows固有のInstall / Restartは、CI成功だけで実機確認済み扱いにしません。
+
+InstallerのInstall Mode、UAC、既存Version、Windows環境によって挙動が変わる可能性があるため、**実際にInstall済みの旧Versionから更新するTest**を優先します。
 
 ## start.bat
 
