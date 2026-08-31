@@ -9,7 +9,7 @@
 定期レビューでは次の2種類の情報を集めます。
 
 1. **Project Feedback Loop** — 実際に制作したサイトから、繰り返した失敗・高コスト修正・再利用価値のある設計を抽出する。
-2. **Web Standards Loop** — W3C / MDN / web.dev / OWASP / GitHub / Electron等の一次資料を確認し、Guideに不足・陳腐化がないか確認する。
+2. **Web Standards / Design Systems Loop** — W3C / MDN / web.dev / OWASP / GitHub / Electron / 公式Design System等の一次資料を確認し、Guideに不足・陳腐化がないか確認する。
 
 ## MUST: 他プロジェクトは原則Read-only
 
@@ -28,6 +28,8 @@
 - `PROJECT_LEARNINGS.md` — 存在する場合は最優先Evidenceの1つ
 - 前回レビュー以降のCommit / 変更ファイル
 - README / 仕様書 / 作業報告 / CHANGELOG
+- Visual Design Direction / Layout Structure / 同じAI Template Patternの反復
+- DesignShelfを使った場合の採用LayoutとProject固有への変形
 - Diagnostic設計 / Export Schema / Error ID / Breadcrumb
 - 保存Schema / Storage Key / Migration
 - GitHub Actions / Test
@@ -44,7 +46,7 @@ Diagnostic LogそのものがGitHubへ保存されていない場合でも、作
 
 月1回程度は、差分だけでは見つけにくい長期的な構造問題を探すDeep Reviewを行います。
 
-## Web Standards Review
+## Web Standards / Design Systems Review
 
 一般ルールへ追加する場合は、可能な限り一次資料または公式Documentationを優先します。
 
@@ -55,8 +57,13 @@ Diagnostic LogそのものがGitHubへ保存されていない場合でも、作
 - web.dev
 - OWASP Cheat Sheet Series
 - GitHub Docs
+- GitHub Primer
+- Microsoft Fluent 2
+- Apple Human Interface Guidelines
 - Electron Documentation
 - WHATWG HTML Living Standard
+
+Visual Designの調査では、実在企業Siteの表層をコピーするのではなく、公式Design System等からLayout / Typography / Spacing / Hierarchy / Navigation / Component consistencyの一般化可能な考え方を確認します。
 
 個人BlogやSNSの流行だけを根拠にGuideのMUSTへ昇格させません。
 
@@ -74,13 +81,15 @@ Community情報は候補発見に利用しても、一般ルールへする前�
 - 同じ成功パターンが複数Projectで効果を示した
 - 今のGuideを守っていても防げなかった問題が見つかった
 - Diagnostic / Project Learningによって同じ失敗経路が繰り返し確認された
+- 複数Projectが色違いだけの同一Visual Structureへ収束している
 
-### Web標準由来
+### Web標準 / Design System由来
 
 - 現行Guideと公式推奨が矛盾している
 - 新しいBrowser / Platform標準によって従来ルールが不要・危険になった
 - Security / Accessibility / Performanceで重要な変更があった
 - GitHub Pages / Electron等、利用中Platformの仕様変更がある
+- Visual Designの公式Guidanceで、Layout / Typography / Spacing / Navigation等の重要な変化や新しい知見がある
 
 ## Rule Strengthをむやみに上げない
 
@@ -119,6 +128,7 @@ Community情報は候補発見に利用しても、一般ルールへする前�
 - Storage / DeploymentのDefault方針変更
 - 既存Projectへ大規模Migrationを要求するルール
 - GitHub Pages / Electronの基本方針反転
+- 全Projectへ固定Layout / Visual Styleを強制する方針
 
 この場合はBranch / Pull Requestまたは明示的な提案として残します。
 
