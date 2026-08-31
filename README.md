@@ -117,7 +117,7 @@ Guideは固定された完成品として扱わず、実際のProjectとWeb標�
 
 Workflow: [Validate Guide](.github/workflows/validate-guide.yml)
 
-共通CIのPilot用に [Reusable Web Baseline](.github/workflows/reusable-web-baseline.yml) も保持します。利用側はCommit SHA固定を基本とし、Project固有Validatorは各Repositoryへ残します。
+Account共通CIの実装は [`EliteMay/.github` の Reusable Web Baseline](https://github.com/EliteMay/.github/blob/main/.github/workflows/reusable-web-baseline.yml) を利用します。利用側は確定Commit SHA固定を基本とし、Project固有Validatorは各Repositoryへ残します。
 
 ## 完成の考え方
 
