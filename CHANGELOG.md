@@ -2,6 +2,78 @@
 
 Guide Versionの正本は [`guide-version.json`](guide-version.json) です。
 
+## 1.7.0 - 2026-08-31
+
+### Added
+
+- Visual DesignへSubject-grounded Directionを追加
+  - Purpose / Audience / Content / TaskからDesignを導く
+  - 実在Siteは外観ではなくAudience / Job / Content Model / Navigation / Density等へ分解して参照
+  - Project固有のSignatureを必要に応じて1つ決める
+- AI PromptのConstraint / Open Axes方針を追加
+  - Technology / Accessibility / Performance /崩せない仕様は固定可能
+  - Hero / Card Grid / Navigation / Density / Effect等をDesign Direction決定前に固定しすぎない
+- Design Plan Critiqueを追加し、GenericなPlanはCSS本実装前に修正
+- Copy / Empty / Error StateをVisual Designの一部として扱う方針を追加
+- Interactive ComponentのState確認を追加
+- Build後の独立したVisual Design Review Gateを追加
+  - Purpose / Task / Hierarchy / Navigation / Responsive / Typography / Components / Accessibility / Copy / AI Template Regression
+  - FindingをBlocking / Major / Minorに分類
+  - Visual Review結果をPass / Needs workで記録
+- AI Coding Agent運用を追加
+  - AI生成Codeも通常の品質Gateを通す
+  - AI提案の高コストArchitecture / Storage / Dependencyを無検証で採用しない
+  - 未経験TechnologyへAIを使う場合の追加Review
+- Specification / Oracle-driven AI Developmentを追加
+  - Golden Output / Reference implementation / Contract / Regression Dataset等で大量AI生成を検証
+- `templates/AGENTS_TEMPLATE.md`を追加
+  - `AGENTS.md`はProject RulesのSource of TruthではなくAgent向けRouterとして利用
+  - Build / Test command、正本へのLink、高リスク領域、Completion Checkを記載
+- PUBLIC-CONTENT ProfileへLanguage / Metadata / 404 Recovery / i18n / Privacy確認を追加
+- GitHub Pagesへ条件付き`404.html` Recovery方針を追加
+
+### Changed
+
+- `docs/04-ui-ux-accessibility.md`へAnthropic / Microsoft AI Frontend Design研究から得た一般化可能なDesign Thinkingを統合
+- `docs/07-testing-quality.md`へOracle Test / Visual Design Review / AI-assisted Quality Checkを統合
+- `docs/10-project-management.md`へAI Coding Agent / AGENTS.md / Oracle-driven Workflowを統合
+- `docs/12-project-profiles.md`のPUBLIC-CONTENTを拡張
+- `START_HERE.md`へAI Coding Agent利用と完成後Visual Reviewの専用Routeを追加
+- `templates/QUALITY_CHECKLIST.md`へVisual Review / AI-assisted Development / Public Content項目を追加
+- `templates/PROJECT_RULES_TEMPLATE.md`でAGENTS.mdとの役割分担を明記
+- `references/web-standards.md`へAnthropic / Microsoft / AGENTS.md / Google / W3C i18n / Front-End Checklist系を追加
+- `maintenance/review-policy.json`へAI Frontend Design / Agent Instructions / Public Content Review Sourceを追加
+- Guide ValidatorへAGENTS Template存在・Router方針検査を追加
+
+### DesignShelf
+
+- DesignShelfをLayout番号選択だけでなく、Navigation / Structure / Density / Typography / Visual Emphasis / Component / Spacing / Color / Effect / Signature等の**Design属性Bundle**でDirectionを探索する将来案へ更新
+- 属性をRandomに独立組合せせず、相性のあるCoherent Directionを2〜3案生成し、Projectへの適合理由を付ける方針をIssue #1へ追加
+- Layout IDは完成TemplateではなくSkeleton / Exampleとして維持
+- DesignShelf本体Code / Storageは今回変更していない
+
+### Research / Classification
+
+- Anthropic Frontend Design: Subject grounding / Copy / Plan Critique / Build後CritiqueをGuideへ拡張反映
+- Microsoft Agent Academy Frontend Design: Purpose / Differentiation / Intentional directionを参考。特定Fontや派手さのPreferenceは共通Ruleへ入れない
+- Microsoft Frontend Design Review: 完成後Review Gate / Severityを反映
+- Front-End Checklist: Language / Public Metadata / Privacy / i18n等の抜け発見に使用。巨大Checklistは移植しない
+- Front-End Design Checklist: Component State / Real content / Responsive等を既存Ruleへ拡張
+- AGENTS.md: Agent向け入口としてTemplate化。ただしProject SoTを増やさない
+- Birthday Quest / ScanPass: AI出力を無Reviewで完成扱いするRiskのCase Studyとして利用
+- AI Portfolio Generator: PromptでHero / Card Grid / Effectsを固定しすぎるとTemplate Lookを自ら固定するCase Studyとして利用
+- Higher or Lower Card Game: User Goal / Scope / Wireframe / Test / ReflectionのProcess Referenceとして利用
+- Lichess Time Tracker: AI draft後の意図的RefactorのCaseとして利用
+- Mazes of Menace: AI大量生成でもReference / Golden Test / Oracleが強ければ高い検証可能性を作れるCounterexampleとして利用
+- Apple / Microsoft / GitHub / NVIDIA / Discord / Spotify: 同じ大規模公式SiteでもAudience / Content Model / Taskにより構造が大きく異なることを確認
+
+### Compatibility
+
+- 既存Projectへ`AGENTS.md`を強制追加しない
+- 既存ProjectへVisual Layout変更を強制しない
+- Storage / Schema / Deployment Defaultの変更なし
+- DesignShelf本体の既存ID / JSON / Workflow互換性への変更なし
+
 ## 1.6.0 - 2026-08-31
 
 ### Added
