@@ -11,7 +11,10 @@ Web制作ではGitHubリポジトリを基本の保存・管理先とします�
 必要に応じて以下を確認します。
 
 - README.md
+- `AGENTS.md`（存在する場合）
 - 仕様書
+- `PROJECT_RULES.md` / Project固有ルール
+- `PROJECT_LEARNINGS.md`
 - 作業報告書 / CHANGELOG
 - package.json等
 - ファイル構成
@@ -21,7 +24,6 @@ Web制作ではGitHubリポジトリを基本の保存・管理先とします�
 - localStorage / IndexedDBのKey
 - GitHub Pages設定
 - Tests / GitHub Actions
-- プロジェクト固有ルール
 
 すべてを毎回読むのではなく、変更内容に関係する範囲を優先します。
 
@@ -30,7 +32,7 @@ Web制作ではGitHubリポジトリを基本の保存・管理先とします�
 基本的に以下の順番で作業します。
 
 1. 現在のリポジトリを確認
-2. README・仕様を確認
+2. README・仕様・Agent指示を確認
 3. 変更対象を特定
 4. 影響範囲を確認
 5. 変更経路を選ぶ
@@ -93,6 +95,88 @@ GitHub Actionsは、**継続的に必要な自動化そのもの**が目的の�
 - 本番Runtimeへ影響しない場所へ置く
 - 作業終了前に削除する
 - 削除Commit後の最終状態でもう一度CI / Pagesを確認する
+
+## AI Coding AgentへのProject指示
+
+### SHOULD: 継続的にAI Agentで編集するProjectでは`AGENTS.md`をAgent向け入口として検討する
+
+`AGENTS.md`はREADMEの代わりではなく、Coding Agentへ「このRepoをどう扱うか」を短く伝える運用ファイルとして使います。
+
+役割を分けます。
+
+| File | 主な役割 |
+|---|---|
+| README | 人間向けの現在仕様・利用方法・概要 |
+| 仕様書 | Product / Featureの正確な仕様 |
+| `PROJECT_RULES.md` | Project固有の崩してはいけないRuleの正本 |
+| `PROJECT_LEARNINGS.md` | 長期的な失敗・成功・再発防止 |
+| `AGENTS.md` | Agent向けの最短Navigation、Command、運用上の注意 |
+| `web-project-guide` | 複数Project共通の制作基準 |
+
+### AGENTS.mdに向く内容
+
+- Repoの短いOverview
+- 最初に読む正本FileへのLink / Path
+- Build / Test / Validate / Deploy Command
+- 変更後に必ず実行するCommand
+- Architecture上の入口
+- Agentが勝手に変更してはいけない範囲へのPointer
+- Security / Secret上の注意
+- Generated file / vendor file等、直接編集してはいけないPath
+- PR / Commit / Final-state確認のProject固有手順
+
+### AGENTS.mdに重複させない内容
+
+READMEや仕様書、`PROJECT_RULES.md`の長文をそのままCopyしません。
+
+悪い例:
+
+```text
+AGENTS.md
+README.md
+PROJECT_RULES.md
+```
+
+の3か所へ同じ「Storage Keyを変えるな」を手入力する。
+
+良い例:
+
+```text
+AGENTS.md:
+- Before editing persistence, read PROJECT_RULES.md#保存互換性
+- Run: npm test
+- Pages validation: npm run validate
+```
+
+Agent向けのOperational instructionだけを追加し、仕様の正本は既存Fileへ残します。
+
+### Nested AGENTS.md
+
+MonorepoやElectronの`main / renderer`等で本当にRuleが異なる場合は、Subdirectoryへ追加できます。
+
+- 近いDirectoryの指示ほどSpecificなRuleとして扱う。
+- Nested fileを増やす理由が「念のため」だけなら追加しない。
+- RootとNestedで同じRuleを二重管理しない。
+
+最終的な指示優先順位は [Guide Governance](00-governance.md) と現在の明示的なユーザー要求を優先します。
+
+Template: [`AGENTS_TEMPLATE.md`](../templates/AGENTS_TEMPLATE.md)
+
+## AIへの指示は「Contextを増やす」より「正本へRoutingする」
+
+長大なPromptへRepo全仕様を毎回貼る方式は、更新漏れとContext浪費につながります。
+
+AIが必要な情報へ到達できるよう、次を優先します。
+
+1. 今回のTask
+2. 変更対象に適用されるProject固有Rule
+3. 正確なTest / Validation Command
+4. Architecture / Data / Storageの正本Path
+5. 必要な共通Guide章
+
+Agentが既に知っている一般的なCoding知識までProject指示へ大量に重複させません。
+
+一方、保存互換性、Deploy方式、独自Schema、特殊なTest Commandなど、**このRepoを見ないと分からないこと**は明示します。
 
 ## Final Stateを基準にする
 
