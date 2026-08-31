@@ -35,6 +35,7 @@ Guide Versionの正本は [`guide-version.json`](guide-version.json)、変更履
 - [12 Project Profiles](docs/12-project-profiles.md)
 - [13 Dependencies / Assets](docs/13-dependencies-assets.md)
 - [14 Continuous Improvement](docs/14-continuous-improvement.md) — 実ProjectとWeb標準からGuideを定期改善
+- [15 Development Observability / Project Memory](docs/15-development-observability.md) — 失敗・成功・診断ログを次回修正へ引き継ぐ
 
 ## 過去事例から学ぶ
 
@@ -50,6 +51,8 @@ Guide Versionの正本は [`guide-version.json`](guide-version.json)、変更履
 - [Project Rules](templates/PROJECT_RULES_TEMPLATE.md)
 - [ADR](templates/ADR_TEMPLATE.md)
 - [Work Report](templates/WORK_REPORT_TEMPLATE.md)
+- [Project Learnings](templates/PROJECT_LEARNINGS_TEMPLATE.md)
+- [Diagnostics Schema](templates/DIAGNOSTICS_SCHEMA_TEMPLATE.json)
 - [Quality Checklist](templates/QUALITY_CHECKLIST.md)
 - [CHANGELOG](templates/CHANGELOG_TEMPLATE.md)
 
@@ -68,6 +71,9 @@ Guide Versionの正本は [`guide-version.json`](guide-version.json)、変更履
 - 主要機能・保存形式・公開方式の大変更を勝手に確定しない。
 - Electron指定のプロジェクトを勝手にWeb版へ変更しない。
 - 公開GitHub / GitHub Pagesへ秘密情報を置かない。
+- 各Projectは再発防止価値の高い失敗・成功を `PROJECT_LEARNINGS.md` に残す。
+- 状態を持つInteractive Projectは、開発中にError / Breadcrumb / Version / Storage failure等を診断できる仕組みを持つ。
+- Diagnostic LogへToken、Password、秘密情報、ユーザー入力全文を残さない。
 
 詳細ルールは各docsを正本とし、READMEへ重複して増やし続けません。
 
@@ -84,6 +90,7 @@ Guide Versionの正本は [`guide-version.json`](guide-version.json)、変更履
 Guideは固定された完成品として扱わず、実際のProjectとWeb標準の変化から継続改善します。
 
 - GitHub上でアクセス可能な `EliteMay` のProjectを定期的に再発見し、最近の変更・高コスト修正・成功設計を確認
+- 各Projectの `PROJECT_LEARNINGS.md` が存在する場合は、定期Reviewの重要なEvidenceとして確認
 - W3C / MDN / web.dev / OWASP / GitHub / Electron / WHATWG等の公式情報を定期確認
 - 他Projectは原則Read-onlyで、定期レビューが自動更新するのは `web-project-guide` のみ
 - 根拠の弱い流行や言い換えだけではGuideを変更しない
