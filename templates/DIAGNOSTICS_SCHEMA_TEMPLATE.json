@@ -1,7 +1,8 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "project": {
     "name": "",
+    "projectKey": "",
     "appVersion": "",
     "build": "",
     "dataSchemaVersion": null
@@ -9,8 +10,10 @@
   "capture": {
     "capturedAt": "",
     "sessionId": "",
+    "snapshotId": "",
     "route": "",
-    "reason": "manual"
+    "reason": "manual",
+    "severity": "info"
   },
   "environment": {
     "viewport": {
@@ -40,6 +43,14 @@
   },
   "performance": {
     "summary": {}
+  },
+  "handoff": {
+    "sanitized": true,
+    "remoteEligible": false,
+    "payloadBytes": null,
+    "retentionClass": "normal",
+    "containsBinary": false,
+    "containsSecrets": false
   },
   "notes": []
 }
