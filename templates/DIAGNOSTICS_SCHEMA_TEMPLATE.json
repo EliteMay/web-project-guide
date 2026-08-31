@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "project": {
+    "name": "",
+    "appVersion": "",
+    "build": "",
+    "dataSchemaVersion": null
+  },
+  "capture": {
+    "capturedAt": "",
+    "sessionId": "",
+    "route": "",
+    "reason": "manual"
+  },
+  "environment": {
+    "viewport": {
+      "width": null,
+      "height": null,
+      "devicePixelRatio": null
+    },
+    "language": "",
+    "online": null,
+    "platformSummary": "",
+    "features": {}
+  },
+  "runtime": {
+    "initialization": [],
+    "featureFlags": {},
+    "serviceWorker": null
+  },
+  "breadcrumbs": [],
+  "errors": [],
+  "networkFailures": [],
+  "storage": {
+    "available": null,
+    "types": [],
+    "estimatedUsageBytes": null,
+    "estimatedQuotaBytes": null,
+    "summary": {}
+  },
+  "performance": {
+    "summary": {}
+  },
+  "notes": []
+}

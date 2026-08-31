@@ -25,6 +25,7 @@ const requiredFiles = [
   'docs/12-project-profiles.md',
   'docs/13-dependencies-assets.md',
   'docs/14-continuous-improvement.md',
+  'docs/15-development-observability.md',
   'maintenance/review-policy.json',
   'catalog/failures.md',
   'catalog/success-patterns.md',
@@ -36,6 +37,8 @@ const requiredFiles = [
   'templates/SPEC_TEMPLATE.md',
   'templates/ADR_TEMPLATE.md',
   'templates/PROJECT_RULES_TEMPLATE.md',
+  'templates/PROJECT_LEARNINGS_TEMPLATE.md',
+  'templates/DIAGNOSTICS_SCHEMA_TEMPLATE.json',
   'templates/CHANGELOG_TEMPLATE.md',
   'references/web-standards.md',
   '.github/workflows/validate-guide.yml'
@@ -96,6 +99,21 @@ try {
   errors.push(`maintenance/review-policy.json is invalid: ${error.message}`);
 }
 
+try {
+  const diagnostics = JSON.parse(fs.readFileSync(path.join(root, 'templates/DIAGNOSTICS_SCHEMA_TEMPLATE.json'), 'utf8'));
+  if (diagnostics.schemaVersion !== 1) {
+    errors.push('templates/DIAGNOSTICS_SCHEMA_TEMPLATE.json: schemaVersion must currently be 1');
+  }
+  for (const key of ['project', 'capture', 'environment', 'runtime', 'breadcrumbs', 'errors', 'networkFailures', 'storage']) {
+    if (!(key in diagnostics)) errors.push(`templates/DIAGNOSTICS_SCHEMA_TEMPLATE.json: missing ${key}`);
+  }
+  if (!Array.isArray(diagnostics.breadcrumbs) || !Array.isArray(diagnostics.errors) || !Array.isArray(diagnostics.networkFailures)) {
+    errors.push('templates/DIAGNOSTICS_SCHEMA_TEMPLATE.json: breadcrumbs/errors/networkFailures must be arrays');
+  }
+} catch (error) {
+  errors.push(`templates/DIAGNOSTICS_SCHEMA_TEMPLATE.json is invalid: ${error.message}`);
+}
+
 function walk(dir) {
   const result = [];
   for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
@@ -138,6 +156,12 @@ if (!readme.includes('[START HERE](START_HERE.md)')) {
 }
 if (!readme.includes('[14 Continuous Improvement](docs/14-continuous-improvement.md)')) {
   errors.push('README.md must link to docs/14-continuous-improvement.md');
+}
+if (!readme.includes('[15 Development Observability / Project Memory](docs/15-development-observability.md)')) {
+  errors.push('README.md must link to docs/15-development-observability.md');
+}
+if (!readme.includes('[Project Learnings](templates/PROJECT_LEARNINGS_TEMPLATE.md)')) {
+  errors.push('README.md must link to templates/PROJECT_LEARNINGS_TEMPLATE.md');
 }
 
 try {

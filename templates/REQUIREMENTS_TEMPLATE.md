@@ -57,7 +57,22 @@
 - 未保存変更を持つか:
 - 複数タブ競合が問題になるか:
 
-## 8. 外部依存
+## 8. Development Diagnostics / Project Memory
+
+- `PROJECT_LEARNINGS.md`: Yes / No
+- Runtime Diagnosticsが必要か: Yes / No
+- Breadcrumbで残す主要操作:
+- 捕捉するError / Failure:
+- Diagnostic保存先: memory / localStorage / IndexedDB / Electron userData / other
+- Log保持上限:
+- One-click Diagnostic Export: Yes / No
+- Error ID表示: Yes / No
+- Health / Diagnostics View: Yes / No
+- Productionでも残す診断機能:
+- Development onlyにする診断機能:
+- Logへ記録禁止するデータ:
+
+## 9. 外部依存
 
 - API:
 - CDN:
@@ -67,13 +82,13 @@
 - 失敗時Fallback:
 - サービス停止時に残す基本機能:
 
-## 9. 崩してはいけない仕様
+## 10. 崩してはいけない仕様
 
 1. 
 2. 
 3. 
 
-## 10. 高コスト設計判断
+## 11. 高コスト設計判断
 
 - 保存Schema:
 - ID:
@@ -83,8 +98,9 @@
 - Migration:
 - 外部Provider:
 - Player / Controller等の共通契約:
+- Diagnostic Schema / Error ID体系:
 
-## 11. 変更可能範囲
+## 12. 変更可能範囲
 
 ### 原則として改善してよい
 
@@ -94,15 +110,16 @@
 
 - 
 
-## 12. 性能・規模
+## 13. 性能・規模
 
 - 想定Item数:
 - 想定画像数 / サイズ:
 - 想定動画 / 音声サイズ:
 - 初期読込で許容する範囲:
 - 長い処理のProgress / Cancel:
+- Diagnostic Logの最大量:
 
-## 13. 完成条件
+## 14. 完成条件
 
 - [ ] 主要利用フローが最後まで通る
 - [ ] 保存 / 再読込が正常（該当時）
@@ -111,8 +128,10 @@
 - [ ] 重大な横overflowなし
 - [ ] 必要な自動検証成功
 - [ ] README / 仕様 / 作業報告更新
+- [ ] `PROJECT_LEARNINGS.md`を用意
+- [ ] Interactive Projectでは必要なDiagnostics / Exportを確認
 - [ ] 未確認事項が明示されている
 
-## 14. 未確認予定
+## 15. 未確認予定
 
 - 
