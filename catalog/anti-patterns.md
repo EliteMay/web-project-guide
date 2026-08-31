@@ -218,3 +218,21 @@ Gradient / Glassmorphism / Glow / Shadow / Rounded Cornerを重ね、ほぼす�
 - **例外:** 本当に1つのMessageを強く見せるMarketing Pageで、3項目比較やCTA導線が情報構造として適切な場合。
 - **代替:** WireframeからProject固有の情報関係を整理し、2〜3個の構造的に異なるDesign Directionを比較する。
 - **Related:** [AP-020](anti-patterns.md) / [S-024](success-patterns.md) / [S-025](success-patterns.md) / [Visual Design Quality](../docs/04-ui-ux-accessibility.md)
+
+## AP-029 AI First Output as Final Artifact
+
+AIが最初に生成したCode / Architecture / Designを、Diff・Test・Visual Reviewなしでそのまま完成品として採用する。
+
+- **なぜ危険:** 動作するPrototypeでも、重複File、inline style、固定Geometry、Monolith、弱いError handling、既存Rule違反等が残りやすい。AIが未知のPlatform手順をもっともらしく提案していても、実環境で正しいとは限らない。
+- **例外:** 捨てる前提の極小Prototypeで、品質・保存互換・公開安全性が不要な場合。
+- **代替:** AI Draft → Diff / Architecture Review → Test → Human / independent Review → Adapt → Final-state Validation。
+- **Related:** [S-026](success-patterns.md) / [Testing / Quality](../docs/07-testing-quality.md)
+
+## AP-030 Over-specified Generic Design Prompt
+
+AI Promptへ、目的から導いたわけではない`Dark mode + popular font + purple accent + centered full-screen Hero + CTA + Card Grid + Glass navbar + glow`等を大量に固定し、「高品質」の条件として扱う。
+
+- **なぜ危険:** Promptが詳細でも、Generic AI Aestheticを正確に再生するだけになる。Projectに合うLayoutやTypographyを探索する余地を消す。
+- **例外:** 既存Brand / Design System / Product familyの仕様として本当に固定されている場合。
+- **代替:** Technical / Compatibility等のFixed Constraintsと、Layout / Typography / Density / Visual emphasis等のCreative Axesを分離する。
+- **Related:** [AP-026](anti-patterns.md) / [AP-028](anti-patterns.md) / [S-027](success-patterns.md) / [Visual Design Quality](../docs/04-ui-ux-accessibility.md)
