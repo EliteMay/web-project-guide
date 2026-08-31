@@ -106,6 +106,8 @@ Gradient / Card / Rounded Corner等は全面禁止ではありません。目的
 - [Development Observability / Project Memory](docs/15-development-observability.md)
 - Web版へ勝手に変更しない
 - `userData`、preload / IPC、起動失敗ログ、更新時のデータ維持を確認する
+- Setup.exe等で継続配布する場合は、起動時更新確認 + One-click Updateを導入できるか確認する
+- Auto Update導入時はInstallerだけでなくUpdate Metadata / Release整合 / 失敗Fallback / 実機更新を確認する
 
 ### 外部API・CDN・Supabase等を導入する
 

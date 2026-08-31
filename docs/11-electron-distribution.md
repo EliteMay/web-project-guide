@@ -77,9 +77,108 @@ Setup.exe化する場合は`electron-builder`等を検討します。
 
 ## 更新
 
-可能であればアプリ内のVersion表示と更新確認を用意します。
+アプリ内のVersion表示と更新確認を用意します。
 
-Auto Updateを導入する場合は、更新失敗時・古いVersion利用時・ユーザーデータ互換性も考慮します。
+### CONDITIONAL SHOULD: 継続配布するインストール型ElectronアプリはOne-click Updateを優先する
+
+次の条件に当てはまる場合、毎回Setup.exeを手動で探して再実行させるより、**アプリ起動時の更新確認 → 更新通知 → 1回の明示操作でDownload / Install / Restart**できる導線を原則として優先します。
+
+- ElectronアプリをSetup.exe等で継続配布している
+- GitHub Releases等の安定したRelease Channelがある
+- 更新MetadataとInstallerを同じVersion単位で管理できる
+- 更新後も`userData`等のユーザーデータを維持できる
+
+一方、単発Tool、Portable配布、更新頻度が極端に低いアプリ、Update Providerを安全に維持できない環境では必須にしません。
+
+### One-click Updateの基本UX
+
+推奨フロー:
+
+```text
+App起動
+↓
+Backgroundで更新確認
+↓
+新Versionあり
+↓
+「vX.Y.Zがあります / 今すぐ更新 / あとで」
+↓
+今すぐ更新
+↓
+Download + 検証
+↓
+Appを終了してInstall
+↓
+新Versionで再起動
+```
+
+更新確認のために起動を長時間Blockしません。
+
+利用者が重要な作業中の場合に、同意なしで突然再起動させないようにします。更新を開始する操作自体をInstall / Restartへの明示的な同意として扱えるUIにします。
+
+### electron-builder / GitHub Releasesを使う場合
+
+WindowsのNSIS配布では、条件に合えば`electron-updater`等の標準的なUpdate機構を優先できます。
+
+GitHub ReleasesをUpdate Providerにする場合は、InstallerだけでなくAuto Updateが参照するMetadataもReleaseへ揃えます。
+
+例:
+
+```text
+v1.2.3 Release
+├─ app_1.2.3_setup.exe
+├─ app_1.2.3_setup.exe.blockmap
+└─ latest.yml
+```
+
+`package.json#version`、Release Tag、Installer、Update Metadataが別Versionを指さないようにします。
+
+CIでReleaseを作る場合は、**Setup.exe生成成功だけでなくUpdate Metadata生成・Uploadまで確認**します。
+
+### 更新の安全性
+
+Auto UpdateはRemoteから実行ファイルを取得して実行するため、通常のDownload Linkより慎重に扱います。
+
+- Update Provider / Release URLを固定または許可List化する
+- Redirect先や任意URLをRenderer入力からそのまま実行しない
+- Update Metadataが持つHash / Integrity情報を利用する
+- 対応可能ならCode Signingを利用する
+- 公開配布では特にCode Signingを強く推奨する
+- 未署名Installerを使う場合は、署名済みと誤認させず制約をREADME / Releaseへ明記する
+- Update MetadataとInstallerを同じRelease Pipelineから生成する
+- Pre-releaseをStable利用者へ誤配布しない
+
+Code Signingを導入していないことを理由に、Hash検証やRelease整合確認まで省略しません。
+
+### 更新失敗時
+
+Auto Updateが失敗してもアプリ本体を利用不能にしません。
+
+最低限、次を用意します。
+
+- Update Errorを表示またはLogへ記録
+- 再試行
+- GitHub Releases等の手動Download導線
+- 現在Versionの継続利用
+- 更新失敗で`userData`を削除しない
+
+更新途中の失敗を「最新版です」と表示しません。
+
+### Update導入・変更時の確認
+
+Auto Updateの実装追加またはUpdate方式変更時は、Static Buildだけでなく可能な範囲で次を確認します。
+
+- Installer生成
+- Update Metadata生成
+- ReleaseへInstaller / Metadataが揃っている
+- 旧Versionから新Versionを検出できる
+- Download完了
+- Install / Restart
+- 更新後のApp Version
+- `userData` / 設定維持
+- Update失敗時のFallback
+
+Windows固有のInstall / Restartは、CI成功だけで実機確認済み扱いにしません。
 
 ## start.bat
 
