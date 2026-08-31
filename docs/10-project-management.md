@@ -15,6 +15,7 @@ Web制作ではGitHubリポジトリを基本の保存・管理先とします�
 - 作業報告書 / CHANGELOG
 - `PROJECT_LEARNINGS.md`
 - `AGENTS.md`（存在する場合）
+- Remote Diagnostic Handoff設定 / 最新Snapshot（採用Projectのみ）
 - package.json等
 - ファイル構成
 - HTML / CSS / JavaScript
@@ -27,21 +28,48 @@ Web制作ではGitHubリポジトリを基本の保存・管理先とします�
 
 すべてを毎回読むのではなく、変更内容に関係する範囲を優先します。
 
+Remote Diagnostic Handoffを採用しており、接続済みProviderから安全に読める場合は、ユーザーへ同じ症状を再質問する前に最新Error Snapshot等を確認します。
+
 ## 既存プロジェクトの変更手順
 
 基本的に以下の順番で作業します。
 
 1. 現在のリポジトリを確認
 2. README・仕様・Project Rulesを確認
-3. 変更対象を特定
-4. 影響範囲を確認
-5. 変更経路を選ぶ
-6. 実装・修正
-7. 関連ファイルとの整合性確認
-8. 一時Script / 一時Workflow / Debug資産をCleanup
-9. **Cleanup後の最終Commit**で動作確認・Regression・CI / Pages確認
-10. README・作業報告・必要なProject Learningを更新
-11. 未確認事項を記録
+3. `PROJECT_LEARNINGS.md`と、採用時は最新Remote Diagnosticsを確認
+4. 変更対象を特定
+5. 影響範囲を確認
+6. 変更経路を選ぶ
+7. 実装・修正
+8. 関連ファイルとの整合性確認
+9. 一時Script / 一時Workflow / Debug資産をCleanup
+10. **Cleanup後の最終Commit**で動作確認・Regression・CI / Pages確認
+11. README・作業報告・必要なProject Learningを更新
+12. 未確認事項を記録
+
+## Remote Diagnosticsを読む順序
+
+CONDITIONAL: ProjectがRemote Diagnostic Handoffを採用し、ChatGPT / Coding AgentからProviderへ接続できる場合は、次の順序を基本にします。
+
+```text
+Current GitHub repository
+↓
+AGENTS / Spec / Project Rules
+↓
+PROJECT_LEARNINGS.md
+↓
+最新Remote Error Snapshot 5〜10件程度
+↓
+最近のNormal / Success Snapshot 1〜3件程度
+↓
+対象Code / Test
+```
+
+最初から全履歴を読み込まず、現在の症状に近いEvidenceを優先します。
+
+ProviderがPause / Offline / 未接続の場合は作業を止めず、GitHubとLocal Diagnostic Exportで進めます。
+
+Remote Snapshotは短期Runtime Evidenceなので、修正後に永続的な知識として残す価値がある内容は`PROJECT_LEARNINGS.md`へ昇格します。
 
 ## GitHubへの変更経路を選ぶ
 
@@ -121,6 +149,7 @@ AIがCodeを書いたこと自体を完成条件にしません。
 
 - 現在のRepo / Runtime / Dataを先に確認する。
 - 既存のProject Rules / 保存互換性 / Architectureを守る。
+- Remote Diagnostic Handoffがある場合は最新Evidenceを確認してから原因を推測する。
 - AIが提案したFramework / Library / Storage / Rewriteを理由だけで採用しない。
 - 高コスト判断はAI提案でもADR / 影響確認を省略しない。
 - 未経験TechnologyでAIへ大きく任せる場合は、Architecture / Security / Deployment / Data persistenceを特にReviewする。
@@ -172,6 +201,7 @@ Reference / Golden Testが作れないVisual Design等は、[Visual Design Revie
 - 変更してはいけない仕様の正本へLinkする
 - Architecture上の重要な責務 / File ownershipを短く示す
 - Storage / Security / Deploymentの高リスク箇所を示す
+- Remote Diagnostic Handoffの有無と、秘密情報を含まない読取先を示す
 - 作業後に必ず実行するCheckを示す
 
 Project固有ルールの正本は原則として仕様書 / `PROJECT_RULES.md`等に残し、`AGENTS.md`はそこへ案内します。
@@ -249,6 +279,7 @@ Template: [AGENTS_TEMPLATE.md](../templates/AGENTS_TEMPLATE.md)
 - Service Worker / Cache
 - Version / Build表示
 - GitHub Actions / Deployment trigger
+- Remote Diagnostic HandoffのSchema / projectKey / retention（採用時）
 
 ## README.md
 
