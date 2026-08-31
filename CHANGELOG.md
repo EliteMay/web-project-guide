@@ -20,6 +20,7 @@ Guide Versionの正本は [`guide-version.json`](guide-version.json) です。
 - READMEへContinuous Improvement入口を追加
 - Guideを固定文書ではなく、実ProjectとWeb標準から継続改善するSource of Truthとして明文化
 - 定期レビューによる他Projectの扱いをRead-onlyとし、自動更新先を `web-project-guide` に限定
+- Guide Validatorへ `docs/14-continuous-improvement.md` と `maintenance/review-policy.json` の必須存在・Policy JSON整合性検証を追加
 
 ### Automation
 
