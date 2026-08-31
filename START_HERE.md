@@ -77,6 +77,20 @@ AIの利用量ではなく、**正しい状態を定義し、最終結果を検�
 
 Remote ProviderがPause / Offline / 未接続でもCore機能と調査を止めないことを優先します。
 
+### 複数RepositoryのGitHub運用を共通化する
+
+1. [Cross-Repository GitHub Infrastructure](docs/16-cross-repository-github-infrastructure.md) を正本として確認
+2. `.github`共通RepositoryはIssue / PR / Community Health等のDefaultに限定し、Project仕様の正本にしない
+3. Reusable WorkflowはCheckout / Node / Syntax等のCommon Baselineだけを中央化する
+4. Project固有Validator / E2E / Releaseは各Repositoryへ残す
+5. 別RepositoryのReusable WorkflowはCommit SHA固定を優先する
+6. 中央Workflow更新は1〜2 ProjectでPilotしてから横展開する
+7. Rulesetは全Repo同一強度にせず、Release Risk / Data Loss Riskで変える
+8. Electron / npm等のDependencyを持つProjectではDependabotを検討し、更新PRを無条件Auto Mergeしない
+9. GitHub Projectsを使う場合はIssue / PRの横断Viewにし、仕様本文の正本にしない
+
+中央化そのものを目的にせず、**共通部分だけを共有してBlast Radiusを制御する**ことを優先します。
+
 ### 既存サイトの構造を整理する / Patchを統合する
 
 - [Architecture](docs/02-architecture.md)
