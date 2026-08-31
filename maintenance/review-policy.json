@@ -12,6 +12,7 @@
     "PROJECT_LEARNINGS.md",
     "recent commits and changed files",
     "README, specification, PROJECT_RULES and AGENTS.md",
+    "remote diagnostic handoff configuration and recent runtime evidence when safely accessible",
     "work reports and changelog",
     "visual design direction, post-build visual review, repeated UI patterns and DesignShelf usage",
     "AI-assisted architecture decisions and available oracle or regression tests",
@@ -48,7 +49,17 @@
     {
       "name": "GitHub Docs",
       "url": "https://docs.github.com/",
-      "topics": ["GitHub Pages", "Actions", "repository management", "security"]
+      "topics": ["GitHub Pages", "Actions", "repository management", "security", "billing"]
+    },
+    {
+      "name": "Supabase Documentation",
+      "url": "https://supabase.com/docs/",
+      "topics": ["database", "RLS", "Data API security", "project pausing", "diagnostics backend"]
+    },
+    {
+      "name": "Supabase Pricing",
+      "url": "https://supabase.com/pricing",
+      "topics": ["free plan", "database quota", "egress", "storage", "active projects"]
     },
     {
       "name": "GitHub Primer",
@@ -125,7 +136,8 @@
       "governance changed",
       "existing project compatibility policy changed",
       "default deployment or storage strategy changed",
-      "fixed visual style or layout imposed across projects"
+      "fixed visual style or layout imposed across projects",
+      "paid dependency made mandatory"
     ],
     "requireAuthoritativeSourceForGeneralWebRule": true,
     "requireConcreteEvidenceForProjectDerivedRule": true,
