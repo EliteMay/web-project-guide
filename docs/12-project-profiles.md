@@ -38,7 +38,7 @@ GitHub Pages中心の通常Webサイト。
 
 ## AI-HANDOFF
 
-ChatGPT等へZIP / JSON /画像を渡して分析結果を戻すサイト。
+ChatGPT等へJSON / ZIP /画像 / Remote Diagnostic Snapshotを渡して分析結果を戻すサイト。
 
 主な確認:
 - 固定Schema
@@ -46,6 +46,10 @@ ChatGPT等へZIP / JSON /画像を渡して分析結果を戻すサイト。
 - 入出力Version
 - Human correction
 - AI結果を未検証の事実として扱わない
+- Runtime DiagnosticsをAIへ渡す場合はCompact / Sanitizedな形式を優先
+- 同じ症状を繰り返し渡すProjectではRemote Diagnostic Handoffを検討
+- Binaryが不要な診断まで毎回ZIP化しない
+- Provider未接続時のLocal Export Fallback
 
 ## CLOUD
 
@@ -58,6 +62,9 @@ Supabase等の外部DB・認証・同期を使うサイト。
 - Sync競合
 - サービス停止時の挙動
 - 無料枠 / 維持費
+- 無料必須の場合は現在のPricing / Active Project / Pause条件を導入時に再確認
+- 公開SchemaのRLS / Grant
+- Remote Diagnosticsを保存する場合のRetention / Size / Rate / Abuse対策
 
 ## ELECTRON
 
