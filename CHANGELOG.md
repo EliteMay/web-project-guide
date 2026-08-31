@@ -2,6 +2,36 @@
 
 Guide Versionの正本は [`guide-version.json`](guide-version.json) です。
 
+## 1.11.0 - 2026-08-31
+
+### Added
+
+- `docs/17-visual-quality-baseline.md`を追加
+  - User-facing UIのVisual Qualityを完成に必要なMUST Baselineとして定義
+  - 「見た目は優先順位6位」を「省略可能」ではなくTrade-off順として明確化
+  - Hierarchy / Typography / Spacing / Alignment / Component consistency / Responsive / Accessibility / Prototype感をMinimum Gate化
+  - UI変更時は最終状態をBrowser / Screenshot等で目視確認し、できなければVisual未確認として記録
+- Visual Ambitionを`baseline / high / flagship`へ整理
+  - baseline = 全User-facing UIで必須の最低品質
+  - high / flagship = Direction比較、Signature、独立Visual Review等を追加する条件付き強化
+
+### Changed
+
+- `docs/00-governance.md`へ基本優先順位の読み方を追加し、Visual Quality BaselineをMUST化
+- `START_HERE.md`の新規制作 / AI実装 / UI修正 / Visual Design / 完成前ルートへVisual Quality Baselineを追加
+- `README.md`へVisual Quality Baseline入口、最低限原則、完成条件を追加
+- `templates/REQUIREMENTS_TEMPLATE.md`でVisual Quality BaselineとVisual Ambitionを分離
+- `templates/QUALITY_CHECKLIST.md`のMinimumへVisual Quality Baselineを移動
+- `templates/WORK_REPORT_TEMPLATE.md`へVisual Quality / Visual Verification記録欄を追加
+- Guide Validatorで`docs/17`、GovernanceのMUST、Requirements / ChecklistのBaseline維持を検証
+
+### Compatibility
+
+- 見た目を理由にStorage / Stability / Performance / Accessibilityを壊す方針へは変更しない
+- 小規模Bug Fixで関係ない既存画面の全面Redesignを要求しない
+- 既存Projectへhigh / flagship Designを一律強制しない
+- 既存のVisual Design詳細ルールは`docs/04-ui-ux-accessibility.md`を正本として維持
+
 ## 1.10.0 - 2026-08-31
 
 ### Added
@@ -412,7 +442,7 @@ English Worksheet Lab v0.6.2の実運用で見つかった以下の問題をGuid
 
 - Versioned Patchを統合した後も`js/v060/`等のVersion付き正式Runtimeが残る
 - Session等へ古いApp Version hardcodeが残る
-- Backup ImportがTop-level schema確認後にStoreをclearし、途中失敗時に既存データを失える
+- Backup ImportがTop-level schema確認後にStoreをclearし、途中失敗時に既存Dataを失える
 - 自前RendererのDOMを別ModuleがMutationObserverで後付けしていた
 
 ## 1.1.1 - 2026-08-30
