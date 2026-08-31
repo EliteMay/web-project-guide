@@ -13,6 +13,7 @@
     "recent commits and changed files",
     "README and specification",
     "work reports and changelog",
+    "visual design direction, layout structure, repeated UI patterns and DesignShelf usage",
     "diagnostics design and exported schema when committed",
     "tests and GitHub Actions",
     "storage schema and migration"
@@ -42,6 +43,21 @@
       "name": "GitHub Docs",
       "url": "https://docs.github.com/",
       "topics": ["GitHub Pages", "Actions", "repository management", "security"]
+    },
+    {
+      "name": "GitHub Primer",
+      "url": "https://primer.style/product/",
+      "topics": ["visual design", "layout", "typography", "navigation", "design systems", "accessibility"]
+    },
+    {
+      "name": "Microsoft Fluent 2",
+      "url": "https://fluent2.microsoft.design/",
+      "topics": ["visual design", "layout", "spacing", "typography", "design tokens", "components"]
+    },
+    {
+      "name": "Apple Human Interface Guidelines",
+      "url": "https://developer.apple.com/design/human-interface-guidelines/",
+      "topics": ["design principles", "hierarchy", "layout", "typography", "platform design"]
     },
     {
       "name": "Electron Documentation",
