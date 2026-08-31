@@ -225,21 +225,21 @@ parse → validate all → backup current → replace → verify → rollback on
 
 ## S-024 Structure-first Visual Design
 
-**Pattern:** ColorやDecorative Effectより先に、Information Architecture / Workflow / Layout / Typography / SpacingでVisual hierarchyを作る。
+**Pattern:** ColorやDecorative Effectより先に、Information Architecture / Workflow / Layout / Typography / SpacingでVisual hierarchyを作る。さらに題材・利用者・実ContentからDesign Materialを取り出し、Trendだけで方向を決めない。
 
 ```text
-Purpose
+Purpose / Subject
 → Workflow / Data
-→ Information Architecture
+→ Information Architecture / Content outline
 → Wireframe / Layout
 → Typography / Spacing
 → Color
-→ Effects
+→ Effects / Signature
 ```
 
 - **Use when:** Visual Qualityが重要なWeb / Electron Project全般。
 - **Avoid when:** 既存Design Systemを厳密に踏襲する小規模画面で、Page Structureまで新しく考える必要がない場合。
-- **効果:** Accent Colorだけ違うCloneや、Card / Gradientを積んだだけのAI Template Lookを減らしやすい。
+- **効果:** Accent Colorだけ違うCloneや、Card / Gradientを積んだだけのAI Template Lookを減らし、Project固有のData / Workflow / Product UIをVisual identityへつなげやすい。
 - **Trade-off:** CSS実装前に構造検討の時間が必要だが、後から全面Layout修正するコストを下げる。
 - **Related:** [AP-020](anti-patterns.md) / [AP-026](anti-patterns.md) / [AP-027](anti-patterns.md) / [Visual Design Quality](../docs/04-ui-ux-accessibility.md)
 
@@ -264,3 +264,52 @@ Purpose
 - **Trade-off:** 最初に比較時間が必要。比較案を全部実装するのではなくWireframe / lightweight mockで十分。
 - **Companion:** [DesignShelf](https://github.com/EliteMay/DesignShelf)を構造探索に使える。ただしLayoutを完成Templateとして扱わない。
 - **Related:** [AP-028](anti-patterns.md) / [Visual Design Quality](../docs/04-ui-ux-accessibility.md)
+
+## S-026 AI Draft → Independent Review → Test → Adapt
+
+**Pattern:** AI生成物を最終成果物ではなくDraft / Implementation candidateとして扱い、別のEvidenceで検証してから採用する。
+
+```text
+AI output
+→ existing repo / rules comparison
+→ diff / architecture review
+→ static / unit / browser test
+→ visual / human review when relevant
+→ simplify / adapt
+→ final-state validation
+```
+
+- **Use when:** ChatGPT / Codex / Claude等がCode、Architecture、Design、Documentationを大きく生成するProject。
+- **Avoid when:** 単純な文言置換等、Review costが生成物のRiskを大きく上回る場合。
+- **効果:** AIがもっともらしく作った重複・Monolith・固定値・未検証Platform手順を完成品へ残しにくい。
+- **Trade-off:** 「生成して終わり」より時間は増えるが、後の修正コストを抑える。
+- **Related:** [AP-029](anti-patterns.md) / [Testing / Quality](../docs/07-testing-quality.md)
+
+## S-027 Fixed Constraints + Creative Axes
+
+**Pattern:** AIへ渡す指示を、正確に固定する必要がある条件と、Projectに合わせて探索するDesign自由度へ分ける。
+
+### Fixed
+
+- Technology / Deployment
+- Storage / Compatibility
+- Accessibility / Performance
+- 必須Data / Workflow
+- Existing Design System / API
+
+### Creative
+
+- Layout / Composition
+- Typography personality
+- Density / Alignment
+- Visual emphasis
+- Image usage
+- Color relationship
+- Motion / Effects
+- Signature
+
+- **Use when:** AIへGreenfield UI / Redesign / Design Directionを依頼する場合。
+- **Avoid when:** 完全に既存Design System通りに再現する作業ではCreative axesを広げすぎない。
+- **効果:** Promptを詳しくしながらGeneric Hero / Glass / Card Gridまで固定してしまう逆効果を防ぐ。
+- **Trade-off:** AIへ渡す前に「何が本当の制約か」を整理する必要がある。
+- **Related:** [AP-030](anti-patterns.md) / [Visual Design Quality](../docs/04-ui-ux-accessibility.md)
