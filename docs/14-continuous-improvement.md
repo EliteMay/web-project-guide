@@ -25,14 +25,20 @@
 
 重点的に見るもの:
 
+- `PROJECT_LEARNINGS.md` — 存在する場合は最優先Evidenceの1つ
 - 前回レビュー以降のCommit / 変更ファイル
 - README / 仕様書 / 作業報告 / CHANGELOG
+- Diagnostic設計 / Export Schema / Error ID / Breadcrumb
 - 保存Schema / Storage Key / Migration
 - GitHub Actions / Test
 - Versioned Patch / Duplicate Runtime
 - hardcode / Single Source of Truth違反
 - UI / Storage / Pages / Electronで修正回数が多かった箇所
 - 新しく採用され、複数Projectへ再利用できそうな成功設計
+
+`PROJECT_LEARNINGS.md` に `Guide candidate: yes` がある項目は優先的に確認します。
+
+Diagnostic LogそのものがGitHubへ保存されていない場合でも、作業報告やLearningに残されたError ID / Root Cause / Regression GuardをEvidenceとして利用します。
 
 毎週すべてのCodeをゼロから精読するのではなく、**差分を先に見て、必要なProjectだけ深掘り**します。
 
@@ -67,6 +73,7 @@ Community情報は候補発見に利用しても、一般ルールへする前�
 - データ消失・互換破壊・公開事故など重大度が高い
 - 同じ成功パターンが複数Projectで効果を示した
 - 今のGuideを守っていても防げなかった問題が見つかった
+- Diagnostic / Project Learningによって同じ失敗経路が繰り返し確認された
 
 ### Web標準由来
 
