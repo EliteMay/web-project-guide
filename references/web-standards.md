@@ -77,6 +77,37 @@ Remote DiagnosticsをSupabase等へ保存する場合は、公開Frontendへ`ser
 
 無料枠を理由に1 Site = 1 Backendを機械的に増やさず、Shared Store / Local-first / Fallbackを含めて設計します。
 
+## GitHub Cross-Repository Infrastructure
+
+複数Repositoryの運用標準化を確認する一次資料です。
+
+- GitHub Docs — Creating a default community health file
+  - https://docs.github.com/en/communities/setting-up-your-project-for-healthy-contributions/creating-a-default-community-health-file
+- GitHub Docs — Reuse workflows
+  - https://docs.github.com/en/actions/how-tos/reuse-automations/reuse-workflows
+- GitHub Docs — Reusing workflow configurations
+  - https://docs.github.com/en/actions/reference/workflows-and-actions/reusing-workflow-configurations
+- GitHub Docs — About rulesets
+  - https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/about-rulesets
+- GitHub Docs — Creating rulesets for a repository
+  - https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/creating-rulesets-for-a-repository
+- GitHub Docs — Configure Dependabot version updates
+  - https://docs.github.com/en/code-security/how-tos/secure-your-supply-chain/secure-your-dependencies/configure-version-updates
+- GitHub Docs — Optimize Dependabot version update PRs
+  - https://docs.github.com/en/code-security/tutorials/secure-your-dependencies/optimizing-pr-creation-version-updates
+- GitHub Docs — About Projects
+  - https://docs.github.com/en/issues/planning-and-tracking-with-projects/learning-about-projects/about-projects
+
+一般化する観点:
+
+- Public `.github` RepositoryはAccount共通のIssue / PR / Community Health Defaultとして使える
+- 各Repository側に固有Fileがある場合は固有設定を優先できる
+- Reusable Workflowは別Public Repositoryから呼び出せる
+- 外部Reusable WorkflowはCommit SHA参照が安定性・Security上もっとも安全
+- Rulesetの強さはRelease / Data Riskに応じて変える
+- DependabotはDependency更新を自動検出できるが、Update PRの品質確認はProject側の責務
+- GitHub ProjectsはIssue / PRを横断表示できるが、仕様の新しいSource of Truthにしない
+
 ## GitHub Pages / Public Content
 
 - GitHub Docs — Custom 404 Page
