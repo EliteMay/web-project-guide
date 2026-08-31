@@ -2,6 +2,70 @@
 
 Guide Versionの正本は [`guide-version.json`](guide-version.json) です。
 
+## 1.9.0 - 2026-08-31
+
+### Added
+
+- `docs/15-development-observability.md`へRemote Diagnostic Handoffを追加
+  - 詳細LogはLocal-firstのまま保持
+  - AIへ渡すSanitize済みCompact Snapshotだけを必要時にRemote Storeへ保存
+  - Runtime Evidenceと長期`PROJECT_LEARNINGS.md`を分離
+- 無料必須Project向けのFree-only Guardを追加
+  - Remote Diagnosticsのために有料Planを必須化しない
+  - 導入時に現在のPricing / Quota / Active Project / Pause条件を再確認
+  - Remote停止時はLocal Diagnostics / One-click ExportへFallback
+  - 1 Site = 1 BackendをDefaultにせずShared Diagnostics Store + `projectKey`を検討
+- Remote Snapshotの容量・Retention Guardを追加
+  - Binary / Storage全Dump / User入力全文を自動Remote保存しない
+  - Snapshot最大Size / Project最大件数 / Retentionを設定
+  - Normalは短期、Errorも必要期間だけ保持
+- Remote write Securityを追加
+  - Frontendへ`service_role` / Secretを置かない
+  - Supabase等の公開TableでRLS + Grantを確認
+  - `projectKey`をAuthorizationに使わない
+  - 無制限匿名InsertをDefaultにしない
+  - 安全なWrite pathがなければRemote auto-uploadを行わない
+- AI Project UpdateのEvidence順序を追加
+  - Current GitHub / AGENTS / Spec
+  - `PROJECT_LEARNINGS.md`
+  - 最新Remote Error Snapshot
+  - 最近のNormal Snapshot
+  - 対象Code / Test
+- `templates/DIAGNOSTICS_SCHEMA_TEMPLATE.json`をSchema v2へ更新
+  - `projectKey` / `snapshotId` / severity
+  - Remote handoff用Sanitized / size / retention / binary / secret metadata
+
+### Changed
+
+- `START_HERE.md`へ「ZIPを毎回作らずChatGPTへ診断を渡す」Routeを追加
+- `docs/03-data-storage.md`へLocal detailed diagnostics + Shared Remote compact snapshot方針を追加
+- `docs/06-security.md`へRemote Diagnostic HandoffのRLS / Grant / Secret / Abuse対策を追加
+- `docs/10-project-management.md`でAIがユーザーへ症状を再質問する前にRemote Runtime Evidenceを読む方針を追加
+- `docs/12-project-profiles.md`のAI-HANDOFF / CLOUDをRemote Diagnostics対応へ拡張
+- `templates/AGENTS_TEMPLATE.md`へRemote DiagnosticsのProvider / projectKey / read range / Fallback入口を追加
+- `templates/QUALITY_CHECKLIST.md`へRemote Diagnostic Handoff専用Checklistを追加
+- `references/web-standards.md`へSupabase RLS / Data API Security / Pricing / PausingとGitHub Actions Billingを追加
+- `maintenance/review-policy.json`へRemote Diagnostics / Hosted Service free-limit Reviewを追加
+- Guide ValidatorをDiagnostics Schema v2とRemote Handoff安全Defaultへ対応
+
+### Current Free-plan Check
+
+2026-08-31時点の公式情報を確認しました。
+
+- Supabase Free: Database 500 MB / Egress 5 GB / File Storage 1 GB / Edge Function 500,000 invocations / Active Project 2、低Activity ProjectはPause対象
+- 現在接続されているSupabase Active Projectは `LyricTube` と `osu-hub` の2件で、3個目のDiagnostics専用Projectは無料条件を満たす保証がない
+- GitHub public repositoryのstandard GitHub-hosted runnerは無料利用可能
+
+これらの数値は変化するためGuideの恒久仕様とはせず、導入時・定期Review時に公式情報を再確認します。
+
+### Compatibility
+
+- Remote Diagnostic Handoffを全Projectへ強制しない
+- 既存Local Diagnostics / ZIP Exportを削除しない
+- Binaryが必要なAI HandoffではZIP / File方式を維持可能
+- 現在のSupabase ProjectをPause /削除 /移行していない
+- 既存Projectへ新しい有料依存を追加していない
+
 ## 1.8.0 - 2026-08-31
 
 ### Added
@@ -244,7 +308,7 @@ Guide Versionの正本は [`guide-version.json`](guide-version.json) です。
 
 ### Source
 
-- ユーザー要望: 毎回状況を説明し直さなくても、Project自身の記録から原因調査を始められる共通基盤
+- ユーザー要望: 毎回状況を説明し直さなくても、Project自身の記録から調査を開始できる共通基盤
 - MDN: Window `error` / `unhandledrejection` とPerformance API / PerformanceObserver
 - OWASP Logging Cheat Sheet: Application loggingの一貫性とSensitive Data除外
 
