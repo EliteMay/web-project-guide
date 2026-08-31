@@ -26,6 +26,7 @@
 - IndexedDB
 - 外部API Response
 - Supabase Response
+- Remote Diagnostic Snapshot
 
 保存済みデータでも破損・旧形式・書き換えを想定します。
 
@@ -47,6 +48,29 @@
 - 使う数を抑える
 - 対応可能ならSRIを使う
 - 重要機能にはFallbackを持たせる
+
+## Remote Diagnostic Handoff
+
+CONDITIONAL: Runtime DiagnosticsをSupabase等のRemote Storeへ保存する場合、**診断の便利さのために公開Frontendへ管理権限を埋め込みません**。
+
+### MUST
+
+- `service_role` / Secret Key / private API keyをBrowserへ置かない
+- 公開SchemaのTableではRLSとDatabase Grantを確認する
+- `projectKey`やProject名をAuthorizationとして使わない
+- 無制限の匿名Insert / Select / DeleteをDefaultにしない
+- Payload Schema / 最大Size / Content typeを検証する
+- Token / Cookie / Authorization Header / User入力全文 / Media bodyをRemoteへ保存しない
+- Remote write失敗でLocal Diagnosticsを失わない
+- Provider停止時にCore機能まで利用不能にしない
+
+BrowserからRemoteへ書き込む場合は、認証済みDeveloper session等の安全な主体へ限定することを優先します。
+
+Server / Edge Functionを使う場合も、Clientから渡された`projectKey`だけを信用して管理権限を与えず、認証・許可範囲・Payload size・Rateを確認します。
+
+Supabaseの公開Schemaでは、RLSだけでなく`anon` / `authenticated`のTable Grantも実際の利用操作へ絞ります。`service_role`はRLSをBypassできるためFrontendへ公開しません。
+
+安全なRemote write pathを用意できないProjectでは、Remote auto-uploadを無理に導入せず、Local Diagnostics + One-click ExportへFallbackします。
 
 ## 削除・リセット
 
