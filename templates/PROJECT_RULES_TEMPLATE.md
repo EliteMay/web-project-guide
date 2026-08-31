@@ -2,6 +2,8 @@
 
 このファイルは、共通Guideより優先される**プロジェクト固有ルール**を短く記録するためのテンプレートです。
 
+`AGENTS.md`を利用する場合も、このProject Rulesや仕様書の内容を丸ごと複製せず、Agent向け入口から本ファイルへ案内します。
+
 ## Guide
 
 - Adopted Guide Version:
@@ -39,6 +41,13 @@
 ## 固有の禁止事項
 
 - 
+
+## AI / Coding Agent
+
+- `AGENTS.md`: Yes / No
+- Agentが最初に読む正本:
+- 必須Validation Command:
+- AIへ勝手に変更させない高リスク領域:
 
 ## 未確認のまま完成扱いにしない項目
 

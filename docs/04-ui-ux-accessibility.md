@@ -84,6 +84,62 @@ Landing Page、Portfolio / Showcase、Media、一般公開Product、Visual Quali
 
 これは「その企業のLayoutをコピーする」という意味ではありません。
 
+### SHOULD: 題材からDesignを導く
+
+「modern」「premium」「clean」等の抽象語だけからVisualを決めません。
+
+Design Directionを考えるときは、Project固有の次の材料を先に見ます。
+
+- 利用者が普段使う語彙
+- 扱うContent / Data / Mediaの形
+- 一番繰り返すTask
+- 題材に固有のVisual material、図、Screenshot、Artwork、Map、Timeline等
+- 情報の比較・探索・編集・閲覧などの性質
+- 利用頻度と必要な情報密度
+
+実在企業を参考にする場合も、色・角丸・Heroを真似るのではなく、**Audience / Job / Content Model / Navigation / Density / Proof / Component choice / Effectの理由**を抽象化します。
+
+### SHOULD: Signatureは1つを明確にする
+
+Visualが重要なProjectでは、必要に応じて「このProjectらしさを一番表す要素」を1つ決めます。
+
+例:
+
+- 実データを主役にした独自Visualization
+- 題材に合ったNavigationやTimeline
+- Project固有のArtwork / Screenshot treatment
+- 特徴的だが読みやすいTypography pairing
+- Taskに直結したWorkspace composition
+
+複数箇所を同時に奇抜にする必要はありません。**1つのSignatureへ大胆さを使い、残りを規律あるDesign Systemで支える**方針を基本とします。
+
+### AI Promptでは「固定するもの」と「探索させるもの」を分ける
+
+Promptが長いほど品質が上がるとは限りません。
+
+AIへ先に固定しやすいもの:
+
+- Purpose / User / Required Content
+- 必須機能 / Workflow
+- Technology / Deployment制約
+- Accessibility / Performance / Security
+- 崩してはいけない仕様
+- 既存Design Systemがある場合のToken / Component契約
+
+Visual Design決定前に固定しすぎないもの:
+
+- Heroの有無と高さ
+- Card Gridの列数
+- Center / Left Alignment
+- Navigation Type
+- Content Density
+- Typography personality
+- Image / Screenshot emphasis
+- Gradient / Glass / Glow / Shadow
+- CTA Sectionの数と配置
+
+「full-height centered hero + 3 cards + glass nav + cursor glow」のように完成形をPromptへ固定してから「独自Designにして」と要求すると、AI自身の探索余地を消します。
+
 ## Wireframe Before Visual Polish
 
 ### SHOULD: 色とEffectを外しても成立する構造を先に作る
@@ -106,12 +162,28 @@ Purpose / Workflow
 → Information Architecture
 → Wireframe / UI Structure
 → Design Direction
+→ Design Plan Critique
 → Typography / Spacing / Color
 → Decorative Effects
-→ Visual Polish
+→ Build
+→ Visual Design Review
 ```
 
 これは [AP-020 Design Before Workflow](../catalog/anti-patterns.md) と同じ考え方です。Visualを重視する場合でも、Workflow / Data / UI Structureを飛ばして見た目から完成させません。
+
+### Design Plan Critique
+
+Visual Designが重要なProjectでは、CSSを本格実装する前に一度Directionを自己Reviewします。
+
+確認例:
+
+- このPlanは別の無関係なProjectにもほぼそのまま使えてしまわないか
+- Content / Task / Audience固有の理由がLayoutに現れているか
+- Primary Actionと重要情報が装飾なしでも分かるか
+- 「modern」「premium」等の抽象語をEffectで埋めていないか
+- DesignShelfやReferenceのSkeletonをそのまま完成形にしていないか
+
+Genericに見える場合は、実装量を増やす前にDirectionを修正します。
 
 ## AI Template Lookを避ける
 
@@ -130,6 +202,8 @@ AIへ自由に「モダンで高品質なサイト」と指示すると、似た
 - EmojiをUI Iconとして大量利用
 - Sectionごとに同じ「見出し + Card Grid」を反復
 - 最後に必ず巨大CTAを置く
+
+AIのDefaultは時期やModelによって変わります。特定の色・Font・Effectだけを「AIっぽい」と固定せず、**Projectとの理由が薄いのに流行Patternが束で出現していないか**をReviewします。
 
 ### 禁止ではない
 
@@ -157,6 +231,7 @@ CardでなくSection / List / Table / Divider / Background differenceの方が�
 - 長い本文は原則として読みやすいAlignmentとLine lengthを優先する。
 - Center alignmentは短い導入や局所的なFocusには使えるが、長文・高密度UIへ機械的に適用しない。
 - HTMLのHeading hierarchyをVisual都合だけで壊さない。
+- Display Fontや個性的なTypefaceはIdentityへ使えても、長文や高密度UIの可読性を犠牲にしない。
 
 ### Spacing
 
@@ -179,6 +254,17 @@ CardでなくSection / List / Table / Divider / Background differenceの方が�
 
 最重要要素を決め、他は意図的に弱めます。
 
+## Copy / ContentもDesign Materialとして扱う
+
+AIがVisualだけ整えても、GenericなMarketing Copyが大量に入るとTemplate感が残ります。
+
+- Userが認識する語彙を優先する。
+- Action labelは可能な限り具体的な動詞にする。
+- 同じActionを画面ごとに別の言葉で呼ばない。
+- Empty / Error Stateでは状態説明だけでなく次に取れるActionを示す。
+- Placeholder / Lorem IpsumだけでResponsiveを判断せず、短い文・長い文・実際の言語でも確認する。
+- Contentが少ないProjectへ、Visualを埋めるためだけのFeature説明やMarketing Sectionを捏造しない。
+
 ## Component Design
 
 Componentの一貫性とPage構造の多様性を両立します。
@@ -188,6 +274,21 @@ Componentの一貫性とPage構造の多様性を両立します。
 - Card / List / Table / Tabs / Detail Pane / Inline section等を情報の性質で選ぶ。
 - 同じComponentを再利用しても、ページ全体のCompositionまで全Projectで同じにする必要はない。
 - Decorative Variantを増やす前に、必要なSemantic Variantを整理する。
+
+### Interactive Stateを忘れない
+
+該当するComponentでは、完成Screenshotだけでなく状態差を設計します。
+
+- default
+- hover（Pointerがある場合）
+- focus-visible
+- active / pressed / selected
+- disabled
+- loading
+- error / invalid
+- empty / no result
+
+すべてのComponentへ全状態を機械的に作るのではなく、そのComponentが実際に取り得る状態を明示します。
 
 ## ProjectごとにVisual Structureを変える
 
@@ -209,16 +310,35 @@ Project Typeに応じて適切な構造を変えます。
 
 ## DesignShelfの活用
 
-[DesignShelf](https://github.com/EliteMay/DesignShelf) は、完成サイトのTemplateを選ぶ場所ではなく、**構造と配色を分解して比較するCompanion Tool**として利用できます。
+[DesignShelf](https://github.com/EliteMay/DesignShelf) は、完成サイトのTemplateを選ぶ場所ではなく、**Design Directionを分解して比較するCompanion Tool**として利用できます。
 
 推奨Workflow:
 
 1. 本GuideでPurpose / Workflow / Information Architectureを決める。
 2. 色やEffectなしのWireframeを考える。
-3. DesignShelfで2〜3個の**構造的に異なるLayout骨格**を比較する。
-4. 選んだ骨格をそのままコピーせず、Project固有のNavigation / Density / Primary Action / Contentへ変形する。
+3. DesignShelfで2〜3個の**構造的に異なるDirection**を比較する。
+4. 選んだ案をそのままコピーせず、Project固有のNavigation / Density / Primary Action / Contentへ変形する。
 5. Structureが決まってからPaletteを選ぶ。
 6. 最後にDecorative Effectを必要な範囲だけ追加する。
+
+### DesignShelfで扱うDesign属性
+
+将来的にはLayout番号だけでなく、次のような属性を組み合わせてDirectionを表せると再利用しやすくなります。
+
+- Navigation Type
+- Main Structure
+- Content Density
+- Alignment
+- Typography Direction
+- Visual Emphasis
+- Image / Screenshot Usage
+- Component Density / Component family
+- Spacing Rhythm
+- Color Rule
+- Decorative Effect Policy
+- Signature
+
+ただし、これらを完全独立のRandomなつまみとして組み合わせるとDesignが破綻します。**相性のある属性を1つのCoherent Directionとして2〜3案生成し、各案に「なぜこのProjectへ合うか」を付ける**方式を優先します。
 
 ### DesignShelfを使うときの注意
 
@@ -226,9 +346,35 @@ Project Typeに応じて適切な構造を変えます。
 - Random提案は発想の入口として使い、完成判断にはしない。
 - Paletteだけ変えて同じLayoutを再利用し続けない。
 - 24 Layoutを「正解の一覧」と扱わない。必要なら混合・削除・変形する。
+- Layout IDは完成TemplateではなくSkeleton / Exampleとして扱う。
 - DesignShelfの現在UIはPalette → Layoutの順でも、Guide運用では**Structure-firstで利用してよい**。
 
-将来的なDesignShelf改善では、Layout-first mode、Design Direction、複数Layout比較、AI Template Risk表示等を検討します。
+## Visual Design Review Gate
+
+### CONDITIONAL: Visual Qualityが重要ならBuild後に別工程でReviewする
+
+「CSSを書き終えた」ことと「Visual Designが完成した」ことを分けます。
+
+実装後、機能Testとは別に次をReviewします。
+
+1. **Purpose / User Task** — 最初に何を理解・実行すべきか明確か
+2. **Information Hierarchy** — 重要度がSize / Position / Density / Contrastへ正しく反映されているか
+3. **Navigation / Primary Action** — 次のActionが自然で、Marketing CTAを機械的に追加していないか
+4. **Layout / Responsive** — Desktopを縮小しただけでなく、狭い画面でPriorityが再構成されているか
+5. **Typography / Spacing** — 読みやすさ、Line length、Grouping、Rhythmが適切か
+6. **Component Semantics** — Card / Table / List / Tabs等の選択理由が情報の性質に合うか
+7. **Design System Consistency** — Token / State / Radius / Border / Button等が無意味に揺れていないか
+8. **Accessibility** — Focus、Contrast、Keyboard、Motion、Target等を損なっていないか
+9. **Copy / Content** — GenericなAI Copyや冗長なSectionがDesignを水増ししていないか
+10. **AI Template Regression** — 色を外したとき、別Projectとほぼ同じCompositionへ戻っていないか
+
+Findingは必要に応じて次で分けます。
+
+- **Blocking:** 主要Task不能、重大なAccessibility、内容と構造の不一致など、完成を止める
+- **Major:** Hierarchy / Navigation / Responsive / Template感など、Visual Qualityを大きく下げる
+- **Minor:** 細かなSpacing / State / Polish等
+
+Visual Reviewの結果は `Pass` / `Needs work` を明示し、Blockingが残る場合はVisual完成扱いにしません。
 
 ## レスポンシブ
 
@@ -239,6 +385,7 @@ Project Typeに応じて適切な構造を変えます。
 - 表・タイムライン・大型編集領域など、必要な部分だけ局所スクロールを許可する。
 - 320 CSS px相当の狭い画面でも主要情報と操作を失わないことを目標にする。
 - PC専用UIでも、低い縦解像度・表示倍率125〜150%を確認する。
+- Responsiveでは単純に列数を減らすだけでなく、Navigation / Secondary Content / Action priorityを必要に応じて再構成する。
 
 ## fixed / sticky
 

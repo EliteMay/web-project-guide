@@ -13,6 +13,8 @@ Web制作ではGitHubリポジトリを基本の保存・管理先とします�
 - README.md
 - 仕様書
 - 作業報告書 / CHANGELOG
+- `PROJECT_LEARNINGS.md`
+- `AGENTS.md`（存在する場合）
 - package.json等
 - ファイル構成
 - HTML / CSS / JavaScript
@@ -30,7 +32,7 @@ Web制作ではGitHubリポジトリを基本の保存・管理先とします�
 基本的に以下の順番で作業します。
 
 1. 現在のリポジトリを確認
-2. README・仕様を確認
+2. README・仕様・Project Rulesを確認
 3. 変更対象を特定
 4. 影響範囲を確認
 5. 変更経路を選ぶ
@@ -38,7 +40,7 @@ Web制作ではGitHubリポジトリを基本の保存・管理先とします�
 7. 関連ファイルとの整合性確認
 8. 一時Script / 一時Workflow / Debug資産をCleanup
 9. **Cleanup後の最終Commit**で動作確認・Regression・CI / Pages確認
-10. README・作業報告更新
+10. README・作業報告・必要なProject Learningを更新
 11. 未確認事項を記録
 
 ## GitHubへの変更経路を選ぶ
@@ -108,6 +110,81 @@ GitHub Actionsは、**継続的に必要な自動化そのもの**が目的の�
 - Cleanup Commit
 
 「途中では通っていた」ではなく、ユーザーへ渡す最終main / Merge Commitの状態を確認済みにします。
+
+## AI Coding Agentを使う場合
+
+ChatGPT / Codex / Claude / Copilot等が生成したCodeも、通常の変更と同じ品質基準を通します。
+
+### SHOULD: AI出力を「提案 + 実装候補」として扱う
+
+AIがCodeを書いたこと自体を完成条件にしません。
+
+- 現在のRepo / Runtime / Dataを先に確認する。
+- 既存のProject Rules / 保存互換性 / Architectureを守る。
+- AIが提案したFramework / Library / Storage / Rewriteを理由だけで採用しない。
+- 高コスト判断はAI提案でもADR / 影響確認を省略しない。
+- 未経験TechnologyでAIへ大きく任せる場合は、Architecture / Security / Deployment / Data persistenceを特にReviewする。
+- 「全部書き直した方が綺麗」という提案より、既存ProjectではSmallest Safe Changeを優先する。
+
+AI生成量が多いProjectでも、人間が全行を手で書き直す必要はありません。重要なのは、**何が正しい状態かを定義し、その状態へ到達したことを検証できること**です。
+
+## Specification / Oracle-driven AI Development
+
+AIへ大規模な実装・移植・自動生成を任せる場合、可能なら実装前に「正解を判定するOracle」を用意します。
+
+例:
+
+- 既存Versionと同じ入力に対するGolden Output
+- Reference implementationとの結果比較
+- Parser / DetectorのRegression Dataset
+- Schema / Contract Test
+- Screenshot / Geometryの基準
+- 保存→再読込→復元のE2E
+- 明確なAcceptance Criteria
+
+推奨順序:
+
+```text
+Specification / Observable criteria
+→ AI implementation
+→ Automated comparison / Test
+→ Difference analysis
+→ Fix
+→ Regression guard
+```
+
+AI生成を大量に使うほど、曖昧な「良さそう」より**機械的または観測可能な正解判定**の価値が高くなります。
+
+Reference / Golden Testが作れないVisual Design等は、[Visual Design Review Gate](04-ui-ux-accessibility.md#visual-design-review-gate)のような明示的Review工程で補います。
+
+## AGENTS.md
+
+`AGENTS.md` はCoding AgentへProjectの入口を渡すために利用できます。
+
+### SHOULD: Source of Truthを増やすのではなくRouterとして使う
+
+`AGENTS.md`へREADME・仕様書・Project Rulesの全文を複製しません。
+
+役割:
+
+- Agentが最初に読むべきファイル順を示す
+- 正確なBuild / Test / Validation commandを示す
+- 変更してはいけない仕様の正本へLinkする
+- Architecture上の重要な責務 / File ownershipを短く示す
+- Storage / Security / Deploymentの高リスク箇所を示す
+- 作業後に必ず実行するCheckを示す
+
+Project固有ルールの正本は原則として仕様書 / `PROJECT_RULES.md`等に残し、`AGENTS.md`はそこへ案内します。
+
+### Nested AGENTS.md
+
+Subdirectoryだけ異なるRule / Test / Technologyを持つ場合は、必要に応じてNested `AGENTS.md`を使えます。
+
+ただし、Directoryごとに大量作成するとルール追跡が難しくなるため、**本当にScopeが異なる場合だけ**追加します。
+
+同じ内容をRoot / Nestedへ重複させず、より近いScopeのInstructionが必要な理由を明確にします。
+
+Template: [AGENTS_TEMPLATE.md](../templates/AGENTS_TEMPLATE.md)
 
 ## 原則としてそのまま改善してよい範囲
 

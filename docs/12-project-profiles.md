@@ -90,11 +90,27 @@ Windows等のDesktop機能を使うElectronアプリ。
 
 主な確認:
 - Asset License / 出典
-- Metadata / title
+- `<html lang>` と文書言語
+- 各主要Pageの意味が分かる`title`
+- 検索流入が重要ならMeta description / canonical等の基本Metadata
 - Accessibility
 - Privacy
 - 公開してはいけない個人データ
+- GitHub Pagesで迷子になりやすい場合は`404.html`等の復帰導線
+- Analytics / Form / Third-party Scriptを使う場合のPrivacy影響
 - 必要ならSEO
+
+### CONDITIONAL: 多言語 / Internationalization
+
+複数言語を扱う場合だけ追加確認します。
+
+- Page / SectionのLanguage指定
+- 翻訳でText lengthが伸びても致命的に崩れない
+- Date / Number / Currency等を文字列連結だけで固定しない
+- RTL言語を対象にする場合は`dir`とLayout方向を確認
+- Placeholder英語だけでResponsive Designを確定しない
+
+すべての個人用Siteへ多言語対応を強制しません。
 
 ## Project Profileの記録例
 

@@ -4,7 +4,7 @@
 
 「コードが書けた」と「使える」は別です。
 
-自動テストで防げる問題と、実ブラウザ・実機でしか確認できない問題を分けます。
+自動テストで防げる問題と、実ブラウザ・実機・Design Reviewでしか確認できない問題を分けます。
 
 ## 最低限のStatic Validation
 
@@ -60,6 +60,45 @@ UIが重要なサイトでは以下も確認します。
 - Button visibility
 - Canvas/対象DOM geometry
 - Main navigation
+
+## Specification / Oracle Test
+
+AI生成量が多いProject、既存実装の移植、互換性が重要な処理では、可能なら「正しい出力」を比較できるOracleを作ります。
+
+例:
+
+- Golden Output
+- Reference implementationとの同一入力比較
+- Regression Dataset
+- Schema / Contract Test
+- Snapshot / Geometry基準
+- 保存→再読込→復元E2E
+
+AIがCodeを書いたか人間が書いたかではなく、**期待結果を再現可能に判定できるか**を重視します。
+
+Oracle自体が誤っている可能性もあるため、Reference更新時は理由と影響を残します。
+
+## Visual Design Review
+
+Visual Qualityが重要なProjectでは、機能Testと別に[Visual Design Review Gate](04-ui-ux-accessibility.md#visual-design-review-gate)を実施します。
+
+自動Testだけでは次を十分に判定できません。
+
+- Project固有の情報構造になっているか
+- Primary ActionとHierarchyが自然か
+- AI Template Lookへ戻っていないか
+- Typography / Spacing / DensityがContentへ合うか
+- Card / List / Table等のComponent選択が適切か
+- Responsive時にPriorityを再構成できているか
+- GenericなAI CopyでSectionを水増ししていないか
+
+Findingは必要に応じて `Blocking / Major / Minor` で整理します。
+
+- **Blocking:** 完成を止める。主要Task不能、重大なAccessibility、内容と構造の重大不一致など
+- **Major:** 通常利用はできても、Hierarchy / Navigation / Responsive / Visual Identity等を大きく損なう
+- **Minor:** 局所Spacing、細かなState、Polish等
+
+Blockingが残る場合はVisual完成扱いにしません。
 
 ## 対応ブラウザ
 
@@ -166,6 +205,21 @@ CIで代替できないもの:
 - [ ] 共通Component / Event Listenerへの副作用を確認した
 - [ ] import / fetch / URLへの影響を確認した
 
+## AI-assisted Development
+
+- [ ] AIが提案した高コストArchitecture / Storage / Dependencyを無検証で採用していない
+- [ ] AI生成Codeも同じStatic / Browser / Regression基準を通した
+- [ ] 大規模AI生成でOracle / Reference / Observable Acceptance Criteriaを使える場合は用意した
+- [ ] PromptでVisual完成形を固定しすぎてProject固有Designの探索余地を消していない
+
+## Visual Quality（該当時）
+
+- [ ] Build後にVisual Design Reviewを実施した
+- [ ] Primary Task / Hierarchy / Navigationが明確
+- [ ] Colorを外してもProject固有のCompositionが残る
+- [ ] ResponsiveがDesktopの単純縮小になっていない
+- [ ] Blocking Design Findingが残っていない
+
 ## Documentation
 
 - [ ] READMEが現在仕様と一致する
@@ -188,12 +242,13 @@ CIで代替できないもの:
 - Implemented: 実装済み
 - Static Validated: 構文・参照・Schema等を自動確認済み
 - Browser Validated: 実ブラウザで主要導線確認済み
+- Visual Reviewed: Design Review Gateを実施済み
 - Real Device Validated: 実機 / OS固有機能確認済み
 - User Validated: 実際の利用者が確認済み
 - Unverified: 未確認
 - Known Issue: 既知問題あり
 
-Static Validation成功だけで「実機動作確認済み」と扱いません。
+Static Validation成功だけで「実機動作確認済み」「Visual Design完成」と扱いません。
 
 # 完成条件
 
@@ -206,6 +261,7 @@ Static Validation成功だけで「実機動作確認済み」と扱いません
 - GitHub Pages対応サイトは公開可能な構成になっている
 - 保存データを壊さない
 - 一時資産をCleanupした最終状態で検証済み
+- Visual Qualityを完成条件に含むProjectではBlocking Design Findingがない
 - 未確認事項が明示されている
 
 主要機能が未実装の場合や、重大部分が未確認の場合は完成扱いにしません。

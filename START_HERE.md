@@ -14,24 +14,38 @@
 6. 必要な設計章だけ確認
 7. [要件定義テンプレート](templates/REQUIREMENTS_TEMPLATE.md)を使う
 8. `PROJECT_LEARNINGS.md` を [Template](templates/PROJECT_LEARNINGS_TEMPLATE.md) から作る
-9. 完成前に[Quality Checklist](templates/QUALITY_CHECKLIST.md)を使う
+9. AI Coding Agentを継続利用するなら必要に応じて[AGENTS Template](templates/AGENTS_TEMPLATE.md)を使う
+10. 完成前に[Quality Checklist](templates/QUALITY_CHECKLIST.md)を使う
 
 ### 既存サイトのバグを直す
 
 1. 現在のGitHubリポジトリを確認
-2. README / 仕様 / 作業報告 / `PROJECT_LEARNINGS.md` を必要範囲だけ確認
-3. [GitHub中心のプロジェクト管理](docs/10-project-management.md)の影響確認を行う
-4. [Failure Catalog](catalog/failures.md)に類似事故がないか確認
-5. Diagnostics / Error ID / Breadcrumbがある場合は、ユーザー説明より先にそのEvidenceを確認
-6. 変更経路を選ぶ
+2. README / 仕様 / Project Rules / 作業報告 / `PROJECT_LEARNINGS.md` を必要範囲だけ確認
+3. `AGENTS.md`がある場合はAgent向け入口として確認する
+4. [GitHub中心のプロジェクト管理](docs/10-project-management.md)の影響確認を行う
+5. [Failure Catalog](catalog/failures.md)に類似事故がないか確認
+6. Diagnostics / Error ID / Breadcrumbがある場合は、ユーザー説明より先にそのEvidenceを確認
+7. 変更経路を選ぶ
    - 小規模で変更箇所が明確 → GitHub上の対象ファイルを直接更新
    - 複数ファイル・高リスク・設計変更 → Branch / Pull Requestを優先
    - GitHub Actions → 継続的な自動化そのものが目的の場合に使い、単発のファイル書換え手段として安易に増やさない
-7. 実装後、一時Script / 一時Workflow / Debug資産が残っていないか確認
-8. 高コストBugなら `PROJECT_LEARNINGS.md` とRegression Guardを更新
-9. **最終Commitの状態**で該当範囲のRegression / CI / Pages確認を行う
+8. 実装後、一時Script / 一時Workflow / Debug資産が残っていないか確認
+9. 高コストBugなら `PROJECT_LEARNINGS.md` とRegression Guardを更新
+10. **最終Commitの状態**で該当範囲のRegression / CI / Pages確認を行う
 
 小規模修正でフル要件定義をやり直す必要はありません。
+
+### ChatGPT / Codex / Claude等へ大きく実装を任せる
+
+1. [GitHub中心のプロジェクト管理](docs/10-project-management.md) のAI Coding Agent / Specification・Oracle方針を確認
+2. Agentへ渡す入口が必要なら[AGENTS Template](templates/AGENTS_TEMPLATE.md)を利用
+3. `AGENTS.md`へ仕様全文を複製せず、README / Spec / Project Rules / Guideへ案内する
+4. Technology / Architecture / Storage等の高コスト判断はAI提案でも影響確認する
+5. 移植・大量生成・互換性重視ではGolden Output / Reference / Contract / Regression Dataset等のOracleを先に用意できるか検討
+6. AI生成Codeも通常のStatic / Browser / Regression / Security基準を通す
+7. Visualが重要ならAI Promptで完成Layoutを先に固定しすぎず、Design Directionを比較する
+
+AIの利用量ではなく、**正しい状態を定義し、最終結果を検証できること**を品質基準にします。
 
 ### 「こうなった」と説明する前に診断データを使う
 
@@ -72,14 +86,26 @@
 
 1. [UI / UX / Accessibility](docs/04-ui-ux-accessibility.md) のVisual Design Qualityを正本として確認
 2. Purpose / Workflow / Information Architectureを先に決める
-3. 色・Gradient・ShadowなしのWireframe / Structureを考える
-4. Visual Qualityが重要なら、色違いではなく構造的に異なる2〜3 Design Directionを比較
-5. 必要なら [DesignShelf](https://github.com/EliteMay/DesignShelf) でLayout骨格を探索する
-6. DesignShelfのLayoutを完成Templateとしてコピーせず、Project固有のNavigation / Density / Primary Action / Contentへ変形する
-7. Structure決定後にTypography / Spacing / Color / Effectを詰める
-8. [Anti-Pattern Catalog](catalog/anti-patterns.md) の `AP-026`〜`AP-028` を確認する
+3. ProjectのContent / Task / AudienceからDesign Directionを考える
+4. 色・Gradient・ShadowなしのWireframe / Structureを考える
+5. Visual Qualityが重要なら、色違いではなく構造的に異なる2〜3 Design Directionを比較
+6. 必要なら [DesignShelf](https://github.com/EliteMay/DesignShelf) でDirection候補を探索する
+7. DesignShelfのLayoutを完成Templateとしてコピーせず、Project固有のNavigation / Density / Primary Action / Contentへ変形する
+8. 実装前にGenericなPlanになっていないかCritiqueする
+9. Structure決定後にTypography / Spacing / Color / Effectを詰める
+10. [Anti-Pattern Catalog](catalog/anti-patterns.md) の `AP-026`〜`AP-028` を確認する
 
 Gradient / Card / Rounded Corner等は全面禁止ではありません。目的・情報関係・Brandに必要なら使用できます。
+
+### 完成したVisual DesignをReviewする
+
+- [Visual Design Review Gate](docs/04-ui-ux-accessibility.md#visual-design-review-gate)
+- [Testing / Quality](docs/07-testing-quality.md)
+- [Quality Checklist](templates/QUALITY_CHECKLIST.md) のVISUAL REVIEW
+
+機能Testとは別にPurpose / Hierarchy / Navigation / Typography / Spacing / Component Semantics / Responsive / Accessibility / AI Template Regressionを確認します。
+
+Findingは必要に応じて`Blocking / Major / Minor`へ分け、Blockingが残る場合はVisual完成扱いにしません。
 
 ### 保存形式・JSON・データ構造を変える
 
@@ -125,7 +151,7 @@ Gradient / Card / Rounded Corner等は全面禁止ではありません。目的
 - 他Projectは調査対象としてRead-only、定期更新先は `web-project-guide` のみ
 - 最近変更されたProjectを先に見て、必要な場合だけ深掘りする
 - `PROJECT_LEARNINGS.md` があるProjectでは最優先Evidenceの1つとして確認する
-- W3C / MDN / web.dev / OWASP / GitHub / Electron / WHATWG等を優先する
+- W3C / MDN / web.dev / OWASP / GitHub / Anthropic / Microsoft / Google等の一次・公式情報を優先する
 - 新しい知見がなければ変更Commitを作らない
 - MUST / Governance等の高影響変更は自動確定せずBranch / Proposalを優先する
 
@@ -145,7 +171,8 @@ Gradient / Card / Rounded Corner等は全面禁止ではありません。目的
 1. [Quality Checklist](templates/QUALITY_CHECKLIST.md)をプロジェクト種別に合わせて実施
 2. README / 仕様 / 作業報告を更新
 3. 高コストBug / 重要成功があれば `PROJECT_LEARNINGS.md` を更新
-4. 未確認を未確認のまま記録
-5. 一時Script / 一時Workflow / Debug資産が本番Repoへ残っていないことを確認
-6. Cleanup後の**最終Commit**でCI / Pages / Regression結果を確認
-7. 重大な既知バグが残る場合は完成扱いにしない
+4. Visual完成が重要ならVisual Design Review結果を確認
+5. 未確認を未確認のまま記録
+6. 一時Script / 一時Workflow / Debug資産が本番Repoへ残っていないことを確認
+7. Cleanup後の**最終Commit**でCI / Pages / Regression結果を確認
+8. 重大な既知バグが残る場合は完成扱いにしない

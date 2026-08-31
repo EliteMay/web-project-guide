@@ -37,6 +37,7 @@ const requiredFiles = [
   'templates/SPEC_TEMPLATE.md',
   'templates/ADR_TEMPLATE.md',
   'templates/PROJECT_RULES_TEMPLATE.md',
+  'templates/AGENTS_TEMPLATE.md',
   'templates/PROJECT_LEARNINGS_TEMPLATE.md',
   'templates/DIAGNOSTICS_SCHEMA_TEMPLATE.json',
   'templates/CHANGELOG_TEMPLATE.md',
@@ -91,6 +92,9 @@ try {
         errors.push('maintenance/review-policy.json: every webSource requires name and https URL');
       }
     }
+  }
+  if (policy.discoveryReferences && !Array.isArray(policy.discoveryReferences)) {
+    errors.push('maintenance/review-policy.json: discoveryReferences must be an array when present');
   }
   if (policy.changePolicy?.noChangeNoCommit !== true) {
     errors.push('maintenance/review-policy.json: noChangeNoCommit must remain true');
@@ -162,6 +166,14 @@ if (!readme.includes('[15 Development Observability / Project Memory](docs/15-de
 }
 if (!readme.includes('[Project Learnings](templates/PROJECT_LEARNINGS_TEMPLATE.md)')) {
   errors.push('README.md must link to templates/PROJECT_LEARNINGS_TEMPLATE.md');
+}
+if (!readme.includes('[AGENTS](templates/AGENTS_TEMPLATE.md)')) {
+  errors.push('README.md must link to templates/AGENTS_TEMPLATE.md');
+}
+
+const agentsTemplate = fs.readFileSync(path.join(root, 'templates/AGENTS_TEMPLATE.md'), 'utf8');
+if (!/Router|入口/.test(agentsTemplate) || !/Source of Truth/.test(agentsTemplate)) {
+  errors.push('templates/AGENTS_TEMPLATE.md must clearly remain a router, not a duplicated Source of Truth');
 }
 
 try {
