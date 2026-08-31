@@ -2,6 +2,105 @@
 
 Guide Versionの正本は [`guide-version.json`](guide-version.json) です。
 
+## 1.6.0 - 2026-08-31
+
+### Research
+
+現在のGuide全体とDesignShelfを確認した上で、以下を比較調査した。
+
+- Anthropic Frontend Design Skill
+- Microsoft Agent Academy Frontend Design
+- Microsoft Frontend Design Review
+- Front-End Checklist / Front-End Design Checklist
+- AGENTS.md / OpenAI CodexのAgent instruction運用
+- ChatGPT / AI-assisted制作Case Study
+  - Birthday Quest
+  - ScanPass
+  - Higher or Lower Card Game
+  - AI Portfolio Generator
+- Apple / Microsoft / GitHub / NVIDIA / Discord / Spotifyの現行Site / 公式Design System / 公式Design記事
+- MDN / web.dev / OWASP等の一次資料
+
+### Added
+
+- Subject-grounded Design
+  - TrendやColorよりProjectの題材・利用者・Page Job・実Data / Product UIからVisual Directionを作る
+  - Visual Qualityが重要な場合、Project固有の`Signature`を1つ持つ方法を追加
+  - Copy / Label / NumberingもDesign Materialとして扱う
+- Visual Design Review Gate
+  - 実装前のDesign Ruleとは別に、実装後の実画面をPurpose / User Task / Hierarchy / Responsive / Design System / Accessibility / FrictionでReview
+  - Blocking / Major / MinorでIssueを分類
+- AI-assisted Development Review Gate
+  - AIの最初のCode / DesignをFinal Artifactとして無条件採用しない
+  - Diff / Architecture / Static / Unit / Browser / Visual Reviewを変更規模に合わせて実施
+- AI Promptの`Fixed Constraints + Creative Axes`方針
+  - Technology / Compatibility / Storage等は固定
+  - Layout / Typography / Density / Emphasis / Effects等はProjectに合わせて探索
+- Agent向け`AGENTS.md`運用方針と`templates/AGENTS_TEMPLATE.md`
+  - README / SPEC / PROJECT_RULESを複製せず、正本Path・Command・Architecture入口へRouting
+  - Nested AGENTSは本当にSubdirectory固有Ruleがある場合だけ使用
+- CONDITIONALなInternationalization / RTL / Text expansion / Intl対応
+- CONDITIONALなPrivacy / Data minimization / Tracking / Retention / Consent確認
+- CONDITIONALなVisual Regression / Screenshot比較
+- Manual Test EvidenceのExpected / Result記録方法
+
+### Changed
+
+- `docs/04-ui-ux-accessibility.md`
+  - Subject / Contentを起点にDesignを作るRuleを追加
+  - AI Template LookへPopular Font / Themeの無理由反復、意味のない番号・Badge等を追加
+  - DesignShelfを単一Layout選択ではなくDesign Axesの組み合わせ探索へ発展させる方針を追加
+  - Navigation / Structure / Density / Alignment / Typography / Visual Emphasis / Image / Component Density / Spacing / Color / Effects / Signatureを候補軸として定義
+  - Responsiveへ多言語Text expansionを追加
+- `docs/07-testing-quality.md`
+  - Ruleへ可能な範囲で確認方法を持たせる方針
+  - AI-generated Code Review / Visual Regression / Visual Reviewed verification stateを追加
+- `docs/10-project-management.md`
+  - AGENTS.mdをAgent operational routerとして追加
+  - 長大Promptへ全仕様を重複させずSource of TruthへRoutingする方針を追加
+- `docs/06-security.md` / `docs/12-project-profiles.md`
+  - Privacy / I18Nを全Project必須ではなく条件付きで補強
+- `templates/REQUIREMENTS_TEMPLATE.md` / `templates/QUALITY_CHECKLIST.md`
+  - Subject / Signature / Fixed vs Creative / Visual Review / AI Review / AGENTS / I18N / Privacy / Visual Regressionを条件付きで追加
+- `START_HERE.md` / README / References / Continuous Improvement / Review Policyを現在のAI-assisted Workflowへ更新
+- Guide Validatorへ`AGENTS_TEMPLATE.md`の存在・最低構造検査を追加
+
+### Catalog
+
+- `AP-029 AI First Output as Final Artifact`
+- `AP-030 Over-specified Generic Design Prompt`
+- `S-026 AI Draft → Independent Review → Test → Adapt`
+- `S-027 Fixed Constraints + Creative Axes`
+- 外部Case Study固有のBugはFailure Catalogへ追加せず、再現性のある抽象PatternだけをCatalog化
+
+### DesignShelf
+
+GuideとDesignShelfの役割を次の方向へ整理した。
+
+```text
+web-project-guide
+→ Purpose / User / Workflow / Constraints / Quality Gate
+
+DesignShelf
+→ Design Axesを使って2〜3 Directionを探索
+
+AI
+→ Project固有Contentへ具体化
+
+Implementation
+→ Test + Visual Design Review Gate
+```
+
+DesignShelfは`Layout 02を使う`形式へ固定せず、将来的に`design-direction.json`等でNavigation / Structure / Density / Typography / Visual Emphasis / Component policy / Effect policy / Signatureを渡す方式を優先候補とする。
+
+### Not Adopted as Global Rules
+
+- 特定企業SiteのLayout / Color / EffectのCopy
+- Anthropic / Microsoft Skillにある特定FontやAestheticの一律禁止
+- Front-End Checklistの巨大項目群をそのまま複製
+- Case Study 1件だけを根拠にしたFailure Rule
+- 全Projectへのi18n / Consent / Visual Regression強制
+
 ## 1.5.0 - 2026-08-31
 
 ### Added
