@@ -222,3 +222,45 @@ parse → validate all → backup current → replace → verify → rollback on
 - **効果:** Timing依存、二重生成、Selector破損、責務不明を減らす。
 - **Trade-off:** Rendererの引数やComponent境界を整理する必要がある。
 - **Related:** [F-019](failures.md) / [AP-003](anti-patterns.md) / [Architecture](../docs/02-architecture.md)
+
+## S-024 Structure-first Visual Design
+
+**Pattern:** ColorやDecorative Effectより先に、Information Architecture / Workflow / Layout / Typography / SpacingでVisual hierarchyを作る。
+
+```text
+Purpose
+→ Workflow / Data
+→ Information Architecture
+→ Wireframe / Layout
+→ Typography / Spacing
+→ Color
+→ Effects
+```
+
+- **Use when:** Visual Qualityが重要なWeb / Electron Project全般。
+- **Avoid when:** 既存Design Systemを厳密に踏襲する小規模画面で、Page Structureまで新しく考える必要がない場合。
+- **効果:** Accent Colorだけ違うCloneや、Card / Gradientを積んだだけのAI Template Lookを減らしやすい。
+- **Trade-off:** CSS実装前に構造検討の時間が必要だが、後から全面Layout修正するコストを下げる。
+- **Related:** [AP-020](anti-patterns.md) / [AP-026](anti-patterns.md) / [AP-027](anti-patterns.md) / [Visual Design Quality](../docs/04-ui-ux-accessibility.md)
+
+## S-025 Contrastive Design Direction
+
+**Pattern:** Visual Designが重要なProjectでは、色違いではなく構造的に異なる2〜3案を比較してDirectionを選ぶ。
+
+比較軸の例:
+
+- Navigation
+- Content Width
+- Grid / Columns
+- Information Density
+- Typography
+- Primary Action placement
+- Card / List / Table比率
+- Visual / Screenshotの扱い
+
+- **Use when:** 新規Project、Landing Page、Showcase、Media、UI刷新など、Visual Directionが完成度へ大きく影響する場合。
+- **Avoid when:** 小さなBug Fixや既存Design System内の局所画面追加。
+- **効果:** AIが最初に出した1案へ固定されにくく、Projectごとの構造差を作りやすい。
+- **Trade-off:** 最初に比較時間が必要。比較案を全部実装するのではなくWireframe / lightweight mockで十分。
+- **Companion:** [DesignShelf](https://github.com/EliteMay/DesignShelf)を構造探索に使える。ただしLayoutを完成Templateとして扱わない。
+- **Related:** [AP-028](anti-patterns.md) / [Visual Design Quality](../docs/04-ui-ux-accessibility.md)

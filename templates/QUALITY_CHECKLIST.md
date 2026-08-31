@@ -83,6 +83,21 @@ Interactive Projectでは必要範囲を確認します。
 - [ ] 小画面・低い縦解像度で致命的に崩れない
 - [ ] 自前DOMを別ModuleのMutationObserverで恒久的に完成させていない
 
+### Visual Design
+
+Visual Qualityが重要なProjectでは確認します。
+
+- [ ] Accent Color / Gradient変更だけで別Design扱いしていない
+- [ ] 色・Shadow・Gradientを外しても主要なInformation Hierarchyが読める
+- [ ] Header / Navigation / Content Width / Density / Grid / Primary ActionがProject目的に合っている
+- [ ] TypographyのSize / Weight / Line-height / Spacingに一貫したHierarchyがある
+- [ ] Spacingが情報Groupingを表し、ランダムなmargin値の寄せ集めになっていない
+- [ ] すべてのContentを理由なくCard化していない
+- [ ] Gradient / Glass / Glow / Shadow / Rounded Cornerを使う場合、役割を説明できる
+- [ ] 巨大Hero → 3 Feature Cards → CTAをAIのDefaultだけで採用していない
+- [ ] 長い本文や高密度UIまで機械的に中央揃えしていない
+- [ ] Project内のComponentは一貫しつつ、他ProjectとPage Compositionまで同じにしていない
+
 ### Accessibility
 
 - [ ] 適切なbutton / label / nav / mainを使用
@@ -111,6 +126,17 @@ Interactive Projectでは必要範囲を確認します。
 ## Extended — 条件付き
 
 Project Profileや高リスク変更に該当する場合のみ実施します。
+
+### VISUAL DIRECTION
+
+新規Project / 大規模UI刷新 / Landing / Showcase / Media等でVisual Directionが重要な場合。
+
+- [ ] CSS実装前にDesign Concept / Navigation / Density / Typography / Component / Effect方針を決めた
+- [ ] Wireframe / StructureをVisual Polishより先に確認した
+- [ ] 色違いではなく構造的に異なる2〜3案を必要に応じて比較した
+- [ ] 採用Directionと却下案の理由を要件 / ADR / 作業報告のいずれかへ残した
+- [ ] DesignShelfを使った場合、Layoutを完成TemplateとしてコピーせずProject固有構造へ変形した
+- [ ] Reference Siteを使った場合、特定企業のLayout / Brand表現をそのままコピーしていない
 
 ### DATA / TOOL
 

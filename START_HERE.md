@@ -10,10 +10,11 @@
 2. [要件定義](docs/01-requirements.md)
 3. [Project Profile](docs/12-project-profiles.md)
 4. Interactive Projectなら[Development Observability / Project Memory](docs/15-development-observability.md)で診断方式を決める
-5. 必要な設計章だけ確認
-6. [要件定義テンプレート](templates/REQUIREMENTS_TEMPLATE.md)を使う
-7. `PROJECT_LEARNINGS.md` を [Template](templates/PROJECT_LEARNINGS_TEMPLATE.md) から作る
-8. 完成前に[Quality Checklist](templates/QUALITY_CHECKLIST.md)を使う
+5. Visual Qualityが重要なら[UI / UX / Accessibility](docs/04-ui-ux-accessibility.md)でDesign Directionを決める
+6. 必要な設計章だけ確認
+7. [要件定義テンプレート](templates/REQUIREMENTS_TEMPLATE.md)を使う
+8. `PROJECT_LEARNINGS.md` を [Template](templates/PROJECT_LEARNINGS_TEMPLATE.md) から作る
+9. 完成前に[Quality Checklist](templates/QUALITY_CHECKLIST.md)を使う
 
 ### 既存サイトのバグを直す
 
@@ -66,6 +67,19 @@
 - [UI / UX / Accessibility](docs/04-ui-ux-accessibility.md)
 - [Testing / Quality](docs/07-testing-quality.md)
 - fixed / sticky / overflow / zoom / small viewportを重点確認
+
+### Visual Designを決める / AI Template感を減らす
+
+1. [UI / UX / Accessibility](docs/04-ui-ux-accessibility.md) のVisual Design Qualityを正本として確認
+2. Purpose / Workflow / Information Architectureを先に決める
+3. 色・Gradient・ShadowなしのWireframe / Structureを考える
+4. Visual Qualityが重要なら、色違いではなく構造的に異なる2〜3 Design Directionを比較
+5. 必要なら [DesignShelf](https://github.com/EliteMay/DesignShelf) でLayout骨格を探索する
+6. DesignShelfのLayoutを完成Templateとしてコピーせず、Project固有のNavigation / Density / Primary Action / Contentへ変形する
+7. Structure決定後にTypography / Spacing / Color / Effectを詰める
+8. [Anti-Pattern Catalog](catalog/anti-patterns.md) の `AP-026`〜`AP-028` を確認する
+
+Gradient / Card / Rounded Corner等は全面禁止ではありません。目的・情報関係・Brandに必要なら使用できます。
 
 ### 保存形式・JSON・データ構造を変える
 

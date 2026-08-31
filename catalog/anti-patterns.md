@@ -191,3 +191,30 @@ Backup / Import時に、Import payload全体のValidationが終わる前に既�
 - **例外:** 既存データへ影響しない一時Storeや、完全に再生成可能なCache。
 - **代替:** parse → 全体validate → current backup → replace → read-back verify → rollback on failure。
 - **Related:** [F-018](failures.md) / [S-022](success-patterns.md) / [Data / Storage](../docs/03-data-storage.md)
+
+## AP-026 Palette-Swap Clone
+
+複数ProjectでHeader / Hero / Section / Card / CTA等の構造をほぼ同じにしたまま、Accent ColorやBackgroundだけを変えて別Designとして扱う。
+
+- **なぜ危険:** Project固有の情報構造や操作に合わず、同じ制作者・同じAIのTemplate感が強くなる。
+- **例外:** 同一Product familyや社内Tool群で意図的にShellを共通化する場合。
+- **代替:** 再利用ComponentとPage Compositionを分離し、Navigation / Content Width / Density / Grid / Typography / Primary Action等をProject目的から設計する。
+- **Related:** [S-024](success-patterns.md) / [Visual Design Quality](../docs/04-ui-ux-accessibility.md)
+
+## AP-027 Decorative Cardification
+
+Gradient / Glassmorphism / Glow / Shadow / Rounded Cornerを重ね、ほぼすべての情報をCardへ入れることで完成度を出そうとする。
+
+- **なぜ危険:** 情報の関係性よりSurface装飾が先に立ち、Hierarchyが弱くなる。Card同士の重要度も同じに見えやすい。
+- **例外:** 独立して比較・選択・移動するObjectが多数ある場合や、Brand表現としてEffectに明確な役割がある場合。
+- **代替:** Section / List / Table / Divider / Background difference / Typography / Spacingを使い分け、Effectごとに役割を説明できる状態にする。
+- **Related:** [S-024](success-patterns.md) / [Visual Design Quality](../docs/04-ui-ux-accessibility.md)
+
+## AP-028 AI Landing Page Default
+
+「モダンで高品質」にするだけの理由で、中央揃え巨大Hero → CTA → 等幅3 Feature Cards → 同型Card Grid → 最終CTAを繰り返す。
+
+- **なぜ危険:** 内容に関係なくAIが選びやすい構造へ収束し、情報密度・Navigation・Product UI・実際の利用フローが後回しになる。
+- **例外:** 本当に1つのMessageを強く見せるMarketing Pageで、3項目比較やCTA導線が情報構造として適切な場合。
+- **代替:** WireframeからProject固有の情報関係を整理し、2〜3個の構造的に異なるDesign Directionを比較する。
+- **Related:** [AP-020](anti-patterns.md) / [S-024](success-patterns.md) / [S-025](success-patterns.md) / [Visual Design Quality](../docs/04-ui-ux-accessibility.md)

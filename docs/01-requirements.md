@@ -43,6 +43,30 @@
 9. 自動処理の評価方法
 10. Webだけで完結するか、Electron等が必要か
 
+## Visual Design Direction
+
+### CONDITIONAL: Visual Qualityが重要なProject
+
+Landing Page、Portfolio / Showcase、Media、一般公開Product、UI刷新など、Visual Directionが完成度へ大きく影響する場合は、CSS実装前に [UI / UX / Accessibility](04-ui-ux-accessibility.md) のVisual Design Qualityを確認します。
+
+最低限、次を整理します。
+
+- Design Concept
+- Reference Direction
+- Layout Type
+- Navigation Type
+- Content Density
+- Typography Direction
+- Color Rule
+- Component Rule
+- Decorative Effect Policy
+
+重要な新規Designでは、色違いではなく**構造的に異なる2〜3方向**をWireframe / lightweight mockで比較することを推奨します。
+
+この段階ではGradient、Shadow、Glassmorphism等を先に決めず、Information Architecture / Navigation / Grid / Typography / Spacingを優先します。
+
+DesignShelfを利用する場合も、配色選択器としてだけではなく、構造的に異なるLayout候補を比較する補助Toolとして扱います。
+
 ## MVP
 
 初期版では「主要な1本の利用フロー」が最後まで通ることを優先します。
@@ -70,6 +94,8 @@
 - 外部サービス停止時の挙動
 - GitHub Pages公開可否
 - 秘密情報の有無
+- Visual Qualityの重要度
+- Design Direction比較が必要か
 
 ## 完成条件の書き方
 
@@ -77,6 +103,7 @@
 
 悪い例:
 - 使いやすい
+- モダンで高品質に見える
 
 良い例:
 - 主要ボタンがすべて反応する
@@ -84,3 +111,5 @@
 - 保存後に再読み込みしてもデータが残る
 - GitHub ActionsのStatic Validationが成功する
 - 未確認項目が作業報告書へ記録されている
+- Visual重視Projectでは、選択したDesign Directionと比較した代替案が説明できる
+- Accent Colorを外しても、Typography / Spacing / Layoutで主要Hierarchyが読み取れる
