@@ -14,12 +14,46 @@
     "README, specification, PROJECT_RULES and AGENTS.md",
     "remote diagnostic handoff configuration and recent runtime evidence when safely accessible",
     "work reports and changelog",
-    "visual design direction, post-build visual review, repeated UI patterns and DesignShelf usage",
+    "visual design direction, user feedback or rating, rejected visual candidates, post-build visual review, repeated UI patterns and DesignShelf usage",
     "AI-assisted architecture decisions and available oracle or regression tests",
     "diagnostics design and exported schema when committed",
     "tests and GitHub Actions",
     "storage schema and migration"
   ],
+  "visualEvidenceReview": {
+    "enabled": true,
+    "catalog": "catalog/validated-visual-directions.md",
+    "evidenceLevels": [
+      "user-validated",
+      "task-validated",
+      "candidate",
+      "rejected"
+    ],
+    "collect": [
+      "project and reference commit or version",
+      "current visual direction and previous baseline",
+      "explicit user visual feedback or rating when available",
+      "relative feedback such as previous version preferred",
+      "PROJECT_LEARNINGS visual success or failure",
+      "what should be kept, fixed and removed",
+      "use when and avoid when",
+      "transfer, rebuild and do-not-copy boundaries"
+    ],
+    "doNotTreatAsUserValidated": [
+      "latest main only",
+      "CI or Pages success only",
+      "assistant or coding-agent self-assessment only",
+      "theoretical compliance with design rules only",
+      "fewer cards, gradients, shadows or effects only",
+      "similarity to another validated project only"
+    ],
+    "promotionPolicy": {
+      "validatedDirectionRequires": "explicit positive user feedback, continued successful use, or comparably strong user-facing evidence",
+      "taskValidatedMaySupply": "layout or workflow reference only",
+      "candidateMaySupply": "comparison input only; do not call it a success",
+      "rejectedMustRetain": "failure reason and root lesson so the same direction is not regenerated as a new idea"
+    }
+  },
   "webSources": [
     {
       "name": "W3C Web Accessibility Initiative",
