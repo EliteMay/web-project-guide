@@ -60,8 +60,26 @@ Userから見た目について明確な肯定的Feedbackがあり、実Project�
 - 別のProjectで別の良いDirectionが見つかったら、既存Directionへ無理に寄せず新しい候補を増やす。
 - User validationがあっても、Responsive / Accessibility / Stability等の共通Baselineは別途満たす。
 - 色違いだけは新しいDirectionとして数えない。
+- 最新main / CI成功 / Assistant自己評価だけではValidated Directionへ昇格しない。
+- 低評価Candidateも削除して忘れず、Rejected Evidenceとして「なぜ失敗したか」を残す。
 
-Guideの目標は「正解の見た目を1つ決めること」ではなく、**用途別に複数の強いVisual Directionを持ち、Projectごとに正しく選べること**です。
+Guideの目標は「正解の見た目を1つ決めること」ではなく、**用途別に複数の強いVisual Directionと失敗Evidenceを持ち、Projectごとに正しく選べること**です。
+
+### SHOULD: 既存SiteのRedesign前にKEEP / FIX / REMOVEを決める
+
+既に使われているSiteを大きくRedesignする場合、現在のUIを全部「古いもの」として捨てません。
+
+```text
+KEEP   = Userが価値を感じている / Task上すでに機能している
+FIX    = 役割は必要だがHierarchy / Spacing / Consistency等に問題がある
+REMOVE = Task / Contentに不要、または明確に邪魔
+```
+
+特に、過去にUserが褒めたColor identity、分かりやすいAction、Artwork / Screenshot、慣れたNavigation、親しみやすさ等は`KEEP`候補として先に明示します。
+
+別Projectの成功例を参照するときは、[Validated Visual Direction Catalog](../catalog/validated-visual-directions.md)のEvidence Levelと`Transfer / Rebuild / Do not copy`を確認します。
+
+**成功Projectで「減らしたもの」を、Targetでも減らすべきものだと決めつけません。**
 
 ## Minimum Visual Quality Gate
 
@@ -208,6 +226,8 @@ Purpose / User Task
 小規模な崩れや原因が明確なComponent Bugまで毎回全面Redesignする必要はありません。一方で、基礎構造が原因だと分かっているのに「今まで作ったから」という理由だけでPatch Loopを続けることも避けます。
 
 目安として、局所修正の追加コストと複雑さが、Wireframeから再設計するコストを上回り始めたら、Foundation Resetへ切り替えます。
+
+CandidateがCurrent UIを明確に上回らず、同じ違和感を複数回修正している場合も、Polishを継続するよりFoundation Resetを優先します。
 
 ## 変更規模ごとの適用
 
