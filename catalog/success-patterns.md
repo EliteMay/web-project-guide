@@ -264,3 +264,68 @@ Purpose
 - **Trade-off:** 最初に比較時間が必要。比較案を全部実装するのではなくWireframe / lightweight mockで十分。
 - **Companion:** [DesignShelf](https://github.com/EliteMay/DesignShelf)を構造探索に使える。ただしLayoutを完成Templateとして扱わない。
 - **Related:** [AP-028](anti-patterns.md) / [Visual Design Quality](../docs/04-ui-ux-accessibility.md)
+
+## S-026 Preserve → Diagnose → Redesign
+
+**Pattern:** 既存SiteのVisualを大きく変更する前に、現在UIを`KEEP / FIX / REMOVE`へ分解し、既に価値がある要素を明示してからRedesignする。
+
+```text
+Current UI / Screenshot
+→ KEEP / FIX / REMOVE
+→ Redesign goal
+→ Candidate direction
+→ Current vs Candidate comparison
+```
+
+`KEEP`の例:
+
+- Userが過去に褒めたColor identity
+- クリック対象として分かりやすいCard / Button
+- Contentに合ったArtwork / Screenshot
+- 慣れているNavigation
+- Taskに直結するDensity / Layout
+
+- **Use when:** 既に使われているSite、User feedback履歴があるSite、見た目を全面的に改善するとき。
+- **Avoid when:** まだ何も存在しない新規PrototypeではCurrent UIのKEEP分析は不要。ただし要件・Contentの価値は先に整理する。
+- **効果:** 「AI Templateを消す」「シンプルにする」過程で、元から良かったAffordance / 親しみやすさ / Identityまで消す事故を減らす。
+- **Trade-off:** Redesign前にCurrent UIを評価する時間が必要。
+- **Evidence:** AP Study Guide r22の30点化では、元UIのTeal identity / friendly Action Card等を先にKEEPとして固定していなかった。
+- **Related:** [AP-030](anti-patterns.md) / [Validated Visual Directions](validated-visual-directions.md) / [Visual Foundation Reset](../docs/17-visual-quality-baseline.md#visual-foundation-reset)
+
+## S-027 Evidence-weighted Visual Reference
+
+**Pattern:** Visual Referenceをすべて同格に扱わず、`User Validated / Task Validated / Candidate / Rejected`へ分け、Evidence Levelに応じて再利用範囲を変える。
+
+- **User Validated:** 正解候補としてDirectionを参照できる。
+- **Task Validated:** Layout / Workflowの一部だけ参考にする。
+- **Candidate:** 比較材料として使うが成功扱いしない。
+- **Rejected:** 失敗理由を学び、同じ理由・組合せを避ける。
+
+- **Use when:** 複数Projectを横断してDesign資産を再利用する場合、AIへ過去Projectを参考にさせる場合。
+- **Avoid when:** 完全に独立した単発制作でも、Referenceを使うならEvidence確認自体は有効。
+- **効果:** Latest mainやAssistant自己評価だけで低評価Directionを成功扱いするのを防ぐ。
+- **Trade-off:** User feedback / Commit / Learningの記録が必要。
+- **Related:** [AP-029](anti-patterns.md) / [AP-031](anti-patterns.md) / [Validated Visual Directions](validated-visual-directions.md)
+
+## S-028 Candidate → Compare → Promote
+
+**Pattern:** Visual uncertaintyが高い大規模Redesignでは、最初の実装を「完成」ではなくCandidateとして扱い、Current UIと比較してから採用・再設計・昇格を決める。
+
+推奨順序:
+
+```text
+Current baseline
+→ 2〜3 structural directions
+→ Candidate
+→ Current vs Candidate
+→ 明確な改善点を説明
+→ User / Task validation
+→ Promote or Reject
+```
+
+- **Use when:** 既存Siteの全面Visual刷新、過去に見た目修正が何度も低評価になったProject、方向性の不確実性が高い場合。
+- **Avoid when:** 1pxのSpacing修正や明確なComponent Bug。
+- **効果:** 1案へ投資し続けるSingle-candidate biasを減らし、「微妙な方向をPolishし続ける」状態から早く抜けられる。
+- **Decision:** CandidateがCurrentを明確に上回らず、同じ違和感が複数回続く場合はVisual Foundation Resetへ戻る。
+- **Promotion rule:** CI成功や実装完了だけでValidated Directionへ昇格しない。
+- **Related:** [S-025](success-patterns.md) / [AP-031](anti-patterns.md) / [Validated Visual Directions](validated-visual-directions.md) / [Visual Foundation Reset](../docs/17-visual-quality-baseline.md#visual-foundation-reset)
