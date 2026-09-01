@@ -2,6 +2,82 @@
 
 Guide Versionの正本は [`guide-version.json`](guide-version.json) です。
 
+## 1.12.0 - 2026-09-02
+
+### Added
+
+- `catalog/validated-visual-directions.md`をEvidence-weighted Catalogへ拡張
+  - `A / User Validated`
+  - `B / Task Validated`
+  - `C / Candidate`
+  - `R / Rejected`
+  - 最新main / CI成功 / Assistant自己評価だけでは成功扱いしない
+- 2026-09-02時点でアクセス可能なUser-facing Project 14件を横断Reviewし、Visual Evidence Matrixを追加
+- Validated Directionを明確化
+  - `VD-001 LyricTube Media Workspace`
+  - `VD-002 Tarkov Field Manual Knowledge Manual`
+- Task-validated Referenceを追加
+  - VReview Review Workbench
+  - Lineup Tactical Map Workspace
+- Candidate / Recovery Evidenceを追加
+  - AP Friendly Study Dashboard recovery
+  - ASMRTube ASMR Media Deck / Sound Map
+- Rejected Visual Evidenceを追加
+  - ASMRTube v2.4: LyricTubeの装飾削減まで移植し、User評価40/100
+  - AP Study Guide r22: Technical Console化で旧r21 40点から30点へ低下
+- Anti-Pattern Catalogへ追加
+  - `AP-029 Success Factor Misattribution`
+  - `AP-030 Minimalism as Quality Metric`
+  - `AP-031 Unvalidated Visual Direction Promotion`
+- Success Pattern Catalogへ追加
+  - `S-026 Preserve → Diagnose → Redesign`
+  - `S-027 Evidence-weighted Visual Reference`
+  - `S-028 Candidate → Compare → Promote`
+
+### Changed
+
+- `docs/17-visual-quality-baseline.md`
+  - 大規模Redesign前の`KEEP / FIX / REMOVE`を追加
+  - Userが既に価値を感じているColor identity / Action affordance / Artwork / Navigation等を先に保持対象として確認
+  - Referenceは`Transfer / Rebuild / Do not copy`へ分解
+  - CandidateがCurrentを明確に上回らない場合はPolish継続よりVisual Foundation Resetを優先
+- `docs/14-continuous-improvement.md`
+  - 定期ReviewへVisual Evidence Harvestを追加
+  - User feedback / Rating / Rejected CandidateをProject Learningと同様のEvidenceとして確認
+  - 低評価Candidateも失敗理由付きで保存
+- `maintenance/review-policy.json`
+  - Visual Evidence Level / Promotion Policy / Rejected retentionを追加
+  - 最新main・CI・AI自己評価・装飾削減量をUser validationの代用にしない
+
+### Recent Failure Analysis
+
+最近のVisual修正で正解から遠ざかった主因を、Project Evidenceから次のように整理しました。
+
+1. 別Projectの成功例から「成功した理由」ではなく「減らしたもの」を移植した
+2. `simple / clean / minimal`を品質指標として扱った
+3. AI Template回避をCard / Gradient / Emoji / Shadow等の禁止として過剰解釈した
+4. Redesign前に現在UIの良い部分を`KEEP`として固定しなかった
+5. 1案だけを実装し、Directionそのものを比較しなかった
+6. 土台が弱いのにColor / Spacing / EffectのPatchを続けた
+7. main / CI / Assistant評価をUser Validationと混同した
+
+### Visual Evidence Review
+
+- **A / User Validated:** LyricTube、Tarkov Field Manual
+- **B / Task Validated:** VReview Review Workbench、Lineup Tactical Map Workspace
+- **C / Candidate:** AP recovery、ASMRTube v3 direction、その他User Visual Validation不足Project
+- **R / Rejected:** ASMRTube v2.4、AP r22
+
+Aが少ないことを問題として水増しせず、Evidence不足のDirectionはCandidateのまま維持します。
+
+### Compatibility
+
+- 全Projectへ1つの固定Visual Templateを強制しない
+- LyricTube / Tarkovの色・幅・EffectをDefault化しない
+- 既存ProjectのRuntime / Storage / Schema / Deploymentを変更しない
+- 小規模UI BugへKEEP / FIX / REMOVEや2〜3案比較を機械的に強制しない
+- User feedbackを得られない内部ToolではTask usability等を代替Evidenceにできるが、Evidence Levelを明示する
+
 ## 1.11.0 - 2026-08-31
 
 ### Added

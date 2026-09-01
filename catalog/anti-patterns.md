@@ -218,3 +218,38 @@ Gradient / Glassmorphism / Glow / Shadow / Rounded Cornerを重ね、ほぼす�
 - **例外:** 本当に1つのMessageを強く見せるMarketing Pageで、3項目比較やCTA導線が情報構造として適切な場合。
 - **代替:** WireframeからProject固有の情報関係を整理し、2〜3個の構造的に異なるDesign Directionを比較する。
 - **Related:** [AP-020](anti-patterns.md) / [S-024](success-patterns.md) / [S-025](success-patterns.md) / [Visual Design Quality](../docs/04-ui-ux-accessibility.md)
+
+## AP-029 Success Factor Misattribution
+
+別ProjectのValidated Directionを参考にするとき、**そのProjectで何を減らしたか・どの表層を使ったかを成功要因そのものだと誤認して移植する**。
+
+例:
+
+- SourceでCardを減らした → TargetでもCardを減らせば良くなる
+- SourceでGradientを弱めた → TargetでもEffectを弱めれば良くなる
+- Sourceが3 Paneだった → Targetも3 Paneにすれば良くなる
+
+- **なぜ危険:** Sourceで成功した本当の理由がWorkflow / Hierarchy / Content modelだった場合、表層だけ移植するとTarget固有のIdentityやAffordanceを失う。
+- **実例:** ASMRTube v2.4はLyricTube Media WorkspaceのHierarchyだけでなく「装飾を減らした量」まで強く移植し、User評価40/100でRejectedになった。
+- **例外:** 同一Product familyでTask / Content / Brand / Densityまで意図的に共通化する場合。
+- **代替:** Referenceごとに `Transfer / Rebuild / Do not copy` を分け、成功した理由だけを移植する。
+- **Related:** [AP-022](anti-patterns.md) / [S-027](success-patterns.md) / [Validated Visual Directions](validated-visual-directions.md)
+
+## AP-030 Minimalism as Quality Metric
+
+`simple / clean / minimal`へ寄せるほどVisual Qualityが高くなると考え、Card / Color / Icon / Emoji / Shadow / friendly surface等を**減らした量**で改善を判断する。
+
+- **なぜ危険:** 見た目のNoiseだけでなく、クリック可能性、親しみやすさ、Brand identity、Contentの楽しさまで同時に削ることがある。
+- **実例:** AP Study Guide r22はAI Template感を消す目的でTechnical Console方向へ寄せ、旧r21 40点から30点へ低下した。
+- **例外:** 本当に低刺激・高密度・長時間作業が主目的で、Content / Typography / StructureだけでIdentityとAffordanceを十分作れる場合。
+- **代替:** 削減量ではなく、Task clarity / Hierarchy / Identity / Affordance / Readabilityで比較する。既存Siteでは先に`KEEP / FIX / REMOVE`を作る。
+- **Related:** [S-026](success-patterns.md) / [Validated Visual Directions](validated-visual-directions.md)
+
+## AP-031 Unvalidated Visual Direction Promotion
+
+Latest main、CI成功、Assistant自己評価、Design理論上の妥当性だけで、Visual Candidateを「成功例」「正解例」として次Projectへ再利用する。
+
+- **なぜ危険:** Userが低評価したDirectionや、まだ評価されていないCandidateが時間経過で成功扱いされ、誤ったReferenceが増える。
+- **例外:** User feedbackを得られない内部Toolで、Task completion / usability /継続利用等の代替Evidenceが十分ある場合。ただしEvidence Levelを明示する。
+- **代替:** `User Validated / Task Validated / Candidate / Rejected`を分け、A以外をValidated Directionへ自動昇格しない。
+- **Related:** [S-027](success-patterns.md) / [S-028](success-patterns.md) / [Validated Visual Directions](validated-visual-directions.md)
