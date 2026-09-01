@@ -29,6 +29,7 @@
 - 前回レビュー以降のCommit / 変更ファイル
 - README / 仕様書 / 作業報告 / CHANGELOG
 - Visual Design Direction / Layout Structure / 同じAI Template Patternの反復
+- Visual変更後のUser feedback / Rating / Rejected candidate
 - DesignShelfを使った場合の採用LayoutとProject固有への変形
 - Diagnostic設計 / Export Schema / Error ID / Breadcrumb
 - 保存Schema / Storage Key / Migration
@@ -45,6 +46,71 @@ Diagnostic LogそのものがGitHubへ保存されていない場合でも、作
 毎週すべてのCodeをゼロから精読するのではなく、**差分を先に見て、必要なProjectだけ深掘り**します。
 
 月1回程度は、差分だけでは見つけにくい長期的な構造問題を探すDeep Reviewを行います。
+
+## Visual Evidence Harvest
+
+Visual Designは「最新の見た目」ではなく、**評価Evidence付きの履歴**としてReviewします。
+
+正本は [Validated Visual Direction Catalog](../catalog/validated-visual-directions.md) です。
+
+定期Reviewでは、最近Visual変更があったProjectについて最低限次を確認します。
+
+1. 変更前のDirection / Baseline
+2. 変更後のCommit / Candidate
+3. Userが何を良い・悪いと評価したか
+4. Ratingや「旧版の方が良い」等の相対比較があるか
+5. `PROJECT_LEARNINGS.md`にVisual success / failureが残っているか
+6. Task usability / Browser / Responsive等の補助Evidence
+7. そのDirectionが他Projectへ再利用可能か
+
+### Evidence Level
+
+Visual Evidenceは次へ分類します。
+
+- **A / User Validated** — 明確な肯定Feedback、正解例としての承認、継続利用等がある
+- **B / Task Validated** — Workflow / Layoutの有効性は確認できるがVisual全体のUser評価が弱い
+- **C / Candidate** — 実装・Directionはあるが検証不足
+- **R / Rejected** — 明確な低評価、旧版より悪化、またはProject固有価値を失った
+
+### Visualを成功扱いしてはいけないEvidence
+
+次だけでは成功とみなしません。
+
+- 最新mainに入っている
+- CI / Pagesが成功した
+- Assistant / Coding Agentが「改善した」と評価した
+- Design Ruleへ理論上適合する
+- Card / Gradient / Shadow等を減らした
+- 他ProjectのValidated Directionに似ている
+
+Aへ昇格させる場合は、User feedbackまたは同等に強い利用Evidenceを要求します。
+
+### Rejectedも保存する
+
+低評価Candidateを消して忘れません。
+
+Rejected Evidenceには最低限、次を残します。
+
+- Project / Version / Commit
+- 何を狙ったか
+- User result / Rating
+- 何が失われたか
+- Root lesson
+- 次に残すべき`KEEP`と、作り直すべき部分
+
+これにより、同じ低評価Directionを別Projectで「新しい案」として再生成するのを防ぎます。
+
+### Visual Referenceの再利用
+
+別Projectへ成功Directionを使う場合は、次を分けます。
+
+```text
+Transfer   = 成功した構造原理
+Rebuild    = Target固有に作り直すIdentity / Content / Density
+Do not copy = Source固有の色 / 幅 / Effect量 / 装飾削減量
+```
+
+Success Projectで「減らしたもの」を、そのまま成功因子として横展開しません。
 
 ## Web Standards / Design Systems Review
 
@@ -82,6 +148,8 @@ Community情報は候補発見に利用しても、一般ルールへする前�
 - 今のGuideを守っていても防げなかった問題が見つかった
 - Diagnostic / Project Learningによって同じ失敗経路が繰り返し確認された
 - 複数Projectが色違いだけの同一Visual Structureへ収束している
+- Visual変更でUser Rating / Feedbackが明確に悪化し、共通の原因へ一般化できる
+- User Validated Visual Directionから再利用可能な構造原理を抽出できる
 
 ### Web標準 / Design System由来
 
@@ -117,6 +185,7 @@ Community情報は候補発見に利用しても、一般ルールへする前�
 - 実例追加
 - Checklistの明確化
 - 新しいFailure / Success Patternの追加で既存方針を反転しないもの
+- Evidence Level更新やRejected Visual Evidenceの追加
 
 ## Branch / Proposalを優先する変更
 
@@ -141,6 +210,7 @@ Guideを変更する場合は必要に応じて次を同時更新します。
 - `作業報告書.md`
 - 関連Docs
 - Failure / Success / Anti-Pattern Catalog
+- Validated Visual Direction Catalog / Rejected Evidence
 - Quality Checklist
 - References
 
@@ -174,6 +244,7 @@ Validation失敗状態を自動更新完了として扱いません。
 - どのProject / 公式Sourceから得たか
 - 何を変更したか
 - なぜ共通ルール化したか
+- Visual Evidence Levelを変更した場合は根拠
 - 互換性への影響
 - Validation結果
 
