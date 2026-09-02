@@ -45,6 +45,38 @@ Landing Page、Portfolio、Showcase、Media、一般公開Product、Visual自体
 
 **HighでないからVisualを省略する、とは扱いません。**
 
+## Domain-first Visual Research
+
+### MUST: 意味のあるVisual Direction変更では、同種Site / Appを調査してから修正する
+
+Page Composition、Navigation、Theme、Visual Direction、Workspace構造等を大きく変える場合、過去の成功例やAIのDefaultを最初に当てはめません。
+
+先に、そのProjectと同じ用途・ジャンル・Primary Task・Content Modelに近い現行Site / AppをWebで調査し、**その種類では何が機能しているかを学習してから**Design Directionを決めます。
+
+詳細手順は [Domain-first Visual Research](18-domain-first-visual-research.md) を正本とします。
+
+原則順序:
+
+```text
+Current Project / Current UI理解
+→ Target Typeを定義
+→ 同種Site / AppをWeb調査
+→ Domain Research Brief
+→ KEEP / FIX / REMOVE
+→ Design Direction候補
+→ 必要なら過去Validated Directionを補助Referenceとして確認
+→ Candidate
+→ Visual Verification / Review
+```
+
+重要:
+
+- 過去のValidated Directionは**Domain Researchの代わりにしない**。
+- 「以前高評価だったから」は採用理由にしない。
+- Task / Content Model / Density / Audienceが違う成功例を、とりあえず使わない。
+- 同種Referenceが複数ある場合は2〜5件程度を比較し、共通点だけでなく差と理由も見る。
+- 1pxのAlignment bug、overflow修正、既存Design System内の局所Component修正等では毎回Web調査を強制しない。
+
 ## Validated Visual Directions
 
 ### SHOULD: 実Projectで良かったVisualを「複数の正解候補」として蓄積する
@@ -62,6 +94,7 @@ Userから見た目について明確な肯定的Feedbackがあり、実Project�
 - 色違いだけは新しいDirectionとして数えない。
 - 最新main / CI成功 / Assistant自己評価だけではValidated Directionへ昇格しない。
 - 低評価Candidateも削除して忘れず、Rejected Evidenceとして「なぜ失敗したか」を残す。
+- **Domain / Genre Researchを先に行い、Validated Directionは補助Referenceとして使う。**
 
 Guideの目標は「正解の見た目を1つ決めること」ではなく、**用途別に複数の強いVisual Directionと失敗Evidenceを持ち、Projectごとに正しく選べること**です。
 
@@ -244,6 +277,8 @@ Visualに触れていなければ、既存画面全体のRedesignを要求しま
 ### 新規Page / 大規模UI変更
 
 Baseline全項目を確認し、必要に応じてHigh / FlagshipのDesign Directionへ進みます。
+
+意味のあるVisual Direction変更では、先に [Domain-first Visual Research](18-domain-first-visual-research.md) を実施します。
 
 ### 既存の見た目が明らかに低品質なProject
 
