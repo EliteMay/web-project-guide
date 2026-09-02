@@ -28,10 +28,12 @@ const requiredFiles = [
   'docs/15-development-observability.md',
   'docs/16-cross-repository-github-infrastructure.md',
   'docs/17-visual-quality-baseline.md',
+  'docs/18-domain-first-visual-research.md',
   'maintenance/review-policy.json',
   'catalog/failures.md',
   'catalog/success-patterns.md',
   'catalog/anti-patterns.md',
+  'catalog/validated-visual-directions.md',
   'templates/REQUIREMENTS_TEMPLATE.md',
   'templates/QUALITY_CHECKLIST.md',
   'templates/WORK_REPORT_TEMPLATE.md',
@@ -101,6 +103,12 @@ try {
   if (policy.changePolicy?.noChangeNoCommit !== true) {
     errors.push('maintenance/review-policy.json: noChangeNoCommit must remain true');
   }
+  if (policy.ruleHygieneReview?.enabled !== true || policy.ruleHygieneReview?.singleNormativeOwner !== true) {
+    errors.push('maintenance/review-policy.json: rule hygiene and single normative owner must remain enabled');
+  }
+  if (policy.ruleHygieneReview?.ruleAdditionMustCheckConsolidation !== true) {
+    errors.push('maintenance/review-policy.json: rule additions must check consolidation');
+  }
 } catch (error) {
   errors.push(`maintenance/review-policy.json is invalid: ${error.message}`);
 }
@@ -163,21 +171,28 @@ for (const file of markdownFiles) {
 }
 
 const readme = fs.readFileSync(path.join(root, 'README.md'), 'utf8');
+const startHere = fs.readFileSync(path.join(root, 'START_HERE.md'), 'utf8');
+
 if (!readme.includes('[START HERE](START_HERE.md)')) {
   errors.push('README.md must link to START_HERE.md');
 }
-if (!readme.includes('[14 Continuous Improvement](docs/14-continuous-improvement.md)')) {
-  errors.push('README.md must link to docs/14-continuous-improvement.md');
+
+const numberedDocs = fs.readdirSync(path.join(root, 'docs'))
+  .filter((name) => /^\d{2}-.+\.md$/.test(name))
+  .sort();
+for (const doc of numberedDocs) {
+  if (!readme.includes(`docs/${doc}`)) {
+    errors.push(`README.md must route to numbered owner doc: docs/${doc}`);
+  }
 }
-if (!readme.includes('[15 Development Observability / Project Memory](docs/15-development-observability.md)')) {
-  errors.push('README.md must link to docs/15-development-observability.md');
+
+if (!startHere.includes('docs/18-domain-first-visual-research.md')) {
+  errors.push('START_HERE.md must route meaningful visual changes to docs/18-domain-first-visual-research.md');
 }
-if (!readme.includes('[16 Cross-Repository GitHub Infrastructure](docs/16-cross-repository-github-infrastructure.md)')) {
-  errors.push('README.md must link to docs/16-cross-repository-github-infrastructure.md');
+if (!startHere.includes('docs/00-governance.md') || !/Rule Budget/.test(startHere)) {
+  errors.push('START_HERE.md must route guide changes through governance Rule Budget');
 }
-if (!readme.includes('[17 Visual Quality Baseline](docs/17-visual-quality-baseline.md)')) {
-  errors.push('README.md must link to docs/17-visual-quality-baseline.md');
-}
+
 if (!readme.includes('[Project Learnings](templates/PROJECT_LEARNINGS_TEMPLATE.md)')) {
   errors.push('README.md must link to templates/PROJECT_LEARNINGS_TEMPLATE.md');
 }
@@ -189,10 +204,29 @@ const governance = fs.readFileSync(path.join(root, 'docs/00-governance.md'), 'ut
 if (!governance.includes('[Visual Quality Baseline](17-visual-quality-baseline.md)') || !/Baseline自体はUser-facing UIで必須/.test(governance)) {
   errors.push('docs/00-governance.md must keep the user-facing Visual Quality Baseline mandatory');
 }
+if (!/Rule Budget/.test(governance) || !/Single Normative Owner/.test(governance)) {
+  errors.push('docs/00-governance.md must define Rule Budget and Single Normative Owner');
+}
+if (!/Orphan Rule/.test(governance)) {
+  errors.push('docs/00-governance.md must guard against orphan rules');
+}
 
 const visualBaseline = fs.readFileSync(path.join(root, 'docs/17-visual-quality-baseline.md'), 'utf8');
 if (!/MUST: User-facing UIはVisual Quality Baselineを満たす/.test(visualBaseline) || !/Visual Verification/.test(visualBaseline)) {
   errors.push('docs/17-visual-quality-baseline.md must define mandatory baseline and visual verification');
+}
+if (!visualBaseline.includes('18-domain-first-visual-research.md')) {
+  errors.push('docs/17 must route major visual redesign workflow to docs/18');
+}
+
+const domainResearch = fs.readFileSync(path.join(root, 'docs/18-domain-first-visual-research.md'), 'utf8');
+if (!/Meaningful Visual Change/.test(domainResearch) || !/Visual Foundation Reset/.test(domainResearch) || !/KEEP \/ FIX \/ REMOVE/.test(domainResearch)) {
+  errors.push('docs/18 must own domain research, KEEP/FIX/REMOVE, and Visual Foundation Reset');
+}
+
+const testingGuide = fs.readFileSync(path.join(root, 'docs/07-testing-quality.md'), 'utf8');
+if (!testingGuide.includes('../templates/QUALITY_CHECKLIST.md')) {
+  errors.push('docs/07 must route operational completion checks to templates/QUALITY_CHECKLIST.md');
 }
 
 const requirementsTemplate = fs.readFileSync(path.join(root, 'templates/REQUIREMENTS_TEMPLATE.md'), 'utf8');

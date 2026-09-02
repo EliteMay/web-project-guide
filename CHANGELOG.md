@@ -2,6 +2,83 @@
 
 Guide Versionの正本は [`guide-version.json`](guide-version.json) です。
 
+## 1.14.0 - 2026-09-03
+
+### Added
+
+- `docs/00-governance.md`へ **Rule Budget** を追加
+  - 新しい知見をいきなりCommon Ruleへ追加しない
+  - 既存Owner Docへの統合 → Project固有Learning / Rules → Catalog → Checklist / Template → 新規Common Ruleの順で配置を検討
+  - Rule追加時に同時に削除・統合・Scope縮小できる既存Ruleがないか確認
+- **Single Normative Owner** を追加
+  - 同じ判断 / Workflow / Checklistの詳細正本を複数Fileへ持たない
+  - Owner Doc = 詳細Rule、Router = 要約 + Link、Catalog = Evidence、Checklist = 実行確認へ役割分離
+- **Orphan Rule防止**を追加
+  - 新規Owner DocはREADMEと該当START_HERE Routeから辿れることを必須化
+- `docs/14-continuous-improvement.md`と`maintenance/review-policy.json`へ **Rule Hygiene Review** を追加
+  - Common Rule変更時とMonthly Deep Reviewで重複・Orphan・Project固有Rule混入・Checklist重複・古いRuleを確認
+
+### Consolidated
+
+Guide全体を棚卸しし、重複していた正本を整理しました。
+
+- `README.md`
+  - 詳細Ruleの再掲を減らし、Owner DocへのRouterへ戻した
+  - `docs/18-domain-first-visual-research.md`を正式な入口一覧へ追加
+- `START_HERE.md`
+  - Electron / Diagnostics / Visual等の長い詳細説明を削り、作業種類 → Owner DocのRouterへ整理
+  - Meaningful Visual Changeを`docs/18`へ直接Route
+- `docs/01-requirements.md`
+  - Visual Design手順の重複を削除し、Requirementsでは決める項目だけ保持
+  - Research Workflowは`docs/18`、Design原則は`docs/04`へ委譲
+- `docs/03-data-storage.md`
+  - Remote Diagnostic HandoffのWorkflow / Security詳細を削減
+  - Storage固有の境界だけ保持し、全体Workflowは`docs/15`、Securityは`docs/06`へ委譲
+- `docs/07-testing-quality.md`
+  - `templates/QUALITY_CHECKLIST.md`と重複していた巨大な完成Checklistを削除
+  - Testing Strategy / Verification State / Final-state ValidationだけをOwnerとして保持
+- `docs/10-project-management.md`
+  - Remote Diagnostics読取Workflowを`docs/15`へ委譲
+  - Oracle / Testing詳細を`docs/07`へ委譲
+  - GitHub Pages詳細を`docs/08`へ委譲
+- `docs/17-visual-quality-baseline.md`
+  - Minimum Visual Completion Gateへ責務を戻した
+  - Domain Research / KEEP-FIX-REMOVE / Foundation Resetの詳細を`docs/18`へ移動
+  - 旧`#visual-foundation-reset` Link互換のため短いRouter Anchorは維持
+- `docs/18-domain-first-visual-research.md`
+  - Domain Research / KEEP-FIX-REMOVE / Reference Transfer / Candidate比較 / Visual Foundation Resetの唯一のWorkflow Ownerへ整理
+- `catalog/validated-visual-directions.md`
+  - Redesign Workflowの重複記述を削除
+  - Evidence / Reference Catalogへ責務を限定
+- `docs/14-continuous-improvement.md`
+  - Rule Strength定義やWeb Source一覧の重複を減らし、Governance / review-policyへ委譲
+
+### Validator
+
+- `docs/18-domain-first-visual-research.md`をrequired fileへ追加
+- `catalog/validated-visual-directions.md`をrequired fileへ追加
+- `docs/NN-*.md`がREADMEから辿れない場合をValidation Error化
+- START_HEREがMeaningful Visual Changeを`docs/18`へRouteすることを検証
+- GovernanceにRule Budget / Single Normative Owner / Orphan Rule防止が残ることを検証
+- Rule Hygiene Policyが有効であることを検証
+- `docs/18`がDomain Research / KEEP-FIX-REMOVE / Foundation ResetのOwnerであることを検証
+- `docs/07`がOperational Checklistを`templates/QUALITY_CHECKLIST.md`へ委譲していることを検証
+
+### Audit Finding
+
+今回の棚卸しで、v1.13.0で追加した`docs/18-domain-first-visual-research.md`が、重要RuleにもかかわらずREADMEの番号付きDoc入口とValidatorのrequired fileへ接続されていない状態を確認しました。
+
+これは「Ruleを追加したが通常作業から辿れない」Orphan Ruleの実例として、Router / Validator Ruleを強化する直接の根拠にしました。
+
+### Compatibility
+
+- Product RepositoryのRuntime / Storage / Schema / Deploymentは変更しない
+- Rule内容を無差別に削除せず、Ownerを1つに寄せて他箇所をLinkへ変更
+- Visual Foundation Resetの考え方自体は維持し、正本を`docs/18`へ移動
+- `docs/17#visual-foundation-reset`の既存Linkは互換Anchorとして維持
+- Remote Diagnostic Handoff / Testing / Electron等の既存方針を反転しない
+- README / START_HEREは今後さらにRule本文を抱え込まずRouterとして維持する
+
 ## 1.13.0 - 2026-09-02
 
 ### Added

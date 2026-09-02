@@ -1,5 +1,9 @@
 # 03 データ・保存設計
 
+この章は**保存先・Schema・Migration・Import / Restore**の正本です。
+
+Runtime Diagnostics / Remote Diagnostic Handoff全体は [15 Development Observability / Project Memory](15-development-observability.md)、Remote書込Securityは [06 Security](06-security.md) を正本とします。
+
 ## 保存先の基本判断
 
 | データ | 第一候補 |
@@ -34,7 +38,7 @@ localStorageには軽い参照や設定だけを持たせます。
 - 画像
 - 音声
 - 動画
-- Canvas/ペン履歴
+- Canvas / ペン履歴
 - Snapshot
 - 大量履歴
 - Local detailed diagnostics
@@ -43,23 +47,16 @@ localStorageには軽い参照や設定だけを持たせます。
 
 ## Remote Diagnostic Snapshot
 
-CONDITIONAL: ChatGPT等へRuntime診断を繰り返し渡すProjectでは、詳細Logを端末内へ残しつつ、Sanitize済みの小さいSnapshotだけをSupabase等のRemote Storeへ保存できます。
+CONDITIONAL: AIへRuntime診断を繰り返し渡すProjectでは、詳細LogをLocalへ残し、**Sanitize済みCompact Snapshotだけを別のRemote Storeへ置く**構成を選べます。
 
-Remote Diagnosticsは本体データ同期と分離します。
+Storage設計として守る境界:
 
-原則:
+- Core data syncとRemote Diagnosticsを分離する
+- Remote failureでLocal diagnostics / Core保存を失わない
+- Binary / Storage全DumpをRemote DiagnosticsのDefaultにしない
+- Remote側にもSize / Retention上限を持つ
 
-- Remoteへ保存するのはJSON Summary中心
-- Media / File body / Storage全Dumpを自動保存しない
-- `projectKey`で複数Projectを分類できるShared Storeを検討
-- Snapshot最大SizeとRetentionを持つ
-- Provider停止時はLocal Diagnostics / ExportへFallback
-- 無料必須の場合、導入時点の無料枠を再確認
-- 1 SiteごとにBackend Projectを量産しない
-
-Remote Snapshotは短期Runtime Evidenceです。高コストな失敗・成功は`PROJECT_LEARNINGS.md`へ昇格してGitHub側へ残します。
-
-詳細は[Development Observability / Project Memory](15-development-observability.md)を参照してください。
+具体的なPayload / Trigger / Retention / Free-only / AI読取順は [15 Development Observability / Project Memory](15-development-observability.md)、Key / RLS / Grant等は [06 Security](06-security.md) を確認します。
 
 ## JSON
 
@@ -73,13 +70,13 @@ data/
 └─ schema.json
 ```
 
-Manifestで実行時に読むファイル一覧や期待件数を管理すると、JSへのhardcodeを減らせます。
+Manifestで実行時に読むFile一覧や期待件数を管理すると、JSへのhardcodeを減らせます。
 
-小さなデータまで過剰に分割せず、読み込み速度・Git差分・破損時の影響・将来拡張のバランスを取ります。
+小さなDataまで過剰に分割せず、読み込み速度・Git差分・破損時の影響・将来拡張のBalanceを取ります。
 
 ## Schema Version
 
-永続データには可能な限りVersionを持たせます。
+永続Dataには可能な限りVersionを持たせます。
 
 ```json
 {
@@ -106,22 +103,23 @@ validate
 
 ## Migration
 
-保存KeyやSchemaを変更するときは、旧データを勝手に捨てません。
+保存KeyやSchemaを変更するときは、旧Dataを勝手に捨てません。
 
 - 旧Keyから読める
-- 移行失敗時に元データを残す
-- 破損JSONは上書き前にRecoveryコピーを作る
-- 大きな変更はSchema / README / 作業報告を同時更新
-- 高リスク変更ではRollback可能性を検討
+- 移行失敗時に元Dataを残す
+- 破損JSONは上書き前にRecovery copyを作る
+- 大きな変更はSchema / README / Work Reportを同時更新
+- 高Risk変更ではRollback可能性を検討
 
 ## Snapshot
 
-「現在のJSONを更新すると過去記録の意味が変わる」データはSnapshotを検討します。
+「現在のJSONを更新すると過去記録の意味が変わる」DataはSnapshotを検討します。
 
 例:
+
 - 問題を解いた当時の問題文
 - AI分析時点の入力
-- レビュー対象時点の設定
+- Review対象時点の設定
 
 ## 座標保存
 
@@ -132,39 +130,39 @@ x: 0.00〜1.00
 y: 0.00〜1.00
 ```
 
-画面サイズや上部要素の高さ変更でずれにくくなります。
+画面Sizeや上部要素の高さ変更でずれにくくなります。
 
 ## 保存状態を設計する
 
-編集を伴うサイトでは、必要に応じて以下を区別します。
+編集を伴うSiteでは必要に応じて次を区別します。
 
 - 保存済み
 - 保存中
 - 未保存変更あり
 - 保存失敗
 
-保存失敗を成功扱いしたり、エラーを黙って無視しません。
+保存失敗を成功扱いしたり、Errorを黙って無視しません。
 
-重要な編集では、画面移動・タブ閉じ・データ切替で未保存内容を失う可能性を考慮します。
+重要な編集では、画面移動・Tab閉じ・Data切替で未保存内容を失う可能性を考慮します。
 
 ## Storage失敗
 
-CONDITIONAL: ユーザーデータが重要な場合、次を想定します。
+CONDITIONAL: User dataが重要な場合、次を想定します。
 
 - localStorage quota / write failure
 - IndexedDB open / transaction failure
 - Browser storage制限
 - Import途中の失敗
 - Migration途中の失敗
-- Remote Diagnostic Store unavailable / paused / quota reached
+- Remote Diagnostic Store unavailable（採用時）
 
-失敗時に元データを消してから再試行する設計は避けます。
+失敗時に元Dataを消してから再試行する設計は避けます。
 
-Remote Diagnostics保存失敗はCore機能の保存失敗と分離し、Remote Providerが使えないだけでアプリ本体を利用不能にしません。
+Remote Diagnostics保存失敗はCore機能の保存失敗と分離します。
 
-## 複数タブ競合
+## 複数Tab競合
 
-CONDITIONAL: 同じデータを複数タブから編集でき、上書きが問題になる場合は競合を考慮します。
+CONDITIONAL: 同じDataを複数Tabから編集でき、上書きが問題になる場合は競合を考慮します。
 
 例:
 
@@ -174,18 +172,18 @@ Tab B: revision 5を読込 → revision 6として保存
 Tab A: 古い状態をそのまま保存
 ```
 
-必要に応じて以下を使います。
+必要に応じて次を使います。
 
 - updatedAt / revision比較
 - BroadcastChannel
 - storage event
 - 保存前の競合警告
 
-単純な閲覧サイトでは過剰実装しません。
+単純な閲覧Siteでは過剰実装しません。
 
 ## Backup / Restore
 
-ユーザーデータを保存するサイトでは、重要度に応じて以下を用意します。
+User dataを保存するSiteでは、重要度に応じて次を用意します。
 
 - JSON Export
 - Import時Validation
@@ -194,11 +192,11 @@ Tab A: 古い状態をそのまま保存
 - Restore
 - Data Diagnostics
 
-Importデータは信頼せずSchema検証します。
+Import dataは信頼せずSchema検証します。
 
 ### 破壊的Import / Restoreの順序
 
-CONDITIONAL: Importが既存のlocalStorage / IndexedDB / Cloud stateを**置き換える**場合、単に`schema`文字列を確認するだけでは不十分です。
+CONDITIONAL: Importが既存localStorage / IndexedDB / Cloud stateを**置き換える**場合、単にTop-level schemaを確認するだけでは不十分です。
 
 原則として次の順序を使います。
 
@@ -206,17 +204,17 @@ CONDITIONAL: Importが既存のlocalStorage / IndexedDB / Cloud stateを**置き
 1. Fileをparse
 2. Top-level Schema / Version確認
 3. 全Store / RecordをValidation
-4. 現在データをBackup / Recovery Snapshot
-5. Import用データをnormalize
+4. 現在DataをBackup / Recovery Snapshot
+5. Import dataをnormalize
 6. 置換を実行
 7. 読み戻してValidation
 8. 成功なら完了
 9. 途中失敗ならBackupからRollback
 ```
 
-重要なのは、**既存StoreをclearしてからImportデータの不正に気付かないこと**です。
+重要なのは、**既存StoreをclearしてからImport dataの不正に気付かないこと**です。
 
-複数Storeを扱う場合、ブラウザStorage全体を1 Transactionにできないことがあります。その場合はアプリ側でRollback用Snapshotを持ちます。
+複数Storeを扱う場合、Browser Storage全体を1 Transactionにできないことがあります。その場合はApp側でRollback用Snapshotを持ちます。
 
 最低限Validationする例:
 
@@ -230,17 +228,19 @@ CONDITIONAL: Importが既存のlocalStorage / IndexedDB / Cloud stateを**置き
 - 想定外の巨大Data URL / Blob相当
 - 現在Versionで扱えない将来Schema
 
-Import失敗時は「一部だけ新データ、一部だけ旧データ」の状態を残さないことを優先します。
+Import失敗時は「一部だけ新Data、一部だけ旧Data」の状態を残さないことを優先します。
 
 ### Import Regression Test
 
-重要データを置き換えるImportでは、少なくとも次をTest候補にします。
+重要Dataを置き換えるImportでは、少なくとも次をTest候補にします。
 
 - 正常Backup → Restore → 再読込
-- 不正JSONを渡しても現在データが変わらない
-- Schema違いで現在データが変わらない
-- IndexedDB書き込み途中を失敗させてもRollbackできる
+- 不正JSONを渡しても現在Dataが変わらない
+- Schema違いで現在Dataが変わらない
+- IndexedDB書込途中を失敗させてもRollbackできる
 - Restore後に主要画面が読める
+
+Testing全体は [07 Testing / Quality](07-testing-quality.md) を確認します。
 
 ## 関連Catalog
 

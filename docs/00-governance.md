@@ -1,6 +1,6 @@
 # 00 Guide Governance
 
-この章は、`web-project-guide`内のルールが衝突した場合の扱いと、ルールの強さを定義する正本です。
+この章は、`web-project-guide`内のルールが衝突した場合の扱い、ルールの強さ、**共通ルールを増やしすぎないための管理方法**を定義する正本です。
 
 ## ルールの強さ
 
@@ -27,6 +27,111 @@
 - Mediaを保存する → IndexedDBを優先
 - Electron → Electron専用ルールを適用
 - 一般公開 → Asset LicenseやSecurity確認を強化
+
+## Rule Budget / 共通ルールを増やしすぎない
+
+### MUST: 新しい共通ルールを追加する前に、既存の置き場所を確認する
+
+新しい知見が出たとき、最初から新しい章・新しいMUST・新しいChecklist項目を作りません。
+
+次の順に分類します。
+
+```text
+新しい知見
+↓
+既存の正本で表現できる？
+├─ YES → 既存Ruleへ統合・補強
+└─ NO
+   ↓
+   Project固有？ → 対象ProjectのPROJECT_LEARNINGS / Project Rules
+   実例・Evidence？ → Failure / Success / Anti-Pattern / Visual Catalog
+   確認手順？ → Quality Checklist / Template
+   本当に複数Projectへ必要？ → Common Docsへ追加
+```
+
+共通Guideへ新規Ruleを追加する条件は、原則として次のいずれかです。
+
+- 複数Projectで再利用価値がある
+- 1回でもデータ消失・Security・Release事故等の重大Riskを防ぐ
+- 同じ失敗が繰り返されている
+- 既存Guideを守っても防げない明確なGapがある
+
+「役に立ちそう」「忘れたくない」だけでは、Common Ruleへ昇格させません。
+
+### SHOULD: Rule追加時はNet Complexityを増やしすぎない
+
+意味のあるRule追加では、同時に次を確認します。
+
+- 既存Ruleへ統合できないか
+- 同じ説明をしている箇所を短いLinkへ置き換えられないか
+- 古くなったRule / Example / Checklistを削除できないか
+- Project固有だった内容をProject側へ戻せないか
+- 新しい章を作らず既存Owner Docへ置けないか
+
+数値で「最大N個」と固定しませんが、**Ruleを増やす作業とRuleを減らす・統合する作業をセットで考えます。**
+
+## Single Normative Owner / 同じ判断の正本を1つにする
+
+### MUST: 同じ判断ルールを複数の正本へ持たない
+
+同じ判断・Workflow・Checklistを複数ファイルへ全文複製しません。
+
+- **Owner Doc:** 詳細と判断基準を書く唯一の正本
+- **Router / Summary:** 1〜数行の要約 + Owner DocへのLink
+- **Catalog:** 実例・Evidence・再利用条件
+- **Checklist / Template:** 実行時の確認項目
+
+Cross-cuttingなTopicでは、各専門章にその分野固有の制約だけを置けます。
+
+例:
+
+```text
+Remote Diagnostic Handoff全体
+→ docs/15 がWorkflowの正本
+
+保存先としての扱い
+→ docs/03 はStorage固有の注意だけ
+
+Security
+→ docs/06 はKey / RLS / Grant等だけ
+```
+
+他章へ同じWorkflow全文を再掲しません。
+
+### 現在の主要Owner
+
+| Topic | Normative owner | 他の場所の役割 |
+|---|---|---|
+| Rule strength / Source of Truth / Rule Budget | `docs/00-governance.md` | README / START_HEREは要約のみ |
+| Requirements | `docs/01-requirements.md` | Requirements Templateは記入用 |
+| Architecture | `docs/02-architecture.md` | Catalogは実例 |
+| Data / Storage | `docs/03-data-storage.md` | Checklistは確認用 |
+| UI / UX / Accessibility原則 | `docs/04-ui-ux-accessibility.md` | Visual Baselineは最低品質だけ |
+| Testing strategy | `docs/07-testing-quality.md` | `templates/QUALITY_CHECKLIST.md`は実行Checklist |
+| Existing project change workflow | `docs/10-project-management.md` | START_HEREはRouter |
+| Electron distribution | `docs/11-electron-distribution.md` | Checklistは確認用 |
+| Guide improvement / review operation | `docs/14-continuous-improvement.md` | `maintenance/review-policy.json`は機械可読設定 |
+| Runtime diagnostics / Remote handoff workflow | `docs/15-development-observability.md` | Data / Security章は専門制約だけ |
+| Cross-repository GitHub infrastructure | `docs/16-cross-repository-github-infrastructure.md` | `EliteMay/.github`は実装側 |
+| Visual minimum quality | `docs/17-visual-quality-baseline.md` | Checklistは実行確認 |
+| Domain research / 大規模Visual Redesign workflow | `docs/18-domain-first-visual-research.md` | Visual CatalogはEvidence / Reference |
+
+新しいTopicが既存Ownerへ自然に収まらない場合だけ、新規Docを検討します。
+
+## Routerを壊さない
+
+### MUST: 新しい正本を追加したら、作業入口から辿れるようにする
+
+新しいDocを作っただけでは完成ではありません。
+
+最低限次を確認します。
+
+- `README.md` の入口一覧から存在を確認できる
+- `START_HERE.md` の該当作業Routeから辿れる
+- 既存Ownerと責務が重複していない
+- Validator / required file listが必要なら更新されている
+
+**Orphan Rule（存在するが通常作業から辿れないRule）を作らない**ことを基本とします。
 
 ## 基本優先順位の読み方
 
@@ -91,9 +196,11 @@ Visual Ambitionの`high / flagship`は条件付きですが、**Baseline自体�
 
 - Guide Versionを一元管理する
 - CHANGELOGを残す
-- READMEへ詳細ルールを重複させすぎない
+- README / START_HEREをRouterとして保ち、詳細ルールを重複させすぎない
+- 同じ判断のNormative Ownerを1つにする
+- 新規Rule追加時にRule Budgetを確認する
 - 相対リンクを壊さない
-- 必須ファイルを自動検証する
+- 必須ファイルとRouter導線を自動検証する
 - 未確認事項を作業報告へ残す
 
 ## 例外の扱い

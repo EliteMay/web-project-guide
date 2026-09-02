@@ -1,12 +1,20 @@
 # 18 Domain-first Visual Research
 
-この章は、既存サイトの見た目を大きく修正するときに、**過去の成功例やAIの好みを先に当てはめず、そのサイトと同じ用途・ジャンルのVisual Designを一度調査してから方向を決めるためのWorkflow**です。
+この章は、既存サイトの見た目を大きく修正するときに、**過去の成功例やAIの好みを先に当てはめず、そのサイトと同じ用途・ジャンルのVisual Designを調査してから方向を決めるためのWorkflow**です。
 
-Visual Designの詳細原則は [04 UI / UX / Accessibility](04-ui-ux-accessibility.md)、最低品質は [17 Visual Quality Baseline](17-visual-quality-baseline.md) を正本とします。
+この章が次の正本です。
+
+- Domain / Genre Research
+- 既存UIの`KEEP / FIX / REMOVE`
+- Reference選定
+- Candidate比較
+- Visual Foundation Reset
+
+Visual Design原則は [04 UI / UX / Accessibility](04-ui-ux-accessibility.md)、最低品質は [17 Visual Quality Baseline](17-visual-quality-baseline.md) を正本とします。
 
 ## 目的
 
-同じ「良いDesign」でも、Project Type / User Task / Content / Audience /利用頻度 / 画面密度によって適否が変わります。
+同じ「良いDesign」でも、Project Type / User Task / Content / Audience / 利用頻度 / 画面密度によって適否が変わります。
 
 例:
 
@@ -16,8 +24,6 @@ Visual Designの詳細原則は [04 UI / UX / Accessibility](04-ui-ux-accessibil
 - Game Guideの濃いThemeが、買い物比較Toolに合うとは限らない
 
 そのため、**「過去に成功したから使う」ではなく、「今回の種類に合うことを先に確認する」**ことを優先します。
-
----
 
 ## MUST: Meaningful Visual Changeの前にDomain / Genre Researchを行う
 
@@ -42,8 +48,6 @@ Visual Designの詳細原則は [04 UI / UX / Accessibility](04-ui-ux-accessibil
 
 ただし局所修正に見えても、複数箇所へ広がる場合はDomain Researchへ戻ります。
 
----
-
 ## Research前にTarget Typeを定義する
 
 検索語を決める前に、今回のProjectを最低限次で整理します。
@@ -59,8 +63,6 @@ Visual Designの詳細原則は [04 UI / UX / Accessibility](04-ui-ux-accessibil
 
 単に「学習サイト」「ゲームサイト」だけで終わらせず、**何をするサイトか**まで落とします。
 
-例:
-
 ```text
 悪い分類:
 学習サイト
@@ -69,19 +71,9 @@ Visual Designの詳細原則は [04 UI / UX / Accessibility](04-ui-ux-accessibil
 初心者が毎日10〜20分使う、進捗付きの技術学習Dashboard + Reference
 ```
 
-```text
-悪い分類:
-音楽サイト
-
-良い分類:
-Libraryから曲を選び、Playerと同期歌詞を同時に見るDesktop中心Media Workspace
-```
-
----
-
 ## Referenceの優先順位
 
-Visual Referenceは次の順で探します。
+Visual Referenceは原則として次の順で探します。
 
 1. **同じPrimary TaskのSite / App**
 2. **同じContent ModelのSite / App**
@@ -90,11 +82,11 @@ Visual Referenceは次の順で探します。
 5. **自分の過去Validated Direction**
 6. **一般Design System / Showcase**
 
-つまり、過去の成功例は最初ではなく**補助資料**です。
+過去の成功例は最初ではなく**補助資料**です。
 
 ### 過去成功例を使ってよい条件
 
-過去のValidated Directionを使う場合は、最低限次を説明できることを条件にします。
+[Validated Visual Direction Catalog](../catalog/validated-visual-directions.md) を使う場合は、最低限次を説明できることを条件にします。
 
 - Primary Taskが何と共通するか
 - Content Modelが何と共通するか
@@ -105,8 +97,6 @@ Visual Referenceは次の順で探します。
 
 「以前高評価だったから」は採用理由にしません。
 
----
-
 ## Web Researchのやり方
 
 ### 1. 同種Referenceを2〜5件見る
@@ -115,7 +105,7 @@ Visual Referenceは次の順で探します。
 
 1件だけを見ると、そのSite固有のBrand表現をCategory標準だと誤認しやすいためです。
 
-ただしニッチな分野では、1件の強いReference + 隣接Task + Design System等でも構いません。
+ニッチな分野では、1件の強いReference + 隣接Task + Design System等でも構いません。
 
 ### 2. 見る項目を固定する
 
@@ -130,8 +120,8 @@ Visual Referenceは次の順で探します。
 - Typography hierarchy
 - Image / Artwork / Screenshotの役割
 - Background / Border / Shadow / Radiusの強さ
-- Hover / selected / loading / empty等のState
-- Mobile / narrow viewportで何を残し何を畳むか
+- hover / selected / loading / empty等のState
+- narrow viewportで何を残し何を畳むか
 
 ### 3. 共通点だけでなく差も見る
 
@@ -144,8 +134,6 @@ Visual Referenceは次の順で探します。
 - 同じMusic ServiceでもDiscovery中心とLibrary中心ではHome構造が違う
 - 同じLearning AppでもLesson中心とReference中心ではNavigationが違う
 - 同じDashboardでも監視用途と編集用途ではDensityが違う
-
----
 
 ## Research Output: Domain Research Brief
 
@@ -187,19 +175,15 @@ Open axes:
 
 重要なのは、**調査結果がDesign Directionへどう影響したかを説明できること**です。
 
----
+## Current Siteを`KEEP / FIX / REMOVE`へ分ける
 
-## Current SiteもReferenceの1つとして扱う
-
-既存Siteでは外部Referenceを見る前後に、現在UIを確認します。
+既存Siteでは、外部Referenceへ寄せる前に現在UIの価値を固定します。
 
 ```text
 KEEP   = 今のSiteで残す価値がある
 FIX    = 役割は必要だが改善が必要
 REMOVE = 不要 / 邪魔 / 明確に低評価
 ```
-
-外部Siteの方が洗練されていても、Target Project固有の良い部分を消しません。
 
 特に次はKEEP候補です。
 
@@ -208,40 +192,109 @@ REMOVE = 不要 / 邪魔 / 明確に低評価
 - Content固有のArtwork / Screenshot / Map
 - クリック対象として分かりやすい表現
 - ProjectのIdentityになっている色 / Type / Surface
+- Taskに合っている情報密度や構造
 
----
+外部Siteの方が洗練されていても、Target Project固有の良い部分を消しません。
 
-## Validated Visual Directionの位置づけ
+## Reference Transfer Rule
 
-[Validated Visual Direction Catalog](../catalog/validated-visual-directions.md) は、**Domain Researchの代わりではありません。**
-
-使う順番は次です。
+別Projectの成功例を使う場合は、次を分けます。
 
 ```text
-Current Project理解
-→ Domain / Genre Research
-→ KEEP / FIX / REMOVE
-→ Design Direction候補
-→ 必要なら過去Validated Directionを補助Referenceとして確認
-→ Candidate
-→ Visual Review
+Transfer
+→ Workflowに対して成功した構造原理
+
+Rebuild
+→ Project固有のIdentity / Content / Density / Visual material
+
+Do not copy
+→ 色、幅、Effect量、Card数、装飾削減量などSource固有の表層
 ```
 
-### 禁止する使い方
+特に、**Source Projectで「減らしたもの」を成功要因だと決めつけません。**
 
-- LyricTubeが高評価だったからMedia以外にも3 Paneを使う
-- Tarkov Field Manualが高評価だったからKnowledge Site全部を暗色Sidebar型にする
-- 過去のA評価を「正解Template」として最初から当てはめる
-- Domain Researchを省略して、自分の過去ProjectだけをReferenceにする
+## Candidate → Compare → Promote / Reject
 
-### 許可する使い方
+Visual uncertaintyが高いRedesignでは、最初の1案を完成扱いしません。
 
-- 今回もLibrary + Current Item + Detailを頻繁に行き来するため、LyricTubeのWorkspace原理だけ参考にする
-- 今回も長文ReferenceをSection単位で学ぶため、TarkovのRail + Manual compositionを比較候補に入れる
+推奨順序:
 
-重要なのは**見た目の類似ではなくTask / Content Modelの類似**です。
+```text
+Current baseline
+→ Domain Research
+→ KEEP / FIX / REMOVE
+→ 2〜3 structural directions（必要時）
+→ Candidate
+→ Current vs Candidate
+→ 明確な改善点を説明
+→ User / Task validation
+→ Promote or Reject
+```
 
----
+比較案は色違いではなく、Navigation / Density / Content Width / Grid / Typography / Primary Action等が実際に異なる案にします。
+
+CandidateがCurrentを明確に上回らない場合は、Polish量を増やす前にDirection自体を見直します。
+
+## Visual Foundation Reset
+
+### SHOULD: 局所修正を重ねても良くならない場合はPatchを止め、基礎から再設計する
+
+小さなCSS修正・余白調整・色変更・Card追加・Effect追加を繰り返しても全体品質が上がらない場合、**既存UIへPatchを足し続けること自体を目的にしません。**
+
+次のような状態ではFoundation Resetを優先して検討します。
+
+- 同じ画面を何度直しても「まだ微妙」が続く
+- 問題が1 ComponentではなくIA / Layout / Density / Typography / Hierarchy / Navigationへ広がっている
+- 1箇所を直すと別の場所のBalanceが崩れる
+- Component単体は整っているのにPage Composition全体として弱い
+- Override / 例外CSS / 個別Patchが増え、正しいLayoutが分かりにくい
+- Effectを足すほど見た目は変わるが、Task clarityや構造の納得感が上がらない
+- Candidateを何度PolishしてもCurrentを明確に上回らない
+
+Foundation Resetでは原則として次へ戻ります。
+
+```text
+Purpose / User Task
+→ Content / Data / State
+→ Target Type / Domain Research
+→ Information Architecture
+→ Navigation / Main Structure
+→ Wireframe
+→ Design Direction
+→ Typography / Spacing / Hierarchy
+→ Color / Effect
+→ Rebuild UI
+→ Visual Verification
+```
+
+### 「一から作り直す」= Project全体を捨てる、ではない
+
+原則として保持するもの:
+
+- 正しく動いている機能
+- Data / Storage / Migration Contract
+- API / URL / Release Contract
+- 検証済みBusiness Logic
+- Accessibility / Performance / Security要件
+- 再利用価値のあるComponent / Asset
+
+白紙に戻してよいもの:
+
+- Page Composition
+- Header / Navigation構造
+- Content Width / Grid / Columns
+- Density
+- Visual Hierarchy
+- Typography direction
+- Card / List / Table等の表現方法
+- Spacing rhythm
+- Color / Decorative Effect
+
+つまり、**安定している中身は残し、失敗している見た目の土台だけを再設計する**ことを基本とします。
+
+小規模な崩れや原因が明確なComponent Bugまで毎回全面Redesignする必要はありません。
+
+目安として、局所修正の追加コスト・例外・複雑さが、Wireframeから再設計するコストを上回り始めたらFoundation Resetへ切り替えます。
 
 ## AIへVisual修正を任せる場合
 
@@ -253,9 +306,9 @@ AIへ「見た目を良くして」と依頼された場合、いきなりCSSを
 1. Current Repo / Screenshot / Requirementsを確認
 2. Target Typeを定義
 3. Webで同種Site / Appを調査
-4. Domain Research Briefを作る
-5. Current UIをKEEP / FIX / REMOVEへ分ける
-6. 2〜3 Directionを必要に応じて比較
+4. Domain Research Brief
+5. KEEP / FIX / REMOVE
+6. 必要なら2〜3 Directionを比較
 7. Candidateを実装
 8. Current vs Candidateを確認
 9. Visual Review
@@ -263,8 +316,6 @@ AIへ「見た目を良くして」と依頼された場合、いきなりCSSを
 ```
 
 AI自身が過去に作った成功例を最初の答えとして使わないことを基本とします。
-
----
 
 ## Completion Check
 
@@ -274,7 +325,9 @@ AI自身が過去に作った成功例を最初の答えとして使わないこ
 - どんな同種Referenceを調べたか
 - そのCategoryで共通していた構造は何か
 - Reference間で違っていた部分は何か
+- Current UIの何をKEEP / FIX / REMOVEしたか
 - 今回どれを採用し、どれを採用しなかったか
 - 過去成功例を使った場合、なぜ今回にも適合するのか
+- Foundation Resetをした場合、何を保持し何を作り直したか
 
-最終的な目標は「成功例に似せること」ではなく、**今回のProject種類を理解し、その種類に合ったVisual Designを選べること**です。
+最終的な目標は成功例に似せることではなく、**今回のProject種類を理解し、その種類に合ったVisual Designを選べること**です。

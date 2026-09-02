@@ -14,7 +14,7 @@
     "README, specification, PROJECT_RULES and AGENTS.md",
     "remote diagnostic handoff configuration and recent runtime evidence when safely accessible",
     "work reports and changelog",
-    "visual design direction, user feedback or rating, rejected visual candidates, post-build visual review, repeated UI patterns and DesignShelf usage",
+    "visual design direction, user feedback or rating, rejected visual candidates and post-build visual review",
     "AI-assisted architecture decisions and available oracle or regression tests",
     "diagnostics design and exported schema when committed",
     "tests and GitHub Actions",
@@ -53,6 +53,34 @@
       "candidateMaySupply": "comparison input only; do not call it a success",
       "rejectedMustRetain": "failure reason and root lesson so the same direction is not regenerated as a new idea"
     }
+  },
+  "ruleHygieneReview": {
+    "enabled": true,
+    "runWhen": [
+      "a meaningful common rule is added or changed",
+      "monthly deep review"
+    ],
+    "checks": [
+      "duplicate normative guidance across owner documents",
+      "README or START_HERE repeating detailed rules instead of routing",
+      "orphan numbered docs not reachable from README",
+      "new owner docs not reachable from the relevant START_HERE route",
+      "full completion checklists duplicated outside templates/QUALITY_CHECKLIST.md",
+      "project-specific knowledge stored as common rules instead of PROJECT_LEARNINGS or project rules",
+      "catalog evidence promoted to universal rules without reuse evidence",
+      "stale version-specific examples or obsolete rules",
+      "rule strength that should be lowered to conditional or project-specific scope"
+    ],
+    "placementOrder": [
+      "merge into an existing normative owner when possible",
+      "project-specific PROJECT_LEARNINGS or project rules",
+      "failure, success, anti-pattern or visual evidence catalog",
+      "quality checklist or template",
+      "new common rule only when the previous locations are insufficient"
+    ],
+    "singleNormativeOwner": true,
+    "newChapterRequiresDistinctResponsibility": true,
+    "ruleAdditionMustCheckConsolidation": true
   },
   "webSources": [
     {
@@ -159,6 +187,7 @@
   "reviewCadence": {
     "repositoryDeltaReview": "weekly",
     "webStandardsDeltaReview": "weekly",
+    "ruleHygieneReview": "on-rule-change",
     "deepReview": "monthly"
   },
   "changePolicy": {
