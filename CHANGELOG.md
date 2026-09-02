@@ -2,6 +2,29 @@
 
 Guide Versionの正本は [`guide-version.json`](guide-version.json) です。
 
+## 1.14.1 - 2026-09-03
+
+### Added
+
+- `docs/10-project-management.md`へ **Repository discoverability / 公開サイトへの導線** を追加
+  - 公開して利用できるWebサイトURLがあるRepositoryでは、GitHub RepositoryのAbout欄 `Website` / homepageへ代表URLを設定することを原則化
+  - README上部にも`Open site` / `Live Site`等の分かりやすいLinkを置き、RepositoryからSiteへすぐ移動できるようにする
+  - 複数URLがある場合はPreviewではなくCanonical / Stable URLをWebsite欄へ置く
+  - localhost、期限付きPreview、秘密情報を含むURLは対象外
+- `templates/README_TEMPLATE.md`の最上部へLive Site導線を追加
+- `templates/QUALITY_CHECKLIST.md`のGitHub Pages項目へRepository Website / README上部のSite導線確認を追加
+
+### Rule Hygiene
+
+- 新しいOwner Docは作成せず、既存のGitHub Project管理Ownerである`docs/10`へ統合
+- GitHub Pagesの構成・Path・公開確認は引き続き`docs/08`を正本とし、Site Linkの見つけやすさだけを`docs/10`で扱う
+
+### Compatibility
+
+- 未公開Project、Electron専用、Library / Guide / Backend等の直接利用SiteがないRepositoryには強制しない
+- Website欄を変更できない作業環境ではREADME上部のLive Site LinkをFallbackとして残せる
+- Runtime / Storage / Schema / Deployment方式は変更しない
+
 ## 1.14.0 - 2026-09-03
 
 ### Added
