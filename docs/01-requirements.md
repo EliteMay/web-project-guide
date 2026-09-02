@@ -45,27 +45,19 @@
 
 ## Visual Design Direction
 
-### CONDITIONAL: Visual Qualityが重要なProject
+### CONDITIONAL: Visual Directionが完成度へ大きく影響するProject
 
-Landing Page、Portfolio / Showcase、Media、一般公開Product、UI刷新など、Visual Directionが完成度へ大きく影響する場合は、CSS実装前に [UI / UX / Accessibility](04-ui-ux-accessibility.md) のVisual Design Qualityを確認します。
+要件定義では、Visualの完成形を細かく決めるのではなく、最低限次だけ記録します。
 
-最低限、次を整理します。
+- Visual Quality Baseline: Required / Not applicable
+- Visual Ambition: baseline / high / flagship
+- Primary Task / Content Model / Audience
+- 現在UIがある場合の大きな制約・残したい要素
+- Visual Researchが必要な変更か
 
-- Design Concept
-- Reference Direction
-- Layout Type
-- Navigation Type
-- Content Density
-- Typography Direction
-- Color Rule
-- Component Rule
-- Decorative Effect Policy
+意味のある新規Design / 大規模Redesignでは、実装前の調査Workflowを [Domain-first Visual Research](18-domain-first-visual-research.md)、Design原則を [UI / UX / Accessibility](04-ui-ux-accessibility.md) の正本で確認します。
 
-重要な新規Designでは、色違いではなく**構造的に異なる2〜3方向**をWireframe / lightweight mockで比較することを推奨します。
-
-この段階ではGradient、Shadow、Glassmorphism等を先に決めず、Information Architecture / Navigation / Grid / Typography / Spacingを優先します。
-
-DesignShelfを利用する場合も、配色選択器としてだけではなく、構造的に異なるLayout候補を比較する補助Toolとして扱います。
+要件定義へReference候補、2〜3案比較、Effect方針等の詳細手順を重複記載しません。
 
 ## MVP
 
@@ -111,5 +103,5 @@ DesignShelfを利用する場合も、配色選択器としてだけではなく
 - 保存後に再読み込みしてもデータが残る
 - GitHub ActionsのStatic Validationが成功する
 - 未確認項目が作業報告書へ記録されている
-- Visual重視Projectでは、選択したDesign Directionと比較した代替案が説明できる
+- Visual重視Projectでは採用Directionの理由と、調査した同種Referenceを説明できる
 - Accent Colorを外しても、Typography / Spacing / Layoutで主要Hierarchyが読み取れる
