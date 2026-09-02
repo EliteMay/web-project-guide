@@ -1,14 +1,18 @@
 # 07 Testing / Quality
 
+この章は**Testing戦略と検証状態の考え方**を定義する正本です。
+
+実際の完成前チェック項目は [Quality Checklist](../templates/QUALITY_CHECKLIST.md) を正本とし、この章へ同じChecklistを複製しません。
+
 ## 基本方針
 
 「コードが書けた」と「使える」は別です。
 
-自動テストで防げる問題と、実ブラウザ・実機・Design Reviewでしか確認できない問題を分けます。
+自動Testで防げる問題と、実ブラウザ・実機・Visual Review・User Testでしか確認できない問題を分けます。
 
 ## 最低限のStatic Validation
 
-GitHub Actions等で可能なら以下を自動確認します。
+GitHub Actions等で可能なら、変更内容に応じて次を自動確認します。
 
 - JavaScript / MJS構文
 - JSON構文
@@ -20,11 +24,14 @@ GitHub Actions等で可能なら以下を自動確認します。
 - 廃止Runtimeの再混入
 - 公開JSONへのData URL / 秘密情報混入
 
+すべてのProjectへ同じValidatorを強制せず、Project Contractに合うものだけを使います。
+
 ## Unit Test
 
-Pure Functionにできる処理はブラウザUIから切り離してテストします。
+Pure Functionにできる処理はブラウザUIから切り離してTestします。
 
 例:
+
 - Timestamp Parser
 - 同期補間
 - Score計算
@@ -35,7 +42,7 @@ Pure Functionにできる処理はブラウザUIから切り離してテスト�
 
 ## E2E / Smoke Test
 
-主要利用フローは実ブラウザで確認できると強いです。
+主要利用フローは実ブラウザで最後まで通せると強いです。
 
 例:
 
@@ -53,13 +60,7 @@ Pure Functionにできる処理はブラウザUIから切り離してテスト�
 復元される
 ```
 
-UIが重要なサイトでは以下も確認します。
-
-- ページ全体の横overflow
-- 固定UIの重なり
-- Button visibility
-- Canvas/対象DOM geometry
-- Main navigation
+UIが重要なSiteでは、変更内容に応じてNavigation / overflow / fixed UI / Canvas geometry /主要Button visibility等も確認します。
 
 ## Specification / Oracle Test
 
@@ -80,7 +81,7 @@ Oracle自体が誤っている可能性もあるため、Reference更新時は�
 
 ## Visual Design Review
 
-Visual Qualityが重要なProjectでは、機能Testと別に[Visual Design Review Gate](04-ui-ux-accessibility.md#visual-design-review-gate)を実施します。
+Visual Qualityが重要なProjectでは、機能Testと別に [Visual Design Review Gate](04-ui-ux-accessibility.md#visual-design-review-gate) を実施します。
 
 自動Testだけでは次を十分に判定できません。
 
@@ -90,41 +91,43 @@ Visual Qualityが重要なProjectでは、機能Testと別に[Visual Design Revi
 - Typography / Spacing / DensityがContentへ合うか
 - Card / List / Table等のComponent選択が適切か
 - Responsive時にPriorityを再構成できているか
-- GenericなAI CopyでSectionを水増ししていないか
 
 Findingは必要に応じて `Blocking / Major / Minor` で整理します。
 
-- **Blocking:** 完成を止める。主要Task不能、重大なAccessibility、内容と構造の重大不一致など
-- **Major:** 通常利用はできても、Hierarchy / Navigation / Responsive / Visual Identity等を大きく損なう
-- **Minor:** 局所Spacing、細かなState、Polish等
-
 Blockingが残る場合はVisual完成扱いにしません。
+
+Visualの最低品質は [Visual Quality Baseline](17-visual-quality-baseline.md)、大規模Redesign前のResearchは [Domain-first Visual Research](18-domain-first-visual-research.md) を確認します。
 
 ## 対応ブラウザ
 
 最低でも主要用途に合わせてFirefox / Chromiumを意識します。
 
-新しいWeb API/CSSはMDN Baseline等で対応状況を確認し、ブラウザ名判定よりFeature Detectionを優先します。
+新しいWeb API / CSSはMDN Baseline等で対応状況を確認し、ブラウザ名判定よりFeature Detectionを優先します。
 
 ## 実機確認
 
-CIで代替できないもの:
+CIで代替できないものがあります。
+
+例:
 
 - ペンタブ筆圧
 - Windows固有機能
-- 実MP3/MP4 Codec
+- 実MP3 / MP4 Codec
 - iPhone / Android Media挙動
 - 実際の外部API通信
 - Setup.exe
 - 大量データ長期利用
 
-これらは未確認なら必ず作業報告へ残します。
+未確認なら作業報告へ残します。
+
+Static Validation成功をReal Device Validationへ読み替えません。
 
 ## Regression Test
 
-一度修正した重大バグは、可能ならテストを追加して再発を防ぎます。
+一度修正した重大Bugは、可能ならTest / Validator / Guardを追加して再発を防ぎます。
 
 特に優先:
+
 - データ消失
 - 保存互換性
 - 主要ボタン無反応
@@ -133,135 +136,64 @@ CIで代替できないもの:
 - 旧Runtime再混入
 - 誤った件数hardcode
 
+Test化しにくいVisual / 実機Bugでは、再現手順・Screenshot比較・確認Checklist等をRegression Guardにできます。
+
 ## Final-state Validation
 
 テスト結果は、**ユーザーへ渡す最終Commit / Merge Commit**に対して成立している必要があります。
 
-途中CommitでCIが成功していても、その後に以下を変更した場合は最終状態で再確認します。
+途中CommitでCIが成功していても、その後に次を変更した場合は最終状態で再確認します。
 
 - 一時Workflow / Scriptの削除
 - Cache Revision
 - Version / Build
 - Asset Path
-- README以外の設定ファイル
-- Deployment設定
+- 設定 / Deployment
 - Cleanup Commit
 
-特にGitHub Pagesでは、途中のDeploy成功を最終状態のDeploy成功として扱いません。
+推奨順序:
 
-可能なら次を確認します。
+```text
+最終Commit SHAを確認
+→ そのCommitのCI / Testを確認
+→ Pages対応時は同じCommitのDeployを確認
+→ 一時資産が残っていないことを確認
+```
 
-1. 最終Commit SHAを確認
-2. そのCommitに対するCI結果を確認
-3. GitHub Pages対応時は同じ最終CommitのDeploy結果を確認
-4. 一時ファイルが残っていないことを確認
+## Verification State
 
-# 完成前チェック
+確認状態は可能なら次のように分けます。
 
-## ファイル
+- **Implemented** — 実装済み
+- **Static Validated** — 構文・参照・Schema等を自動確認済み
+- **Browser Validated** — 実ブラウザで主要導線確認済み
+- **Visual Reviewed** — Design Review Gateを実施済み
+- **Real Device Validated** — 実機 / OS固有機能確認済み
+- **User Validated** — 実際の利用者が確認済み
+- **Unverified** — 未確認
+- **Known Issue** — 既知問題あり
 
-- [ ] 必要ファイルが存在する
-- [ ] 不要な重複Runtime / Patchがない
-- [ ] 一時Script / 一時Workflow / Debug資産が残っていない
-- [ ] ファイルPathが正しい
-- [ ] 文字化けがない
-- [ ] GitHub Pagesで404にならない構成になっている
+Verification Stateを必要以上に高く表現しません。
 
-## HTML / CSS / JavaScript
+## 完成前の実行項目
 
-- [ ] JavaScript読込・実行エラーがない
-- [ ] CSS読込エラーがない
-- [ ] 主要ボタンが反応する
-- [ ] リンク切れがない
-- [ ] UIが致命的に画面外へはみ出さない
-- [ ] 小さい画面で主要操作ができる
-- [ ] fixed / sticky UIが重要操作を隠さない
-- [ ] Consoleへ重大Errorが出ていない
+この章ではChecklist本文を持ちません。
 
-## データ
+完成前は [Quality Checklist](../templates/QUALITY_CHECKLIST.md) をProject Profile / 変更内容に合わせて使用します。
 
-- [ ] JSON構文が正しい
-- [ ] JSONを実際に読み込める
-- [ ] Schema / Manifestと実データが整合する
-- [ ] 保存データ互換性を壊していない
-- [ ] 設定やユーザーデータが意図せず消えない
-- [ ] ImportデータをValidationしている
+Checklist側にはHTML / CSS / JS、Visual、Data / Storage、GitHub Pages、Accessibility、Performance、AI-assisted、Electron等の実行項目を集約します。
 
-## GitHub Pages
+## 完成条件
 
-- [ ] 相対Pathが正しい
-- [ ] `fetch()`先が正しい
-- [ ] ファイル名の大文字小文字が一致する
-- [ ] `localhost`依存がない
-- [ ] PC固有絶対Pathがない
-- [ ] 公開ファイルへ秘密情報が入っていない
-- [ ] 最終Commitに対するPages Deploy結果を確認した
-
-## 既存機能
-
-- [ ] 既存機能への影響を確認した
-- [ ] localStorage / IndexedDB Keyへの影響を確認した
-- [ ] 保存データとの互換性を確認した
-- [ ] 共通Component / Event Listenerへの副作用を確認した
-- [ ] import / fetch / URLへの影響を確認した
-
-## AI-assisted Development
-
-- [ ] AIが提案した高コストArchitecture / Storage / Dependencyを無検証で採用していない
-- [ ] AI生成Codeも同じStatic / Browser / Regression基準を通した
-- [ ] 大規模AI生成でOracle / Reference / Observable Acceptance Criteriaを使える場合は用意した
-- [ ] PromptでVisual完成形を固定しすぎてProject固有Designの探索余地を消していない
-
-## Visual Quality（該当時）
-
-- [ ] Build後にVisual Design Reviewを実施した
-- [ ] Primary Task / Hierarchy / Navigationが明確
-- [ ] Colorを外してもProject固有のCompositionが残る
-- [ ] ResponsiveがDesktopの単純縮小になっていない
-- [ ] Blocking Design Findingが残っていない
-
-## Documentation
-
-- [ ] READMEが現在仕様と一致する
-- [ ] 必要な仕様書を更新した
-- [ ] 作業報告書を更新した
-- [ ] 既知の問題を記録した
-- [ ] 確認できなかった項目を記録した
-
-## Final State
-
-- [ ] 最終Commit / Merge Commitを特定した
-- [ ] 最終Commitに対するCI結果を確認した
-- [ ] Cleanup後の状態でRegression確認した
-- [ ] 途中Commitの成功結果を最終確認として流用していない
-
-# 確認状態
-
-確認状態は可能なら以下のように分けます。
-
-- Implemented: 実装済み
-- Static Validated: 構文・参照・Schema等を自動確認済み
-- Browser Validated: 実ブラウザで主要導線確認済み
-- Visual Reviewed: Design Review Gateを実施済み
-- Real Device Validated: 実機 / OS固有機能確認済み
-- User Validated: 実際の利用者が確認済み
-- Unverified: 未確認
-- Known Issue: 既知問題あり
-
-Static Validation成功だけで「実機動作確認済み」「Visual Design完成」と扱いません。
-
-# 完成条件
-
-以下を満たした場合に完成とします。
+「完成」の共通判断は、次を満たすことを基本とします。
 
 - 要求された主要機能が実装済み
 - 通常利用に重大な問題がない
-- 重大な既知バグがない
-- 必要なREADME等が更新済み
-- GitHub Pages対応サイトは公開可能な構成になっている
-- 保存データを壊さない
-- 一時資産をCleanupした最終状態で検証済み
-- Visual Qualityを完成条件に含むProjectではBlocking Design Findingがない
+- 重大な既知Bugがない
+- 必要な文書が現在仕様と一致
+- 保存データを意図せず壊さない
+- Cleanup後の最終状態で必要なValidationを実施
+- User-facing UIはVisual Quality Baselineを満たす
 - 未確認事項が明示されている
 
-主要機能が未実装の場合や、重大部分が未確認の場合は完成扱いにしません。
+個別の確認項目は [Quality Checklist](../templates/QUALITY_CHECKLIST.md) を正本とします。
