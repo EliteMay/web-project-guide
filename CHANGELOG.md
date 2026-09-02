@@ -2,6 +2,40 @@
 
 Guide Versionの正本は [`guide-version.json`](guide-version.json) です。
 
+## 1.13.0 - 2026-09-02
+
+### Added
+
+- `docs/18-domain-first-visual-research.md`を追加
+  - 意味のあるVisual Direction変更前に、そのProjectと同じ用途・ジャンル・Primary Task / Content Modelに近い現行Site / AppをWebで調査するWorkflowを定義
+  - Target TypeをPrimary Task / Content Model / Audience / Usage Frequency / Density / Device / Visual Material / Toneで整理
+  - 同種Referenceを原則2〜5件比較し、共通点だけでなく差と理由も確認
+  - `Domain Research Brief`でObserved conventions / Meaningful variations / Fit / Avoid / Open axesを短く残す
+  - 過去Validated Visual DirectionをDomain Researchの代わりに使わず、補助Referenceへ位置づけ
+  - 同種Referenceが少ない場合は、人気や知名度ではなくTask / Content Modelが近い隣接Domainを優先
+
+### Changed
+
+- `docs/17-visual-quality-baseline.md`
+  - Page Composition / Navigation / Theme / Workspace構造等の意味のあるVisual変更でDomain-first Visual ResearchをMUST化
+  - `Current Project理解 → Target Type → Domain Research → KEEP / FIX / REMOVE → Direction → 過去Validated Direction補助参照 → Candidate → Visual Review`の順序を追加
+  - LyricTube / Tarkov等の過去成功例を「高評価だったから」だけで採用しないことを明記
+  - 1px Alignment / overflow / 既存Design System内の局所修正等は毎回のWeb Research対象外
+
+### Reason
+
+ユーザーから、最近のVisual修正で「成功例をとりあえず使う」ことがProject種類との不一致を生んでいるため、**サイトの見た目を修正する前に、そのサイトに関連する種類のVisual Designを一度学習してから修正する**よう明示的な要望がありました。
+
+v1.12.0で成功 / 失敗Evidenceの強さは整理しましたが、Reference選択順序がまだ弱く、Validated Directionが最初のDesign答えとして使われる余地がありました。v1.13.0では、Reference Libraryより前にDomain / Genre Research Gateを置きます。
+
+### Compatibility
+
+- すべてのVisual BugでWeb Researchを強制しない
+- 過去Validated Directionを削除しない。用途が合う場合の補助Referenceとして維持
+- 既存ProjectのRuntime / Storage / Schema / Deploymentを変更しない
+- 特定業界の固定LayoutやStyleをGuide標準にしない
+- Web Research結果もコピー元ではなく、Task / Content / Density / Navigation等へ抽象化して利用する
+
 ## 1.12.0 - 2026-09-02
 
 ### Added
@@ -528,7 +562,7 @@ English Worksheet Lab v0.6.2の実運用で見つかった以下の問題をGuid
 - GitHub変更経路の選択基準を追加
   - 小規模変更は対象ファイルを直接更新
   - 複数ファイル・高リスク変更はBranch / Pull Requestを優先
-  - GitHub Actionsは継続的自動化を目的とする場合に使用
+  - GitHub Actionsは継続的な自動化を目的とする場合に使用
 - Cleanup後の最終Commit / Merge Commitを完成判定の基準とするFinal-state Validationを追加
 - 一時Script / 一時Workflow / Debug資産のCleanup確認をQuality Checklistへ追加
 - Failure Catalogへ `F-016 一時Workflow / Scriptが修正経路になる` を追加
