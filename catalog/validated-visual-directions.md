@@ -1,17 +1,14 @@
 # Validated Visual Direction Catalog
 
-実Projectで実際に使われたVisual Designを、**完成Templateではなく「正解になり得る方向の実例」**として蓄積するCatalogです。
+実Projectで実際に使われたVisual Designを、**完成TemplateではなくEvidence付きReference**として蓄積するCatalogです。
 
-このCatalogは、良かった見た目だけを都合よく集めません。
+このCatalogはRule / Redesign Workflowの正本ではありません。
 
-- 明確に高評価だったDirection
-- Task構造として有効だったがVisual評価がまだ弱いPattern
-- まだ検証中のCandidate
-- 実際に低評価だったRejected Direction
+- 大規模Visual変更の調査・`KEEP / FIX / REMOVE`・Candidate比較・Foundation Reset → [18 Domain-first Visual Research](../docs/18-domain-first-visual-research.md)
+- Visual Design原則 → [04 UI / UX / Accessibility](../docs/04-ui-ux-accessibility.md)
+- 最低品質 → [17 Visual Quality Baseline](../docs/17-visual-quality-baseline.md)
 
-を分けて記録します。
-
-目的は、AIや制作者が「最近のmainだから成功」「CIが通ったから成功」「別Projectで良かったから成功」と誤認せず、**Evidenceの強さを見ながら次のDirectionを選べる状態**を作ることです。
+ここでは「どのDirectionに、どの強さのEvidenceがあるか」だけを管理します。
 
 ---
 
@@ -22,19 +19,17 @@
 | A | User Validated | 実画面に対する明確な肯定Feedback、継続利用、または「正解例」としての承認がある | `VD-xxx`として登録可能 |
 | B | Task Validated | Workflow / Layoutとして実用上の成功Evidenceがあるが、見た目全体の明確な高評価まではない | Reference候補。VDへ自動昇格しない |
 | C | Candidate | 理屈・実装は存在するが、User Visual Validationが不足している | 比較・検証待ち |
-| R | Rejected | 明確な低評価、旧版より悪化、またはProject固有価値を失ったEvidenceがある | 再利用禁止ではなく「なぜ失敗したか」を学ぶ |
-
-### 重要
+| R | Rejected | 明確な低評価、旧版より悪化、またはProject固有価値を失ったEvidenceがある | 失敗理由を学ぶ |
 
 **最新Version / main / CI成功 / Assistant自己評価だけではAにしません。**
 
-User ValidationのないVisualを「成功例」として次Projectへ横展開すると、低評価だったDirectionが時間経過で正解扱いされるためです。
+User ValidationのないVisualを成功例として横展開すると、低評価だったDirectionが時間経過で正解扱いされるためです。
 
 ---
 
 ## 2026-09-02 Visual Evidence Review
 
-GitHub上で確認できるUser-facing Projectを横断し、`PROJECT_LEARNINGS.md`、README、最近のVisual変更、ユーザーFeedbackを確認しました。
+GitHub上で確認できるUser-facing Projectを横断し、`PROJECT_LEARNINGS.md`、README、最近のVisual変更、User feedbackを確認しました。
 
 確認対象:
 
@@ -59,7 +54,7 @@ GitHub上で確認できるUser-facing Projectを横断し、`PROJECT_LEARNINGS.
 | osu-hub | C | No visual promotion | Electron / Release成功Evidenceは強いが、Visual successのEvidenceとは分離する |
 | type-tower | C | Planned visual direction | GAME画面のVisual方針は存在するが、まだ完成後User Validation前 |
 
-この表でAが少ないことは問題ではありません。**弱いEvidenceを成功扱いして数を水増ししないこと**を優先します。
+Aが少ないことを問題として水増ししません。
 
 ---
 
@@ -75,62 +70,27 @@ Validated Direction候補は、原則として次を満たすものを優先し�
 6. 「このDirectionだけが正解」と扱わない。
 7. Rejected / 低評価だった近接Directionがある場合、それとの差も記録する。
 
-Visualが良いというFeedbackだけでMUST Ruleへ昇格させません。複数Projectで再利用価値が確認できた原則だけを、必要に応じてVisual Quality / Success Patternへ昇格させます。
+Visualが良いというFeedbackだけでMUST Ruleへ昇格させません。複数Projectで再利用価値が確認できた原則だけを、必要に応じてOwner Doc / Success Patternへ昇格させます。
 
 ---
 
-## 既存SiteをRedesignするときの使い方
+## このCatalogの使い方
 
-Validated Directionを見る前に、現在Siteを次の3列へ分解します。
+このCatalogを見る前に、[Domain-first Visual Research](../docs/18-domain-first-visual-research.md) で今回のProject Typeと同種Referenceを調査します。
 
-```text
-KEEP   = 今のUIで残す価値があるもの
-FIX    = 問題はあるが役割自体は必要なもの
-REMOVE = Task / Contentに不要、または明確に邪魔なもの
-```
-
-最低限、次を確認します。
-
-- Current screenshot / 現在のmainを先に見る
-- Userが過去に褒めた要素をKEEPへ入れる
-- Userが低評価した要素をEvidence付きでREMOVE / FIXへ入れる
-- Referenceから何を**Transfer**するかを決める
-- Referenceの何をProject固有に**Rebuild**するかを決める
-- Referenceの何を**Copyしない**かを決める
-
-### Reference Transfer Rule
-
-別Projectの成功例を使う場合、次を分けます。
+その後、Task / Content Model / Density等が本当に近い場合だけ、ここにあるDirectionを補助Referenceにします。
 
 ```text
-Transfer
-→ Workflowに対して成功した構造原理
-
-Rebuild
-→ Project固有のIdentity / Content / Density / Visual material
-
-Do not copy
-→ 色、幅、Effect量、Card数、装飾削減量などSource固有の表層
+Current Project理解
+→ Domain / Genre Research
+→ KEEP / FIX / REMOVE
+→ Design Direction候補
+→ 必要ならこのCatalogを補助Referenceとして確認
+→ Candidate
+→ Visual Review
 ```
 
-特に、**Source Projectで「減らしたもの」を成功要因だと決めつけない**ことが重要です。
-
-LyricTubeでShadow / Card / Gradientを減らしたことが成功したとしても、それはLyricTubeのMedia hierarchyに対して有効だった結果であり、別Projectでも「少ないほど良い」という意味ではありません。
-
-### Candidate Gate
-
-Visual uncertaintyが高い既存Siteでは、最初の1案を完成扱いしません。
-
-1. Current UIをBaselineとして保存
-2. KEEP / FIX / REMOVEを決める
-3. 近いValidated Directionを1〜2件参照
-4. 構造的に異なる2〜3案を軽量比較
-5. Candidateを実装またはMock化
-6. Current vs Candidateを並べて「何が明確に良くなったか」を説明
-7. 明確な改善がなければPolishを重ねずDirectionを戻す
-8. User Validation後に初めてAへ昇格を検討
-
-何度調整してもCandidateがCurrentを明確に上回らない場合は、[Visual Foundation Reset](../docs/17-visual-quality-baseline.md#visual-foundation-reset)へ切り替えます。
+`Transfer / Rebuild / Do not copy`、Candidate比較、Foundation Reset等の判断手順は [18 Domain-first Visual Research](../docs/18-domain-first-visual-research.md) を正本とし、このCatalogへ重複記載しません。
 
 ---
 
@@ -296,7 +256,7 @@ Rejectedは「二度と使えない見た目」ではなく、**そのProjectで
 - **Source:** `EliteMay/ap-study-guide` `PROJECT_LEARNINGS.md` PL-F-004
 - **Result:** 旧r21 **40 / 100** → r22 **30 / 100**。
 - **What happened:** AI Template感を避けるためCard / Teal / Emoji / 柔らかいSurfaceを大きく削り、Technical Console方向へ寄せた。
-- **Why it failed:** 「Anti-patternを減らすこと」が目的になり、学習Siteとしての親しみやすさ、Actionの分かりやすさ、色Identityまで失った。
+- **Why it failed:** Anti-patternを減らすことが目的になり、学習Siteとしての親しみやすさ、Actionの分かりやすさ、色Identityまで失った。
 - **Root lesson:** **Anti-patternはPattern禁止リストではない。Projectに必要な理由がある要素まで消さない。**
 - **Next direction:** 良かったAction affordance / Teal identity / friendly surfaceをKEEPし、Hierarchy / Spacing / Consistencyを改善する。
 
@@ -304,17 +264,17 @@ Rejectedは「二度と使えない見た目」ではなく、**そのProjectで
 
 ## 最近のVisual修正が正解から遠ざかりやすかった理由
 
-今回のProject横断Reviewから、主に次が見つかりました。
+Project横断Reviewから、主に次が見つかりました。
 
-1. **Success Factor Misattribution** — 別Projectで「何を減らしたか」を、成功理由そのものと誤認した。
+1. **Success Factor Misattribution** — 別Projectで何を減らしたかを成功理由そのものと誤認した。
 2. **Minimalism Bias** — simple / clean / minimalを品質指標として扱い、IdentityやAffordanceまで削った。
-3. **Anti-pattern Overcorrection** — Card / Gradient / Emoji / Shadow等を「理由なく使わない」ではなく「使わないほど良い」と解釈した。
-4. **Preserve Step不足** — 変更前に「今のUIの何が既に良いか」を固定せず、Redesignで既存価値を消した。
-5. **Single-candidate Bias** — 1方向をいきなり実装し、そのDirection自体が誤りかを比較しなかった。
-6. **Polish-before-reset** — 土台が弱いのにSpacing / Color / EffectのPatchを続け、Foundation Resetへ切り替える判断が遅れた。
-7. **Evidence Inflation** — mainに入った、CIが通った、Assistantが良いと判断した、という状態をUser Validationと混同しやすかった。
+3. **Anti-pattern Overcorrection** — Patternを「理由なく使わない」ではなく「使わないほど良い」と解釈した。
+4. **Preserve Step不足** — 変更前に今のUIの良い部分を固定しなかった。
+5. **Single-candidate Bias** — 1方向をいきなり実装し、Direction自体を比較しなかった。
+6. **Polish-before-reset** — 土台が弱いのに局所Patchを続けた。
+7. **Evidence Inflation** — main / CI / Assistant判断をUser Validationと混同した。
 
-この7点は [Anti-Pattern Catalog](anti-patterns.md) と [Success Pattern Catalog](success-patterns.md) へ一般化します。
+一般化したRuleは [Anti-Pattern Catalog](anti-patterns.md) と [Success Pattern Catalog](success-patterns.md) に置きます。
 
 ---
 
@@ -322,13 +282,13 @@ Rejectedは「二度と使えない見た目」ではなく、**そのProjectで
 
 このCatalogは完成しません。
 
-今後Projectで「これもかなり良い」と確認できたVisualが出た場合は、既存Directionと似ているかを先に確認します。
+今後新しいVisual Evidenceが出た場合:
 
-- 本質的に同じ構造なら、既存VDのEvidence / Variantsを増やす。
-- Navigation / Density / Content model / Primary taskが違うなら、新しいVDとして追加する。
+- 本質的に同じ構造なら既存VDのEvidence / Variantを増やす。
+- Navigation / Density / Content Model / Primary Taskが違うなら新しいVD候補にする。
 - 色だけ違う場合は新しいDirectionにしない。
-- User feedbackだけでなく、実ブラウザ / Responsive / Accessibility / Task usabilityも可能な範囲で確認する。
-- 低評価だったCandidateは消さず、Rejected Evidenceとして失敗理由を残す。
-- `PROJECT_LEARNINGS.md`へVisual feedbackがある場合は、次回Reviewで優先してEvidence Matrixへ反映する。
+- User feedbackだけでなく、Browser / Responsive / Accessibility / Task usabilityも可能な範囲で確認する。
+- 低評価Candidateは消さずRejected Evidenceとして失敗理由を残す。
+- `PROJECT_LEARNINGS.md`のVisual feedbackを定期Reviewで優先して確認する。
 
-目標は「共通Templateを1個完成させること」ではなく、**用途別に複数の強いVisual Directionと失敗Evidenceを持ち、Projectごとに正しく選べる状態**です。
+目標は共通Templateを1個完成させることではなく、**用途別に強いEvidenceを持ち、Projectごとに正しく選べる状態**です。
