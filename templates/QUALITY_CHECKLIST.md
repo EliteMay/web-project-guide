@@ -49,6 +49,7 @@
 - [ ] localhost / PC固有絶対Pathに依存していない
 - [ ] 公開Artifactへ秘密情報を入れていない
 - [ ] Pagesを確認した場合、その結果がユーザーへ渡す最終Commitに対応している
+- [ ] 公開して使えるSite URLがある場合、Repository Aboutの`Website`へ代表URLを設定し、README上部からもSiteを開ける
 
 ### 完了記録
 

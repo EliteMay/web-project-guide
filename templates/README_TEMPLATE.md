@@ -1,5 +1,9 @@
 # Project Name
 
+> Live Site: <https://example.com/>
+
+公開WebサイトがないProjectではこの行を削除します。公開Siteがある場合は、GitHub RepositoryのAbout欄 `Website` にも同じ代表URLを設定します。
+
 ## 目的
 
 - 

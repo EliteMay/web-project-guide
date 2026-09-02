@@ -199,6 +199,43 @@ Template: [AGENTS_TEMPLATE.md](../templates/AGENTS_TEMPLATE.md)
 - GitHub Actions / Deployment trigger
 - Remote Diagnostic Schema（採用時）
 
+## Repository discoverability / 公開サイトへの導線
+
+### CONDITIONAL SHOULD: 公開して使えるWebサイトURLがあるRepositoryは、Repository画面からすぐ開けるようにする
+
+GitHub Pages、独自Domain、Vercel等で**現在利用できる代表URL**があるWeb Projectでは、Repositoryを開いた人がREADMEを探し回らなくてもSiteへ移動できる状態を基本とします。
+
+優先順位:
+
+1. **GitHub RepositoryのAbout欄にある `Website` / homepageへ代表URLを設定する**
+2. README上部のProject名・短い説明の近くにも `Open site` / `Live Site` 等の分かりやすいLinkを置く
+3. 詳細な公開方法・代替URL・注意事項はREADMEのGitHub Pages / Deployment節へ置く
+
+Repository Description本文へ長いURLを無理に詰め込むより、GitHubが用意しているWebsite欄を第一候補にします。
+
+### 代表URLの選び方
+
+複数URLがある場合は、通常利用者が使う**1つのCanonical / Stable URL**をWebsite欄へ置きます。
+
+例:
+
+- GitHub Pagesの本番URL
+- 独自Domainがあるなら独自Domain
+- PreviewではなくStable Deployment
+
+開発用localhost、期限付きPreview、秘密URL、認証情報を含むURLはWebsite欄へ置きません。
+
+### 例外
+
+次では無理にSite Linkを設定しません。
+
+- まだ公開していないProject
+- Electron専用でWeb版が存在しない
+- Repository自体がLibrary / Guide / Backend等で、直接利用するSiteがない
+- 公開URLを広く見せるべきでないPrivate / Internal Project
+
+Website欄を更新できない作業環境では、**少なくともREADME上部へLive Site Linkを置き、Website欄は未設定事項として残す**ことで導線を失わないようにします。
+
 ## Documentation ownership
 
 ### README
