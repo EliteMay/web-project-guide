@@ -3,7 +3,7 @@
 ## 0. Guide / Project Profile
 
 - Adopted Guide Version:
-- Profiles: STATIC / DATA / MEDIA / AI-HANDOFF / CLOUD / ELECTRON / TOOL / PUBLIC-CONTENT
+- Profiles: STATIC / DATA / LEARNING / MEDIA / AI-HANDOFF / CLOUD / ELECTRON / TOOL / PUBLIC-CONTENT
 
 ## 1. 目的
 
@@ -70,6 +70,30 @@ User-facing UIがある場合、[Visual Quality Baseline](../docs/17-visual-qual
 
 `baseline`は「見た目を省略する」という意味ではなく、全User-facing UIに必要な最低品質です。`high / flagship`ではより強いDirection比較・Signature・Visual Reviewを追加します。
 
+## 5B. Learning Content — `LEARNING` Profileのみ
+
+詳細基準は [要件定義 Learning / Explanation Content](../docs/01-requirements.md#learning--explanation-content) を正本とします。
+
+- Target learner:
+- Starting Knowledge:
+- 最初に説明が必要な前提概念:
+- Primary Learning Surface:
+- Learning order:
+- Learner-facing language:
+- 英語 / 略語の扱い:
+- 主要LessonのContent Depth Contract:
+  - What / 定義:
+  - Why / 必要性:
+  - How / 仕組み・考え方:
+  - Example:
+  - Comparison / Common mistake:
+  - Understanding check:
+- CompletionとUnderstandingを分ける: Yes / No / Not needed
+- Review queue / 復習導線:
+- Lesson後のNext Step:
+- 教材Coverageの確認方法:
+- 学習導線Coverageの確認方法:
+
 ## 6. データ構成
 
 | データ | 正本 | Schema/ID | 想定最大量 |
@@ -129,6 +153,7 @@ User-facing UIがある場合、[Visual Quality Baseline](../docs/17-visual-qual
 - Diagnostic Schema / Error ID体系:
 - Page Structure / Navigation:
 - Design Direction:
+- Learning order / Content Depth Contract:
 
 ## 12. 変更可能範囲
 
@@ -165,6 +190,9 @@ User-facing UIがある場合、[Visual Quality Baseline](../docs/17-visual-qual
 - [ ] Visual Ambitionがhigh / flagshipでは採用Design Directionと理由を記録
 - [ ] Visual Ambitionがhigh / flagshipでは色 / Effectを外しても主要Hierarchyが成立
 - [ ] Visual Ambitionがhigh / flagshipではVisual Design Review結果を記録
+- [ ] `LEARNING` ProfileではStarting Knowledge / 学習順 / Content Depth Contractを定義
+- [ ] `LEARNING` Profileでは主要Lessonが用語紹介だけで終わらず、必要な説明・具体例・理解確認を持つ
+- [ ] `LEARNING` Profileでは次の学習 / 復習への導線を確認
 - [ ] 未確認事項が明示されている
 
 ## 15. 未確認予定
