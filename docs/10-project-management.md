@@ -201,9 +201,11 @@ Template: [AGENTS_TEMPLATE.md](../templates/AGENTS_TEMPLATE.md)
 
 ## Repository discoverability / 公開サイトへの導線
 
-### CONDITIONAL SHOULD: 公開して使えるWebサイトURLがあるRepositoryは、Repository画面からすぐ開けるようにする
+### CONDITIONAL MUST: 公開して使えるWebサイトURLがあるRepositoryは、Repository画面からすぐ開けるようにする
 
-GitHub Pages、独自Domain、Vercel等で**現在利用できる代表URL**があるWeb Projectでは、Repositoryを開いた人がREADMEを探し回らなくてもSiteへ移動できる状態を基本とします。
+GitHub Pages、独自Domain、Vercel等で**現在利用できる代表URL**があるWeb Projectでは、Repositoryを開いた人がREADMEを探し回らなくてもSiteへ移動できる状態を必須とします。
+
+公開URLを新規作成・変更した作業では、同じ作業内でRepositoryのSite導線も更新します。
 
 優先順位:
 
@@ -234,7 +236,7 @@ Repository Description本文へ長いURLを無理に詰め込むより、GitHub�
 - Repository自体がLibrary / Guide / Backend等で、直接利用するSiteがない
 - 公開URLを広く見せるべきでないPrivate / Internal Project
 
-Website欄を更新できない作業環境では、**少なくともREADME上部へLive Site Linkを置き、Website欄は未設定事項として残す**ことで導線を失わないようにします。
+Website欄を更新できない作業環境では、**少なくともREADME上部へLive Site Linkを置くことを必須**とし、Website欄は未設定事項として残します。Website欄を更新できる環境になった時点で代表URLを設定します。
 
 ## Documentation ownership
 
