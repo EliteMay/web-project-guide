@@ -239,6 +239,19 @@ if (!/### Visual Quality Baseline — User-facing UIでは必須/.test(qualityCh
   errors.push('QUALITY_CHECKLIST.md must keep visual baseline in Minimum and require final visual verification');
 }
 
+const projectManagement = fs.readFileSync(path.join(root, 'docs/10-project-management.md'), 'utf8');
+if (!/### CONDITIONAL MUST: 公開して使えるWebサイトURLがあるRepository/.test(projectManagement) || !/About欄にある `Website`/.test(projectManagement) || !/README上部/.test(projectManagement)) {
+  errors.push('docs/10 must require visible Website and README links for repositories with a usable public site URL');
+}
+
+const readmeTemplate = fs.readFileSync(path.join(root, 'templates/README_TEMPLATE.md'), 'utf8');
+if (!/> Live Site:/.test(readmeTemplate) || !/About欄 `Website`/.test(readmeTemplate)) {
+  errors.push('README_TEMPLATE.md must keep the visible Live Site link and Repository Website guidance');
+}
+if (!/公開して使えるSite URLがある場合、Repository Aboutの`Website`へ代表URLを設定し、README上部からもSiteを開ける/.test(qualityChecklist)) {
+  errors.push('QUALITY_CHECKLIST.md must verify both Repository Website and README top-level site links');
+}
+
 const agentsTemplate = fs.readFileSync(path.join(root, 'templates/AGENTS_TEMPLATE.md'), 'utf8');
 if (!/Router|入口/.test(agentsTemplate) || !/Source of Truth/.test(agentsTemplate)) {
   errors.push('templates/AGENTS_TEMPLATE.md must clearly remain a router, not a duplicated Source of Truth');
