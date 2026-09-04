@@ -24,6 +24,26 @@ GitHub Pages中心の通常Webサイト。
 - 件数hardcode禁止
 - Import / Export / Validation
 
+## LEARNING
+
+学習・解説・資格対策・知識集など、**利用者に理解してもらうこと自体が主要価値**のサイト。
+
+`DATA`はData構造、`LEARNING`は教材・説明品質を扱うため、必要なら両方を選びます。
+
+主な確認:
+- 利用者のStarting Knowledge
+- 前提知識 → 本題の学習順
+- Dashboard / 一覧とPrimary Learning Surfaceの役割分離
+- 主要LessonのContent Depth Contract
+- 用語定義だけでLesson完成扱いしていないか
+- 具体例 / 比較 / 勘違い / 理解確認の必要性
+- 学習者向け言語と英語・略語の説明方針
+- 読了と理解度を同一視しない進捗設計
+- Lesson後のNext Step / Review Path
+- 教材Coverageと実際の学習導線Coverageを別に確認
+
+要件の正本は [01 要件定義](01-requirements.md#learning--explanation-content) を確認します。
+
 ## MEDIA
 
 画像・音声・動画・Canvas・手書きを扱うサイト。
@@ -122,7 +142,7 @@ Windows等のDesktop機能を使うElectronアプリ。
 ## Project Profileの記録例
 
 ```text
-Profiles: STATIC + DATA + TOOL
+Profiles: STATIC + DATA + LEARNING + TOOL
 ```
 
 またはプロジェクトメタデータへ保存します。
@@ -130,7 +150,7 @@ Profiles: STATIC + DATA + TOOL
 ```json
 {
   "guideVersion": "1.1.0",
-  "profiles": ["STATIC", "DATA", "TOOL"]
+  "profiles": ["STATIC", "DATA", "LEARNING", "TOOL"]
 }
 ```
 
