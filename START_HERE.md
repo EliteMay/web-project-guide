@@ -23,6 +23,18 @@
 8. 必要なTemplateを作成
 9. 完成前に [Testing / Quality](docs/07-testing-quality.md) と [Quality Checklist](templates/QUALITY_CHECKLIST.md)
 
+## 学習・解説サイトを作る / 直す
+
+1. [Project Profiles](docs/12-project-profiles.md) で `LEARNING` を選ぶ
+2. [要件定義](docs/01-requirements.md#learning--explanation-content) でStarting Knowledge / 学習順 / Content Depth Contract / 理解確認を決める
+3. 教材がJSON等で大量にある場合は `DATA` Profileも併用し、[Data / Storage](docs/03-data-storage.md) を確認
+4. 学習画面の読みやすさ・Navigationは [UI / UX / Accessibility](docs/04-ui-ux-accessibility.md)
+5. 見た目を大きく変える場合は [Domain-first Visual Research](docs/18-domain-first-visual-research.md)
+6. 完成前に「教材が存在する」だけでなく、初心者が前提から理解できるか、主要Lessonから次の学習・確認へ進めるかを確認
+7. [Testing / Quality](docs/07-testing-quality.md) と [Quality Checklist](templates/QUALITY_CHECKLIST.md) で最終状態を確認
+
+学習サイトではDashboardや教材件数が揃っていても、説明が用語紹介だけで終わる場合は完成扱いにしません。詳細基準は要件定義のLearning節を正本とします。
+
 ## 既存サイトのバグを直す
 
 1. 現在のGitHub Repositoryを確認
