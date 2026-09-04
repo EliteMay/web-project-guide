@@ -87,7 +87,9 @@ READMEでは詳細ルールを再掲せず、特に重要な入口だけを要�
 
 全サイトへ同じルールを機械的に適用しません。必要に応じて次のProfileを組み合わせます。
 
-`STATIC` / `DATA` / `MEDIA` / `AI-HANDOFF` / `CLOUD` / `ELECTRON` / `TOOL` / `PUBLIC-CONTENT`
+`STATIC` / `DATA` / `LEARNING` / `MEDIA` / `AI-HANDOFF` / `CLOUD` / `ELECTRON` / `TOOL` / `PUBLIC-CONTENT`
+
+学習・解説・資格対策等で「理解してもらうこと」が主要価値なら`LEARNING`を選びます。Data量が多い場合は`DATA + LEARNING`のように併用します。
 
 詳細は [Project Profiles](docs/12-project-profiles.md) を参照してください。
 
