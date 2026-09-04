@@ -2,6 +2,49 @@
 
 Guide Versionの正本は [`guide-version.json`](guide-version.json) です。
 
+## 1.15.0 - 2026-09-04
+
+### Added
+
+- 学習・解説・資格対策・知識集向けの **`LEARNING` Project Profile** を追加
+  - Data構造を扱う`DATA`と、教材・説明品質を扱う`LEARNING`を分離し、必要なら併用
+  - Starting Knowledge / Prerequisite Path / Primary Learning Surface / Language Policy / Understanding Signal / Review Pathを要件化
+- `docs/01-requirements.md`へ **Learning / Explanation Content** を追加
+  - 主要LessonのContent Depth Contractとして「何か → なぜ必要か → どう動くか / どう考えるか → 具体例 → 比較・よくある勘違い → 理解確認」を定義
+  - Glossaryの短い定義と、理解させるLessonを同じ深さにしないことを明記
+  - 初心者向けでは製品固有語より前にWeb / Server / Network / DNS / Database / API等の必要な一般概念を教える順序を追加
+  - 学習者向け画面へ内部状態名・英語Content Type・監査用Copyをそのまま露出しない方針を追加
+- `START_HERE.md`へ「学習・解説サイトを作る / 直す」専用Routeを追加
+- `templates/REQUIREMENTS_TEMPLATE.md`へLearning Content記入欄とLearning完成条件を追加
+- `README.md`のProject Profile一覧へ`LEARNING`を追加
+
+### Evidence
+
+- `EliteMay/aws-study-guide` Project Learnings
+  - 初心者はAWS固有Serviceより前に一般IT概念を必要とする
+  - DashboardとPrimary Learning Surfaceは役割が異なる
+  - CompletionとUnderstandingは別に扱う価値がある
+- `EliteMay/ap-study-guide` Project Learnings
+  - 教材件数Coverageと学習導線Coverageは別に検証する必要がある
+  - Learner-facing UIへ内部 / 英語Labelが露出した実例がある
+- 2026-09-04 AP Study Notes実利用Feedback
+  - 英語表記が多く、Lesson説明が短すぎて単語紹介に留まる箇所があった
+  - 「簡潔」と「説明不足」を分ける必要があった
+
+### Rule Hygiene
+
+- 新しい番号付きOwner Docは作成せず、Normative Ownerを`docs/01-requirements.md`へ統合
+- Applicabilityは`docs/12-project-profiles.md`、Routerは`START_HERE.md`、Project記入用は`templates/REQUIREMENTS_TEMPLATE.md`へ分離
+- Data / UI / Testingの既存Ownerは変更しない
+
+### Compatibility
+
+- 既存Projectへ`LEARNING`を自動付与しない
+- 既存の`DATA` Profileを置き換えない
+- 全Glossary項目へ長文説明を強制しない
+- Lessonの見た目・色・Layoutを固定しない
+- Runtime / Storage / Schema / Deployment Defaultは変更しない
+
 ## 1.14.1 - 2026-09-03
 
 ### Added
