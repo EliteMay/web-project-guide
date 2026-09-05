@@ -35,6 +35,8 @@ Current work ref: {{WORK_REF}}
 
 実装途中の引き継ぎでは、未完成のCheckpointを完成済みとして扱わず、指定されたBranch / Pull Request / Commitと必要なWork Reportを確認して、その続きから進めてください。
 
+指定されたCurrent work refが見つからない場合は、Pull Request、Commit、Merge履歴、Work Report等のGitHub Evidenceから同じCheckpointを復元してください。復元できない場合は`main`から推測で続けず、Current work refを未確認として示し、実装を開始しないでください。
+
 会話名：
 {{REPOSITORY_NAME}}（実装）
 ```
@@ -58,6 +60,7 @@ Current work ref: {{WORK_REF}}
 - 完了済みの変更なら通常のValidationを行い、必要ならMergeまで完了している
 - 未完成の変更なら、無理にmainへ入れずBranch / Pull Request等へCheckpointを保存している
 - 次の会話が読むべきBranch / Pull Request / Commitを`{{WORK_REF}}`で特定できる
+- `{{WORK_REF}}`が消失している場合は、PR / Commit / Merge履歴等のEvidenceから復元し、復元できなければ実装を開始しない
 - 必要に応じてWork Reportへ「完了したこと / 未完了 / 未確認 / 次に行うこと」を残している
 - 再利用価値の高い失敗・成功だけ`PROJECT_LEARNINGS.md`へ反映している
 - GitHubへの保存成功を確認するまで、会話移行の保存完了を主張しない
