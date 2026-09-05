@@ -167,6 +167,33 @@ Userが移行を了承
 
 Userが移行しない選択をした場合でも、Current Repositoryと正式文書から安全に状態を確認できる限り、現在の会話を継続して構いません。ただし、作業位置や正式状態を一意に確認できず破壊的変更のRiskがある場合は、会話を続けること自体を理由に推測でCode変更や正式文書更新を行いません。
 
+### MUST: 移行後に旧会話で再開した場合は最新Checkpointを確認する
+
+新しい会話へHandoffした後、同じ未完了作業を旧会話で再開しようとした場合、旧会話に残っている会話履歴や当時のCurrent work refをそのまま現在状態として扱いません。
+
+Code変更・正式要件更新・Merge等の書き込みを行う前に、対象Repositoryの現在状態を確認し、少なくとも次を必要範囲で比較します。
+
+- 現在のdefault branch / 作業Branch / Pull Request
+- 最新のCurrent work ref
+- Work Reportの完了 / 未完了 / 次の作業
+- 正式`REQUIREMENTS.md`、要件定義途中なら`REQUIREMENTS_DRAFT.md`
+- 旧会話が最後に把握していたCommit / Branch / PRとの関係
+
+旧会話の把握状態より新しいCheckpointがGitHub上に存在する場合は、**旧会話の古い状態からそのまま作業を続けません。** 原則として、Handoff後に使っている最新の対応会話へ戻るよう案内します。
+
+```text
+旧会話で再開要求
+→ Current Repository / 正式文書 / Current work ref確認
+→ 旧会話の把握状態と最新Checkpointを比較
+→ 同じ状態 → 安全なら継続可能
+→ より新しいCheckpointあり → 旧状態からは変更せず、最新の対応会話へ戻す
+→ Checkpointを一意に確認できない → unresolvedとして変更を止める
+```
+
+旧会話を再びActive Conversationとして使いたいとUserが明示した場合は、新しい会話側との並行作業を止めたうえで、**最新Checkpointを旧会話へ読み直してから**再開して構いません。古い会話履歴へRollbackすることはしません。
+
+すでに新しい会話側の変更がMerge済み / 完了済みの場合も、旧会話から過去の未完了状態を復活させません。新しい目的として追加変更する場合は、現在のGitHub状態から新しい作業として開始します。
+
 ## 実装会話をGitHub中心で引き継ぐ
 
 ### SHOULD: 実装途中で会話を変える場合も、会話履歴ではなくGitHubを引き継ぎ元にする
