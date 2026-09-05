@@ -171,7 +171,7 @@ Static Check成功をYouTube再生・Codec・ペンタブ・スマホ・Windows�
 
 - **なぜ危険:** 作業用Commit・Cleanup Commit・余分なDeployが増え、途中CIと最終mainの状態が分離する。Workflow自体の失敗が本来の修正とは無関係なノイズになる。
 - **例外:** 継続的な自動化が最終成果物である場合、または直接更新できない明確な技術制約がある場合。
-- **代替:** 小規模変更は対象ファイルを直接更新。高リスク・複数ファイル変更はBranch / PR。Workflowを使った場合もCleanup後の最終Commitを再検証する。
+- **代替:** 小規模変更は対象ファイルを直接更新。高リスク・複数ファイル変更はBranch / Pull Request。Workflowを使った場合もCleanup後の最終Commitを再検証する。
 - **Related:** [F-016](failures.md) / [S-020](success-patterns.md) / [Project Management](../docs/10-project-management.md)
 
 ## AP-024 Permanent Versioned Runtime Path
@@ -253,3 +253,12 @@ Latest main、CI成功、Assistant自己評価、Design理論上の妥当性だ�
 - **例外:** User feedbackを得られない内部Toolで、Task completion / usability /継続利用等の代替Evidenceが十分ある場合。ただしEvidence Levelを明示する。
 - **代替:** `User Validated / Task Validated / Candidate / Rejected`を分け、A以外をValidated Directionへ自動昇格しない。
 - **Related:** [S-027](success-patterns.md) / [S-028](success-patterns.md) / [Validated Visual Directions](validated-visual-directions.md)
+
+## AP-032 Eager Initial Everything
+
+Top Page / First Routeを開くだけで、全Category JSON、全Feature JS、大量Media、複数Embed、非Critical API等をまとめてEager Loadし、Repository容量や高速PCだけを根拠に軽いと判断する。
+
+- **なぜ危険:** Network TransferだけでなくParse / Decode / JavaScript Execution / DOM / Rendering / External Waitが初期表示へ集中し、MobileやCold LoadでPrimary UXを悪化させる。
+- **例外:** Resource全体が十分小さく、実測でも分割Complexityの方が大きい小規模Site。
+- **代替:** Critical / Deferred / On Demandへ分類し、Soft BudgetのReview Trigger超過時だけ必要性・遅延・分割・圧縮・Cache・代替をReviewする。
+- **Related:** [Performance / Reliability](../docs/05-performance-reliability.md)
