@@ -484,6 +484,6 @@ Template: [Work Report](../templates/WORK_REPORT_TEMPLATE.md)
 
 ## GitHub Pages
 
-GitHub Pages固有の構成・Path・Secrets・公開確認は [08 GitHub Pages](08-github-pages.md) を正本として確認します。
+GitHub Pages固有の構成・Path・Secrets・公開確認は [08 GitHub Pages](08-github-pages.md) を正本とします。
 
 この章では「HTML / CSS / JSだけで成立するSiteは、特別な理由がなければGitHub Pagesで直接利用できる構成を優先する」というProject管理上の方針だけを扱います。
