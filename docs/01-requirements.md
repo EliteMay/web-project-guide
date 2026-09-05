@@ -16,6 +16,237 @@
 結果を大きく左右しない不明点は、仮定を明記したうえで進めます。
 重要な仕様だけ確認します。
 
+## 対話型要件定義 Workflow
+
+ChatGPT / Coding Agentと会話しながら要件定義する場合は、**重要な判断だけUserへ確認し、それ以外はおすすめ案を採用して進める**ことを基本とします。
+
+目的は、質問を増やしすぎずにUserがProjectの核を保持し、実装前に必要な大きな判断だけ確実に決めることです。
+
+### Decision Class
+
+要件定義中の判断を次の3種類へ分けます。
+
+#### Core Decision — Userが決める
+
+変更すると「別のSite / App / Game」と言えるほど、目的・主要体験・主要利用者・主要機能の意味が変わる判断です。
+
+例:
+
+- Site / Appの一番の目的
+- Gameで何をして楽しむか
+- 学習Siteで何をどう学べるようにするか
+- 戦闘中心 / 自動化中心 / 探索中心等の主要体験
+- Single / Multi、閲覧中心 / 編集中心等の大きな機能方針
+- 利用者が変わることで内容自体が大きく変わる場合のTarget Audience
+
+### MUST: Core Decisionは勝手に確定しない
+
+Agentはおすすめ案を示してよいですが、Core DecisionはUserの回答を待ちます。
+
+判断に迷う場合は次を基準にします。
+
+> ここを変えると、Userが想像していたProductとは別物になるか？
+
+YESならCore Decisionとして扱います。
+
+#### High-cost / Risk Decision — 原則Userへ確認
+
+Productの核そのものではなくても、後から変えると大きな手戻り・費用・データ互換性問題・公開事故につながる判断です。
+
+例:
+
+- 保存Schema / 既存データ互換性の大変更
+- Web / Electron等Platformの大変更
+- 外部DB / Auth / API / Provider導入
+- 有料Service導入
+- 公開範囲変更
+- Login必須化
+- 主要URL / Deployment方式変更
+- 主要機能削除
+- Framework / Architectureの全面変更
+- 大規模なPage Structure / Navigation変更
+- Migrationが必要な変更
+- Security上の重要変更
+
+ただし、実質的に安全な選択肢が1つしかない場合は、理由を短く説明してAgentが進めて構いません。
+
+Userが選ぶ意味のある選択肢が2つ以上ある場合に確認を優先します。
+
+#### Default Decision — Agentがおすすめを決める
+
+結果を大きく左右しない技術・実装・細部の判断です。
+
+例:
+
+- File分割
+- JSON構造の細部
+- CSS / Component構成
+- Naming
+- Error handlingの一般的な方法
+- Testの具体的方法
+- Accessibility / Performanceの標準対策
+- 細かなUI配置
+
+### SHOULD: Default Decisionは確認待ちにしない
+
+可能なら候補と採用理由を短く示して、そのままおすすめ案を採用します。
+
+例:
+
+```text
+A / Bがありますが、今回はBの方が安全なのでBを採用します。
+```
+
+「どれがいい？」を細部ごとに繰り返しません。
+
+## Recommendation-by-default Mode
+
+Userが`おすすめで`、`基本おすすめで`等を指定した場合、その要件定義中は**Recommendation-by-default Mode**として扱います。
+
+- Default DecisionはAgentがおすすめを選んで進める
+- 同じ種類の判断で毎回承認を求めない
+- Core Decisionは引き続きUserへ確認する
+- High-cost / Risk Decisionは意味のある選択肢が複数ある場合に確認する
+- Userが`ここは考えたい`等と指定した項目は自動確定せず、その項目だけUser決定へ戻す
+
+`ok` / `OK` / `それで` / `そのまま` / 選択肢記号等が直前案への承認として文脈上明確な場合、同じ確認を繰り返しません。
+
+## 質問の出し方
+
+### SHOULD: 1回に1つの重要判断を基本とする
+
+複数の重要質問を一度に並べすぎません。
+
+質問が必要な場合は原則として:
+
+1. 今何を決めるか
+2. 2〜3個の意味のある選択肢
+3. おすすめ案
+4. おすすめ理由を短く説明
+
+の順にします。
+
+例:
+
+```text
+今決めること: Gameの中心
+
+A. 探索中心
+B. 自動化中心 ← おすすめ
+C. 戦闘中心
+
+おすすめ: B
+理由: 工場・効率化要素を主要体験として活かしやすいため。
+```
+
+選択肢の差が小さく、Userが選ぶ価値が低い場合は質問せずDefault Decisionとして進めます。
+
+## 会話の長さとSummary
+
+### MUST: 要件定義の各Turn末尾で今回の決定を短く要約する
+
+説明が長くなっても、最後だけで今回何が決まったか分かるようにします。
+
+原則としてTurn末尾に次を短く示します。
+
+```text
+今回決まったこと
+- 今回新しく確定した内容
+- 必要なら次に決める内容
+```
+
+毎回過去の全決定を再掲しません。
+
+- 各Turn: 今回新しく決まったことだけ
+- 大きな区切り: ここまでの主要確定事項を短く整理
+- 要件定義完了時: 全体Summary + 正式な`REQUIREMENTS.md`へ反映
+
+長い理由説明より、**決定内容が見失われないこと**を優先します。
+
+## 標準の進行順
+
+Projectに合わない項目は省略できますが、原則として後から変えるCostが高い順に進めます。
+
+1. Productの核 / 目的
+2. 主な利用者（内容へ大きく影響する場合）
+3. MVP / 主要機能
+4. 主要利用フロー
+5. High-cost / Risk Decision
+6. 主要画面 / Navigation
+7. 主要Data / 保存
+8. Visual Directionの大枠
+9. 崩してはいけない仕様
+10. 重要な非機能要件
+11. 観測可能な完成条件
+12. 未確認事項
+
+要件定義では「何を作るか / 何を守るか」を決め、CSS値・関数名・内部変数等の「どうCodeにするか」まで決めすぎません。
+
+## Requirements Research
+
+### Existing Project
+
+既存Projectでは、要件定義を始める前にCurrent Repositoryを確認します。
+
+必要範囲だけ次を確認します。
+
+- README / Requirements / Spec / Project Rules
+- `PROJECT_LEARNINGS.md`
+- 現在の主要実装
+- Storage / Schema / Deployment等、今回の判断に関係する部分
+
+過去会話や古いZIPだけを現在仕様として扱いません。
+
+### Current / External Information
+
+次のように外部情報で答えが変わる場合は、必要に応じて最新の公式情報を確認します。
+
+- Browser / Platform対応
+- GitHub Pages / Electron等の現在仕様
+- API / Provider仕様
+- 無料枠 / 料金
+- Security
+- License / 法令
+
+### Domain Research
+
+Site / App / Gameの分野自体を理解しないと良い要件を作れない場合は、同種ProductやDomainを必要範囲で調査します。
+
+ただし、調査結果を理由にCore Decisionを勝手に確定しません。
+
+```text
+Existing Repository
+→ web-project-guide
+→ 必要なら公式情報
+→ 必要ならDomain Research
+→ Decision Classに従って判断
+```
+
+細かなDefault Decisionのために毎回Web調査して進行を重くしません。
+
+## 要件定義の完了ライン
+
+要件定義は、**実装担当が大きな判断で迷わず作業を開始できる状態**になれば完了とします。
+
+最低限、Projectに該当する次が決まっていることを確認します。
+
+- Productの核
+- 主な利用者
+- MVP
+- 主要利用フロー
+- High-cost / Risk Decision
+- 主要画面
+- 主要Data / 保存
+- 崩してはいけない仕様
+- 重要な非機能要件
+- 完成条件
+
+CSS値、class名、Function名、Componentの細分化等の実装詳細は、特別な理由がなければ実装段階へ回します。
+
+未解決のCore Decision / High-cost Decisionがある場合は、完成扱いせず明示します。
+
+完了時は全体を短く要約し、Projectの正式な`REQUIREMENTS.md`へ反映します。
+
 ## 小規模な修正
 
 小さな修正で毎回フルの要件定義をやり直す必要はありません。
