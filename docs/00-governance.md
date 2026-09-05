@@ -116,6 +116,7 @@ Security
 | Cross-repository GitHub infrastructure | `docs/16-cross-repository-github-infrastructure.md` | `EliteMay/.github`は実装側 |
 | Visual minimum quality | `docs/17-visual-quality-baseline.md` | Checklistは実行確認 |
 | Domain research / 大規模Visual Redesign workflow | `docs/18-domain-first-visual-research.md` | Visual CatalogはEvidence / Reference |
+| Game-specific development / completion / playtest | `docs/19-game-development.md` | Data / Performance / Testing / UI等は既存専門Ownerを維持 |
 
 新しいTopicが既存Ownerへ自然に収まらない場合だけ、新規Docを検討します。
 
