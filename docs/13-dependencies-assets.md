@@ -1,5 +1,9 @@
 # 13 Dependencies / Assets
 
+この章は**Dependency選定・更新、Assetの権利・配布元・Repository管理**の正本です。
+
+AssetのInitial Transfer、First View画像、Lazy Load、Media Load Timing、外部ResourceのPage Load Costは [05 Performance / Reliability](05-performance-reliability.md) を正本とします。
+
 ## 依存ライブラリ
 
 ### MUST
@@ -15,6 +19,7 @@
 - 使っていない依存を残さない。
 - CDNが落ちた場合の影響を確認する。
 - 重要機能が1つの第三者CDNだけに依存しない構成を検討する。
+- 重いLibraryを追加する場合、初期表示へ本当に必要かを [05 Performance / Reliability](05-performance-reliability.md) で確認する。
 
 ### MAY
 
@@ -47,6 +52,8 @@ Major upgradeではBreaking Changesを確認します。
 
 を検討します。
 
+CDNを利用していること自体を「軽い / 高速」の根拠にはしません。Page Load Costと読み込みTimingは [05 Performance / Reliability](05-performance-reliability.md) で判断します。
+
 ## Assets
 
 一般公開するRepository / Pagesでは、画像・動画・フォント・アイコン等を「入手できたから使える」とは扱いません。
@@ -70,21 +77,21 @@ Major upgradeではBreaking Changesを確認します。
 
 重要UIでは恒久的に使える前提にしません。
 
+外部画像もPerformance上は外部Resourceなので、Initial Costから除外しません。詳細は [05 Performance / Reliability](05-performance-reliability.md) を確認します。
+
 ## Font
 
 Web Fontを使う場合は、読み込み失敗時のfallbackを用意します。
 
-見た目だけのために大量のFont Weightを読み込まないようにします。
+Font Family / WeightのPage Load Cost、初期表示への必要性は [05 Performance / Reliability](05-performance-reliability.md) で判断します。
 
-## Assetサイズ
+## 大容量Asset / Repository管理
 
-大きなAssetでは次を確認します。
+この章では、AssetをRepositoryへ保持するか、権利・更新・配布上どう管理するかを確認します。
 
-- 適切な画像寸法
-- WebP/AVIF等の適用可否
-- `width` / `height`
-- lazy load
-- Thumbnail生成
-- Git Repository肥大化
+- Source AssetとWeb配信用Assetを同一視しない
+- 大容量動画・大量MediaをGitへ直接入れる前に、RepositoryとしてVersion管理する必要があるか確認する
+- Git履歴の肥大化やclone / maintenance Costを考慮する
+- 外部Storage / Release Asset / CDN等へ分ける場合は、可用性・権利・更新方法を確認する
 
-大容量動画・大量MediaをGitへ直接入れる前に、Repositoryとして管理する必要が本当にあるかを確認します。
+実際の配信用画像寸法、WebP / AVIF、`srcset` / `sizes`、Thumbnail、Lazy Load、First View Budget等の詳細は [05 Performance / Reliability](05-performance-reliability.md) を正本とし、この章へ数値Ruleを複製しません。
