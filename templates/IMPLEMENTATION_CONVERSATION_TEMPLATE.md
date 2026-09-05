@@ -4,6 +4,8 @@
 
 このTemplate自体はProject固有要件や実装状態のSource of Truthではありません。要件の正本は対象Repositoryの`REQUIREMENTS.md`等、実装の現在状態はGitHub上のCurrent Repository / Branch / Pull Requestです。このPromptは新しい会話から正本へ安全に到達するためのRouterとして使います。
 
+このPromptを貼り忘れても、Project設定やUserが明示した情報から対象Repositoryを一意に特定できる場合は、[GitHub中心のプロジェクト管理](../docs/10-project-management.md) のPromptなし復旧Ruleに従ってGitHubから現在状態を復旧できます。Promptの存在自体は実装再開の必須条件ではありません。
+
 ## 使用方法
 
 - `{{REPOSITORY_URL}}` を対象GitHub Repository URLへ置換する
@@ -65,3 +67,4 @@ Current work ref: {{WORK_REF}}
 - 再利用価値の高い失敗・成功だけ`PROJECT_LEARNINGS.md`へ反映している
 - GitHubへの保存成功を確認するまで、会話移行の保存完了を主張しない
 - 未完成のCheckpointをProject完成として扱わない
+- Promptを貼り忘れた場合でも、対象Repositoryを一意に特定できるならGitHub Evidenceから復旧し、Repositoryが曖昧ならURLまたは`owner/repository`を確認する
