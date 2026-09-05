@@ -124,7 +124,7 @@ ChatGPT Project内で作業する場合、会話名は依頼文や現在の作�
 
 `STATIC` / `DATA` / `LEARNING` / `GAME` / `MEDIA` / `AI-HANDOFF` / `CLOUD` / `ELECTRON` / `TOOL` / `PUBLIC-CONTENT`
 
-学習・解説・資格対策等で「理解してもらうこと」が主要価値なら`LEARNING`を選びます。Gameplay Rule / Player Action / Success-Failure / Progression等が主要価値なら`GAME`を選びます。必要に応じて複数Profileを併用します。
+学習・解説・資格対策等で「理解してもらうこと」が主要価値なら`LEARNING`を選びます。Data量が多い場合は`DATA + LEARNING`のように併用します。Gameplay Rule / Player Action / Success-Failure / Progression等が主要価値なら`GAME`を選び、必要に応じて既存Profileと併用します。
 
 詳細は [Project Profiles](docs/12-project-profiles.md) を参照してください。
 
