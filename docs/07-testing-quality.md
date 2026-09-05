@@ -2,7 +2,7 @@
 
 この章は**Testing戦略と検証状態の考え方**を定義する正本です。
 
-実際の完成前チェック項目は [Quality Checklist](../templates/QUALITY_CHECKLIST.md) を正本とし、この章へ同じChecklistを複製しません。
+実際の完成前チェック項目は [Quality Checklist](../templates/QUALITY_CHECKLIST.md) を正本とし、この章へ同じChecklistを複製しません。Page Load PerformanceのTarget / Review Trigger / Resource Timing / Performance固有の確認深度は [05 Performance / Reliability](05-performance-reliability.md) を正本とします。
 
 ## 基本方針
 
@@ -61,6 +61,21 @@ Pure Functionにできる処理はブラウザUIから切り離してTestしま�
 ```
 
 UIが重要なSiteでは、変更内容に応じてNavigation / overflow / fixed UI / Canvas geometry /主要Button visibility等も確認します。
+
+## Performance Verification
+
+Performance変更やUser-facing Webの初期表示を確認するときは、[05 Performance / Reliability](05-performance-reliability.md#performance確認の強度) の **Minimum / Standard / Extended** からProject Profileと変更Riskに合う深度を選びます。
+
+Testing Strategyとして守ること:
+
+- Small SiteへExtended確認やPerformance CIを機械的に強制しない
+- `DATA` / `MEDIA` / `CLOUD`、大規模SPA、重い外部依存等では必要に応じて確認を強める
+- Cold LoadとCache済みRepeat Loadを混同しない
+- Lighthouse Score、Request数、File数の1指標だけをPass / Fail判定にしない
+- Soft BudgetのReview Trigger超過を自動Failへ読み替えない
+- 実測した条件と未確認条件をVerification Stateへ正しく反映する
+
+実行時の短い確認項目は [Quality Checklist](../templates/QUALITY_CHECKLIST.md) を使用します。
 
 ## Specification / Oracle Test
 

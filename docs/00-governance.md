@@ -107,6 +107,7 @@ Security
 | Architecture | `docs/02-architecture.md` | Catalogは実例 |
 | Data / Storage | `docs/03-data-storage.md` | Checklistは確認用 |
 | UI / UX / Accessibility原則 | `docs/04-ui-ux-accessibility.md` | Visual Baselineは最低品質だけ |
+| Page Load Performance / Runtime responsiveness / Reliability | `docs/05-performance-reliability.md` | Data / Assets / Pagesは専門制約、Checklistは実行確認 |
 | Testing strategy | `docs/07-testing-quality.md` | `templates/QUALITY_CHECKLIST.md`は実行Checklist |
 | Existing project change workflow | `docs/10-project-management.md` | START_HEREはRouter |
 | Electron distribution | `docs/11-electron-distribution.md` | Checklistは確認用 |

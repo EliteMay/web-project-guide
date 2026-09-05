@@ -1,8 +1,8 @@
 # 03 データ・保存設計
 
-この章は**保存先・Schema・Migration・Import / Restore**の正本です。
+この章は**保存先・Schema・Migration・Import / Restore・Data構造**の正本です。
 
-Runtime Diagnostics / Remote Diagnostic Handoff全体は [15 Development Observability / Project Memory](15-development-observability.md)、Remote書込Securityは [06 Security](06-security.md) を正本とします。
+Page Load Timing / Initial Transfer / Runtime Costは [05 Performance / Reliability](05-performance-reliability.md)、Runtime Diagnostics / Remote Diagnostic Handoff全体は [15 Development Observability / Project Memory](15-development-observability.md)、Remote書込Securityは [06 Security](06-security.md) を正本とします。
 
 ## 保存先の基本判断
 
@@ -58,9 +58,11 @@ Storage設計として守る境界:
 
 具体的なPayload / Trigger / Retention / Free-only / AI読取順は [15 Development Observability / Project Memory](15-development-observability.md)、Key / RLS / Grant等は [06 Security](06-security.md) を確認します。
 
-## JSON
+## JSON / Data構造
 
-データ量が多い場合は用途別に分けます。
+この節は、**Dataをどの意味単位で構造化し、Schema / Manifestをどう保つか**を扱います。Initial Loadへ何KB載せるか、Critical / Deferred / On DemandのTiming、Soft Budgetは [05 Performance / Reliability](05-performance-reliability.md) を正本とします。
+
+大量DataではPage / Route / Category / Feature等、Userが使う意味のある単位で分けられる構造を優先します。
 
 ```text
 data/
@@ -70,9 +72,18 @@ data/
 └─ schema.json
 ```
 
-Manifestで実行時に読むFile一覧や期待件数を管理すると、JSへのhardcodeを減らせます。
+Manifest / Indexで実行時に読むFile一覧や期待件数を管理すると、JSへのhardcodeを減らせます。
 
-小さなDataまで過剰に分割せず、読み込み速度・Git差分・破損時の影響・将来拡張のBalanceを取ります。
+Data構造では次を確認します。
+
+- 巨大な1 Fileだけへ無条件に集約しない
+- 逆に`1 Record = 1 File`等の過剰分割で管理Costを増やさない
+- 検索用の軽量IndexとDetail本文を分けられるか検討する
+- Pagination / Load More / Chunk Rendering / Virtualization等を必要時に選べる構造にする
+- Data件数とDOM件数を同一視しない
+- Git差分・破損時の影響・将来拡張も考慮する
+
+小規模Dataまで機械的に分割しません。固定Sizeだけで分割単位を決めず、**利用単位 + 保守性**を中心に構造を決め、実際のLoad Timingは05で判断します。
 
 ## Schema Version
 

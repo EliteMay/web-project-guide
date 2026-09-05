@@ -2,6 +2,61 @@
 
 Guide Versionの正本は [`guide-version.json`](guide-version.json) です。
 
+## 1.16.0 - 2026-09-05
+
+### Added
+
+- `docs/05-performance-reliability.md`を **Page Load Performance全体のNormative Owner** として拡張
+  - Repository総容量とInitial Page Load Costを分離し、Network Transfer / Parse / Decode / JavaScript Execution / DOM / Rendering / External Waitを実利用Costとして扱う
+  - Resourceを `Critical / Deferred / On Demand` へ分類し、First View / Primary Actionに必要なものを優先
+  - 画像・動画・JSON・JavaScript・DOM・外部通信・Cacheを初期表示Performanceの観点で統合
+  - Cold Load / Repeat Load、Mobile / Slow Network、Main Thread / Long Taskを確認対象へ追加
+- **Default Soft Budget / Review Trigger** を追加
+  - Initial Transfer: Target ～1MB / Review Trigger 2MB超
+  - Initial JavaScript: ～200KB / 350KB超
+  - First View画像1枚: ～300KB / 500KB超
+  - First View画像合計: ～700KB / 1MB超
+  - 初期JSON 1 Request: ～250KB / 500KB超
+  - 初期JSON合計: ～500KB / 1MB超
+  - 初期DOM: ～1,000 nodes / 1,500 nodes超
+  - Review Trigger超過は自動Failにせず、必要性・遅延・分割・圧縮・Cache・代替をReviewして判断
+- `catalog/anti-patterns.md`へ `AP-032 Eager Initial Everything` を追加
+- Guide ValidatorへPerformance Owner / Soft Budget / Small Site例外 / 03・07・08・13責務分離 / Checklist導線のRegression Guardを追加
+
+### Consolidated
+
+- `docs/03-data-storage.md`
+  - JSON / Dataの意味単位・Schema / Manifest等のData構造だけを担当
+  - Initial Load Timing / Transfer / Soft Budgetは`docs/05`へ委譲
+- `docs/07-testing-quality.md`
+  - Testing Strategy / Verification Stateを維持
+  - Performance固有のMinimum / Standard / Extended確認深度は`docs/05`へRoute
+- `docs/08-github-pages.md`
+  - GitHub Pages固有のCache Busting / Service Worker更新だけを担当
+  - Page Load Performance全体は`docs/05`へ委譲
+- `docs/13-dependencies-assets.md`
+  - Dependency選定・Asset権利・配布元・Repository管理へ責務を限定
+  - 配信用Media / Font / External ResourceのPerformance詳細は`docs/05`へ委譲
+- `templates/QUALITY_CHECKLIST.md`
+  - 詳細Ruleを複製せず、Cold Load / Eager Load / Timing / Review Trigger / 大量DOM / Slow Network等の短い実行確認だけへ整理
+- `docs/00-governance.md`
+  - PerformanceのSingle Normative Ownerとして`docs/05`をOwner表へ登録
+
+### Rule Hygiene
+
+- 新しい番号付きOwner Docは追加せず、既存`docs/05`へ統合
+- `README.md` / `START_HERE.md`は既存のPerformance Routeで十分なため変更せず、Router責務を維持
+- Performance Rule本文をCatalog / Checklistへ全文複製せず、Catalogは代表的な再発防止1件、Checklistは実行項目だけに限定
+- Repository Size、File数、Request数、動画総容量、Font File数を固定上限にしない
+
+### Compatibility
+
+- Soft BudgetはWeb標準の絶対上限ではなくDefault Target / Review Triggerとして扱う
+- Review Trigger超過だけを理由にFail扱いしない
+- 小規模`STATIC` SiteへService Worker / Virtualization / Performance CI / 複雑な分割Architectureを機械的に強制しない
+- 数KB削減のために可読性・保守性を大きく壊さない
+- 既存ProjectのRuntime / Storage / Schema / Deployment Defaultを変更しない
+
 ## 1.15.0 - 2026-09-04
 
 ### Added

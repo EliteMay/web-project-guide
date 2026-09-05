@@ -192,6 +192,9 @@ if (!startHere.includes('docs/18-domain-first-visual-research.md')) {
 if (!startHere.includes('docs/00-governance.md') || !/Rule Budget/.test(startHere)) {
   errors.push('START_HERE.md must route guide changes through governance Rule Budget');
 }
+if (!startHere.includes('docs/05-performance-reliability.md')) {
+  errors.push('START_HERE.md must keep a route to docs/05-performance-reliability.md');
+}
 
 if (!readme.includes('[Project Learnings](templates/PROJECT_LEARNINGS_TEMPLATE.md)')) {
   errors.push('README.md must link to templates/PROJECT_LEARNINGS_TEMPLATE.md');
@@ -209,6 +212,44 @@ if (!/Rule Budget/.test(governance) || !/Single Normative Owner/.test(governance
 }
 if (!/Orphan Rule/.test(governance)) {
   errors.push('docs/00-governance.md must guard against orphan rules');
+}
+if (!/Page Load Performance \/ Runtime responsiveness \/ Reliability/.test(governance) || !/docs\/05-performance-reliability\.md/.test(governance)) {
+  errors.push('docs/00-governance.md must register docs/05 as the performance normative owner');
+}
+
+const performanceGuide = fs.readFileSync(path.join(root, 'docs/05-performance-reliability.md'), 'utf8');
+for (const required of [
+  'Page Load Performance全体',
+  'Critical',
+  'Deferred',
+  'On Demand',
+  'Default Soft Budget / Review Trigger',
+  'Review Trigger超過は自動Failではありません',
+  'Repository総容量',
+  'Cold Load',
+  'Performance確認の強度'
+]) {
+  if (!performanceGuide.includes(required)) {
+    errors.push(`docs/05-performance-reliability.md: missing performance contract -> ${required}`);
+  }
+}
+if (!/小規模.*STATIC.*複雑な最適化Architectureを機械的に追加しません/.test(performanceGuide)) {
+  errors.push('docs/05 must not force complex performance architecture on small STATIC sites');
+}
+
+const dataStorageGuide = fs.readFileSync(path.join(root, 'docs/03-data-storage.md'), 'utf8');
+if (!dataStorageGuide.includes('05-performance-reliability.md') || !/Initial Load.*Soft Budget/.test(dataStorageGuide)) {
+  errors.push('docs/03 must keep data structure ownership while routing page-load timing and budgets to docs/05');
+}
+
+const githubPagesGuide = fs.readFileSync(path.join(root, 'docs/08-github-pages.md'), 'utf8');
+if (!githubPagesGuide.includes('05-performance-reliability.md') || !/GitHub Pages固有のCache Busting \/ Service Worker更新/.test(githubPagesGuide)) {
+  errors.push('docs/08 must keep GitHub Pages cache-update ownership and route page-load performance to docs/05');
+}
+
+const dependencyAssetGuide = fs.readFileSync(path.join(root, 'docs/13-dependencies-assets.md'), 'utf8');
+if (!dependencyAssetGuide.includes('05-performance-reliability.md') || !/この章へ数値Ruleを複製しません/.test(dependencyAssetGuide)) {
+  errors.push('docs/13 must keep dependency/asset ownership without duplicating page-load budgets');
 }
 
 const visualBaseline = fs.readFileSync(path.join(root, 'docs/17-visual-quality-baseline.md'), 'utf8');
@@ -228,6 +269,9 @@ const testingGuide = fs.readFileSync(path.join(root, 'docs/07-testing-quality.md
 if (!testingGuide.includes('../templates/QUALITY_CHECKLIST.md')) {
   errors.push('docs/07 must route operational completion checks to templates/QUALITY_CHECKLIST.md');
 }
+if (!testingGuide.includes('05-performance-reliability.md') || !/Soft BudgetのReview Trigger超過を自動Failへ読み替えない/.test(testingGuide)) {
+  errors.push('docs/07 must keep testing ownership while routing performance criteria to docs/05');
+}
 
 const requirementsTemplate = fs.readFileSync(path.join(root, 'templates/REQUIREMENTS_TEMPLATE.md'), 'utf8');
 if (!/Visual Quality Baseline: Required \/ Not applicable/.test(requirementsTemplate) || !/Visual Ambition: baseline \/ high \/ flagship/.test(requirementsTemplate)) {
@@ -237,6 +281,9 @@ if (!/Visual Quality Baseline: Required \/ Not applicable/.test(requirementsTemp
 const qualityChecklist = fs.readFileSync(path.join(root, 'templates/QUALITY_CHECKLIST.md'), 'utf8');
 if (!/### Visual Quality Baseline — User-facing UIでは必須/.test(qualityChecklist) || !/最終状態をBrowser \/ Screenshot等で確認/.test(qualityChecklist)) {
   errors.push('QUALITY_CHECKLIST.md must keep visual baseline in Minimum and require final visual verification');
+}
+if (!qualityChecklist.includes('../docs/05-performance-reliability.md') || !/Soft BudgetのReview Trigger超過/.test(qualityChecklist) || !/Cold Load/.test(qualityChecklist)) {
+  errors.push('QUALITY_CHECKLIST.md must keep concise executable page-load performance checks');
 }
 
 const projectManagement = fs.readFileSync(path.join(root, 'docs/10-project-management.md'), 'utf8');
