@@ -502,6 +502,29 @@ Webの基本
 
 英語や略語自体を学ぶ必要がある場合は、隠すのではなく日本語説明・読み方・意味・利用場面を添えます。
 
+## Game Requirements
+
+### CONDITIONAL: `GAME` Profile
+
+GameではFeature数やMap数だけで完成条件を決めず、**開始からPrimary Completion Conditionまで中心体験が成立するGame Contract**をRequirementsで整理します。
+
+最低限、Game規模に応じて次を決めます。
+
+- **Core Experience:** Playerに最も楽しませたい中心体験
+- **Supporting Systems / Non-goals:** Core Experienceを支えるもの / Gameを何にしないか
+- **Playable MVP:** 最初にEnd-to-Endで成立させる中心Gameplay Flow
+- **Primary Completion Condition:** Main Game Completeを判定する主要Goal
+- **Core Loops / Progression:** Moment-to-Moment / Core Gameplay / Progressionを必要な範囲で整理
+- **Game State / Failure:** Persistent / Session / Derivedの意味、Failure時のLoss / Retry / Recovery
+- **Save / Compatibility:** 永続Saveがある場合のSave / Reload / Existing Save要件
+- **Difficulty / Balance Direction:** 何を難しさとして使うか、Adjustable Parameterの扱い
+- **Runtime / Scale:** Entity / Physics / VFX / Scene等、規模に応じた主要Performance条件
+- **Development Phases:** Phaseごとの完成Gameplay FlowとPhase Gate
+
+Prototype / Playable MVP / Main Game Completeを混同しません。小規模GameへLong-running Save、LOD、Stress Test等を機械的に追加しません。
+
+Game-specificなProgression、Simulation、Gameplay Readability、Actual Playtest、Phase Gate等の詳細は [19 Game Development](19-game-development.md) を唯一の正本とし、この章へ重複記載しません。
+
 ## MVP
 
 初期版では「主要な1本の利用フロー」が最後まで通ることを優先します。
@@ -550,3 +573,5 @@ Webの基本
 - Accent Colorを外しても、Typography / Spacing / Layoutで主要Hierarchyが読み取れる
 - Learning Projectでは、主要LessonがStarting Knowledge / Content Depth Contractを満たす
 - Learning Projectでは、学習者が次に何を学ぶか・理解確認をどこでするか説明できる
+- Game Projectでは、Playable MVPのCore LoopをRuntimeでEnd-to-End確認できる
+- Main Game Completeでは、Fresh StartからPrimary Completion Conditionまで主要Game Experienceを確認できる

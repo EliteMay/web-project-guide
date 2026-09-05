@@ -233,6 +233,21 @@ ZIPを繰り返しAIへ渡しているInteractive ProjectでRemote Handoffを導
 - [ ] Canvas / Geometry
 - [ ] Media本体をDiagnostic Exportへ誤って含めない
 
+### GAME
+
+詳細Ruleは [19 Game Development](../docs/19-game-development.md) を正本とします。Common + Conditionalで確認し、小規模Gameへ不要なSave / LOD / Stress / Long-session項目を強制しません。
+
+- [ ] Core Loopを実際にPlayし、現在PhaseのMain FlowがEnd-to-Endで成立する
+- [ ] Progressionがある場合、Main Goal / Primary Completion Conditionへ接続する
+- [ ] Controls / Tutorial / Game UXをRuntimeで確認した
+- [ ] Visual / Animation / Collider等がGame Ruleと重大に矛盾していない
+- [ ] Prototype Placeholderを完成扱いしていない
+- [ ] 必要なAutomated TestとRuntime Validationを行い、Actual PlaytestをStatic Testと分けて実施した
+- [ ] 永続Saveがある場合、New Save / Save / Reload / Existing Saveを必要範囲で確認した
+- [ ] Failureがある場合、主要Failure / Edge Case / basic exploitを必要範囲で確認した
+- [ ] 大量Entity / 重いScene等がある場合、通常Gameplayと代表的な重い状態のRuntime Performanceを確認した
+- [ ] Main Game Complete時はFresh StartからPrimary Completion Conditionまで主要Flowを確認した
+
 ### CLOUD
 
 - [ ] Auth / Guest境界

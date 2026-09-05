@@ -44,6 +44,30 @@ GitHub Pages中心の通常Webサイト。
 
 要件の正本は [01 要件定義](01-requirements.md#learning--explanation-content) を確認します。
 
+## GAME
+
+Browser Game / Canvas Game / WebGL Game / Electron Game / 2D・3D Game等で、**Gameplay Rule / Player Action / Success-Failure / Progression等がProductの主要価値**であるProject。
+
+Animationや簡単なQuizがあるだけでは機械的に`GAME`へ分類しません。
+
+主な確認:
+- Core Experience / Supporting Systems / Non-goals
+- Core Gameplay LoopとPlayable MVP
+- Main Goal / Primary Completion Condition
+- Progression / Difficulty / Failure Contract（該当時）
+- Game StateとUI / Rendering / AnimationのSource of Truth分離
+- Save / Reload / Existing Save（永続Saveがある場合）
+- Runtime Performance / Scale（Game規模に応じて）
+- Controls / Tutorial / Gameplay Readability
+- Automated Test / Runtime Validation / Actual Playtestの区別
+- Phase Gate / Core Before Variety / Scope Management
+
+詳細Ruleの正本は [19 Game Development](19-game-development.md) です。Save技術詳細、一般Performance、Testing Strategy、UI / Visual等は各専門Ownerを維持します。
+
+`GAME + STATIC`、`GAME + MEDIA`、`GAME + ELECTRON`、`GAME + TOOL`、`GAME + PUBLIC-CONTENT`等、既存Profileと併用できます。
+
+`GAME-SMALL` / `GAME-LARGE`のようにProfileを細分化せず、Game Development章のCONDITIONAL Ruleで規模差を扱います。
+
 ## MEDIA
 
 画像・音声・動画・Canvas・手書きを扱うサイト。
@@ -143,6 +167,12 @@ Windows等のDesktop機能を使うElectronアプリ。
 
 ```text
 Profiles: STATIC + DATA + LEARNING + TOOL
+```
+
+Gameの場合も同じ形式で、必要なProfileを併用します。
+
+```text
+Profiles: GAME + STATIC + DATA
 ```
 
 またはプロジェクトメタデータへ保存します。

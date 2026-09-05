@@ -29,6 +29,7 @@ const requiredFiles = [
   'docs/16-cross-repository-github-infrastructure.md',
   'docs/17-visual-quality-baseline.md',
   'docs/18-domain-first-visual-research.md',
+  'docs/19-game-development.md',
   'maintenance/review-policy.json',
   'catalog/failures.md',
   'catalog/success-patterns.md',
@@ -195,6 +196,9 @@ if (!startHere.includes('docs/00-governance.md') || !/Rule Budget/.test(startHer
 if (!startHere.includes('docs/05-performance-reliability.md')) {
   errors.push('START_HERE.md must keep a route to docs/05-performance-reliability.md');
 }
+if (!startHere.includes('docs/19-game-development.md') || !/ゲームを作る \/ 直す/.test(startHere)) {
+  errors.push('START_HERE.md must route game work to docs/19-game-development.md');
+}
 
 if (!readme.includes('[Project Learnings](templates/PROJECT_LEARNINGS_TEMPLATE.md)')) {
   errors.push('README.md must link to templates/PROJECT_LEARNINGS_TEMPLATE.md');
@@ -215,6 +219,9 @@ if (!/Orphan Rule/.test(governance)) {
 }
 if (!/Page Load Performance \/ Runtime responsiveness \/ Reliability/.test(governance) || !/docs\/05-performance-reliability\.md/.test(governance)) {
   errors.push('docs/00-governance.md must register docs/05 as the performance normative owner');
+}
+if (!/Game-specific development \/ completion \/ playtest/.test(governance) || !/docs\/19-game-development\.md/.test(governance)) {
+  errors.push('docs/00-governance.md must register docs/19 as the Game Development normative owner');
 }
 
 const performanceGuide = fs.readFileSync(path.join(root, 'docs/05-performance-reliability.md'), 'utf8');
@@ -265,6 +272,38 @@ if (!/Meaningful Visual Change/.test(domainResearch) || !/Visual Foundation Rese
   errors.push('docs/18 must own domain research, KEEP/FIX/REMOVE, and Visual Foundation Reset');
 }
 
+const gameGuide = fs.readFileSync(path.join(root, 'docs/19-game-development.md'), 'utf8');
+for (const required of [
+  'Game-specificな設計・完成判定・Playtest・Phase管理のNormative Owner',
+  'Prototype',
+  'Playable MVP',
+  'Main Game Complete',
+  'Primary Completion Condition',
+  'Vertical Slice First',
+  'Core Before Variety',
+  'Actual Playtest',
+  'Simulation Entity数 = Render Object数ではありません',
+  'Small Gameへ大規模Ruleを機械的に適用しない'
+]) {
+  if (!gameGuide.includes(required)) {
+    errors.push(`docs/19-game-development.md: missing game contract -> ${required}`);
+  }
+}
+for (const owner of [
+  '03-data-storage.md',
+  '04-ui-ux-accessibility.md',
+  '05-performance-reliability.md',
+  '07-testing-quality.md',
+  '12-project-profiles.md',
+  '13-dependencies-assets.md',
+  '17-visual-quality-baseline.md',
+  '18-domain-first-visual-research.md'
+]) {
+  if (!gameGuide.includes(owner)) {
+    errors.push(`docs/19 must preserve specialist owner boundary -> ${owner}`);
+  }
+}
+
 const testingGuide = fs.readFileSync(path.join(root, 'docs/07-testing-quality.md'), 'utf8');
 if (!testingGuide.includes('../templates/QUALITY_CHECKLIST.md')) {
   errors.push('docs/07 must route operational completion checks to templates/QUALITY_CHECKLIST.md');
@@ -273,9 +312,22 @@ if (!testingGuide.includes('05-performance-reliability.md') || !/Soft BudgetのR
   errors.push('docs/07 must keep testing ownership while routing performance criteria to docs/05');
 }
 
+const projectProfiles = fs.readFileSync(path.join(root, 'docs/12-project-profiles.md'), 'utf8');
+if (!/^## GAME$/m.test(projectProfiles) || !projectProfiles.includes('19-game-development.md') || !/GAME-SMALL.*GAME-LARGE/.test(projectProfiles)) {
+  errors.push('docs/12 must define a composable GAME profile and route details to docs/19 without size-profile proliferation');
+}
+
+const requirementsGuide = fs.readFileSync(path.join(root, 'docs/01-requirements.md'), 'utf8');
+if (!/^## Game Requirements$/m.test(requirementsGuide) || !requirementsGuide.includes('19-game-development.md') || !/Primary Completion Condition/.test(requirementsGuide)) {
+  errors.push('docs/01 must keep a minimal GAME requirements entry that routes to docs/19');
+}
+
 const requirementsTemplate = fs.readFileSync(path.join(root, 'templates/REQUIREMENTS_TEMPLATE.md'), 'utf8');
 if (!/Visual Quality Baseline: Required \/ Not applicable/.test(requirementsTemplate) || !/Visual Ambition: baseline \/ high \/ flagship/.test(requirementsTemplate)) {
   errors.push('REQUIREMENTS_TEMPLATE.md must separate mandatory Visual Quality Baseline from Visual Ambition');
+}
+if (!/Profiles:.*GAME/.test(requirementsTemplate) || !/Game Development — `GAME` Profileのみ/.test(requirementsTemplate) || !requirementsTemplate.includes('../docs/19-game-development.md') || !/Primary Completion Condition/.test(requirementsTemplate)) {
+  errors.push('REQUIREMENTS_TEMPLATE.md must include a compact GAME section routed to docs/19');
 }
 
 const qualityChecklist = fs.readFileSync(path.join(root, 'templates/QUALITY_CHECKLIST.md'), 'utf8');
@@ -284,6 +336,9 @@ if (!/### Visual Quality Baseline — User-facing UIでは必須/.test(qualityCh
 }
 if (!qualityChecklist.includes('../docs/05-performance-reliability.md') || !/Soft BudgetのReview Trigger超過/.test(qualityChecklist) || !/Cold Load/.test(qualityChecklist)) {
   errors.push('QUALITY_CHECKLIST.md must keep concise executable page-load performance checks');
+}
+if (!/^### GAME$/m.test(qualityChecklist) || !qualityChecklist.includes('../docs/19-game-development.md') || !/Actual Playtest/.test(qualityChecklist) || !/Primary Completion Condition/.test(qualityChecklist)) {
+  errors.push('QUALITY_CHECKLIST.md must include concise GAME runtime/playtest completion checks');
 }
 
 const projectManagement = fs.readFileSync(path.join(root, 'docs/10-project-management.md'), 'utf8');
