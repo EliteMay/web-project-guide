@@ -253,6 +253,33 @@ Import失敗時は「一部だけ新Data、一部だけ旧Data」の状態を残
 
 Testing全体は [07 Testing / Quality](07-testing-quality.md) を確認します。
 
+## Destructive Reset / Delete
+
+CONDITIONAL: Reset / Deleteが永続Dataを初期化・削除し、その直後にReload / Navigation / page lifecycle eventが発生するAppでは、**Reset成功後に古いRuntime stateが再保存されないこと**までReset Contractへ含めます。
+
+Resetは「Defaultを書いた / Keyを消した」で完了扱いにせず、必要に応じて次の順序を使います。
+
+```text
+1. User confirmation
+2. Canonical reset / delete write
+3. 成功後にreset-pending / write barrierを有効化
+4. Autosave / beforeunload / visibilitychange / 別Moduleのlate writeを拒否
+5. Feature-local auxiliary stateをcleanup
+6. Reload / Runtime再生成
+7. 再読込後にDefault / Empty stateを確認
+```
+
+重要点:
+
+- write barrierはButton handlerだけでなく、可能ならStorage layer等の共通保存境界へ置く。
+- Canonical reset / deleteが失敗した場合、先にauxiliary stateだけを削除しない。
+- Reset後に古いin-memory objectをAutosaveすると削除前Dataが復活するため、Lifecycle Saveも同じbarrierを通す。
+- 複数Moduleが独立保存するAppでは、Reset対象のauxiliary storage / timer / pending writeも洗い出す。
+
+Regression Testでは最終状態だけでなく、**Reset成功後に意図的に古いstateのsaveを1回実行してもDataが復活しないこと**を確認します。Lifecycle hookが関係する場合はBrowser SmokeでReset → Reload → 再読込まで確認します。
+
+Testing全体は [07 Testing / Quality](07-testing-quality.md) を確認します。
+
 ## 関連Catalog
 
 - Failure: [F-002 / F-003 / F-018](../catalog/failures.md)
