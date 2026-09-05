@@ -232,6 +232,18 @@
 - **検出:** Architecture review / MutationObserver search / render E2E。
 - **Related:** [AP-003](anti-patterns.md) / [S-023](success-patterns.md) / [Architecture](../docs/02-architecture.md)
 
+## F-020 Reset直後のLifecycle Saveで削除前Dataが復活する
+
+- **Category:** Storage / Lifecycle / Data Integrity
+- **発生:** Scrap Factory
+- **Severity / Cost:** Critical / 高い
+- **症状:** ResetでDefault Saveを書いた直後、Reloadに伴う`beforeunload`等の保存処理が削除前のin-memory stateを再保存し、Resetが取り消されたように見えた。
+- **Root Cause:** Reset処理とAutosave / page lifecycle saveが同じ保存境界を共有せず、Reset成功後も古いRuntime objectのwriteを許可していた。
+- **最終対応:** Canonical Reset成功後にStorage layerへreset-pending / write barrierを置き、古いlate writeを拒否してからauxiliary stateをcleanupしReloadする。
+- **予防:** Destructive Reset / DeleteではLifecycle Save、Timer、別Moduleのpending writeまで含めてReset Contractを設計する。
+- **検出:** Reset後に意図的なstale saveを実行するRegression Test + Reset → Reload → 再読込Browser Smoke。
+- **Related:** [Data / Storage](../docs/03-data-storage.md) / [Testing](../docs/07-testing-quality.md)
+
 ---
 
 ## 修正コストの目安
