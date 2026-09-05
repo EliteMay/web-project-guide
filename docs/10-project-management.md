@@ -145,6 +145,34 @@ Checkpointは「次の会話が同じ状態を取得できること」が目的�
 
 通常の軽微変更がすでにmainへ安全に反映済みなら`main`で十分です。未完成の複数File変更やReview前変更ではBranch / Pull Requestを優先します。
 
+### MUST: Current work refが見つからない場合はGitHub Evidenceから復元する
+
+引き継ぎPromptやWork Reportに記録されたBranch / Pull Request / Commitが削除・Close・Merge等でそのまま参照できない場合、**推測で`main`を現在位置として扱いません。**
+
+次のEvidenceを必要範囲で確認し、同じCheckpointを特定できるか復元します。
+
+1. 記録されているPull Request番号 / URLと、そのMerge / Close状態
+2. Pull Requestのhead SHA / merge commit SHA / changed files
+3. RepositoryのCommit履歴とMerge履歴
+4. 同じ作業を示すBranch / Commit / Work Report
+5. 現在のdefault branchに対象変更がすでに取り込まれているか
+
+Branchが削除済みでも、対応するPRやCommit SHAがGitHub上で確認できる場合は、そのEvidenceから復元して構いません。Merge済みで対象変更が現在のdefault branchへ含まれていることを確認できた場合は、現在のdefault branchを新しいCurrent work refとして使えます。
+
+復元時は、**「最も新しいから」「名前が似ているから」だけで候補を選びません。** Diff、Commit、PR、Work Report等で同じ作業状態だと確認できることを優先します。
+
+### MUST: 復元できない場合は実装を止める
+
+Current work refを一意に確認できない場合は、次を行います。
+
+- `Current work ref: unresolved` として扱う
+- 確認できた候補RefやEvidenceを短く示す
+- 未確認状態をWork Report等へ必要に応じて残す
+- 古い会話だけを根拠に続きのCode変更を始めない
+- `main`から「たぶんこの続き」と実装を再開しない
+
+この状態は引き継ぎ失敗として扱い、正しいCheckpointを確認できるまで実装を進めません。
+
 ### Documentation
 
 会話引き継ぎのためだけに新しい`HANDOFF.md`等を毎回作りません。
