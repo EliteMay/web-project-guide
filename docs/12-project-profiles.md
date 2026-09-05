@@ -166,6 +166,12 @@ Windows等のDesktop機能を使うElectronアプリ。
 ## Project Profileの記録例
 
 ```text
+Profiles: STATIC + DATA + LEARNING + TOOL
+```
+
+Gameの場合も同じ形式で、必要なProfileを併用します。
+
+```text
 Profiles: GAME + STATIC + DATA
 ```
 
@@ -174,7 +180,7 @@ Profiles: GAME + STATIC + DATA
 ```json
 {
   "guideVersion": "1.1.0",
-  "profiles": ["GAME", "STATIC", "DATA"]
+  "profiles": ["STATIC", "DATA", "LEARNING", "TOOL"]
 }
 ```
 
