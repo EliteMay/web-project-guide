@@ -107,7 +107,7 @@ Userが`おすすめで`、`基本おすすめで`等を指定した場合、そ
 - 同じ種類の判断で毎回承認を求めない
 - Core Decisionは引き続きUserへ確認する
 - High-cost / Risk Decisionは意味のある選択肢が複数ある場合に確認する
-- Userが`ここは考えたい`等と指定した項目は自動確定せず、その項目だけUser決定へ戻す
+- Userが`ここは考えたい`等で自動決定を止めた項目は自動確定せず、その項目だけUser決定へ戻す
 
 `ok` / `OK` / `それで` / `そのまま` / 選択肢記号等が直前案への承認として文脈上明確な場合、同じ確認を繰り返しません。
 
@@ -335,13 +335,62 @@ GitHubへの書き込みが失敗した場合、`保存済み`または`要件�
 
 ### Draft要件
 
-要件定義途中の内容を保存する必要がある場合は、Draftであることを明示します。
+要件定義途中で別の`Repository名（相談・調査）`会話へ移る必要がある場合は、必要に応じてRepository rootの`REQUIREMENTS_DRAFT.md`へ途中状態を保存します。
+
+`REQUIREMENTS_DRAFT.md`は**未確定の引き継ぎ用Checkpoint**であり、正式要件のSource of Truthではありません。
+
+原則フロー:
+
+```text
+Repository名（相談・調査）
+→ 要件定義途中
+→ Userが新しい相談・調査会話へ移りたいと明示
+→ 現在までの決定 / 未確定事項を整理
+→ REQUIREMENTS_DRAFT.mdを作成または統合更新
+→ GitHubへのDraft保存成功を確認
+→ Requirements Conversation Resume Templateを置換
+→ 新しいRepository名（相談・調査）
+→ REQUIREMENTS.md + REQUIREMENTS_DRAFT.md + Current Repositoryを確認
+→ 未確定事項から再開
+```
+
+Draft保存の標準タイミングは**会話移行時のみ**です。同じ会話を続けている間、各TurnごとにDraftをCommitしません。
+
+Draftへ残す内容:
+
+- ここまでで確定した新しい決定
+- まだ未確定のCore Decision / High-cost Decision
+- 既存正式要件から変更しようとしている項目
+- 重要な変更理由 / 衝突
+- 次の会話で最初に確認すべき項目
+
+会話ログ全文や長い議論は保存しません。
+
+既存`REQUIREMENTS_DRAFT.md`がある場合は、今回の途中状態を統合更新し、古いDraftを無条件で上書き・消去しません。
+
+### MUST: Draftを実装開始に使わない
 
 - Draftを`Ready for implementation`にしない
 - Draftを正式な実装開始Source of Truthとして扱わない
-- 要件定義完了時に正式`REQUIREMENTS.md`へ統合する
+- 新しい要件定義会話では正式`REQUIREMENTS.md`を基準にし、Draftは未確定差分として読む
+- Draftだけ残っている状態では実装開始を案内しない
 
-原則として、途中の各Turnごとに正式`REQUIREMENTS.md`を確定版として更新し続ける必要はありません。
+### MUST: 要件定義完了時にDraftを解消する
+
+Userが`要件定義終わり`等で完了を明示した場合、Draftが存在するなら次を行います。
+
+1. 正式`REQUIREMENTS.md`とDraftを確認
+2. 今回確定した内容を正式要件へ統合
+3. README / SPEC等の重大な矛盾を確認
+4. 正式`REQUIREMENTS.md`をGitHubへ保存
+5. 正式保存成功を確認
+6. Implementation Handoffを`Ready for implementation`へ更新可能か確認
+7. 不要になった`REQUIREMENTS_DRAFT.md`を削除
+8. 実装会話用Promptを生成
+
+正式`REQUIREMENTS.md`の保存成功前にDraftを削除しません。正式保存またはDraft削除に失敗した場合は、その状態を明示し、完全なHandoff完了として扱いません。
+
+Userが`新しい相談・調査会話へ移りたい`等と明示した場合、重大な矛盾やGitHub書き込み失敗がなければ、追加の保存確認質問を増やさず、Draft保存 → 保存確認 → 再開Prompt生成まで進めて構いません。
 
 ### 実装中に大きな仕様変更が必要になった場合
 
