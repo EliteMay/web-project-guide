@@ -17,6 +17,7 @@
    - Security → [06](docs/06-security.md)
    - GitHub Pages → [08](docs/08-github-pages.md)
    - Electron → [11](docs/11-electron-distribution.md)
+   - Game Development → [19](docs/19-game-development.md)
 5. User-facing UIは [Visual Quality Baseline](docs/17-visual-quality-baseline.md)
 6. Visual Directionが重要なら [Domain-first Visual Research](docs/18-domain-first-visual-research.md) → [UI / UX / Accessibility](docs/04-ui-ux-accessibility.md)
 7. Interactive Projectなら [Development Observability / Project Memory](docs/15-development-observability.md)
@@ -34,6 +35,17 @@
 7. [Testing / Quality](docs/07-testing-quality.md) と [Quality Checklist](templates/QUALITY_CHECKLIST.md) で最終状態を確認
 
 学習サイトではDashboardや教材件数が揃っていても、説明が用語紹介だけで終わる場合は完成扱いにしません。詳細基準は要件定義のLearning節を正本とします。
+
+## ゲームを作る / 直す
+
+1. [Project Profiles](docs/12-project-profiles.md) で `GAME` を選ぶ
+2. [要件定義](docs/01-requirements.md#game-requirements) でCore Experience / Playable MVP / Primary Completion Condition等の必要事項を決める
+3. Game固有のCore Loop / Progression / Game State semantics / Playtest / Phase Gateは [Game Development](docs/19-game-development.md) を正本とする
+4. Save技術詳細は [Data / Storage](docs/03-data-storage.md)、Runtime Performance一般は [Performance / Reliability](docs/05-performance-reliability.md) を必要時に確認
+5. UI / Visual変更は [UI / UX / Accessibility](docs/04-ui-ux-accessibility.md) と [Visual Quality Baseline](docs/17-visual-quality-baseline.md)、大規模変更なら [Domain-first Visual Research](docs/18-domain-first-visual-research.md)
+6. 完成前はStatic Testだけで終わらせず、[Testing / Quality](docs/07-testing-quality.md) と [Quality Checklist](templates/QUALITY_CHECKLIST.md) のGAME項目でRuntime Validation / Actual Playtestを確認
+
+Mini GameへSave / LOD / Stress Test等を機械的に要求しません。詳細な適用条件はGame Development章を正本とします。
 
 ## 既存サイトのバグを直す
 
