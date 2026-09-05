@@ -194,6 +194,38 @@ Work Reportを更新する場合も、会話ログ全文ではなく、次の会
 
 GitHubへのCheckpoint保存が失敗した場合は、引き継ぎ保存完了として扱わず、古い会話だけを根拠に新しい会話で実装を続けません。
 
+### SHOULD: 引き継ぎPromptを貼り忘れてもRepositoryを一意に特定できるなら復旧する
+
+Implementation / Requirements Conversation Templateは、正本へ安全に到達しやすくするためのRouterであり、**新しい会話を再開するための必須条件ではありません。**
+
+新しいChatGPT会話で引き継ぎPromptがない場合でも、次の情報から対象Repositoryを一意に特定できるならGitHub中心で復旧します。
+
+- Userがその会話で明示したRepository URL / `owner/repository`
+- ChatGPT Project側で対象Repositoryが1つに固定されている場合のProject設定 / 開始情報
+- 現在の依頼文とProject内の既存情報から、対象Repositoryが他候補なく特定できる場合
+
+過去会話の曖昧なMemoryや、名前が似ているRepositoryだけを根拠に特定しません。
+
+対象Repositoryを特定できたら、Promptの有無に関係なく次を行います。
+
+1. 最新の`web-project-guide`の`README.md` / `START_HERE.md`を確認
+2. 対象RepositoryのCurrent Repositoryを確認
+3. 作業種類に応じて正式文書を確認
+   - 要件定義の再開 → `REQUIREMENTS.md`を正本とし、`REQUIREMENTS_DRAFT.md`があれば未確定差分として扱う
+   - 実装の再開 → 正式`REQUIREMENTS.md`のReady状態、README / SPEC / Project Learnings / Work Report等を確認する
+4. 実装途中ならCurrent work refを確認し、見つからない場合は上記Recovery RuleでGitHub Evidenceから復元
+5. 一意に復旧できた地点から続ける
+
+### MUST: Repository自体を一意に特定できない場合は作業を始めない
+
+複数Repositoryが候補になる、Project設定から対象Repositoryを確認できない、またはRepository名だけでは同名候補を除外できない場合は、推測で選びません。
+
+この場合はUserへ**Repository URLまたは`owner/repository`だけ**確認し、確認前にCode変更・正式要件更新・Checkpoint復旧を始めません。
+
+Repositoryは特定できても実装途中のCurrent work refだけが一意に復旧できない場合は、前述の`Current work ref: unresolved`ルールを適用します。
+
+引き継ぎPromptが存在しないこと自体は、Repositoryと必要なGitHub Evidenceを一意に確認できる限り、引き継ぎ失敗理由にしません。
+
 ## AI Coding Agentを使う場合
 
 ChatGPT / Codex / Claude / Copilot等が生成したCodeも通常変更と同じ品質基準を通します。
