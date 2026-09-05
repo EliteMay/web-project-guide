@@ -99,6 +99,73 @@ GitHub Actionsは**継続的な自動化そのもの**が目的の場合に使�
 
 詳細なFinal-state Validationは [07 Testing / Quality](07-testing-quality.md#final-state-validation) を正本とします。
 
+## 実装会話をGitHub中心で引き継ぐ
+
+### SHOULD: 実装途中で会話を変える場合も、会話履歴ではなくGitHubを引き継ぎ元にする
+
+ChatGPT Project等で`Repository名（実装）`の会話が長くなった、別日に再開する、または新しい実装会話へ整理したい場合、過去会話の長いSummaryをSource of Truthにしません。
+
+原則として次の流れを使います。
+
+```text
+Repository名（実装）
+→ 現在の変更状態を確認
+→ GitHub上に復元可能なCheckpointを残す
+→ 必要なWork Report / Project Learningsを更新
+→ 保存成功を確認
+→ Current work refを特定
+→ Implementation Conversation Handoff Templateを置換
+→ 新しいRepository名（実装）
+→ 最新Guide + Current Repository + Requirements + Work refを確認
+→ 続きから実装
+```
+
+Userが`新しい実装会話へ移りたい`等と明示した場合、重大な矛盾やGitHub書き込み失敗がなければ、追加の保存確認質問を増やさず、この引き継ぎ処理まで進めて構いません。
+
+### MUST: 未完成の作業を完成済みに見せない
+
+会話移行はProject完成とは別です。
+
+- 完了済みの変更 → 通常のValidationを行い、変更経路上必要ならMergeまで終える
+- 未完成の変更 → 無理にdefault branchへ入れず、Branch / Pull Request等へCheckpointを保存する
+- Testが未実施 / 失敗中 → Work Report等へ明示する
+- 未確認のUI / 実機 / OS依存項目 → 未確認のまま記録する
+- 会話移行のためだけに品質基準を下げたり、壊れたmainを作らない
+
+Checkpointは「次の会話が同じ状態を取得できること」が目的です。途中状態をRelease / 完成版として扱いません。
+
+### Current work ref
+
+新しい実装会話がどこから続きを始めるか特定できるよう、必要に応じて次のいずれかを残します。
+
+- default branch上の最新Commit
+- 作業Branch名
+- Pull Request番号 / URL
+- 特定Commit SHA
+
+通常の軽微変更がすでにmainへ安全に反映済みなら`main`で十分です。未完成の複数File変更やReview前変更ではBranch / Pull Requestを優先します。
+
+### Documentation
+
+会話引き継ぎのためだけに新しい`HANDOFF.md`等を毎回作りません。
+
+必要な状態は既存Ownerへ残します。
+
+- 現行仕様 → README / SPEC / `REQUIREMENTS.md`
+- 今回の変更結果 / 未完了 / 未確認 / 次の作業 → Work Report
+- 再利用価値の高い失敗・成功 → `PROJECT_LEARNINGS.md`
+- 実装中の具体的なDiff / Checkpoint → Branch / Pull Request / Commit
+
+Work Reportを更新する場合も、会話ログ全文ではなく、次の会話が作業を再開するために必要な状態だけを残します。
+
+### Handoff Prompt
+
+新しい実装会話へ移る場合は [Implementation Conversation Handoff Template](../templates/IMPLEMENTATION_CONVERSATION_TEMPLATE.md) を再利用します。
+
+要件定義完了直後だけでなく、実装途中の会話移行にも同じTemplateを使います。実装途中では`Current work ref`へBranch / Pull Request / Commit等を埋めます。
+
+GitHubへのCheckpoint保存が失敗した場合は、引き継ぎ保存完了として扱わず、古い会話だけを根拠に新しい会話で実装を続けません。
+
 ## AI Coding Agentを使う場合
 
 ChatGPT / Codex / Claude / Copilot等が生成したCodeも通常変更と同じ品質基準を通します。
