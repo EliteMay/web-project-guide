@@ -129,11 +129,14 @@ MinimumのVisual Quality Baselineを満たした上で、Visual Ambitionがhigh 
 
 ### Performance / Reliability
 
-- [ ] 初期画面に不要な重いJSを読み込まない
-- [ ] 大きな画像を無駄に原寸表示しない
-- [ ] 長時間同期LoopでUIを固めない
-- [ ] Blob URL / Timer / ListenerをCleanup
-- [ ] 第三者API/CDN失敗時の影響を確認
+詳細RuleとSoft Budgetは [05 Performance / Reliability](../docs/05-performance-reliability.md) を正本とします。
+
+- [ ] Cold LoadでInitial Transfer / 初期Requestを確認し、不要なJS / JSON / Media / 外部ResourceをEager Loadしていない
+- [ ] ResourceのCritical / Deferred / On DemandがPrimary UXに合い、LCP候補を機械的にLazy Loadしていない
+- [ ] Soft BudgetのReview Trigger超過があれば、自動Failにせず必要性・遅延・分割・圧縮・Cache・代替を確認した
+- [ ] 大量Dataを無条件に全DOM化せず、長時間同期処理でUIを固めていない
+- [ ] `DATA` / `MEDIA` / `CLOUD`等では必要に応じてMobile / Slow Network / Cold vs Repeat Loadまで確認した
+- [ ] Blob URL / Timer / Listener等をCleanupし、第三者API / CDN失敗時の影響を確認した
 - [ ] Diagnostics自体がStorage / Performanceを大きく悪化させていない
 
 ### Browser
