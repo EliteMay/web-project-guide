@@ -75,17 +75,19 @@ GitHub Pagesへ公開されるHTML/JS/JSONに秘密情報を置きません。
 
 必要な場合はGitHub Secrets、環境変数、Backend、ローカル設定等を検討します。
 
-## Cache
+## Cache / Update
+
+この章は**GitHub Pages固有のCache Busting / Service Worker更新**を扱います。Initial Transfer、Cold / Repeat Load、Soft Budget、Resource Timing等のPage Load Performance全体は [05 Performance / Reliability](05-performance-reliability.md) を正本とします。
 
 更新したのに古いJS/CSSが表示される問題を想定します。
 
 - Version / Buildの一元管理
 - 必要時のみCache Busting
-- Service Worker更新戦略
-
-を設計します。
+- Service Worker採用時の更新戦略
 
 クエリ文字列Versionを使う場合、HTML側とVersion情報を不整合にしないようにします。
+
+Service WorkerはPagesだからという理由だけで導入せず、Offline / PWA等のProject要件がある場合に検討します。
 
 ## Pages専用Workflow
 
