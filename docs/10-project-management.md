@@ -194,6 +194,53 @@ Code変更・正式要件更新・Merge等の書き込みを行う前に、対�
 
 すでに新しい会話側の変更がMerge済み / 完了済みの場合も、旧会話から過去の未完了状態を復活させません。新しい目的として追加変更する場合は、現在のGitHub状態から新しい作業として開始します。
 
+### MUST: 同じ固定会話が複数Activeになった場合はCheckpoint系列を比較して一本化する
+
+同じRepository・同じ作業区分（例: `Repository名（実装）`）の会話を誤って複数作り、両方で同じ未完了作業を進めてしまった場合、**会話を作った日時、最後に発言した時刻、メッセージ数だけで正しい会話を決めません。**
+
+まず各会話が最後に把握しているGitHub上の作業位置を集め、必要範囲で次を比較します。
+
+- Branch名 / Pull Request番号 / Commit SHA
+- 各Checkpoint間のCommit ancestry
+- Pull RequestのDiff / changed files / Merge状態
+- 現在のdefault branchへ取り込まれている変更
+- Work Reportの完了 / 未完了 / 次の作業
+- 正式`REQUIREMENTS.md`と現在の変更が一致しているか
+
+### SHOULD: 一方が他方を包含している場合は、より進んだ正しい系列をActiveにする
+
+次のようにGitHub Evidenceで一方が他方を包含していると確認できる場合、より進んだ系列をActive Conversationとして扱います。
+
+- Conversation AのCheckpointがConversation Bの祖先Commitで、BがAの変更を含んでいる
+- A側のPRがMerge済みで、その変更を含む現在のdefault branchからBが継続している
+- B側のDiffがA側の有効な変更をすべて含み、さらに後続の変更が追加されている
+
+Active Conversationを決めた後は、もう一方の会話では同じ未完了作業への書き込みを止めます。古い系列から新しいCommitや正式文書更新を追加しません。
+
+```text
+同じ固定会話が2つActive
+→ 両方のCurrent work refを確認
+→ Commit / PR / Diff / Work Reportを比較
+→ 一方が他方を包含 → より進んだ正しい系列をActiveにする
+→ もう一方では同じ作業を停止
+```
+
+### MUST: 系列が分岐して双方に固有変更がある場合は、単純に「進んでいる方」を選ばない
+
+両会話が別Branch / PRへ進み、双方に未Mergeの固有変更がある場合は、Commit数や新しさだけで片方を捨てません。
+
+この場合はParallel Work Conflictとして扱い、次を行います。
+
+1. 両系列のDiffと正式要件を比較する
+2. 片方にしかない有効な変更を確認する
+3. 非競合なら、採用するActive系列へ安全に統合できるか確認する
+4. 同じ仕様・同じFileで競合し、どちらを採用すべきか要件だけでは判断できない場合はUser Decisionとする
+5. 統合後にCurrent work refを1つへ確定し、もう一方の系列では書き込みを止める
+
+統合前に片方のBranch / PRを削除したり、古い会話の変更を無条件で破棄しません。どちらの系列が正しいか一意に確認できない状態では、`Active Conversation: unresolved`として破壊的な変更やMergeを止めます。
+
+会話名は同じ固定形式のままで構いません。重要なのはChatGPT上の会話作成日時ではなく、**GitHub上で1つのCurrent work refと1つのActive作業系列へ収束していること**です。
+
 ## 実装会話をGitHub中心で引き継ぐ
 
 ### SHOULD: 実装途中で会話を変える場合も、会話履歴ではなくGitHubを引き継ぎ元にする
