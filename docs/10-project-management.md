@@ -99,6 +99,42 @@ GitHub Actionsは**継続的な自動化そのもの**が目的の場合に使�
 
 詳細なFinal-state Validationは [07 Testing / Quality](07-testing-quality.md#final-state-validation) を正本とします。
 
+## Active TODO / やることリスト
+
+### MUST: 実装完了後は完了項目をActive TODOから削除する
+
+GitHub Repository内の`TODO.md`、README等の「やること」、Markdown task list等を**現在残っている作業を示すActive TODO**として使っている場合、実装・必要なValidation・必要なMergeが完了した項目を残し続けません。
+
+完了が確認できた同じ作業内で、対応する項目をActive TODOから削除します。
+
+```text
+TODOに未完了項目
+→ 実装
+→ Validation / 必要なMerge
+→ 完了を確認
+→ 対応項目をActive TODOから削除
+→ 未完了項目だけを残す
+```
+
+Active TODOは変更履歴の保存場所ではありません。完了した内容のEvidence / 履歴は、用途に応じて次へ残します。
+
+- 実装Diff / 実装経緯 → Commit / Pull Request
+- 今回の変更結果 / 未確認事項 → Work Report
+- Release履歴 → CHANGELOG
+- 再利用価値の高い知見 → `PROJECT_LEARNINGS.md`
+
+完了項目を`[x]`のまま長期間ため続けて、未完了項目を探しにくくしません。
+
+### SHOULD: TODO Fileに未完了項目がなくなったら不要なFileを削除する
+
+`TODO.md`等がActive TODO専用で、全項目完了後に残す恒久情報がない場合は、空のTODO Fileや完了項目だけのTODO Fileを残さず削除します。
+
+ただし、README内の一部Sectionなど他の役割を持つFile自体は削除せず、不要になったTODO Section / 完了項目だけを削除します。
+
+GitHub Issues / GitHub ProjectsをTask管理に使っている場合はAudit Trailを無理に消しません。完了IssueはClose、Project itemはDone等の完了状態へ移し、**Activeな「やること」Viewには未完了だけが残る状態**にします。
+
+未実装、Validation未完了、Merge前、または一部だけ完了した項目は削除せず、現在の残作業が分かる形へ更新します。
+
 ## ChatGPT Projectの会話を分けるタイミング
 
 ### SHOULD: メッセージ数や経過日数だけでは会話を分けない
@@ -240,6 +276,55 @@ Active Conversationを決めた後は、もう一方の会話では同じ未完�
 統合前に片方のBranch / PRを削除したり、古い会話の変更を無条件で破棄しません。どちらの系列が正しいか一意に確認できない状態では、`Active Conversation: unresolved`として破壊的な変更やMergeを止めます。
 
 会話名は同じ固定形式のままで構いません。重要なのはChatGPT上の会話作成日時ではなく、**GitHub上で1つのCurrent work refと1つのActive作業系列へ収束していること**です。
+
+### SHOULD: 別の作業区分はScopeが独立している限り並行してよい
+
+同じRepositoryでも、`Repository名（実装）`、`Repository名（UI・見た目）`、`Repository名（不具合・改善）`等の別区分は、変更Scopeが互いに独立している限り並行して構いません。
+
+ただし、会話区分が違うこと自体を「競合しないEvidence」とは扱いません。作業開始前とMerge前に、必要に応じて対象File / 機能 / Contractの重なりを確認します。
+
+### MUST: 別区分が同じFile / 機能 / Contractへ触れる場合はBranch / PRを分離する
+
+別区分の作業が次のいずれかで重なる場合は、同じdefault branchへ無調整で直接書き込まず、それぞれの作業を独立したBranch / Pull Request等で識別可能にします。
+
+- 同じFileまたは近接する同一Code領域
+- 同じ画面 / Component / Feature
+- 同じStorage / Schema / API / Event Contract
+- 同じREADME / SPEC / Requirements等の正式文書
+- 一方の変更結果を前提にもう一方が動く依存関係
+
+特に一方が未Mergeの状態で、もう一方が同じ対象へ直接default branch変更を入れることは避けます。
+
+### MUST: Merge前に相互Diffと最新baseを確認する
+
+重なる別区分のPRをMergeする前に、少なくとも次を確認します。
+
+1. 相手側のBranch / PR / changed files
+2. 同じFile・同じContractに対する変更内容
+3. 先にMergeされた変更がある場合は、その現在のdefault branchを取り込んだ状態
+4. 正式要件・保存互換性・UI Contract等に矛盾がないこと
+5. 統合後に必要なTest / Visual Review / Regression
+
+```text
+実装会話 ─ Branch / PR A
+UI会話   ─ Branch / PR B
+        ↓
+重複Scopeを確認
+        ↓
+独立 → 通常どおりMerge可能
+重複 → Merge順を決める
+        ↓
+先行PRをMerge
+→ 後続Branchを最新default branchへ同期
+→ Diff / Test / Reviewを再確認
+→ 後続PRをMerge
+```
+
+単純なGit conflictが出なかったことだけで安全と判断しません。Gitが自動Mergeできても、同じ仕様・同じUI・同じContractを意味的に上書きしていないか確認します。
+
+双方の変更が競合し、正式要件や既存Contractだけでは採用方針を一意に決められない場合は、破壊的に片方を上書きせずUser Decisionとします。
+
+区分が異なる作業を無理に1つの会話へ統合する必要はありません。重要なのは、GitHub上で各作業のRefが分離され、Merge前に相互影響を確認できることです。
 
 ## 実装会話をGitHub中心で引き継ぐ
 
