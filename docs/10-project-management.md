@@ -99,6 +99,49 @@ GitHub Actionsは**継続的な自動化そのもの**が目的の場合に使�
 
 詳細なFinal-state Validationは [07 Testing / Quality](07-testing-quality.md#final-state-validation) を正本とします。
 
+## ChatGPT Projectの会話を分けるタイミング
+
+### SHOULD: メッセージ数や経過日数だけでは会話を分けない
+
+`何往復したら新しい会話`、`何日空いたら新しい会話`のような固定Thresholdは設けません。
+
+同じ作業区分・同じ目的で、Current Repository / 正式文書 / Current work refを安定して把握できているなら、会話が長くても既存会話を続けて構いません。
+
+逆に、短い会話でも作業区分や目的が変わるなら、Projectで定義された対応会話へ移します。
+
+### SHOULD: 次の場合に新しい会話へ移る
+
+次のいずれかに当てはまる場合は、必要なCheckpointをGitHubへ残したうえで新しい会話へ移すことを優先します。
+
+1. **Userが新しい会話へ移りたいと明示した**
+2. **作業区分が変わる**
+   - 例: `Repository名（相談・調査）` → `Repository名（実装）`
+   - 例: 実装中に大きな仕様変更が必要になり、`Repository名（相談・調査）`へ戻る
+   - Projectで定義されていない独自カテゴリは作らない
+3. **会話が長くなり、現在状態の把握が不安定になっている**
+   - Current work refや完了 / 未完了の区別を繰り返し確認している
+   - 既にGitHubへ保存済みの決定を会話履歴だけから再構成し始めている
+   - 同じ仕様や作業位置について矛盾した理解が出ている
+4. **大きな作業の区切りに到達した**
+   - 要件定義完了後に実装へ移る
+   - 大きな実装Phaseが完了し、次の独立したPhaseへ進む
+   - 完了済みの変更をValidation / Mergeまで終え、次の目的へ切り替える
+
+単にTopicが少し変わった、別日になった、メッセージ数が増えたという理由だけで新しい会話を増やしません。
+
+### MUST: 会話移行前に作業状態をGitHubへ復元可能にする
+
+会話を分ける場合は、作業種類に応じた既存Handoff Ruleを使います。
+
+- 要件定義途中 → [01 要件定義](01-requirements.md) の`REQUIREMENTS_DRAFT.md` Workflow
+- 要件定義完了 → 正式`REQUIREMENTS.md`保存 + Implementation Handoff
+- 実装途中 → この章のImplementation Checkpoint / Current work ref Workflow
+- 完了済み作業 → 必要なValidation / Documentation / Mergeを終えてから次の目的へ移る
+
+会話移行のために新しいSource of Truthを増やしたり、会話Summaryだけを保存先にしません。
+
+同じ作業区分の既存会話がまだ安定して使える場合は、無理に新しい会話を作らず既存会話を継続します。新しい会話へ移した場合は、旧会話と新会話で同じ変更を並行して進めないことを基本とします。
+
 ## 実装会話をGitHub中心で引き継ぐ
 
 ### SHOULD: 実装途中で会話を変える場合も、会話履歴ではなくGitHubを引き継ぎ元にする
