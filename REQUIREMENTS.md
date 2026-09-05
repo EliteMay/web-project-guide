@@ -661,3 +661,673 @@ README / START_HEREへ詳細本文を複製しない。現在のPerformance Rout
 - Unresolved High-cost Decisions: None
 - Requirements Status: Ready for implementation
 - Implementation conversation: `web-project-guide（実装）`
+
+## 20. 確定済みGuide改善要件 — Game Development共通ルール
+
+### 20.1 目的
+
+Web / Electron上でGameを制作するProjectについて、Gameを単なる機能の集合ではなく、**Playerが開始からPrimary Completion Conditionまで継続して遊べる体験**として設計・実装・検証するための共通判断基準を追加する。
+
+今回の要件は、`EliteMay/game` の `Scrap Factory` で実際に発生した設計・実装・検証上の課題を主要Evidenceとして整理し、他のGame Projectへ再利用できる形へ一般化する。
+
+特に次の再発を防ぐ。
+
+- Feature / Map / Enemy / Item等を増やし続けてもMain Goalが完成しない
+- 「起動する」「操作できる」だけでPlayable / Completeと判定する
+- Core Loopと関係の薄い機能が増え、Gameの中心体験が曖昧になる
+- Progressionを数値膨張・Grindだけで作る
+- UI / Visual / AnimationをGame Stateの正本として扱う
+- Visual DirectionとRuntime Ruleが分離して矛盾する
+- Systemが安定する前にContentを大量生産する
+- Save互換性やFailure Stateを後回しにしてProgressionを壊す
+- Static Testや平均FPSだけでGame完成・性能を判断する
+- Placeholder Visualを残したまま完成扱いする
+- 小規模Gameへ大規模ArchitectureやSave / LOD等を機械的に強制する
+
+### 20.2 Guideへの統合方式
+
+Game-specificな判断は既存Owner Docへ分散させすぎず、**新しいGame Development Normative Ownerを1つ追加する**。
+
+実装時の第一候補は `docs/19-game-development.md` とする。ただし、実装開始時に最新版Repositoryの番号体系・Validator・Routerを再確認し、番号競合がある場合は同じ責務を維持した適切なPathへ調整する。
+
+同時に `docs/12-project-profiles.md` へ `GAME` Profileを追加する。
+
+詳細RuleはGame Development Ownerへ置き、README / START_HERE / Project Profiles / Requirements / Checklistへ全文複製しない。
+
+### 20.3 Game完成の基本モデル
+
+Game完成はFeature数やRank / Level数ではなく、中心体験が実際に通るかで判断する。
+
+最低限、次を区別する。
+
+1. **Prototype** — Core Ideaを検証できる。PlaceholderやSaveなしを許容できる。
+2. **Playable MVP** — 少なくとも1本の中心Gameplay Loopが実際にEnd-to-Endで成立する。継続型Gameでは必要に応じてSave / Reloadも含める。
+3. **Main Game Complete** — Fresh Startから主要Progressionを通り、Main Goal / Primary Completion Conditionまで主要Game Experienceが成立し、必要なSave / UX / Visual / Performance / Regression確認が完了している。
+
+`Main Clear` はGame固有語として固定せず、共通Guideでは **Main Goal / Primary Completion Condition** を正式概念とする。
+
+Campaign Completion、Final Boss、Target Score、Puzzle Completion、Scenario Completion等、そのGameに合う完了条件へ置き換えられる。
+
+### 20.4 Core Experience / Core Loop
+
+Game Requirementsでは、最低限次を明確にする。
+
+- **Core Experience** — Playerに最も楽しませたい中心体験
+- **Supporting Systems** — Core Experienceを強化するSystem
+- **Non-goals** — このGameを何にしないか
+
+Gameplay Loopは必要に応じて次の3段階で考える。
+
+1. **Moment-to-Moment Loop** — 秒〜数分単位の直接操作
+2. **Core Gameplay Loop** — 数分〜数十分単位のGameを代表するLoop
+3. **Progression Loop** — 数十分〜時間単位でCore LoopがUnlock / Upgrade /新Content /新Decisionへ接続するLoop
+
+3つを機械的に全Gameへ要求せず、Progressionを持たない短時間Gameでは該当部分を省略できる。
+
+主要ActionはResource、Knowledge、Unlock、Positioning、Risk reduction、Efficiency、Story / Objective progress等、Main Gameへ意味のある貢献を持つことを優先する。
+
+意味の薄い反復だけが続くDead Loopを避ける。
+
+### 20.5 Playable MVP / Vertical Slice
+
+Game制作は原則として **Vertical Slice First** を採用する。
+
+```text
+開始
+↓
+Player Action
+↓
+Game Rule
+↓
+Result / Reward
+↓
+Feedback
+↓
+次の変化 / 次のAction
+```
+
+短くても一本のFlowを完成させてからContent量を増やす。
+
+Playable MVPはGameに応じて次を含む。
+
+- 基本Controls
+- Core Gameplay
+- 少なくとも1つのGoal
+- Success Feedback
+- FailureがあるGameではFailure Flow
+- 最低限のProgression
+- 継続型GameではSave / Reload
+- 初見Playerが主要操作を理解できる導線
+- 最低限のUI / Gameplay Readability
+- Major Known Bugがない状態
+
+大量Map、全Enemy、全Final Asset、巨大Skill Tree等はPlayable MVPの必須条件にしない。
+
+**System → Representative Content → Real Play → Fix → Stabilize → Content Expansion** の順を優先し、System完成前の横方向Content量産を避ける。
+
+### 20.6 Progression Design
+
+Progressionは **Unlock + Mastery + Efficiency** を基本モデルとして利用できる。
+
+- Unlock — 新Content / System / Actionを開く
+- Mastery — 既存Systemをより深く使う
+- Efficiency — Playerが既に理解した反復作業・Frictionを軽減する
+
+Major Progressionは単なる数値増加だけでなく、Playerの判断や行動を変えることを優先する。
+
+Progressionは必要に応じて次を分離する。
+
+- Major Progression — Chapter / Rank / Act等
+- System Progression — Weapon / Factory / Skill / Research等
+- Content Progression — Map / Boss / Quest / Biome等
+
+すべてを1つのLevel値へ集約することを必須にしない。
+
+進行GateはCore Experienceを実際に経験することで進む設計を優先し、単一のMoney / XP等だけへ無条件に依存させない。
+
+Pacingは原則として、`Introduce → Try → Understand → Combine → Next` の順でSystemを増やし、複数Systemを理解前に一度に投入しすぎない。
+
+AutomationやFast Travel等で理解済みの反復作業を短縮してよいが、**Progressionの結果としてCore ExperienceそのものをPlayerから取り上げない**。
+
+Main ProgressionはEarly → Mid → Late → FinalをPrimary Completion Conditionへ収束させる。
+
+### 20.7 Game State / Save / Failure Contract
+
+Game側のStateは必要に応じて次へ分類する。
+
+1. **Persistent State** — Progression、Unlock、Inventory、Player-built objects、重要World Change等
+2. **Session State** — 現在のMission、Expedition loot、位置、HP、Temporary buff等
+3. **Derived State** — Machine count、Total generation、Completion %等、再計算可能なSummary
+
+容易に再計算できるDerived Stateを第二のPersistent Source of Truthにしない。
+
+Persistent IDはDisplay Name、Array Index、Visual Asset Pathへ依存させない。
+
+Game Development Ownerは「何を保存するか」「Failure時に何を失うか」「どこから再開するか」等のGame Contractを担当する。
+
+Save Schema、Migration、Normalize、Validation、Backup / Restore等の技術的正本は引き続き `docs/03-data-storage.md` とする。
+
+継続型Gameでは、Save / Reloadを主要FlowのTest対象に含める。
+
+重要な複数Resource消費やTransactionは、原則として `prerequisite check → mutation → save` を一貫させ、途中状態やItem lossを残しにくい構造を優先する。
+
+Failure / Death等がある場合、次を明確にする。
+
+- 何を失うか
+- 何を維持するか
+- どこからRetryするか
+- Retryまでの時間
+- Failureが次のFailureを過度に誘発しないRecovery手段
+
+### 20.8 Game Content / World
+
+Contentは量ではなくGameplay Roleを持つことを重視する。
+
+Area / Enemy / Item / Objective等の重要Contentでは、必要に応じて次を説明できる状態を目指す。
+
+- なぜ存在するか
+- Playerが何をするか
+- 何を教える / Testするか
+- Rewardは何か
+- Progressionとどう接続するか
+
+AreaではGameplay Identity、Resource Identity、Risk Identity、Visual Identity、Progression Role等を必要範囲で持たせる。
+
+EnemyはCount / HP / Skinだけでなく、Playerに異なるDecision / Executionを要求できるかで差別化する。
+
+Boss / Major Encounterは原則として、それまで学んだMechanicを組み合わせて試す方向を優先する。
+
+Main Progression上の必須Itemを極端な低確率Randomだけへ依存させない。RandomはDecision variationを作る用途を優先する。
+
+Procedural GenerationはDefaultにせず、採用時のみNavigation、Difficulty、Objective reachability、重要Item availability、Save、Reproducibility、Testingを確認する。
+
+World Size自体を品質Goalにせず、Gameplay Densityを重視する。
+
+### 20.9 Difficulty / Balance
+
+Difficultyを数字の増加だけで作らない。
+
+Gameに応じて主に次の3軸を使う。
+
+1. **Decision Difficulty** — Routing、Resource allocation、Build layout、Target priority、Risk / Reward等
+2. **Execution Difficulty** — Aim、Dodge、Timing、Movement、Positioning等
+3. **Resource Pressure** — Ammo、HP、Energy、Time、Inventory、Money、Production capacity等
+
+Core Experienceに合うDifficultyを増やす。Factory / Automation Gameであれば物流・Power・Bottleneck・Space等のDecision Pressureを優先でき、Action GameではExecution Difficultyを重視できる。
+
+Requirementsでは原則として「何を難しくするか」「何を難易度として使わないか」「Mode間の意味」を固定し、HP / Damage / Drop Rate /秒数等の具体値はAdjustable Parameterとして後からPlaytestで調整可能にする。
+
+Difficulty ModeでGameを別の単純Grindへ変えない。
+
+Failure後は学習内容が残っている間にRetryできることを優先し、意味のない長距離Walkback等を避ける。
+
+**Grinding ≠ Difficulty** として、時間消費と意味のある難しさを分離評価する。
+
+Balance Testでは必要に応じてNew Player / Intended Player / Experienced Player、Early / Mid / Late / Endgame等の観点を使う。
+
+### 20.10 Game Architecture / Simulation
+
+Game ArchitectureはFile数を増やすことを目的にせず、**Gameplay Domain + Responsibility** で分離する。
+
+Core State、Progression、Economy、Combat、Exploration、Production、Logistics、Save、Rendering、UI等、実際のGame規模に合う責務単位を使う。
+
+重要原則:
+
+- Game RuleのSource of Truthを1つへ寄せる
+- UIをGame Stateの正本にしない
+- Rendering / AnimationをSimulation Stateの正本にしない
+- SimulationとRenderingを分離する
+- Game結果をFrame Rateへ依存させない
+- Rank / Damage / Cost / Route / Capacity等、純粋計算にできるRuleはTestしやすい形へ分離する
+- Randomが必要な場所だけRandomにする
+- Runtime Stateを複数箇所へ無目的に複製しない
+- Cacheを持つ場合も正本を明確にする
+- Event / State Mutationの境界をGame規模に応じて整理する
+- Legacy Compatibility Layerは段階移行に利用できるが永続的なVersion積層を放置しない
+- 重要SystemではState / Reason / Transition / Error等をDebugできる構造を優先する
+
+ECS、Event Bus、Dependency Injection等をGameだからという理由だけで導入しない。
+
+### 20.11 Runtime Performance / Scale
+
+Game Performanceは平均FPSだけで判断しない。
+
+必要に応じて次を確認する。
+
+- FPS / Frame Time
+- Stutter / Frame Spike
+- Input responsiveness
+- Simulation Cost
+- Rendering Cost
+- Memory / Long-session degradation
+- Entity Scale
+- Physics
+- Particle / VFX
+- Light / Shadow
+- Asset Loading
+
+60 FPS等の数値はGame / Target DeviceごとのSoft Targetとして扱い、全Game共通のHard Limitにしない。
+
+大量Entity Gameでは全Entityを毎FrameFull Updateする前提を避け、Near / Active、Mid、Far / Inactive等でUpdate frequencyやSimulation方法を分けられる構造を検討する。
+
+**Simulation Entity数 = Render Object数ではない。** Gameplay Stateを正確に保ちながら、遠距離Object、Offscreen Area、VFX、Animation等を簡略化できる構造を優先する。
+
+3D / Large-scale Gameでは必要に応じてLOD、Culling、Instancing、Pooling、Physics Budget等を検討する。ただしGameplay上重要なSilhouette / Direction / Hazard情報を最適化で消さない。
+
+Graphics Quality設定によってGame Rule / Simulation結果を変えないことを基本Contractとする。
+
+Normal / Late Game / Stress等のSoft Scale TargetをProject側で持てるようにし、実測で調整する。
+
+Page Load、一般的Runtime responsiveness、Memory等の横断Performance原則は `docs/05-performance-reliability.md` を正本とする。
+
+### 20.12 Game Visual / Audio
+
+Gameplayが成立していても、主要World / Object / Character / UIがPrototype Placeholder状態のままならMain Game Complete扱いしない。
+
+Game Visualでは原則として次の順で品質を考える。
+
+1. Gameplay Readability
+2. Silhouette / Structure
+3. Material / Lighting
+4. VFX / Decorative Polish
+
+Gameplayに意味を持つVisualはRuntime Ruleと一致させる。
+
+特に次を避ける。
+
+- Arrow等のDirection表示と実際のRoutingが逆
+- 見えるWallを通れる / 何もない場所にColliderがある
+- Lootに見えるDecoration
+- Hazard / Enemy / Objectiveが背景へ埋もれる
+- LODで重要Gameplay情報が消える
+- 停止中Machineが稼働Animationを続ける等、Animation StateとGame Stateの矛盾
+
+Visual制作をFinal Polishだけへ先送りせず、Gameplay Phaseと並行するVisual Trackを持てる。ただしFinal PolishのためにMain Progression完成を無期限に後回しにしない。
+
+Camera Shake、Head Bob、Motion Blur、FOV Kick等はGameplayを妨げない強度を優先し、必要に応じて調整 / OFF可能にする。
+
+AudioはFeedback、Gameplay Information、Atmosphereに分けて考える。重要情報を音だけへ依存させない。
+
+大量Entity GameではAudio Spamを避け、Distance、Grouping、Priority、Cooldown、Voice limit等を必要に応じて使う。
+
+Asset License、Attribution、Repository管理、External Hotlink等は `docs/13-dependencies-assets.md` を正本とする。
+
+### 20.13 Controls / Tutorial / Accessibility
+
+Tutorialは長い説明を開始時にまとめて読ませるより、必要な操作が発生した時点で短く教えて実際に操作させる **Contextual Tutorial** を基本とする。
+
+TutorialではKeyだけでなく、何をするか、なぜするか、成功すると何が起きるかを必要範囲で伝える。
+
+Tutorial終了後は最初のGoal / Progressionへ自然に接続する。
+
+必要なGameではHelp / Controls / Codex等を後から再確認できるようにする。
+
+HUDは情報を全部常時表示せず、常時必要な情報、状況依存情報、詳細画面へ分ける。
+
+Error / Blocked Stateでは単に「できない」と表示するだけでなく、Resource不足、Storage Full、Power不足、Path Block等、Playerが改善できるReasonを伝える。
+
+InputはResponsivenessを優先し、複雑なDesktop GameではKey Remapを検討する。同じKeyをContextで使う場合もPlayerがActionを予測できることを重視する。
+
+3D / Camera GameではSensitivity、FOV、Invert、Sprint Toggle、Head Bob、Screen Shake、Motion Blur等をGame規模に応じて調整可能にする。
+
+AccessibilityとDifficultyを分離する。字幕、色覚対応、Camera Shake OFF等をEasy Mode扱いしない。
+
+重要情報を色だけ・音だけへ依存させない。
+
+### 20.14 Testing / Playtest / Debugging
+
+Game検証は次の3段階を区別する。
+
+1. **Automated Test** — Rule / Calculation / Save Migration / Inventory / Progression等の機械検証
+2. **Runtime / Browser Validation** — Input、Pointer Lock、WebGL / Canvas、Collider、Raycast、Scene Transition、Save / Reload、Audio、FPS等
+3. **Actual Playtest** — 分かりやすさ、操作感、Pacing、Difficulty、Reward、退屈、次のGoal等をGameとして確認
+
+**TestとPlaytestを別物として扱う。** Bugがないことだけで面白さ・遊びやすさを保証しない。
+
+各Phaseでは個別機能だけでなく、New Game / Current Save等から主要FlowをEnd-to-Endで確認する。
+
+継続開発GameではNew SaveとExisting Saveを必要範囲で両方確認する。
+
+Happy Pathだけでなく、Resource不足、Inventory Full、Death / Failure、Invalid interaction、Reward重複、Save Reloadによる再取得等、主要Edge Case / basic exploitを確認する。
+
+長時間GameではLong Session Test、大量Entity GameではLate-game / Stress Testを条件付きで実施する。
+
+Bug修正では `reproduce → evidence / state → root cause → smallest safe fix → regression guard → runtime confirmation → related flow` を基本Flowとする。
+
+Testing StrategyとVerification State全体は `docs/07-testing-quality.md` を正本とする。
+
+### 20.15 Phase Planning / Scope Management / Completion Gate
+
+Game Phaseは単なるFeature Listではなく、**完成したGameplay Flow**で定義する。
+
+Gameplay、UI、Save、Visual、Feedback、Test等を縦に含めるVertical Phaseを基本とし、Architecture / Visual Foundation等の横断Trackは必要時のみ並行させる。
+
+各Phaseで最低限次を確認する。
+
+- 主要FlowがEnd-to-Endで成立
+- Save / Reloadが必要なGameでは成立
+- Major Regressionなし
+- Known major item-loss / save-corruption bugなし
+- 必要なAutomated Test成功
+- Runtimeで主要操作確認
+- Actual PlaytestでPhaseのGame Experienceが成立
+- User-facing変更ではVisual Readability確認
+- 仕様と実装の重要部分が一致
+- 未確認事項を正しく記録
+
+新Ideaは原則として次へ分類する。
+
+- **Now** — 現在Phase / Core Loop成立に必要
+- **Next / Backlog** — 重要だが現在Phaseには不要
+- **Maybe / Cut** — Core Experienceへの貢献が弱い
+
+「せっかくだから」の連鎖でScopeを増やさない。
+
+大きすぎるPhaseはPlay可能な単位へ分割する。
+
+**Core Before Variety** を共通原則とし、Weapon / Enemy / Area / Item等は代表1種類のSystemを安定させてからVariationを増やす。
+
+Main Game Complete後のEndgame、Extra Challenge、Achievement、Cosmetic、New Game+等はPost-game / Expansionとして分離できる。
+
+**未完成の巨大Gameより、中心体験が最後まで成立した小さいGameを優先する。**
+
+### 20.16 Game Requirements Template方針
+
+GAME Profileでは、Requirementsで必要に応じて次を整理する。
+
+1. Game Overview
+2. Core Experience / Supporting / Non-goal
+3. Core Loops
+4. Playable MVP
+5. Progression
+6. Content / World
+7. Player State / Failure
+8. Major Game Systems
+9. Difficulty / Balance Direction
+10. Controls / UX
+11. Save / Compatibility
+12. Visual / Audio Direction
+13. Performance / Scale
+14. Development Phases
+15. Non-goals / Do Not Break
+16. Completion Criteria
+17. Adjustable Parameters
+
+ただし、5分程度のMini GameへLong-running Save Game用の巨大Templateを強制しない。
+
+専用 `GAME_REQUIREMENTS_TEMPLATE.md` は現時点で必須新設とせず、まず既存Requirements TemplateへGAME Profileの入口・Section / Linkを追加できるか実装時に確認する。
+
+### 20.17 `GAME` Project Profile
+
+`docs/12-project-profiles.md` に `GAME` Profileを追加する。
+
+対象例:
+
+- Browser Game
+- Canvas Game
+- WebGL Game
+- Electron Game
+- 2D / 3D Game
+- Single-player Game
+- Save型Game
+- Mini Game
+
+Animationや簡単なQuizがあるだけで機械的に `GAME` としない。Gameplay Rule / Player Action / Success-Failure / Progression等がProductの主要価値である場合に適用する。
+
+既存Profileと併用可能とする。
+
+例:
+
+- `GAME + STATIC`
+- `GAME + MEDIA`
+- `GAME + ELECTRON`
+- `GAME + TOOL`
+- `GAME + PUBLIC-CONTENT`
+
+`GAME-SMALL` / `GAME-LARGE` 等へProfileを細分化せず、Game Complexityに応じてRuleを条件付き適用する。
+
+Project Profile本文は短い確認入口に留め、詳細はGame Development OwnerへLinkする。
+
+### 20.18 Single Normative Owner / 責務分担
+
+Game Development Ownerが主に担当するもの:
+
+- Core Experience / Core Loop
+- Playable MVP / Vertical Slice
+- Progression Design
+- Content / World Design
+- Difficulty / Balance Direction
+- Game-specific Failure Contract
+- Game Architecture / Simulation framing
+- Game Runtime ScaleのGame-specific判断
+- Game World / Gameplay Visual Readability
+- Game-specific Controls / Tutorial
+- Actual Playtest
+- Development Phase / Phase Gate
+- Prototype / Playable MVP / Main Game Complete判定
+
+既存Ownerを維持するもの:
+
+- `docs/01-requirements.md` — Requirements Workflow / Decision Class
+- `docs/03-data-storage.md` — Save Schema / Migration / Storage / Backup / Restore
+- `docs/04-ui-ux-accessibility.md` — UI / UX / Accessibility一般
+- `docs/05-performance-reliability.md` — Page Load / Runtime responsiveness / Performance測定一般
+- `docs/07-testing-quality.md` — Testing Strategy / Verification State
+- `docs/12-project-profiles.md` — `GAME` Profile定義
+- `docs/13-dependencies-assets.md` — Asset / Dependency / License
+- `docs/17-visual-quality-baseline.md` — User-facing UI Visual Minimum Quality
+- `docs/18-domain-first-visual-research.md` — 大規模Visual Direction変更前のResearch Workflow
+
+README / START_HEREはRouterに留める。
+
+### 20.19 Rule Strength
+
+Game章のRule強度は次を基本とする。
+
+#### MUST候補
+
+- Core Experience /主要Gameplay Loopを定義できる
+- 起動・移動だけでPlayable扱いしない
+- 主要Gameplay Flowが実際に成立する
+- Prototype / Playable MVP / Main Game Completeを混同しない
+- Game Rule / UI / Visualの重大な矛盾を残さない
+- 同じ重要Game RuleのSource of Truthを複数作らない
+- User-facing GameはStatic Testだけで完成判定しない
+- 現在PhaseのFlow完成を無視してFeature追加を続けない
+
+#### SHOULD候補
+
+- 3段階Core Loop
+- Vertical Slice First
+- Core Before Variety
+- Contextual Tutorial
+- Gameplayを変えるProgression
+- Game RuleとRendering / UIの分離
+- Balance Parameterを調整可能に保つ
+
+#### CONDITIONAL候補
+
+- 永続Saveがある → Schema / Migration / Existing Save Test等
+- Long Progressionがある → Early / Mid / Late / Grind / Main Goal接続
+- Large 3D /大量Entity → LOD / Culling / Physics Budget / Stress Test
+- Camera Action Game → FOV / Sensitivity / Motion sickness確認
+- Random / Procedural → Seed / Reachability / Required content保証
+- Economy → Source / Sink / Duplication / dominant strategy確認
+- Failure / Death → Loss / Retry / Recovery Contract
+- Audio重要 → Gameplay sound / mix / visual fallback
+
+#### MAY候補
+
+- ECS
+- Event Bus
+- Object Pooling
+- Procedural Generation
+- Difficulty Modes
+- New Game+
+- Achievement
+- Modding
+- Replay
+- Developer Console
+- Cloud Save
+- Multiplayer
+
+Genre固有Mechanicを共通MUSTへしない。
+
+### 20.20 代表Anti-pattern
+
+Game Development Ownerでは少なくとも次を禁止寄りAnti-patternとして扱う。
+
+- Feature Collection Game — Core Loop不明のままFeatureだけ増加
+- Horizontal Prototype Expansion — Map / Enemy / Itemを大量追加して全て未完成
+- Fake Playable — 起動・移動・Button動作だけでPlayable判定
+- Progression = Number Inflation
+- Grind as Difficulty
+- AutomationがCore Experienceそのものを消す
+- UI / Visual / AnimationをGame Stateの正本にする
+- Visual RuleとRuntime Ruleの二重Source of Truth
+- Derived / Cacheまで無差別にSaveする
+- Development都合でExisting SaveをResetさせる
+- System安定前にContentを量産する
+- Static TestだけでGame Complete判定
+- Average FPSだけでPerformance判定
+- Simulation Entityを全てFull Render / Full Physicsする
+- Prototype Visualを永久に残す
+- Decorative VisualがGameplay Readabilityを壊す
+- Main Progression必須要素を極端なRandomだけへ依存させる
+- Main Goalを完成させずFeature追加を続ける
+
+`catalog/anti-patterns.md` へは全文を複製せず、再発防止価値が高い代表例だけ追加する。
+
+第一候補:
+
+1. System完成前のContent量産
+2. Visual StateとRuntime Ruleの二重Source of Truth
+3. Static TestだけでPlayable / Complete判定
+4. New Progression導入時のLegacy Save破壊
+5. Main Goalを完成させずFeature追加を続ける
+
+### 20.21 GAME用Quality Checklist
+
+新しい巨大なGame専用Checklistを原則増やさず、既存 `templates/QUALITY_CHECKLIST.md` へ短い `GAME` Sectionを追加する。
+
+共通候補:
+
+- Core Loopを実際にPlayして成立確認
+- 現在PhaseのMain FlowがEnd-to-Endで通る
+- Progressionがある場合、Main Goalへ接続する
+- Save型GameではNew Save / Save / Reload / Existing Saveを必要範囲で確認
+- Failure / Edge Case / basic exploitを必要範囲で確認
+- Controls / Tutorial / Game UXをRuntimeで確認
+- VisualとCollider / Runtime Ruleが一致
+- Prototype Placeholderを完成扱いしていない
+- 通常Gameplayと重い代表SceneのRuntime Performanceを確認
+- 必要なAutomated Test成功
+- Runtime Validation実施
+- Actual Playtest実施
+- Phase Gateを満たす
+- Main Game Complete時はFresh StartからPrimary Completion Conditionまで確認
+- 未確認事項をVerified扱いしていない
+
+GAME Checklistは **Common + Conditional** とし、小規模Gameへ不要なSave / LOD / Stress / Long-session確認を強制しない。
+
+### 20.22 Requirements / Implementation / Project Learnings更新
+
+Gameの変更を次の5種類へ分類する。
+
+1. **Balance Adjustment** — HP / Damage / Price / Drop Rate / Craft Time等の数値調整
+2. **Game Design / Requirement Change** — Failure Contract、Progression構造、Main Goal等の意味変更
+3. **Implementation Fix** — 仕様は正しいがRuntime実装だけが誤っている
+4. **Project Learning** — 対象Game内で再発防止価値のある知見
+5. **Common Guide Candidate** — 複数Gameで再利用価値がある、または重大Riskを防ぐ知見
+
+Requirementsは履歴帳ではなく**現在正しいGame Contract**を持つ。
+
+Balance AdjustmentのたびにRequirements本文を履歴化しない。履歴が必要ならConfig / Data / CHANGELOG / Work Report / Git historyを使用する。
+
+Adjustable ParameterとGame Contractを区別する。
+
+Player FeedbackはEvidenceとして扱い、そのまま仕様へ変換せず、HP / Telegraph / Hitbox / Camera / Recovery /説明不足等のRoot Causeを確認してから変更する。
+
+複数回同じFeedbackが出る場合は設計問題候補として優先度を上げる。
+
+`PROJECT_LEARNINGS.md` へ軽微なTypo等を何でも保存せず、再発しやすい、高Risk、原因特定Costが高い、後続Phase / 他Projectでも有効な知見を優先する。
+
+Project LearningをすぐCommon Ruleへ昇格させず、Guide GovernanceのRule Budgetに従う。ただしData loss、Save corruption、重大互換破壊等は1件でもCommon候補になり得る。
+
+### 20.23 Router / Template / Catalog統合
+
+実装時には少なくとも次を確認する。
+
+- `README.md` — Game Development Ownerへの短い入口を追加
+- `START_HERE.md` — 「ゲームを作る / 直す」Routeを追加
+- `docs/01-requirements.md` — GAME Requirementsの最小入口 / Owner Linkを追加
+- `docs/12-project-profiles.md` — `GAME` Profileを追加
+- Game Development Owner Doc — Game-specific Ruleの詳細正本
+- `templates/QUALITY_CHECKLIST.md` — 短いGAME Section
+- `templates/REQUIREMENTS_TEMPLATE.md` — GAME Profile用Section / Linkで足りるか確認
+- `catalog/anti-patterns.md` — 代表Anti-patternのみ必要範囲で追加
+- Validator / required-file list — 新Owner Doc追加で更新が必要か確認
+
+Routerへ詳細Ruleを複製しない。
+
+### 20.24 非目標
+
+- すべてのGameへCombat / Enemy / HP / Quest / Craft等の特定Mechanicを強制しない
+- Mini GameへSave Migration、Long Progression、LOD、Stress Test、Difficulty Mode等を機械的に要求しない
+- Gameだからという理由でECS / Event Bus等の大規模Architectureを導入しない
+- AAA規模の制作工程を個人制作へそのまま強制しない
+- Game専用Template / Checklist / Profileを細分化しすぎない
+- Scrap Factory固有のRank / Research / Drone / Factory等のGame DesignをCommon Ruleへコピーしない
+- Existing Owner DocのSave / Performance / Testing / Asset / UI RuleをGame章へ全文複製しない
+- この要件保存だけでGame Development Owner等を実装済み扱いしない
+
+### 20.25 実装完了条件
+
+このGuide改善は少なくとも次を満たして初めて実装完了とする。
+
+- [ ] `GAME` Project Profileが追加されている
+- [ ] Game DevelopmentのNormative Ownerが追加されている
+- [ ] Core Experience / Core Loop / Playable MVP / Progression / Primary Completion Conditionの共通Ruleが整理されている
+- [ ] Game State / Save semanticsと `docs/03` の技術責務が重複せず接続されている
+- [ ] Simulation / Rendering / UIのSource of Truth分離が整理されている
+- [ ] Game-specific Runtime Performance / Scaleと `docs/05` の責務が重複せず接続されている
+- [ ] Actual Playtestと `docs/07` のTesting Strategyが重複せず接続されている
+- [ ] Game World / Gameplay Visual Readabilityと `docs/04` / `17` / `18` の責務が整理されている
+- [ ] Asset / License詳細を `docs/13` に残している
+- [ ] Phase Gate / Core Before Variety / Scope Managementが定義されている
+- [ ] Prototype / Playable MVP / Main Game Completeが区別されている
+- [ ] Small Gameへ大規模Ruleを過剰適用しないMUST / SHOULD / CONDITIONAL / MAYが明確
+- [ ] README / START_HEREからGame Routeへ辿れる
+- [ ] Quality Checklistへ短いGAME確認項目が必要範囲で反映されている
+- [ ] Catalogへ追加する場合は代表例だけでRule本文を複製していない
+- [ ] Requirements Template変更は既存Templateへの統合を先に検討している
+- [ ] Validator / required-file listへの影響を確認している
+- [ ] 必要なGuide Version / CHANGELOG / Work Reportを更新している
+- [ ] 最終CommitでGuide Validatorが成功している
+- [ ] 未確認事項 / Known Issueがあれば明示されている
+
+### 20.26 今回の変更理由・Conflict確認
+
+変更理由:
+
+- 現行GuideはWeb / ElectronのArchitecture、Data、UI、Performance、Testing等を持つが、Game固有のCore Loop、Progression、Vertical Slice、Gameplay Completion、Playtest、Phase Gate、Simulation / Rendering境界等をまとめるNormative Ownerが存在しない。
+- 現行Project Profilesにも `GAME` がなく、Game Projectでは `STATIC` / `MEDIA` / `TOOL` 等の組み合わせだけではGame-specificな確認事項を表現しづらい。
+- `EliteMay/game` / `Scrap Factory` の実装・Requirements・Project Learningsから、Visual / Runtime Rule不一致、Save互換、Progression、Phase Gate、Simulation / Rendering、実Play Validation等に複数Projectへ再利用できる明確なGapが確認できる。
+
+既存仕様との関係:
+
+- `docs/00-governance.md` のRule Budget / Single Normative Ownerに従い、Game-specific Ruleだけを新Ownerへまとめる
+- Save / Performance / Testing / Asset / UI等の既存Owner責務は維持する
+- README / START_HEREはRouterのままとし、詳細Ruleを複製しない
+- `GAME` Profileは既存Profileと併用し、既存Profileを置換しない
+- Small Gameへ過剰Ruleを強制しないため、現在のProject Profile方針と整合する
+- 個別Game仕様は引き続き各Game RepositoryをSource of Truthとし、Common Guideへ混入させない
+
+### 20.27 未解決事項 / Implementation Handoff
+
+- Unresolved Core Decisions: None
+- Unresolved High-cost Decisions: None
+- Requirements Status: Ready for implementation
+- Owner Doc path: `docs/19-game-development.md` を第一候補とし、実装開始時の最新版番号体系で最終確認する
+- Dedicated Game Requirements Template: 現時点では新設しないことを第一候補とし、既存Templateへの統合で不足する場合のみ再検討する
+- Implementation conversation: `web-project-guide（実装）`
