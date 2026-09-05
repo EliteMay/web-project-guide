@@ -2,6 +2,43 @@
 
 Guide Versionの正本は [`guide-version.json`](guide-version.json) です。
 
+## 1.17.1 - 2026-09-06
+
+### Added
+
+- `docs/03-data-storage.md`へ **Destructive Reset / Delete** のLifecycle安全Contractを追加
+  - Canonical Reset成功後に`reset-pending` / write barrierを有効化
+  - `beforeunload` / `visibilitychange` / Autosave / 別Moduleのlate writeによる削除前Data復活を防止
+  - Reset後に意図的なstale saveを実行するRegression Testと、必要時のReset → Reload Browser Smokeを追加
+- Failure Catalogへ `F-020 Reset直後のLifecycle Saveで削除前Dataが復活する` を追加
+
+### Changed
+
+- `docs/19-game-development.md`をScrap Factoryの実Project Learningで補強
+  - 現在Stateから再計算できる条件と、一度達成したHistorical Milestoneの保存責務を分離
+  - New GameのDefault Spawn変更とExisting Saveの位置Migrationを分離
+  - Tutorial StepはCash増加等の代理指標ではなく、通常Gameplayと同じRule / Event / Analyzerで実成功を判定する方針を追加
+
+### Evidence
+
+- `EliteMay/game` / Scrap Factory `PROJECT_LEARNINGS.md`
+  - Reset直後のpage lifecycle saveが古いRuntime stateを再保存し、Resetを取り消した実例
+  - New Game Spawn変更時にExisting Save位置をnormalizeで上書きしないMigration方針
+  - Tutorial完了を実際の搬送 / 自動販売Eventで判定した実装
+  - Post-clear Objectiveの現在条件は導出し、達成履歴だけを最小保存する設計
+
+### Rule Hygiene
+
+- 新しいOwner Docは追加せず、Storage Lifecycleは`docs/03`、Game-specific state / Tutorial semanticsは`docs/19`へ統合
+- Project固有のHome / PC / Factory仕様はCommon Guideへ移植しない
+- Failure Catalogは実例Evidenceに限定し、Normative Rule本文は`docs/03`へ保持
+
+### Compatibility
+
+- Existing Saveを新しいSpawn / Initial Stateへ自動移動するルールにはしない
+- すべてのReset実装へ複雑なbarrierを一律要求せず、late writeが存在するAppで条件付き適用
+- Product RepositoryのRuntime / Save Schema / Gameplay仕様は変更しない
+
 ## 1.17.0 - 2026-09-05
 
 ### Added
