@@ -41,6 +41,7 @@ MUST / SHOULD / MAY / CONDITIONAL、仕様衝突、Source of Truth、Rule Budget
 - [16 Cross-Repository GitHub Infrastructure](docs/16-cross-repository-github-infrastructure.md) — `.github` / Reusable Workflow / Ruleset / Dependabot / Projectsの役割分担
 - [17 Visual Quality Baseline](docs/17-visual-quality-baseline.md) — User-facing UIで必須の見た目の最低品質
 - [18 Domain-first Visual Research](docs/18-domain-first-visual-research.md) — 大きな見た目変更前に同種Site / Appを調査するWorkflow
+- [19 Game Development](docs/19-game-development.md) — Game固有のCore Loop / Progression / Playtest / Phase Gate
 
 ## 過去事例から学ぶ
 
@@ -121,9 +122,9 @@ ChatGPT Project内で作業する場合、会話名は依頼文や現在の作�
 
 全サイトへ同じルールを機械的に適用しません。必要に応じて次のProfileを組み合わせます。
 
-`STATIC` / `DATA` / `LEARNING` / `MEDIA` / `AI-HANDOFF` / `CLOUD` / `ELECTRON` / `TOOL` / `PUBLIC-CONTENT`
+`STATIC` / `DATA` / `LEARNING` / `GAME` / `MEDIA` / `AI-HANDOFF` / `CLOUD` / `ELECTRON` / `TOOL` / `PUBLIC-CONTENT`
 
-学習・解説・資格対策等で「理解してもらうこと」が主要価値なら`LEARNING`を選びます。Data量が多い場合は`DATA + LEARNING`のように併用します。
+学習・解説・資格対策等で「理解してもらうこと」が主要価値なら`LEARNING`を選びます。Gameplay Rule / Player Action / Success-Failure / Progression等が主要価値なら`GAME`を選びます。必要に応じて複数Profileを併用します。
 
 詳細は [Project Profiles](docs/12-project-profiles.md) を参照してください。
 
