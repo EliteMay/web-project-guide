@@ -5,6 +5,15 @@
 - Adopted Guide Version:
 - Profiles: STATIC / DATA / LEARNING / MEDIA / AI-HANDOFF / CLOUD / ELECTRON / TOOL / PUBLIC-CONTENT
 
+## 0A. 要件定義の決定モード
+
+会話での進め方は [Interactive Requirements Workflow](../docs/01-requirements.md#対話型要件定義-workflow) を正本とします。
+
+- Recommendation-by-default: Yes / No
+- Userが決めるCore Decisions:
+- User確認が必要なHigh-cost / Risk Decisions:
+- Userが`ここは考えたい`等で自動決定を止めた項目:
+
 ## 1. 目的
 
 - 
@@ -193,6 +202,7 @@ User-facing UIがある場合、[Visual Quality Baseline](../docs/17-visual-qual
 - [ ] `LEARNING` ProfileではStarting Knowledge / 学習順 / Content Depth Contractを定義
 - [ ] `LEARNING` Profileでは主要Lessonが用語紹介だけで終わらず、必要な説明・具体例・理解確認を持つ
 - [ ] `LEARNING` Profileでは次の学習 / 復習への導線を確認
+- [ ] 未解決のCore Decision / High-cost Decisionが残っていない、または未確定として明示されている
 - [ ] 未確認事項が明示されている
 
 ## 15. 未確認予定
