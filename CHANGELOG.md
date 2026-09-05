@@ -2,6 +2,52 @@
 
 Guide Versionの正本は [`guide-version.json`](guide-version.json) です。
 
+## 1.17.0 - 2026-09-05
+
+### Added
+
+- `docs/19-game-development.md`を追加し、**Game-specificな設計・完成判定・Playtest・Phase管理のNormative Owner**として定義
+  - Core Experience / Core Loop / Playable MVP / Vertical Slice / Progression / Primary Completion Conditionを整理
+  - Prototype / Playable MVP / Main Game Completeを区別
+  - Game State semantics / Failure Contract / Difficulty / Balance / Content / World / Simulation / Controls / TutorialをGame固有責務として整理
+  - Automated Test / Runtime Validation / Actual Playtestを分離
+  - Phase Gate / Core Before Variety / Scope Managementを追加
+  - Small GameへSave / LOD / Stress Test /大規模Architectureを機械的に強制しない条件付き適用を明記
+- `GAME` Project Profileを追加
+  - Browser / Canvas / WebGL / Electron / 2D / 3D等の実装方式ではなく、Gameplay Rule / Player Action / Success-Failure / Progressionが主要価値かで適用判断
+  - `STATIC` / `MEDIA` / `ELECTRON`等の既存Profileと併用可能
+- `templates/REQUIREMENTS_TEMPLATE.md`へCompactなGAME Sectionを追加
+- `templates/QUALITY_CHECKLIST.md`へCommon + Conditionalの短いGAME確認項目を追加
+- Guide ValidatorへGame Owner / Router / Profile / Requirements / ChecklistのRegression Guardを追加
+
+### Changed
+
+- `README.md`へGame Development Ownerと`GAME` Profileの短い入口を追加
+- `START_HERE.md`へ「ゲームを作る / 直す」Routeを追加
+- `docs/00-governance.md`のOwner表へGame Developmentを登録
+- `docs/01-requirements.md`へGAME Requirementsの最小入口を追加し、詳細は`docs/19`へ委譲
+- `docs/12-project-profiles.md`へ`GAME`を追加
+
+### Rule Hygiene
+
+- Game固有のCross-cutting Ruleは既存Ownerへ自然に収まらないため、新しい番号付きOwner `docs/19` を追加
+- Save Schema / Migration / Backup / Restoreは引き続き`docs/03`
+- UI / UX / Accessibility一般は`docs/04`
+- Page Load / Runtime responsiveness一般は`docs/05`
+- Testing Strategy / Verification Stateは`docs/07`
+- Asset / Dependency / Licenseは`docs/13`
+- Visual Minimum / Domain Researchは`docs/17` / `docs/18`
+- README / START_HEREはRouterのまま保ち、Game詳細Ruleを複製しない
+- Game専用巨大Templateや`GAME-SMALL` / `GAME-LARGE`等のProfile分割は追加しない
+
+### Compatibility
+
+- 既存Projectへ`GAME`を自動付与しない
+- Mini GameへLong-running Save、LOD、Stress Test、Difficulty Mode等を一律要求しない
+- Combat / Craft / Quest / Enemy等のGenre固有Mechanicを共通必須にしない
+- ECS / Event Bus等のArchitectureをGameだからという理由だけで導入しない
+- Existing SaveのResetや既存ProjectのRuntime / Storage / Schema / Deployment変更を要求しない
+
 ## 1.16.0 - 2026-09-05
 
 ### Added
@@ -78,7 +124,7 @@ Guide Versionの正本は [`guide-version.json`](guide-version.json) です。
 - `EliteMay/aws-study-guide` Project Learnings
   - 初心者はAWS固有Serviceより前に一般IT概念を必要とする
   - DashboardとPrimary Learning Surfaceは役割が異なる
-  - CompletionとUnderstandingは別に扱う価値がある
+  - CompletionとUnderstandingは別状態として扱う価値がある
 - `EliteMay/ap-study-guide` Project Learnings
   - 教材件数Coverageと学習導線Coverageは別に検証する必要がある
   - Learner-facing UIへ内部 / 英語Labelが露出した実例がある
@@ -552,7 +598,6 @@ Aが少ないことを問題として水増しせず、Evidence不足のDirectio
 - DesignShelfをLayout番号選択だけでなく、Navigation / Structure / Density / Typography / Visual Emphasis / Component / Spacing / Color / Effect / Signature等の**Design属性Bundle**でDirectionを探索する将来案へ更新
 - 属性をRandomに独立組合せせず、相性のあるCoherent Directionを2〜3案生成し、Projectへの適合理由を付ける方針をIssue #1へ追加
 - Layout IDは完成TemplateではなくSkeleton / Exampleとして維持
-- DesignShelf本体Code / Storageは今回変更していない
 
 ### Research / Classification
 
