@@ -183,6 +183,10 @@ Game側では必要に応じてStateを次へ分類します。
 
 容易に再計算できるDerived Stateを第二のPersistent Source of Truthにしません。
 
+現在のFactory quality、Power状態、Objective条件等のように**今のGame Stateから再計算できる条件**はDerived Stateとして扱います。一方、「一度達成した」「初回Clearした」のように現在状態だけでは復元できないHistorical Milestoneは、必要に応じてObjective ID / timestamp等の最小履歴だけを保存します。現在条件のSnapshotを履歴保存して第二の正本にしません。
+
+New GameのDefault Spawn / Initial Stateを変更しても、それだけでExisting SaveのPlayer位置やSession StateをMigrationしてよいとは限りません。新規初期値と既存Save Migrationを分離し、明示的な仕様がない限りnormalizeで旧Saveの位置・復帰地点等を新Defaultへ上書きしません。
+
 Persistent IDはDisplay Name、Array Index、Visual Asset Pathへ依存させないことを優先します。
 
 この章は **何を保存するか / Failure時に何を失うか / どこから再開するか** というGame Contractを担当します。Save Schema、Migration、Normalize、Validation、Backup / Restoreの技術詳細は [03 Data / Storage](03-data-storage.md) を正本とします。
@@ -323,6 +327,8 @@ UI / UX / Accessibility一般は [04 UI / UX / Accessibility](04-ui-ux-accessibi
 Tutorialは開始時に長文をまとめて読ませるより、必要な操作が発生した時点で短く教え、実際に操作させる **Contextual Tutorial** を基本とします。
 
 TutorialではKeyだけでなく、何をするか、なぜするか、成功すると何が起きるかを必要範囲で伝えます。
+
+Tutorial Stepの完了判定は、可能な限り通常Gameplayと同じRule / Event / Analyzerを参照します。例えば「自動搬送を1回成功させる」が条件ならCash増加等の代理指標だけで完了させず、実際の搬送・生産・販売Eventが成立したことを判定します。Tutorial専用の別判定で通常Game Ruleと矛盾させません。
 
 Tutorial終了後は最初のGoal / Progressionへ自然に接続します。
 
