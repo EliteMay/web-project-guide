@@ -56,6 +56,7 @@ Visual Referenceは [Domain-first Visual Research](docs/18-domain-first-visual-r
 ## Templates
 
 - [Requirements](templates/REQUIREMENTS_TEMPLATE.md)
+- [Implementation Conversation Handoff](templates/IMPLEMENTATION_CONVERSATION_TEMPLATE.md) — 要件定義完了後に新しい実装会話へ移るための開始Prompt
 - [README](templates/README_TEMPLATE.md)
 - [Specification](templates/SPEC_TEMPLATE.md)
 - [Project Rules](templates/PROJECT_RULES_TEMPLATE.md)
