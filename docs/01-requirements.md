@@ -247,6 +247,118 @@ CSS値、class名、Function名、Componentの細分化等の実装詳細は、�
 
 完了時は全体を短く要約し、Projectの正式な`REQUIREMENTS.md`へ反映します。
 
+## 要件定義完了 → GitHub保存 → 実装会話 Handoff
+
+### MUST: 正式要件をGitHubへ保存してから実装へ進む
+
+ChatGPT Project等で要件定義と実装を別会話へ分ける場合、会話履歴そのものを引き継ぎの正本にしません。
+
+原則として次の流れを使います。
+
+```text
+Repository名（相談・調査）
+→ 要件定義
+→ Userが「要件定義終わり」等、完了を明示
+→ 完了条件 / 未解決Decisionを確認
+→ 対象Repositoryの正式なREQUIREMENTS.mdへ統合
+→ GitHubへの保存成功を確認
+→ Implementation HandoffをReadyにする
+→ 置換済みの実装会話開始Promptを出す
+→ Repository名（実装）の新しい会話
+→ 最新Guide + Current Repository + REQUIREMENTS.mdを確認
+→ 実装開始
+```
+
+要件定義中の各Turnを毎回GitHubへCommitする必要はありません。正式版へ反映する標準の合図は、Userが`要件定義終わり`等で完了を明示した時点とします。
+
+### MUST: `REQUIREMENTS.md`を正式な要件のSource of Truthにする
+
+要件定義完了時は、対象Repositoryの既存`REQUIREMENTS.md`を確認し、今回確定した内容を統合します。
+
+- 既存要件を理由なく丸ごと作り直さない
+- 現在も有効な過去要件を消さない
+- 今回変更した要件、必要な変更理由、未確認事項を残す
+- README / SPEC等と重大な矛盾がある場合は、破壊的に上書きせず確認する
+- 仕様変更が確定した場合は、必要な関連文書も現行仕様と一致させる
+- 会話ログや長い議論の全文は保存せず、実装に必要な決定を残す
+
+別の`HANDOFF.md`等へ同じ正式要件を複製しません。Implementation PromptはSource of Truthではなく、正式文書へ到達するためのRouterです。
+
+### MUST: 保存成功を確認するまで完了扱いにしない
+
+GitHubへの書き込みが失敗した場合、`保存済み`または`要件定義完了`として扱いません。
+
+- 保存失敗理由を明示する
+- 正式要件がGitHubへ反映されていない状態で実装開始を案内しない
+- 古い会話やMemoryを代替Source of Truthとして実装を始めない
+
+### Implementation Handoff Status
+
+正式要件には、実装を開始できる状態か判断できる短いHandoff情報を持たせます。
+
+推奨形式:
+
+```md
+## Implementation Handoff
+
+- Status: Ready for implementation / Not ready
+- Requirements updated: YYYY-MM-DD
+- Unresolved Core Decisions: None / ...
+- Unresolved High-cost Decisions: None / ...
+- Implementation conversation: Repository名（実装）
+```
+
+`Ready for implementation`は、GitHubへの正式保存が成功し、実装開始を妨げる未解決Decisionがない場合だけ使います。
+
+### Implementation Conversation Prompt
+
+要件定義完了後、新しい実装会話へ移る場合は [Implementation Conversation Handoff Template](../templates/IMPLEMENTATION_CONVERSATION_TEMPLATE.md) を使います。
+
+可能ならAgentがRepository URL / Full Name / Repository Nameを置換した完成済みPromptをそのまま出します。Userへ長い会話Summaryをコピーさせる必要はありません。
+
+実装会話では、Prompt自体ではなく次を確認してから作業を始めます。
+
+1. 最新の`EliteMay/web-project-guide`の`README.md` / `START_HERE.md`
+2. 対象Repositoryの現在のGitHub状態
+3. 正式な`REQUIREMENTS.md`
+4. 変更に関係するREADME / SPEC / Project Rules / `PROJECT_LEARNINGS.md` / 実装
+
+### REQUIREMENTSと現在実装が食い違う場合
+
+正式な`REQUIREMENTS.md`は「これから実現する正式な要件」、現在のCode / Runtimeは「現在どうなっているかを確認するEvidence」として扱います。
+
+- 未実装なだけ → 要件に従って実装してよい
+- 軽微な古い記述 / Document差 → 現行要件へ合わせて必要な文書を更新してよい
+- 保存互換性破壊、主要機能削除、大きな既存挙動変更、どちらが正しいか不明 → User確認を優先
+
+現在Codeが違うという理由だけで、正式要件を無視しません。一方で、要件が新しいという理由だけで既存データや重要仕様を破壊しません。
+
+### Draft要件
+
+要件定義途中の内容を保存する必要がある場合は、Draftであることを明示します。
+
+- Draftを`Ready for implementation`にしない
+- Draftを正式な実装開始Source of Truthとして扱わない
+- 要件定義完了時に正式`REQUIREMENTS.md`へ統合する
+
+原則として、途中の各Turnごとに正式`REQUIREMENTS.md`を確定版として更新し続ける必要はありません。
+
+### 実装中に大きな仕様変更が必要になった場合
+
+実装中にCore Decision / High-cost Decision相当の大きな仕様変更が必要になった場合は、原則として`Repository名（相談・調査）`側で要件を再整理します。
+
+```text
+Repository名（実装）
+→ 大きな仕様変更が必要
+→ Repository名（相談・調査）
+→ 要件更新
+→ 正式REQUIREMENTS.mdをGitHubへ保存
+→ Ready for implementationを再確認
+→ Repository名（実装）へ戻る
+```
+
+細かなUI配置、Naming、File分割、一般的なError Handling等のDefault Decisionまで毎回要件定義へ戻しません。
+
 ## 小規模な修正
 
 小さな修正で毎回フルの要件定義をやり直す必要はありません。

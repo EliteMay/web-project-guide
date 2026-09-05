@@ -204,7 +204,19 @@ User-facing UIがある場合、[Visual Quality Baseline](../docs/17-visual-qual
 - [ ] `LEARNING` Profileでは次の学習 / 復習への導線を確認
 - [ ] 未解決のCore Decision / High-cost Decisionが残っていない、または未確定として明示されている
 - [ ] 未確認事項が明示されている
+- [ ] 要件定義完了時はGitHubへの正式保存成功を確認し、Implementation Handoff Statusを更新
 
 ## 15. 未確認予定
 
 - 
+
+## 16. Implementation Handoff
+
+詳細Workflowは [要件定義完了 → GitHub保存 → 実装会話 Handoff](../docs/01-requirements.md#要件定義完了--github保存--実装会話-handoff) を正本とします。
+
+- Status: Ready for implementation / Not ready
+- Requirements updated:
+- GitHub save verified: Yes / No
+- Unresolved Core Decisions: None / 
+- Unresolved High-cost Decisions: None / 
+- Implementation conversation: `Repository名（実装）`
