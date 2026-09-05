@@ -124,7 +124,7 @@ Guide Versionの正本は [`guide-version.json`](guide-version.json) です。
 - `EliteMay/aws-study-guide` Project Learnings
   - 初心者はAWS固有Serviceより前に一般IT概念を必要とする
   - DashboardとPrimary Learning Surfaceは役割が異なる
-  - CompletionとUnderstandingは別状態として扱う価値がある
+  - CompletionとUnderstandingは別に扱う価値がある
 - `EliteMay/ap-study-guide` Project Learnings
   - 教材件数Coverageと学習導線Coverageは別に検証する必要がある
   - Learner-facing UIへ内部 / 英語Labelが露出した実例がある
@@ -598,6 +598,7 @@ Aが少ないことを問題として水増しせず、Evidence不足のDirectio
 - DesignShelfをLayout番号選択だけでなく、Navigation / Structure / Density / Typography / Visual Emphasis / Component / Spacing / Color / Effect / Signature等の**Design属性Bundle**でDirectionを探索する将来案へ更新
 - 属性をRandomに独立組合せせず、相性のあるCoherent Directionを2〜3案生成し、Projectへの適合理由を付ける方針をIssue #1へ追加
 - Layout IDは完成TemplateではなくSkeleton / Exampleとして維持
+- DesignShelf本体Code / Storageは今回変更していない
 
 ### Research / Classification
 
