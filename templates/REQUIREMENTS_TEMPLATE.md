@@ -3,7 +3,7 @@
 ## 0. Guide / Project Profile
 
 - Adopted Guide Version:
-- Profiles: STATIC / DATA / LEARNING / MEDIA / AI-HANDOFF / CLOUD / ELECTRON / TOOL / PUBLIC-CONTENT
+- Profiles: STATIC / DATA / LEARNING / GAME / MEDIA / AI-HANDOFF / CLOUD / ELECTRON / TOOL / PUBLIC-CONTENT
 
 ## 0A. 要件定義の決定モード
 
@@ -103,6 +103,31 @@ User-facing UIがある場合、[Visual Quality Baseline](../docs/17-visual-qual
 - 教材Coverageの確認方法:
 - 学習導線Coverageの確認方法:
 
+## 5C. Game Development — `GAME` Profileのみ
+
+詳細基準は [Game Development](../docs/19-game-development.md) を正本とします。Game規模に不要な項目は省略できます。
+
+- Game Overview:
+- Core Experience:
+- Supporting Systems:
+- Non-goals:
+- Primary Completion Condition:
+- Moment-to-Moment Loop:
+- Core Gameplay Loop:
+- Progression Loop（該当時）:
+- Playable MVP:
+- Major Progression（該当時）:
+- Failure / Retry Contract（該当時）:
+- Save / Reload Contract（該当時）:
+- Difficulty / Balance Direction:
+- Controls / Tutorial Direction:
+- Gameplay Visual / Audio Readability:
+- Runtime Performance / Scale:
+- Development Phases / Phase Gate:
+- Adjustable Parameters:
+
+Prototype / Playable MVP / Main Game Completeを区別し、起動・移動だけをPlayable完成条件にしません。
+
 ## 6. データ構成
 
 | データ | 正本 | Schema/ID | 想定最大量 |
@@ -163,6 +188,8 @@ User-facing UIがある場合、[Visual Quality Baseline](../docs/17-visual-qual
 - Page Structure / Navigation:
 - Design Direction:
 - Learning order / Content Depth Contract:
+- Game Core Experience / Primary Completion Condition:
+- Game Save / Failure Contract:
 
 ## 12. 変更可能範囲
 
@@ -182,6 +209,7 @@ User-facing UIがある場合、[Visual Quality Baseline](../docs/17-visual-qual
 - 初期読込で許容する範囲:
 - 長い処理のProgress / Cancel:
 - Diagnostic Logの最大量:
+- GAMEの場合の想定Entity / Scene / Physics / VFX規模:
 
 ## 14. 完成条件
 
@@ -202,6 +230,10 @@ User-facing UIがある場合、[Visual Quality Baseline](../docs/17-visual-qual
 - [ ] `LEARNING` ProfileではStarting Knowledge / 学習順 / Content Depth Contractを定義
 - [ ] `LEARNING` Profileでは主要Lessonが用語紹介だけで終わらず、必要な説明・具体例・理解確認を持つ
 - [ ] `LEARNING` Profileでは次の学習 / 復習への導線を確認
+- [ ] `GAME` ProfileではCore Experience / Playable MVP / Primary Completion Conditionを定義
+- [ ] `GAME` Profileでは現在Phaseの主要Gameplay FlowをRuntimeでEnd-to-End確認
+- [ ] `GAME` ProfileではActual Playtestを実施し、Static Testだけで完成扱いしていない
+- [ ] `GAME` Profileで永続Saveがある場合、Save / Reload / Existing Saveを必要範囲で確認
 - [ ] 未解決のCore Decision / High-cost Decisionが残っていない、または未確定として明示されている
 - [ ] 未確認事項が明示されている
 - [ ] 要件定義完了時はGitHubへの正式保存成功を確認し、Implementation Handoff Statusを更新
