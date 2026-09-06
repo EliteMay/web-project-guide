@@ -41,6 +41,11 @@ const requiredFiles = [
   'catalog/anti-patterns.md',
   'catalog/validated-visual-directions.md',
   'templates/REQUIREMENTS_TEMPLATE.md',
+  'templates/requirements/README.md',
+  'templates/requirements/VISUAL.md',
+  'templates/requirements/LEARNING.md',
+  'templates/requirements/GAME.md',
+  'templates/requirements/DIAGNOSTICS.md',
   'templates/QUALITY_CHECKLIST.md',
   'templates/README_TEMPLATE.md',
   'templates/SPEC_TEMPLATE.md',
@@ -153,6 +158,43 @@ if (!governance.includes('docs/21-rule-routing-preflight.md') && !governance.inc
   errors.push('docs/00-governance.md: missing Rule Routing owner registration');
 }
 if (!routingGuide.includes('../maintenance/rule-router.json')) errors.push('docs/21: missing machine router link');
+
+const requirementTemplate = read('templates/REQUIREMENTS_TEMPLATE.md');
+for (const pack of [
+  'requirements/README.md',
+  'requirements/VISUAL.md',
+  'requirements/LEARNING.md',
+  'requirements/GAME.md',
+  'requirements/DIAGNOSTICS.md'
+]) {
+  if (!requirementTemplate.includes(pack)) errors.push(`REQUIREMENTS_TEMPLATE.md: missing conditional pack route -> ${pack}`);
+}
+
+const qualityChecklist = read('templates/QUALITY_CHECKLIST.md');
+if (!/^## Conditional Routing$/m.test(qualityChecklist)) {
+  errors.push('QUALITY_CHECKLIST.md: missing Conditional Routing section');
+}
+
+const visualBaseline = read('docs/17-visual-quality-baseline.md');
+for (const ownerLink of ['04-ui-ux-accessibility.md', '18-domain-first-visual-research.md']) {
+  if (!visualBaseline.includes(ownerLink)) errors.push(`docs/17: missing visual owner route -> ${ownerLink}`);
+}
+if (!/^## Minimum Completion Gate$/m.test(visualBaseline)) {
+  errors.push('docs/17: missing Minimum Completion Gate');
+}
+
+const pagesOwner = read('docs/08-github-pages.md');
+if (!/^## 公開URL \/ Repository導線$/m.test(pagesOwner)) {
+  errors.push('docs/08: missing public URL / repository discoverability section');
+}
+
+for (const [rel, section] of [
+  ['templates/README_TEMPLATE.md', 'Source of Truth'],
+  ['templates/SPEC_TEMPLATE.md', 'Runtime / Architecture'],
+  ['templates/PROJECT_RULES_TEMPLATE.md', 'Project-specific Priority / Override']
+]) {
+  if (!read(rel).includes(section)) errors.push(`${rel}: missing responsibility marker -> ${section}`);
+}
 
 const router = readJson('maintenance/rule-router.json');
 readJson('maintenance/rule-router.schema.json');
