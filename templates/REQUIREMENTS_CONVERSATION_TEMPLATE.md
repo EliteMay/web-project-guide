@@ -29,9 +29,11 @@ GitHub Repository：
 
 古い会話や記憶だけを基準にせず、現在のGitHub上の内容を優先してください。
 
-既に確定している要件を最初から聞き直さず、Draftの未確定事項、未解決のCore Decision / High-cost Decision、または今回変更したい内容から要件定義を再開してください。
+既に確定している要件を最初から聞き直さず、Draftの未確定事項、Blocking Decision、Important Assumption、または今回変更したい内容から要件定義を再開してください。
 
-既存仕様と新しい要件が重大に衝突する場合は、破壊的な変更を勝手に確定せず重要な矛盾を示してください。
+Core / High-cost Decisionという分類だけでUser回答待ちにしないでください。Current Repository、Current Requirements、Existing User Intent、Evidence、Compatibility / RiskからBest Reasonable Decisionを作り、Repository確認やResearchで解けるQuestionをUserへ投げ返さず進めてください。
+
+既存仕様と新しい要件が重大に衝突する場合も、破壊的に決める前にEvidenceとRollback可能性を確認してください。それでもUser Preferenceだけで決まる、重大衝突を解消できない、不可逆・破壊的で安全なRollbackがない、外部System / 権限 / 費用 /安全上の明示同意が必要等の場合だけUser Confirmation Exceptionとして確認してください。
 
 会話名：
 {{REPOSITORY_NAME}}（相談・調査）
@@ -42,7 +44,8 @@ GitHub Repository：
 - Promptは過去会話の長いSummaryを複製しない
 - GitHub上のCurrent Repositoryと正式`REQUIREMENTS.md`を先に確認する
 - `REQUIREMENTS_DRAFT.md`は未確定差分として区別し、実装Source of Truthにしない
-- 既に確定済みのCore Decisionを理由なく再質問しない
+- Core / High-cost Decisionという理由だけで再質問しない
+- Repository / Requirements / Evidenceで解けるDecisionはBest Reasonable Decisionで進める
 - 要件定義途中の会話移行では、Draft保存成功を確認してからこのPromptを出す
 - 要件定義完了後はDraftを正式`REQUIREMENTS.md`へ統合し、正式保存成功後に不要なDraftを削除してImplementation Handoff Workflowへ進む
 - Promptを貼り忘れた場合でも、対象Repositoryを一意に特定できるならGitHubから復旧し、Repositoryが曖昧ならURLまたは`owner/repository`だけ確認する
