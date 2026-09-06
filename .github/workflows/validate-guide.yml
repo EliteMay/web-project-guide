@@ -22,3 +22,6 @@ jobs:
 
       - name: Validate guide structure and links
         run: node tests/validate-guide.mjs
+
+      - name: Validate exhaustive audit contracts
+        run: node tests/validate-audit-contract.mjs
