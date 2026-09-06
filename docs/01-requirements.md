@@ -89,13 +89,16 @@ Userへの質問は例外です。次のどれかが成立するときだけ優�
 1. **Non-inferable preference** — EvidenceやCurrent Contextでは決められず、選択でUser体験が大きく変わる。
 2. **Equal viable product directions** — 主要体験が異なる複数案が同程度に妥当で、既存Intentから選べない。
 3. **Irreversible destructive decision** — Data消去、主要機能廃止、公開範囲変更等で、安全な可逆案もCurrent Contract上の答えもない。
-4. **External permission / legal / billing / account confirmation** — User本人の権限・購入・公開・契約等、Agentが推測してはいけない外部Decision。
-5. **Material contract conflict** — 現在の明示User要求とNon-breakable Contractが競合し、どちらを優先すべきかEvidenceから解決できない。
+4. **External permission / legal / billing / account confirmation** — User本人の権限・購入・契約・Account操作等、Agentが推測してはいけない外部Decision。
+5. **Explicit safety / security / legal consent** — 実行前にUser本人の明示同意が必要な安全・Security・法的操作で、Agentが代わりに同意できない。
+6. **Material contract conflict** — 現在の明示User要求とNon-breakable Contractが競合し、どちらを優先すべきかEvidenceから解決できない。
+7. **Truly missing required value** — 作業に必須のRepository / recipient / credential-free identifier等がCurrent Repository・connected source・既存Contextから取得できず、推測すると別対象へ作用し得る。
 
 質問前に必ず次を試します。
 
 - Current Repository / Requirements / Project Rulesを確認
 - 過去に明示済みのUser Intentを確認
+- connected source / toolで解決可能な値を先に読む
 - Researchable Questionなら [20 Evidence-first Research](20-evidence-first-research.md)
 - reversible / smallest-safe alternativeを検討
 
