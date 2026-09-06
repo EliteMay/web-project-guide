@@ -8,7 +8,8 @@
 2. Meaningful / Systemicな作業では [Rule Routing / Preflight](docs/21-rule-routing-preflight.md) で必要Ownerを解決
 3. 今回必要なOwner Docだけ読む
 4. 対象ProjectのCurrent Repository / Requirements / Spec / Rules / Learningsを必要範囲で確認
-5. 実装・調査・要件整理後、必要なValidationを行う
+5. Current Repository / Evidenceで解ける判断はBest Reasonable Decisionで進める
+6. 実装・調査・要件整理後、必要なValidationを行う
 
 Guide Versionの正本は [`guide-version.json`](guide-version.json)、変更履歴は [`CHANGELOG.md`](CHANGELOG.md) です。
 
@@ -23,7 +24,7 @@ Trade-off時は原則として次を優先します。
 5. 保守・修正しやすさ
 6. 見た目
 
-見た目が6番目でも、User-facing UIを未調整のまま完成扱いしません。最低品質は [Visual Quality Baseline](docs/17-visual-quality-baseline.md) を参照します。
+見た目が6番目でもUser-facing UIを未調整のまま完成扱いしません。最低品質は [Visual Quality Baseline](docs/17-visual-quality-baseline.md) を参照します。
 
 MUST / SHOULD / MAY / CONDITIONAL、Source of Truth、Rule Budgetは [Guide Governance](docs/00-governance.md) が正本です。
 
@@ -32,7 +33,7 @@ MUST / SHOULD / MAY / CONDITIONAL、Source of Truth、Rule Budgetは [Guide Gove
 | Topic | Owner |
 |---|---|
 | Governance / Rule Budget | [00](docs/00-governance.md) |
-| Requirements | [01](docs/01-requirements.md) |
+| Requirements / Decision / Persistence | [01](docs/01-requirements.md) |
 | Architecture | [02](docs/02-architecture.md) |
 | Data / Storage / Migration | [03](docs/03-data-storage.md) |
 | UI / UX / Accessibility | [04](docs/04-ui-ux-accessibility.md) |
@@ -45,7 +46,7 @@ MUST / SHOULD / MAY / CONDITIONAL、Source of Truth、Rule Budgetは [Guide Gove
 | Electron / Distribution | [11](docs/11-electron-distribution.md) |
 | Project Profiles | [12](docs/12-project-profiles.md) |
 | Dependencies / Assets | [13](docs/13-dependencies-assets.md) |
-| Continuous Improvement | [14](docs/14-continuous-improvement.md) |
+| Continuous Improvement / Guide Audit | [14](docs/14-continuous-improvement.md) |
 | Observability / Project Memory | [15](docs/15-development-observability.md) |
 | Cross-Repository GitHub | [16](docs/16-cross-repository-github-infrastructure.md) |
 | Visual minimum quality | [17](docs/17-visual-quality-baseline.md) |
@@ -54,6 +55,7 @@ MUST / SHOULD / MAY / CONDITIONAL、Source of Truth、Rule Budgetは [Guide Gove
 | Evidence-first Research | [20](docs/20-evidence-first-research.md) |
 | Rule Routing / Preflight | [21](docs/21-rule-routing-preflight.md) |
 | Task-first Structure / Flow Research | [22](docs/22-task-first-structure-flow-research.md) |
+| Conversation Handoff / Recovery | [23](docs/23-conversation-handoff-recovery.md) |
 
 Machine-readable Routingは [`maintenance/rule-router.json`](maintenance/rule-router.json) を正本とします。
 
@@ -61,6 +63,7 @@ Machine-readable Routingは [`maintenance/rule-router.json`](maintenance/rule-ro
 
 - 同じ判断のNormative Ownerを複数作らない。
 - Project固有仕様は対象Projectへ置き、Common Guideへ混ぜない。
+- Current Repository / Requirements / Evidenceで合理的に解ける判断をUserへ不必要に返さない。
 - 保存データを壊す変更ではMigration / Backup / Rollbackを考える。
 - 公開GitHub / Pagesへ秘密情報を置かない。
 - 未実装・未確認を完成済み / 確認済みとして扱わない。
@@ -70,6 +73,7 @@ Machine-readable Routingは [`maintenance/rule-router.json`](maintenance/rule-ro
 - AI生成Codeも既存仕様・Test・最終状態のValidationを通す。
 - 新しいCommon Ruleを追加する前に、既存Owner / Catalog / Checklist / Project側へ統合できないか確認する。
 - Requirementsへ実装済み改善履歴を積み続けない。
+- Conversation historyをProjectの第二Source of Truthにしない。
 
 詳細は各Owner Docを正本とします。
 
@@ -122,7 +126,7 @@ ChatGPT Project側で会話名の固定形式が定義されている場合は�
 - `Repository名（不具合・改善）`
 - `Repository名（相談・調査）`
 
-必要な場合のみ `データ・コンテンツ` / `GitHub・公開` を使います。ChatGPT UI固有の詳細運用をCommon Web Ruleへ増やしません。
+必要な場合のみ `データ・コンテンツ` / `GitHub・公開` を使います。ChatGPT UI固有の詳細運用をCommon Web Ruleへ増やしません。会話移行・復旧のBehaviorは [23 Conversation Handoff / Recovery](docs/23-conversation-handoff-recovery.md) を参照します。
 
 ## Guide自身の品質確認
 
@@ -146,6 +150,8 @@ Account共通GitHub実装は [`EliteMay/.github`](https://github.com/EliteMay/.g
 - `REQUIREMENTS.md` — 現在のProject Contract
 - `CHANGELOG.md` — Version単位の変更概要
 - `作業報告書.md` — 直近作業 / Validation / 未確認
-- Git history — 詳細差分
+- `PROJECT_LEARNINGS.md` — 再発価値のある長期知識
+- `maintenance/audits/` — point-in-time監査Evidence
+- Git history / PR — 詳細差分
 
 Current RequirementsとHistoryを同じファイルへ積み上げません。
