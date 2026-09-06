@@ -8,6 +8,25 @@
 - Loading / Empty / Error / Success の4状態を考える。
 - 0件画面には復帰操作を置く。
 
+## Task-first Structure / Flow
+
+### SHOULD: Page / Featureより先にUser Goal / Taskを見る
+
+主要なPage、Navigation、機能群をTemplateとして先に固定せず、Userが達成したいGoal / Needと主要Taskから必要Information / Functionを導きます。
+
+```text
+User Goal / Need
+→ Task
+→ Information / Function
+→ Information Architecture
+→ Navigation / Flow / State
+→ Page / View
+```
+
+意味のあるIA / Navigation構造 / Task Flow / Search・Browse / Recovery / Returning User等のResearch Workflowは [22 Task-first Structure / Flow Research](22-task-first-structure-flow-research.md) を正本とします。この章ではUI / UX / Accessibilityの一般原則を維持し、Structure Research Workflowを重複定義しません。
+
+Navigationの分類・階層・到達経路を変える場合は`docs/22`、Navigation UIのLayout / Typography / Color等のVisual変更は [18 Domain-first Visual Research](18-domain-first-visual-research.md) とこの章を使います。
+
 ## Visual Design Quality
 
 Visual Designの目的は、装飾量を増やすことではなく、**情報の関係・優先度・操作方法を視覚的に理解しやすくし、そのProjectらしい構造を作ること**です。
@@ -181,7 +200,7 @@ Visual Designが重要なProjectでは、CSSを本格実装する前に一度Dir
 - Content / Task / Audience固有の理由がLayoutに現れているか
 - Primary Actionと重要情報が装飾なしでも分かるか
 - 「modern」「premium」等の抽象語をEffectで埋めていないか
-- ReferenceのSkeletonをそのまま完成形にしていないか
+- DesignShelfやReferenceのSkeletonをそのまま完成形にしていないか
 
 Genericに見える場合は、実装量を増やす前にDirectionを修正します。
 
@@ -280,7 +299,7 @@ Componentの一貫性とPage構造の多様性を両立します。
 該当するComponentでは、完成Screenshotだけでなく状態差を設計します。
 
 - default
-- hover（pointerがある場合）
+- hover（Pointerがある場合）
 - focus-visible
 - active / pressed / selected
 - disabled
@@ -288,122 +307,144 @@ Componentの一貫性とPage構造の多様性を両立します。
 - error / invalid
 - empty / no result
 
-実際に取り得るStateだけ明示します。
+すべてのComponentへ全状態を機械的に作るのではなく、そのComponentが実際に取り得る状態を明示します。
 
 ## ProjectごとにVisual Structureを変える
+
+「公式感のあるサイト = 1つのLayout」と定義しません。
+
+Project Typeに応じて適切な構造を変えます。
 
 | Project | 検討しやすい構造例 |
 |---|---|
 | Documentation | Sidebar / TOC / readable main column / search |
 | Dashboard | Dense grid / table / filters / persistent context |
 | Media | Large visual / player / queue / browsing structure |
-| Tool | Task-first workspace / controls near output / minimal marketing |
-| Landing Page | Narrative sections / product evidence / focused action |
+| Tool | Task-first workspace / controls near output / minimal marketing sections |
+| Landing Page | Narrative sections / product evidence / focused primary action |
 | Data-heavy App | Search / filters / table / master-detail / comparison |
 | Portfolio / Showcase | Editorial rhythm / project imagery / asymmetric composition |
 
-Template指定ではありません。同じTypeでも内容・利用頻度・主要操作で変わります。
+これはTemplate指定ではありません。同じProject Typeでも内容・利用頻度・主要操作によって別構造を選べます。
 
-## Companion Tool / Visual Catalogの扱い
+## DesignShelfの活用
 
-Design direction比較Tool、過去Layout Catalog、Skeleton集等を使う場合も、それをCommon Ruleの正本や完成Templateにしません。
+[DesignShelf](https://github.com/EliteMay/DesignShelf) は、完成サイトのTemplateを選ぶ場所ではなく、**Design Directionを分解して比較するCompanion Tool**として利用できます。
 
-- Structure比較の語彙として使う。
-- 2〜3のcoherent directionを比較する。
-- Palette変更だけを新Directionとしない。
-- Layout ID / Skeletonを正解一覧としない。
-- Target ProjectのNavigation / Density / Content / Primary ActionへRebuildする。
+推奨Workflow:
 
-過去に利用した特定Companion ToolのEvidenceは [DesignShelf Companion Tool Evidence](../references/designshelf-companion-tool-evidence.md) に非Normative Referenceとして保存します。Current Tool実装は利用時にCurrent Repositoryを再確認します。
+1. 本GuideでPurpose / Workflow / Information Architectureを決める。
+2. 色やEffectなしのWireframeを考える。
+3. DesignShelfで2〜3個の**構造的に異なるDirection**を比較する。
+4. 選んだ案をそのままコピーせず、Project固有のNavigation / Density / Primary Action / Contentへ変形する。
+5. Structureが決まってからPaletteを選ぶ。
+6. 最後にDecorative Effectを必要な範囲だけ追加する。
+
+### DesignShelfで扱うDesign属性
+
+将来的にはLayout番号だけでなく、次のような属性を組み合わせてDirectionを表せると再利用しやすくなります。
+
+- Navigation Type
+- Main Structure
+- Content Density
+- Alignment
+- Typography Direction
+- Visual Emphasis
+- Image / Screenshot Usage
+- Component Density / Component family
+- Spacing Rhythm
+- Color Rule
+- Decorative Effect Policy
+- Signature
+
+ただし、これらを完全独立のRandomなつまみとして組み合わせるとDesignが破綻します。**相性のある属性を1つのCoherent Directionとして2〜3案生成し、各案に「なぜこのProjectへ合うか」を付ける**方式を優先します。
+
+### DesignShelfを使うときの注意
+
+- `中央Hero + 3 Cards`等の一般的な骨格も候補の1つとして残してよいが、AIのDefaultだから選ばない。
+- Random提案は発想の入口として使い、完成判断にはしない。
+- Paletteだけ変えて同じLayoutを再利用し続けない。
+- 24 Layoutを「正解の一覧」と扱わない。必要なら混合・削除・変形する。
+- Layout IDは完成TemplateではなくSkeleton / Exampleとして扱う。
+- DesignShelfの現在UIはPalette → Layoutの順でも、Guide運用では**Structure-firstで利用してよい**。
 
 ## Visual Design Review Gate
 
 ### CONDITIONAL: Visual Qualityが重要ならBuild後に別工程でReviewする
 
-1. Purpose / User Task
-2. Information Hierarchy
-3. Navigation / Primary Action
-4. Layout / Responsive
-5. Typography / Spacing
-6. Component Semantics
-7. Design System Consistency
-8. Accessibility
-9. Copy / Content
-10. AI Template Regression
+「CSSを書き終えた」ことと「Visual Designが完成した」ことを分けます。
 
-Finding:
+実装後、機能Testとは別に次をReviewします。
 
-- **Blocking:** 主要Task不能、重大Accessibility、内容と構造の不一致等
-- **Major:** Hierarchy / Navigation / Responsive / Genericness等
-- **Minor:** Spacing / State / Polish等
+1. **Purpose / User Task** — 最初に何を理解・実行すべきか明確か
+2. **Information Hierarchy** — 重要度がSize / Position / Density / Contrastへ正しく反映されているか
+3. **Navigation / Primary Action** — 次のActionが自然で、Marketing CTAを機械的に追加していないか
+4. **Layout / Responsive** — Desktopを縮小しただけでなく、狭い画面でPriorityが再構成されているか
+5. **Typography / Spacing** — 読みやすさ、Line length、Grouping、Rhythmが適切か
+6. **Component Semantics** — Card / Table / List / Tabs等の選択理由が情報の性質に合うか
+7. **Design System Consistency** — Token / State / Radius / Border / Button等が無意味に揺れていないか
+8. **Accessibility** — Focus、Contrast、Keyboard、Motion、Target等を損なっていないか
+9. **Copy / Content** — GenericなAI Copyや冗長なSectionがDesignを水増ししていないか
+10. **AI Template Regression** — 色を外したとき、別Projectとほぼ同じCompositionへ戻っていないか
 
-`Pass` / `Needs work`を明示し、Blockingが残る場合はVisual完成扱いにしません。
+Findingは必要に応じて次で分けます。
 
-## Responsive
+- **Blocking:** 主要Task不能、重大なAccessibility、内容と構造の不一致など、完成を止める
+- **Major:** Hierarchy / Navigation / Responsive / Template感など、Visual Qualityを大きく下げる
+- **Minor:** 細かなSpacing / State / Polish等
 
-端末名ではなく**内容が崩れる地点**をbreakpointにします。
+Visual Reviewの結果は `Pass` / `Needs work` を明示し、Blockingが残る場合はVisual完成扱いにしません。
 
-- Page全体の横scrollを避ける。
-- Table / Timeline /大型Editor等は必要部分だけ局所scrollを許可する。
-- 320 CSS px相当でも主要情報 / 操作を失わないことを目標にする。
-- PC専用UIでも低い縦解像度・Zoom 125〜150%を確認する。
-- 列数削減だけでなくNavigation / Secondary / Action priorityを再構成する。
+## レスポンシブ
+
+端末名ではなく、**内容が崩れる地点**をbreakpointにします。
+
+原則:
+- ページ全体の横スクロールを避ける。
+- 表・タイムライン・大型編集領域など、必要な部分だけ局所スクロールを許可する。
+- 320 CSS px相当の狭い画面でも主要情報と操作を失わないことを目標にする。
+- PC専用UIでも、低い縦解像度・表示倍率125〜150%を確認する。
+- Responsiveでは単純に列数を減らすだけでなく、Navigation / Secondary Content / Action priorityを必要に応じて再構成する。
 
 ## fixed / sticky
 
-- 小画面で主要Buttonを隠さない。
-- Keyboard focus中の要素を覆わない。WCAG 2.2の**Focus Not Obscured**も確認する。
-- Modalと競合しない。
-- Bottom fixed UIがContentへ重ならない。
-- Scroll areaを不必要に増やさない。
+便利ですが、過去に操作阻害を何度も起こしたため慎重に使います。
 
-## Accessibility
+確認項目:
+- 小さい画面で主要ボタンを隠さない
+- フォーカス中の要素を覆わない
+- モーダルと競合しない
+- 下部固定UIがカード上へ重ならない
+- スクロール領域を必要以上に増やさない
 
-WCAG 2.2 AAを参考に、Projectへ該当する実用上重要項目を標準にします。
+## アクセシビリティ
 
-### Semantics / Keyboard / Focus
+WCAG 2.2 AAを参考に、個人用サイトでも実用上重要な項目を標準にします。
 
-- `button`, `nav`, `main`, `header`, `label`等の適切なHTML要素を使う。
-- 主要操作をKeyboardでも可能にする。
-- `:focus-visible`を消さない。
-- Focused controlがsticky / overlay等で完全に隠れないようにする。
-- Dialog / menu等ではFocus順と復帰先を壊さない。
+- `button`, `nav`, `main`, `header`, `label`など適切なHTML要素を使う
+- 主要操作はキーボードでも可能にする
+- `:focus-visible`を消さない
+- 色だけで状態を表さない
+- 通常文字は可能な限り4.5:1以上のコントラストを確保
+- 小さすぎる操作対象を避け、最低24×24 CSS pxを意識する
+- 重要操作は44px前後も検討する
+- `prefers-reduced-motion`を尊重する
+- `aria-pressed`, `aria-expanded`, `aria-live`等は必要な場所だけ正しく使う
 
-### Contrast / State / Target
+## ボタンと入力
 
-- 色だけで状態を表さない。
-- 通常文字は可能な限り4.5:1以上のcontrastを確保する。
-- 小さすぎる操作Targetを避け、WCAG 2.2の24×24 CSS px相当のMinimumを意識する。
-- 主要操作ではより大きいTargetも検討する。
-- `aria-pressed`, `aria-expanded`, `aria-live`等は必要な場所だけ正しく使う。
-
-### Motion / Dragging / Alternative
-
-- `prefers-reduced-motion`を尊重する。
-- **Dragging Movements**が主要操作の場合、Pointerでのdrag以外にClick / Button / Keyboard等の代替を用意できるか確認する。ただしfreehand drawing等、dragging自体が本質の操作はContextで判断する。
-
-### Form / Redundant Entry / Accessible Authentication
-
-CONDITIONAL:
-
-- **Redundant Entry:** 同じProcessで既に入力した情報を理由なく再入力させない。再利用 / selection / autofill等を検討する。
-- **Accessible Authentication:** Authenticationがある場合、Password manager / pasteを理由なく禁止しない。
-- CAPTCHAや認知Taskだけに依存せず、利用者が認証を完了できるAlternativeを検討する。
-
-## Button / Input
-
-- `div onclick`をButton代わりに多用しない。
-- Disabled理由を必要に応じて分かるようにする。
-- Errorは修正方法を示す。
-- Destructive actionはRiskに応じてUndo /確認 / Backup等を持つ。
+- `div onclick`をボタン代わりに多用しない
+- 無効状態は理由が分かるようにする
+- エラーは「エラー」だけでなく修正方法を表示する
+- 破壊操作はUndo / 確認 / Backupのいずれかを持つ
 
 ## 自動処理
 
-AI / Detector / Parser等の自動結果は必要に応じて次を持たせます。
+AI・Detector・Parserなどの自動結果は、必要に応じて以下を持たせます。
 
 - Confidence
 - 要確認状態
-- Manual correction
-- 元Dataへ戻れる導線
+- 手動修正
+- 元データへ戻れる導線
 
-自動判定を絶対正解として扱いません。
+自動判定を絶対正解として扱わないことを基本とします。

@@ -98,14 +98,14 @@ Cross-cutting Topicでは各専門章にその分野固有の制約だけを置�
 | Project Profiles | `docs/12-project-profiles.md` | Routingの補助情報 |
 | Dependencies / Assets | `docs/13-dependencies-assets.md` | Performance / Securityは専門Owner |
 | Guide improvement / review | `docs/14-continuous-improvement.md` | review-policyは設定 |
-| Runtime diagnostics / Project Learnings | `docs/15-development-observability.md` | Data / Securityは専門制約 |
+| Runtime diagnostics / Remote handoff | `docs/15-development-observability.md` | Data / Securityは専門制約 |
 | Cross-repository GitHub infrastructure | `docs/16-cross-repository-github-infrastructure.md` | `EliteMay/.github`は実装側 |
 | Visual minimum quality | `docs/17-visual-quality-baseline.md` | Checklistは実行確認 |
 | Visual Research / Redesign workflow | `docs/18-domain-first-visual-research.md` | Visual CatalogはEvidence |
 | Game-specific development / completion / playtest | `docs/19-game-development.md` | 一般Ruleは既存Ownerを維持 |
 | Evidence-first Research | `docs/20-evidence-first-research.md` | Topic固有判断は各Owner |
 | Rule Routing / Preflight Behavior | `docs/21-rule-routing-preflight.md` | `rule-router.json`はMachine Route、START_HEREはHuman Summary |
-| Conversation Handoff / Recovery | `docs/22-conversation-handoff-recovery.md` | Conversation TemplatesはRouter / Prompt |
+| Task-first Structure / Flow Research | `docs/22-task-first-structure-flow-research.md` | 04は一般UX原則、Project固有IA / Flowは対象Project |
 
 新Topicが既存Ownerへ自然に収まらない場合だけ新規Docを検討します。
 
@@ -191,11 +191,9 @@ GitHub内で情報が衝突する場合は、単純な固定順位だけで仕�
 - Rule追加時にRule Budgetを確認
 - Machine Router / Owner / Gateの整合を保つ
 - 相対Linkを壊さない
-- GitHub Actions等のDependency参照をRiskに応じてimmutableに固定する
-- 再発価値のあるGuide固有Learningを`PROJECT_LEARNINGS.md`へ継続蓄積する
 - 未確認事項を作業報告へ残す
 
-`PROJECT_LEARNINGS.md`はこのGuide自身でもDurable Project Memoryとして維持します。ただしGuide固有の運用学習だけに限定し、Common Rule本文やCatalogを複製しません。Common Rule / Catalogへ昇格した後もProject Evidenceは必要範囲で残し、昇格先をLinkします。
+`PROJECT_LEARNINGS.md`は通常Projectでは推奨します。このGuide自身ではCatalog / Continuous Improvementと役割が重なるため、持つ場合はGuide固有の運用学習だけに限定し、Common Rule本文やCatalogを複製しません。
 
 ## 例外
 

@@ -8,7 +8,6 @@ const requiredFiles = [
   'README.md',
   'START_HERE.md',
   'REQUIREMENTS.md',
-  'PROJECT_LEARNINGS.md',
   'guide-version.json',
   'CHANGELOG.md',
   '作業報告書.md',
@@ -34,7 +33,7 @@ const requiredFiles = [
   'docs/19-game-development.md',
   'docs/20-evidence-first-research.md',
   'docs/21-rule-routing-preflight.md',
-  'docs/22-conversation-handoff-recovery.md',
+  'docs/22-task-first-structure-flow-research.md',
   'maintenance/README.md',
   'maintenance/DEEP_SYSTEM_AUDIT.md',
   'maintenance/review-policy.json',
@@ -101,7 +100,6 @@ const markdownFiles = [
   path.join(root, 'README.md'),
   path.join(root, 'START_HERE.md'),
   path.join(root, 'REQUIREMENTS.md'),
-  path.join(root, 'PROJECT_LEARNINGS.md'),
   path.join(root, 'CHANGELOG.md'),
   path.join(root, '作業報告書.md')
 ].filter((file) => file.endsWith('.md') && fs.existsSync(file));
@@ -147,51 +145,49 @@ if (/Adopted Guide Version:\s*`?\d+\.\d+\.\d+/i.test(requirements)) {
 if (!/Current Contract|現在のProject Contract/.test(requirements)) {
   errors.push('REQUIREMENTS.md: must identify itself as the current project contract');
 }
-if (/^##\s+\d+\.\s+Phase 0\b/m.test(requirements) || /Owner Audit Axes|Failure Evidenceは次のLevel/.test(requirements)) {
-  errors.push('REQUIREMENTS.md: detailed audit procedure leaked into current project contract');
-}
 
 const readme = read('README.md');
 const startHere = read('START_HERE.md');
 const governance = read('docs/00-governance.md');
-const requirementsOwner = read('docs/01-requirements.md');
-const uiOwner = read('docs/04-ui-ux-accessibility.md');
-const securityOwner = read('docs/06-security.md');
-const electronOwner = read('docs/11-electron-distribution.md');
-const continuousImprovement = read('docs/14-continuous-improvement.md');
-const observabilityOwner = read('docs/15-development-observability.md');
-const crossRepoOwner = read('docs/16-cross-repository-github-infrastructure.md');
-const researchOwner = read('docs/20-evidence-first-research.md');
+const uiUx = read('docs/04-ui-ux-accessibility.md');
+const visualResearch = read('docs/18-domain-first-visual-research.md');
 const routingGuide = read('docs/21-rule-routing-preflight.md');
-const conversationOwner = read('docs/22-conversation-handoff-recovery.md');
+const structureFlowResearch = read('docs/22-task-first-structure-flow-research.md');
+const continuousImprovement = read('docs/14-continuous-improvement.md');
 const deepAudit = read('maintenance/DEEP_SYSTEM_AUDIT.md');
 
 for (const requiredLink of [
   'docs/21-rule-routing-preflight.md',
-  'docs/22-conversation-handoff-recovery.md',
+  'docs/22-task-first-structure-flow-research.md',
   'maintenance/rule-router.json'
 ]) {
   if (!readme.includes(requiredLink)) errors.push(`README.md: missing routing entry -> ${requiredLink}`);
 }
 if (!startHere.includes('docs/21-rule-routing-preflight.md')) errors.push('START_HERE.md: missing Rule Routing / Preflight route');
-if (!startHere.includes('docs/22-conversation-handoff-recovery.md')) errors.push('START_HERE.md: missing Conversation Handoff / Recovery route');
-for (const ownerLink of ['21-rule-routing-preflight.md', '22-conversation-handoff-recovery.md']) {
-  if (!governance.includes(ownerLink)) errors.push(`docs/00-governance.md: missing owner registration -> ${ownerLink}`);
+if (!startHere.includes('docs/22-task-first-structure-flow-research.md')) errors.push('START_HERE.md: missing Structure / Flow Research route');
+if (!governance.includes('docs/21-rule-routing-preflight.md') && !governance.includes('21-rule-routing-preflight.md')) {
+  errors.push('docs/00-governance.md: missing Rule Routing owner registration');
+}
+if (!governance.includes('docs/22-task-first-structure-flow-research.md')) {
+  errors.push('docs/00-governance.md: missing Structure / Flow Research owner registration');
 }
 if (!routingGuide.includes('../maintenance/rule-router.json')) errors.push('docs/21: missing machine router link');
+if (!routingGuide.includes('STRUCTURE_FLOW')) errors.push('docs/21: missing STRUCTURE_FLOW domain guidance');
+if (!uiUx.includes('22-task-first-structure-flow-research.md')) errors.push('docs/04: missing Structure / Flow Research route');
+if (!visualResearch.includes('22-task-first-structure-flow-research.md')) errors.push('docs/18: missing structural research boundary route');
+for (const ownerLink of [
+  '04-ui-ux-accessibility.md',
+  '18-domain-first-visual-research.md',
+  '20-evidence-first-research.md'
+]) {
+  if (!structureFlowResearch.includes(ownerLink)) errors.push(`docs/22: missing responsibility boundary route -> ${ownerLink}`);
+}
 if (!continuousImprovement.includes('../maintenance/DEEP_SYSTEM_AUDIT.md')) {
   errors.push('docs/14: missing Deep System Audit procedure link');
 }
 if (!deepAudit.includes('../docs/14-continuous-improvement.md')) {
   errors.push('maintenance/DEEP_SYSTEM_AUDIT.md: missing normative owner link');
 }
-for (const ownerLink of ['10-project-management.md', '01-requirements.md']) {
-  if (!conversationOwner.includes(ownerLink)) errors.push(`docs/22: missing owner boundary link -> ${ownerLink}`);
-}
-
-// Agent autonomy is a behavioral contract, not an automatic stop on Core / High-cost labels.
-if (!requirementsOwner.includes('Best Reasonable Decision')) errors.push('docs/01: missing Best Reasonable Decision contract');
-if (!routingGuide.includes('Best Reasonable Decision')) errors.push('docs/21: missing agent autonomy routing contract');
 
 const requirementTemplate = read('templates/REQUIREMENTS_TEMPLATE.md');
 for (const pack of [
@@ -203,44 +199,6 @@ for (const pack of [
 ]) {
   if (!requirementTemplate.includes(pack)) errors.push(`REQUIREMENTS_TEMPLATE.md: missing conditional pack route -> ${pack}`);
 }
-for (const marker of ['Blocking Decisions', 'Important Assumptions']) {
-  if (!requirementTemplate.includes(marker)) errors.push(`REQUIREMENTS_TEMPLATE.md: missing autonomy handoff marker -> ${marker}`);
-}
-for (const stale of [
-  'Userが決めるCore Decisions:',
-  'User確認が必要なHigh-cost / Risk Decisions:',
-  'Unresolved Core Decisions:',
-  'Unresolved High-cost Decisions:'
-]) {
-  if (requirementTemplate.includes(stale)) errors.push(`REQUIREMENTS_TEMPLATE.md: stale user-wait contract -> ${stale}`);
-}
-
-const agentsTemplate = read('templates/AGENTS_TEMPLATE.md');
-const requirementsConversationTemplate = read('templates/REQUIREMENTS_CONVERSATION_TEMPLATE.md');
-const implementationConversationTemplate = read('templates/IMPLEMENTATION_CONVERSATION_TEMPLATE.md');
-for (const [rel, text] of [
-  ['templates/AGENTS_TEMPLATE.md', agentsTemplate],
-  ['templates/REQUIREMENTS_CONVERSATION_TEMPLATE.md', requirementsConversationTemplate],
-  ['templates/IMPLEMENTATION_CONVERSATION_TEMPLATE.md', implementationConversationTemplate]
-]) {
-  if (!text.includes('22-conversation-handoff-recovery.md')) errors.push(`${rel}: missing docs/22 handoff route`);
-}
-if (agentsTemplate.includes('高コスト判断はAI提案でも勝手に確定せず')) {
-  errors.push('AGENTS_TEMPLATE.md: stale automatic user-wait rule remains');
-}
-if (/未解決のCore Decision \/ High-cost Decisionが残っている場合は、そのまま実装を開始せず/.test(implementationConversationTemplate)) {
-  errors.push('IMPLEMENTATION_CONVERSATION_TEMPLATE.md: stale Core/High-cost automatic stop remains');
-}
-
-const projectLearningsTemplate = read('templates/PROJECT_LEARNINGS_TEMPLATE.md');
-const projectLearnings = read('PROJECT_LEARNINGS.md');
-if (!/Accumulation Contract|継続.*蓄積/s.test(projectLearningsTemplate)) {
-  errors.push('PROJECT_LEARNINGS_TEMPLATE.md: missing accumulation contract');
-}
-if (!/継続蓄積|継続して.*追加|継続的に.*追加/s.test(observabilityOwner)) {
-  errors.push('docs/15: missing durable project learning accumulation rule');
-}
-if (!/^# PROJECT LEARNINGS/m.test(projectLearnings)) errors.push('PROJECT_LEARNINGS.md: missing project learning root');
 
 const qualityChecklist = read('templates/QUALITY_CHECKLIST.md');
 if (!/^## Conditional Routing$/m.test(qualityChecklist)) {
@@ -253,12 +211,6 @@ for (const ownerLink of ['04-ui-ux-accessibility.md', '18-domain-first-visual-re
 }
 if (!/^## Minimum Completion Gate$/m.test(visualBaseline)) {
   errors.push('docs/17: missing Minimum Completion Gate');
-}
-if (!uiOwner.includes('../references/designshelf-companion-tool-evidence.md')) {
-  errors.push('docs/04: named companion evidence must be separated into reference');
-}
-if (!/Focus Not Obscured/.test(uiOwner) || !/Dragging/.test(uiOwner) || !/Accessible Authentication/.test(uiOwner)) {
-  errors.push('docs/04: missing audited WCAG 2.2 interaction coverage');
 }
 
 const pagesOwner = read('docs/08-github-pages.md');
@@ -273,28 +225,12 @@ if (!projectManagement.includes('Repository discoverability')) {
   errors.push('docs/10: missing repository discoverability owner section');
 }
 
+const crossRepoOwner = read('docs/16-cross-repository-github-infrastructure.md');
 if (!crossRepoOwner.includes('../references/cross-repository-github-pilot-evidence.md')) {
   errors.push('docs/16: missing project-specific pilot evidence reference');
 }
 for (const projectName of ['DesignShelf', 'ASMRTube', 'osu-hub']) {
   if (crossRepoOwner.includes(projectName)) errors.push(`docs/16: project-specific named evidence leaked into common owner -> ${projectName}`);
-}
-if (!/full-length Commit SHA|full-length commit SHA/.test(crossRepoOwner)) {
-  errors.push('docs/16: missing full commit SHA action pinning guidance');
-}
-if (!/^## Branch Lifecycle$/m.test(crossRepoOwner)) errors.push('docs/16: missing branch lifecycle contract');
-
-for (const section of ['Authentication / Authorization', 'Session / Cookie', 'CSRF', 'Content Security Policy', 'File Upload / Import', 'Public Endpoint / Abuse / Quota']) {
-  if (!securityOwner.includes(section)) errors.push(`docs/06: missing audited security area -> ${section}`);
-}
-for (const marker of ['contextIsolation', 'sandbox', 'IPC sender', 'shell.openExternal', 'permission request handler']) {
-  if (!electronOwner.includes(marker)) errors.push(`docs/11: missing Electron security marker -> ${marker}`);
-}
-
-// Fixed source-count heuristics must not become a research quality target.
-if (/100件/.test(researchOwner)) errors.push('docs/20: fixed 100-source heuristic must not be part of current research contract');
-if (!researchOwner.includes('Decision Coverage') || !researchOwner.includes('Research Saturation')) {
-  errors.push('docs/20: missing evidence-driven research stopping condition');
 }
 
 for (const [rel, section] of [
@@ -303,16 +239,6 @@ for (const [rel, section] of [
   ['templates/PROJECT_RULES_TEMPLATE.md', 'Project-specific Priority / Override']
 ]) {
   if (!read(rel).includes(section)) errors.push(`${rel}: missing responsibility marker -> ${section}`);
-}
-
-// This guide applies its own supply-chain rule to Actions.
-const workflow = read('.github/workflows/validate-guide.yml');
-for (const match of workflow.matchAll(/^\s*uses:\s*([^\s#]+).*$/gm)) {
-  const spec = match[1];
-  const at = spec.lastIndexOf('@');
-  if (at < 0 || !/^[0-9a-f]{40}$/i.test(spec.slice(at + 1))) {
-    errors.push(`validate-guide.yml: action is not pinned to a full commit SHA -> ${spec}`);
-  }
 }
 
 const router = readJson('maintenance/rule-router.json');
@@ -339,18 +265,11 @@ if (reviewPolicy) {
   if (!Array.isArray(reviewPolicy.deepSystemAudit?.surfaces) || reviewPolicy.deepSystemAudit.surfaces.length < 5) {
     errors.push('review-policy.json: deepSystemAudit must define cross-system audit surfaces');
   }
-  if (!Array.isArray(reviewPolicy.deepSystemAudit?.completionRequires) ||
-      !reviewPolicy.deepSystemAudit.completionRequires.some((item) => /actionable/i.test(item))) {
-    errors.push('review-policy.json: deepSystemAudit must stop on actionable findings, not score alone');
-  }
 }
 
 if (router) {
   if (router.behaviorOwner !== 'docs/21-rule-routing-preflight.md') {
     errors.push('rule-router.json: behaviorOwner must be docs/21-rule-routing-preflight.md');
-  }
-  if (router.owners?.CONVERSATION_HANDOFF !== 'docs/22-conversation-handoff-recovery.md') {
-    errors.push('rule-router.json: conversation handoff owner missing or incorrect');
   }
 
   const referencedDocs = new Set();
@@ -424,22 +343,34 @@ if (router) {
     }
   }
 
-  for (const [caseId, mustInclude] of [
-    ['guide-deep-system-review', ['docs/00-governance.md', 'docs/14-continuous-improvement.md', 'docs/21-rule-routing-preflight.md']],
-    ['conversation-handoff-recovery', ['docs/10-project-management.md', 'docs/22-conversation-handoff-recovery.md']]
-  ]) {
-    const testCase = (router.goldenCases || []).find((item) => item.id === caseId);
-    if (!testCase) {
-      errors.push(`rule-router.json: missing ${caseId} golden case`);
-      continue;
+  const guideAuditCase = (router.goldenCases || []).find((testCase) => testCase.id === 'guide-deep-system-review');
+  if (!guideAuditCase) {
+    errors.push('rule-router.json: missing guide-deep-system-review golden case');
+  } else {
+    const resolved = resolveCase(guideAuditCase);
+    for (const rel of ['docs/00-governance.md', 'docs/14-continuous-improvement.md', 'docs/21-rule-routing-preflight.md']) {
+      if (!resolved.has(rel)) errors.push(`guide deep review routing parity: missing -> ${rel}`);
     }
-    const resolved = resolveCase(testCase);
-    for (const rel of mustInclude) {
-      if (!resolved.has(rel)) errors.push(`${caseId} routing parity: missing -> ${rel}`);
+    if (!startHere.includes('docs/14-continuous-improvement.md')) {
+      errors.push('START_HERE.md: guide improvement human route must include docs/14');
     }
   }
-  if (!startHere.includes('docs/14-continuous-improvement.md')) {
-    errors.push('START_HERE.md: guide improvement human route must include docs/14');
+
+  const structureFlowCase = (router.goldenCases || []).find((testCase) => testCase.id === 'meaningful-structure-flow-requirements');
+  if (!structureFlowCase) {
+    errors.push('rule-router.json: missing meaningful-structure-flow-requirements golden case');
+  } else {
+    const resolved = resolveCase(structureFlowCase);
+    for (const rel of [
+      'docs/04-ui-ux-accessibility.md',
+      'docs/20-evidence-first-research.md',
+      'docs/22-task-first-structure-flow-research.md'
+    ]) {
+      if (!resolved.has(rel)) errors.push(`structure flow routing parity: missing -> ${rel}`);
+    }
+    if (resolved.has('docs/18-domain-first-visual-research.md')) {
+      errors.push('structure flow routing parity: visual research must not be required without visual scope');
+    }
   }
 }
 

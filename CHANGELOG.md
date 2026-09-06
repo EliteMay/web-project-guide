@@ -2,6 +2,62 @@
 
 Guide Versionの正本は [`guide-version.json`](guide-version.json) です。
 
+## 1.19.0 - 2026-09-07
+
+### Added
+
+- `docs/22-task-first-structure-flow-research.md`を **Task-first Structure / Flow ResearchのSingle Normative Owner** として追加
+  - `User Goal / Need → Whole Problem / Context → Task / Subtask → Information / Function → IA → Navigation → Flow → State / Feedback → Recovery / Resume → Page / View` を基本Flowとして定義
+  - Goal / Task / Featureの分離、Whole Problem、Task評価軸、Information Architecture、Navigation、User / Task Flowを整理
+  - Search / Browse、CRUD / Editing、State / Feedback / Recovery、First-time / Returning User、Progressive Disclosure、Context Preservationを研究対象として整理
+  - Card Sorting / Tree Testing等を必要時のIA検証手段として扱い、全Projectへ機械的に強制しない
+  - Project固有のSitemap / Navigation / Flow / State Matrixは対象Projectへ保存し、Common Guideへ混在させない境界を明記
+- Machine Routerへ `STRUCTURE_FLOW` Domainを追加
+- `meaningful-structure-flow-requirements` Golden Routing Caseを追加
+
+### Consolidated
+
+- `docs/04-ui-ux-accessibility.md`
+  - UI / UX / Accessibilityの一般原則を維持
+  - Page / Featureより先にUser Goal / Taskを見るTask-first原則を短く追加
+  - Structure / Flow固有Research Workflowは`docs/22`へ委譲
+- `docs/18-domain-first-visual-research.md`
+  - Navigationの分類・階層・到達経路等の構造変更を`docs/22`へ委譲
+  - Navigation UIのPlacement / Density / Typography / Color等のVisual変更は`docs/18 + docs/04`で扱う境界を明確化
+  - IA / Navigation / Task FlowとVisualを両方変える場合、Structure判断を先に行うFlowへ整理
+- `README.md` / `START_HERE.md` / `docs/00-governance.md`
+  - 新OwnerをHuman Router / Owner Registryへ接続
+- `docs/21-rule-routing-preflight.md`
+  - `STRUCTURE_FLOW` DomainとVisualとの分類境界を追加
+  - Structure / Flow専用Stable Gateは追加せず、通常Domain Routeとして運用
+- `REQUIREMENTS.md`
+  - `docs/00-22`をCurrent Owner Structureとして反映
+  - Site固有Sitemap / Navigation / User Flow / State MatrixをCommon Guideの非責務として明記
+
+### Validator
+
+- `docs/22-task-first-structure-flow-research.md`をrequired fileへ追加
+- README / START_HERE / Governanceから`docs/22`へ到達できることを検証
+- `docs/04`と`docs/18`がStructure / Flow Researchを`docs/22`へRouteすることを検証
+- `docs/22`が一般UX / Visual Research / Evidence-first Researchの既存Owner境界を維持することを検証
+- `meaningful-structure-flow-requirements` Golden Caseで`docs/04 / 20 / 22`へ到達し、Visual scopeなしでは`docs/18`を過剰RouteしないことをRegression Guard化
+
+### Rule Hygiene
+
+- 新Owner `docs/22`は既存`docs/04`へ混在すると責務が肥大化する**Structure / Flow固有Research Workflowだけ**を所有
+- 一般Research Methodは引き続き`docs/20`、UI / UX一般原則は`docs/04`、Visual Researchは`docs/18`を正本とする
+- 新しいStable Gateは追加しない
+- Project固有のIA / Sitemap / Flow / State MatrixをCommon Ownerへ保存しない
+- Sidebar / Top Nav / Tabs等の固定Navigation PatternをGuide Defaultにしない
+
+### Compatibility
+
+- 既存ProjectのIA / Navigation / Flowを自動変更しない
+- Card Sorting / Tree Testing / Tutorial / Autosave / Wizard等を全Projectへ一律要求しない
+- NavigationのVisual修正だけでStructure Researchを機械的に要求しない
+- Structure ResearchだけでVisual Researchを自動要求しない
+- Runtime / Storage / Schema / Deployment Defaultを変更しない
+
 ## 1.18.0 - 2026-09-06
 
 ### Added
