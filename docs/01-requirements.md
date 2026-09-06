@@ -267,6 +267,60 @@ Current Repository / Project Context
 
 細かなDefault Decisionや原因と正解が明確な局所修正のために、Researchを機械的に重くしません。
 
+## Repository-backed Requirements Checkpoint
+
+### MUST: 要件定義を会話だけに保持しない
+
+対象Repositoryを一意に特定でき、GitHubへ書き込める状態では、要件定義中の現在状態をRepository rootの`REQUIREMENTS_DRAFT.md`へ**意味のある区切りごとにCheckpoint保存**します。
+
+`REQUIREMENTS_DRAFT.md`は進行中の要件差分を復元するためのCheckpointであり、正式な要件のSource of Truthではありません。正式要件の正本は引き続き`REQUIREMENTS.md`です。
+
+### Checkpoint Timing
+
+次のいずれかでは、追加の「保存する？」確認を挟まず、現在状態をDraftへ作成または統合更新します。
+
+- Core / High-cost / 主要MVP / 主要Flow等、**意味のある決定群が確定した区切り**
+- Userが保存を明示したとき
+- 別の相談・調査会話へ移る前
+- 要件定義以外の長い作業へ移る前など、会話Contextだけでは復元Riskが高くなるとき
+- Userが`要件定義終わり`等で完了を明示した直後、正式化処理へ入る前
+
+各Turnを機械的にCommitしません。短い間隔で連続して確定したDecisionはまとめて1つのCheckpointにして構いません。
+
+重要なのはCommit数を増やすことではなく、**会話が失われてもRepositoryから直近の要件状態を復元できること**です。
+
+### Draftへ残す内容
+
+- ここまでで確定した新しいDecision
+- まだ未確定のCore Decision / High-cost Decision
+- 既存正式要件から変更しようとしている項目
+- 重要な変更理由 / 衝突
+- 次に決めるべき項目
+- 最終更新日または現在Checkpointを識別できる情報
+
+会話ログ全文や長い議論は保存しません。
+
+既存`REQUIREMENTS_DRAFT.md`がある場合は、現在状態を統合更新し、古いDraftを無条件で上書き・消去しません。
+
+### MUST: Checkpoint保存成功を確認する
+
+GitHubへのDraft書き込みが失敗した場合は、保存済みとして扱いません。
+
+- 失敗理由を明示する
+- 会話移行や正式化の前なら、復元不能な状態を隠さない
+- 書き込み権限・Repository特定等、解決できる問題はUserへ同じ情報を聞き返す前に利用可能なEvidenceで解決する
+
+### MUST: 再開時はRepositoryから復元する
+
+要件定義を再開するときは、古い会話SummaryやMemoryを正本にせず、原則として次を確認します。
+
+1. 最新Guideの必要Rule
+2. 対象Repositoryの正式`REQUIREMENTS.md`
+3. `REQUIREMENTS_DRAFT.md`が存在する場合はその未確定差分
+4. README / SPEC / Project Rules / `PROJECT_LEARNINGS.md` / 現在実装等、今回の判断に必要なCurrent Repository Evidence
+
+GitHubへ保存済みの確定Decisionを最初から聞き直しません。質問は、未解決のCore / High-cost Decisionまたは新しいUser変更要求など、現在のRepository Evidenceだけでは決められない内容へ絞ります。
+
 ## 要件定義の完了ライン
 
 要件定義は、**実装担当が大きな判断で迷わず作業を開始できる状態**になれば完了とします。
@@ -301,18 +355,21 @@ ChatGPT Project等で要件定義と実装を別会話へ分ける場合、会�
 ```text
 Repository名（相談・調査）
 → 要件定義
+→ 意味のある区切りごとにREQUIREMENTS_DRAFT.mdへCheckpoint
 → Userが「要件定義終わり」等、完了を明示
+→ 最新CheckpointをGitHubへ保存して成功確認
 → 完了条件 / 未解決Decisionを確認
 → 対象Repositoryの正式なREQUIREMENTS.mdへ統合
-→ GitHubへの保存成功を確認
+→ GitHubへの正式保存成功を確認
+→ Draftを解消
 → Implementation HandoffをReadyにする
-→ 置換済みの実装会話開始Promptを出す
+→ 置換済みの実装会話開始Promptを自動で出す
 → Repository名（実装）の新しい会話
 → 最新Guide + Current Repository + REQUIREMENTS.mdを確認
 → 実装開始
 ```
 
-要件定義中の各Turnを毎回GitHubへCommitする必要はありません。正式版へ反映する標準の合図は、Userが`要件定義終わり`等で完了を明示した時点とします。
+各Turnを毎回GitHubへCommitする必要はありません。ただし、正式化する瞬間まで一度もRepositoryへ保存しない運用にはしません。要件定義中は前述のCheckpoint Timingに従います。
 
 ### MUST: `REQUIREMENTS.md`を正式な要件のSource of Truthにする
 
@@ -353,10 +410,26 @@ GitHubへの書き込みが失敗した場合、`保存済み`または`要件�
 
 `Ready for implementation`は、GitHubへの正式保存が成功し、実装開始を妨げる未解決Decisionがない場合だけ使います。
 
+### MUST: 完了Trigger後の保存とHandoffを追加確認待ちにしない
+
+Userが`要件定義終わり`等で完了を明示し、要件定義の完了ラインを満たしている場合は、`保存していい？`、`実装Promptを出す？`等の確認を追加しません。
+
+Agentは同じWorkflow内で次まで進めます。
+
+1. 最新状態を`REQUIREMENTS_DRAFT.md`へCheckpoint保存し、成功を確認
+2. 正式`REQUIREMENTS.md`へ今回の確定内容を統合
+3. GitHubへの正式保存成功を確認
+4. `Implementation Handoff`を`Ready for implementation`へ更新可能か確認
+5. 不要になったDraftを解消
+6. [Implementation Conversation Handoff Template](../templates/IMPLEMENTATION_CONVERSATION_TEMPLATE.md) を置換した完成済みPromptを出力
+
+未解決のCore / High-cost Decision、重大な文書衝突、GitHub書き込み失敗がある場合だけ、そのBlockerを示してHandoffを止めます。
+
 ### Implementation Conversation Prompt
 
 要件定義完了後、新しい実装会話へ移る場合は [Implementation Conversation Handoff Template](../templates/IMPLEMENTATION_CONVERSATION_TEMPLATE.md) を使います。
-可能ならAgentがRepository URL / Full Name / Repository Nameを置換した完成済みPromptをそのまま出します。Userへ長い会話Summaryをコピーさせる必要はありません。
+
+正式保存とHandoff Readyの確認に成功したら、AgentがRepository URL / Full Name / Repository Nameを置換した完成済みPromptを**自動で出力**します。Userへ長い会話Summaryをコピーさせたり、Prompt出力の要否を再確認したりしません。
 
 実装会話では、Prompt自体ではなく次を確認してから作業を始めます。
 
@@ -377,38 +450,19 @@ GitHubへの書き込みが失敗した場合、`保存済み`または`要件�
 
 ### Draft要件
 
-要件定義途中で別の`Repository名（相談・調査）`会話へ移る必要がある場合は、必要に応じてRepository rootの`REQUIREMENTS_DRAFT.md`へ途中状態を保存します。
+`REQUIREMENTS_DRAFT.md`の作成・更新Timingと再開時の読み方は、前述の [Repository-backed Requirements Checkpoint](#repository-backed-requirements-checkpoint) を正本とします。
 
-`REQUIREMENTS_DRAFT.md`は**未確定の引き継ぎ用Checkpoint**であり、正式要件のSource of Truthではありません。
-
-原則フロー:
+会話移行時は、移行直前の最新状態までDraftへ反映し、GitHubへの保存成功を確認してから [Requirements Conversation Resume Template](../templates/REQUIREMENTS_CONVERSATION_TEMPLATE.md) を置換したPromptを出します。
 
 ```text
 Repository名（相談・調査）
-→ 要件定義途中
-→ Userが新しい相談・調査会話へ移りたいと明示
-→ 現在までの決定 / 未確定事項を整理
-→ REQUIREMENTS_DRAFT.mdを作成または統合更新
-→ GitHubへのDraft保存成功を確認
+→ 要件定義中のMeaningful CheckpointをDraftへ保存
+→ 新しい相談・調査会話へ移る直前に最新Checkpointを保存確認
 → Requirements Conversation Resume Templateを置換
 → 新しいRepository名（相談・調査）
 → REQUIREMENTS.md + REQUIREMENTS_DRAFT.md + Current Repositoryを確認
-→ 未確定事項から再開
+→ 保存済みDecisionを聞き直さず未確定事項から再開
 ```
-
-Draft保存の標準タイミングは**会話移行時のみ**です。同じ会話を続けている間、各TurnごとにDraftをCommitしません。
-
-Draftへ残す内容:
-
-- ここまでで確定した新しい決定
-- まだ未確定のCore Decision / High-cost Decision
-- 既存正式要件から変更しようとしている項目
-- 重要な変更理由 / 衝突
-- 次の会話で最初に確認すべき項目
-
-会話ログ全文や長い議論は保存しません。
-
-既存`REQUIREMENTS_DRAFT.md`がある場合は、今回の途中状態を統合更新し、古いDraftを無条件で上書き・消去しません。
 
 ### MUST: Draftを実装開始に使わない
 
@@ -419,7 +473,9 @@ Draftへ残す内容:
 
 ### MUST: 要件定義完了時にDraftを解消する
 
-Userが`要件定義終わり`等で完了を明示した場合、Draftが存在するなら次を行います。
+Userが`要件定義終わり`等で完了を明示した場合は、Draftの有無にかかわらず、正式化の直前に最新状態がRepositoryから復元可能か確認します。
+
+Draftが存在する場合は次を行います。
 
 1. 正式`REQUIREMENTS.md`とDraftを確認
 2. 今回確定した内容を正式要件へ統合
@@ -427,12 +483,12 @@ Userが`要件定義終わり`等で完了を明示した場合、Draftが存在
 4. 正式`REQUIREMENTS.md`をGitHubへ保存
 5. 正式保存成功を確認
 6. Implementation Handoffを`Ready for implementation`へ更新可能か確認
-7. 不要になった`REQUIREMENTS_DRAFT.md`を削除
-8. 実装会話用Promptを生成
+7. 不要になった`REQUIREMENTS_DRAFT.md`を削除、または明確にSupersededとして実装Sourceから外す
+8. 実装会話用Promptを自動生成
 
-正式`REQUIREMENTS.md`の保存成功前にDraftを削除しません。正式保存またはDraft削除に失敗した場合は、その状態を明示し、完全なHandoff完了として扱いません。
+正式`REQUIREMENTS.md`の保存成功前にDraftを削除しません。正式保存またはDraft解消に失敗した場合は、その状態を明示し、完全なHandoff完了として扱いません。
 
-Userが`新しい相談・調査会話へ移りたい`等と明示した場合、重大な矛盾やGitHub書き込み失敗がなければ、追加の保存確認質問を増やさず、Draft保存 → 保存確認 → 再開Prompt生成まで進めて構いません。
+Userが`新しい相談・調査会話へ移りたい`等と明示した場合、重大な矛盾やGitHub書き込み失敗がなければ、追加の保存確認質問を増やさず、最新Draft保存 → 保存確認 → 再開Prompt生成まで進めます。
 
 ### 実装中に大きな仕様変更が必要になった場合
 
