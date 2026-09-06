@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/EliteMay/web-project-guide/maintenance/rule-router.schema.json",
+  "title": "Web Project Guide Rule Router",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "routerId",
+    "behavioralOwner",
+    "humanRouter",
+    "classification",
+    "ownerDocs",
+    "baseByWorkType",
+    "byDomain",
+    "byProfile",
+    "gates"
+  ],
+  "properties": {
+    "schemaVersion": {"type": "integer", "const": 1},
+    "routerId": {"type": "string", "minLength": 1},
+    "behavioralOwner": {"type": "string", "minLength": 1},
+    "humanRouter": {"type": "string", "minLength": 1},
+    "classification": {
+      "type": "object",
+      "required": ["projectProfiles", "workTypes", "domains", "changeScopes", "risks", "researchability", "specialConditions"],
+      "additionalProperties": false,
+      "properties": {
+        "projectProfiles": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "workTypes": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "domains": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "changeScopes": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "risks": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "researchability": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "specialConditions": {"type": "array", "items": {"type": "string"}, "uniqueItems": true}
+      }
+    },
+    "ownerDocs": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {"type": "string", "pattern": "^docs/.+\\.md$"}
+    },
+    "baseByWorkType": {"$ref": "#/$defs/ownerMap"},
+    "byDomain": {"$ref": "#/$defs/ownerMap"},
+    "byProfile": {"$ref": "#/$defs/ownerMap"},
+    "gates": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "owner", "when", "requireOwners"],
+        "properties": {
+          "id": {"type": "string", "pattern": "^[A-Z0-9-]+$"},
+          "owner": {"type": "string", "minLength": 1},
+          "when": {"type": "object"},
+          "requireOwners": {"type": "array", "items": {"type": "string"}, "uniqueItems": true}
+        },
+        "additionalProperties": false
+      }
+    },
+    "reRoutingTriggers": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "taskSessionResetTriggers": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "compatibility": {"type": "object"}
+  },
+  "$defs": {
+    "ownerMap": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "array",
+        "items": {"type": "string"},
+        "uniqueItems": true
+      }
+    }
+  },
+  "additionalProperties": false
+}
