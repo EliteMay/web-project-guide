@@ -1,814 +1,341 @@
 # web-project-guide 要件定義
 
-この文書は `EliteMay/web-project-guide` 自身の**現在のProject Contract**です。
+この文書は `EliteMay/web-project-guide` 自身の**Current Project Contract**です。
 
-Common Rule本文は `docs/` の各Owner Docを正本とし、この文書へ詳細ルールを複製しません。実装済み改善の履歴は `CHANGELOG.md`、直近作業は `作業報告書.md`、詳細差分はGit履歴を参照します。
+Common Rule本文は`docs/`の各Owner Docを正本とし、このFileへ詳細Ruleを複製しません。Version履歴は`CHANGELOG.md`、直近作業は`作業報告書.md`、再発防止知識は`PROJECT_LEARNINGS.md`、point-in-time監査は`maintenance/audits/`、詳細差分はGit history / PRを参照します。
 
-過去にこのファイルへ蓄積されていた「確定済みGuide改善要件」は、実装済みのものについては現在のOwner Doc / CHANGELOG / Git履歴へ役割を戻しました。Ruleそのものを削除したわけではありません。
-
-## 0. Guide / Project Profile
+## 0. Guide / Profile
 
 - Guide Versionの正本: `guide-version.json`
 - Primary Profile: `TOOL`
 - User-facing UI: No
 - Visual Quality Baseline: Not applicable
 
-このRepository自身の採用Versionを固定値として重複記録しません。現在Versionは `guide-version.json` だけを正本とします。
+Current Guide VersionをこのFileへ固定値で重複記録しません。
 
 ## 1. 目的
 
-`web-project-guide` は、個人向けWebサイト / Webアプリ / Electronアプリ / Browser Game等の制作で、毎回ゼロから判断したり同じ失敗を繰り返したりしないための共通Guide + 制作運用基盤とします。
+`web-project-guide`は個人向けWeb Site / Web App / Electron App / Browser Game等の制作で、毎回同じ判断や失敗を繰り返さないためのCommon Guide + production workflow基盤です。
 
 主目的:
 
-- Web / Electron / Game制作の共通判断基準を1か所へ整理する
-- ChatGPT / Coding Agentが今回必要なRuleだけを確実に読めるようにする
-- Project固有仕様とCommon Guideを混在させない
-- 同じ判断のSource of Truthを複数作らない
-- Rule / Template / Checklist / Catalogを増やしすぎない
-- 過去の失敗・成功・ResearchをEvidenceとして再利用する
-- Human Router / Machine Router / Owner Doc / Template / Validatorを1つのSystemとして整合させる
-- 「実装した」だけでなく必要なValidationまで含めて完成を判断する
+- Common decision criteriaをOwner単位で整理する
+- Agentが今回必要なRuleだけへ確実に到達する
+- Project-specific contractとCommon Guideを混在させない
+- same decisionのSource of Truthを複数作らない
+- failure / success / research evidenceを次回へ活かす
+- Human Router / Machine Router / Template / Validatorを整合させる
+- implementationだけでなくrequired validationまで完成条件に含める
+- Current Repository / Evidenceで解ける判断を不必要にUserへ返さない
+- 会話が変わってもGitHubからCurrent Stateを復元できる
 
-## 2. 使用者・公開範囲
+## 2. 使用者 / 利用環境
 
-### Primary
+Primary:
 
 - Repository owner
 - ChatGPT / Codex / Claude / Copilot等のCoding Agent
 
-### Secondary
+Secondary:
 
-- 共同開発者
-- 将来Projectを見返すRepository owner
+- collaborators
+- future repository review
 
-### 利用環境
+主入口はGitHub Repositoryです。Current GitHub状態をold conversation / ZIP / memoryより優先します。
 
-- 主入口: GitHub Repository
-- 閲覧: GitHub Web UI / clone / Coding AgentからのRepository read
-- Offline: clone済みDocumentationの範囲で利用可能
-
-## 3. Repositoryの責任範囲
+## 3. Repository Scope
 
 ### 担当する
 
-- Governance / Source of Truth / Rule Budget
-- 作業種類・Risk Signalから必要Owner Docへ到達するRouting
-- Architecture / Data / UI / Performance / Security / Testing等の共通判断
-- User Goal / TaskからIA / Navigation / Flow / Stateへ落とすStructure / Flow Research Workflow
-- GitHub Pages / Electron / Game / AI-assisted development等の共通Workflow
+- Governance / Rule Budget
+- Requirements / Decision / Persistence
+- Architecture / Data / UI / Performance / Security / Testing
+- GitHub Pages / Electron / Game / Research
+- Task-first Structure / Flow Research
+- Project Management / Conversation Handoff
+- Routing / Preflight
 - Templates / Checklist
-- Failure / Success / Anti-Pattern / Visual Evidence Catalog
-- Evidence-first Researchの共通Method
-- Guide自身のDeep System Audit / Rule Hygiene
-- Validator
-- Guide Version / CHANGELOG /直近作業報告
-- Coding AgentがCurrent Repositoryを基準に安全に作業するための入口
+- Catalog / References
+- Project Feedback / Continuous Improvement / Deep Audit
+- Validator / Guide version / release history
 
-### 原則として担当しない
+### 原則担当しない
 
-- 個別GameのGame Design
-- 個別学習サイトの教材本文
-- Site固有画面一覧
-- Site固有Sitemap / Navigation / User Flow / State Matrix
-- Site固有Storage Schema / Key
-- Project固有Visual Direction
-- Project固有Bug履歴
-- 特定Repositoryだけに必要なRule
-- 各Projectの自動書換え
-- 全Repositoryの常時監視
-- 特定Visual Styleの全Projectへの強制
+- individual projectの詳細仕様
+- site-specific screen list / storage key / data schema
+- individual game design
+- learning content本文
+- project-specific visual direction
+- project-specific Sitemap / Navigation / User Flow / State Matrix
+- project-specific bug history
+- all repositoriesのautomatic rewrite / continuous monitoring
+- fixed visual style / fixed Navigation Patternの全Project強制
 
-Project固有情報は対象RepositoryをSource of Truthとします。
+Project固有情報はTarget RepositoryをSource of Truthとします。
 
-## 4. Core Structure
+## 4. Current Structure
 
-| 対象 | 役割 | 正本 |
-|---|---|---|
-| `README.md` | Guide概要 / 最短入口 | README |
-| `START_HERE.md` | 人間向け作業Router | START_HERE |
-| `docs/00-22` | Common Rule / Behavioral Owner | 各Owner Doc |
-| `maintenance/rule-router.json` | Machine-readable Routing | Router JSON |
-| `maintenance/review-policy.json` | Review / Deep Audit機械設定 | Review metadata |
-| `maintenance/DEEP_SYSTEM_AUDIT.md` | Deep Audit実行Checklist | `docs/14`の実行補助 |
-| `templates/` | Projectで使う雛形 / 実行Checklist | 各Template |
-| `catalog/` | Failure / Success / Anti-Pattern等のEvidence | 各Catalog |
-| `references/` | Research / Pilot / Standards /非Normative Evidence | 各Reference |
-| `tests/` | Guide Validator | Test implementation |
-| `guide-version.json` | Guide Version | Version metadata |
-| `CHANGELOG.md` | Release単位の長期変更履歴 | CHANGELOG |
-| `作業報告書.md` | 直近作業・未確認事項 | Work Report |
-| Git history | 詳細な変更履歴 | Git |
+| Surface | Responsibility |
+|---|---|
+| `README.md` | shortest guide entry / owner map |
+| `START_HERE.md` | Human Router |
+| `docs/00-23` | Common Normative Owners |
+| `maintenance/rule-router.json` | Machine-readable routing |
+| `maintenance/review-policy.json` | Review metadata |
+| `maintenance/DEEP_SYSTEM_AUDIT.md` | Deep audit execution procedure |
+| `maintenance/audits/` | Non-normative audit result history |
+| `maintenance/research/` | Open / historical Guide research assets |
+| `templates/` | Project input / handoff / execution templates |
+| `catalog/` | Failure / Success / Anti-pattern / visual evidence |
+| `references/` | Non-normative research / project-specific evidence |
+| `tests/` | Guide validators |
+| `guide-version.json` | Current Guide Version |
+| `CHANGELOG.md` | Release history |
+| `作業報告書.md` | Current / recent work state |
+| `PROJECT_LEARNINGS.md` | Accumulated recurrence knowledge |
+| Git / PR | Detailed change archive |
 
-`maintenance/DEEP_SYSTEM_AUDIT.md`はNormative Ownerではありません。Deep AuditのBehavioral Ruleは`docs/14-continuous-improvement.md`を正本とします。
-
-## 5. 主要利用フロー
-
-### 通常のWeb / Electron / Game制作
+## 5. Main Workflow
 
 ```text
 User Request
 ↓
-Current Repository / User Intent確認
+Current Repository / User Intent
 ↓
 Rule Routing / Preflight
 ↓
-今回必要なOwner Docだけ読む
+Required Owner only
 ↓
-対象ProjectのRequirements / Spec / Rules / Learnings /実装を必要範囲で確認
+Project Source of Truth / Evidence
 ↓
-Research / Requirements / Implementation
+Research / Decision / Implementation
 ↓
-Testing / Browser / Visual / Playtest等を必要範囲で実施
+Required Validation
 ↓
-必要なDocumentation更新
+Documentation / Learning update
 ↓
-Cleanup後の最終状態を確認
+Cleanup後のFinal State
 ```
 
-RoutingのBehavioral Contractは `docs/21-rule-routing-preflight.md`、機械Routeは `maintenance/rule-router.json` を正本とします。
+Routing behaviorは`docs/21-rule-routing-preflight.md`、Machine Routeは`maintenance/rule-router.json`を正本とします。
 
-### Guide改善
+## 6. Source of Truth / Conflict
 
-```text
-Current main / User Intent確認
-↓
-Guide改善としてPreflight
-↓
-既存Ownerで表現できるか
-↓
-Project固有 / Catalog / Checklist / Referenceで扱うべきか
-↓
-本当にCommon Ruleが必要な場合だけOwnerへ統合
-↓
-重複 / Orphan / 古いRule /旧Copyを同時に整理
-↓
-Human Router / Machine Routerを代表Caseで比較
-↓
-Validatorへ機械化可能なRegression Guardを追加
-↓
-最終Diff / PR Head / Merge後mainを確認
-```
+共通優先原則は`docs/00-governance.md`を正本とします。
 
-大規模なGuide見直しでは `docs/14-continuous-improvement.md` と `maintenance/DEEP_SYSTEM_AUDIT.md` を使い、File単位ではなくSystem単位で点検します。
+概ね:
 
-## 6. Source of Truth
+1. Current explicit User Request
+2. Non-breakable Project Contract / Current Requirements
+3. Current Runtime / Code / Data / formal Spec
+4. Common Guide
+5. old conversation / ZIP / Work Report / memory
 
-仕様・指示が衝突した場合の共通原則は `docs/00-governance.md` を正本とします。
+Current RequestがExisting Data / important compatibility / irreversible behaviorへ影響する場合も、単にUserへ投げ返すのではなくCurrent Contract / Evidence / safe alternativeを先に確認します。
 
-Project作業では概ね次を優先します。
+## 7. Agent Autonomy Contract
 
-1. 現在の明示的User要求
-2. 対象Projectの崩してはいけない仕様
-3. Current Runtime / Code / Data /正式Spec
-4. `web-project-guide` のCommon Rule
-5. 過去会話 / 古いZIP /古い作業報告 / Memory
+Decision behaviorの正本は`docs/01-requirements.md`です。
 
-Current State確認の詳細は `docs/21-rule-routing-preflight.md` を参照します。
+- Best Reasonable DecisionをDefaultにする
+- Repository / Requirements / Existing User Intent / Researchで解けることを再質問しない
+- Core / High-costというLabelだけで回答待ちにしない
+- Safe / reversible decisionはAssumption / Riskを記録して進められる
+- User Decisionはnon-inferable preference、external permission / billing / account action、safe alternativeのないirreversible destructive choice、Evidenceでも解けないmaterial conflict等へ絞る
 
-## 7. Rule Preservation / Information Architecture
+Template / Project Management / RoutingはこのContractと競合してはいけません。
 
-### MUST: Ruleを整理するとき、意味を失わない
+## 8. Requirements Persistence Contract
 
-肥大化対策として文章を削る場合、次のいずれかを満たします。
+Behavioral Ownerは`docs/01-requirements.md`です。
 
-- 同じ意味の正本が別Ownerへ存在し、Linkへ置き換える
-- 実装済みRequirementであり、Current RuleがOwner Docへ反映済み
-- Historyであり、CHANGELOG / Work Report / Git履歴へ役割を移す
-- Project固有Evidenceであり、Project側またはReference / Catalogへ移す
-- 既に不要・誤り・過剰設計と判断でき、削除理由が作業記録に残る
+Target Repositoryが一意で書込み可能なRequirements workでは:
 
-Ruleを短くすること自体を目的にしません。ChatGPT / Coding Agentが作業時に必要なRuleへ確実に到達できることを優先します。
+- Decisionをformal `REQUIREMENTS.md`へCurrent Contractとして統合する
+- old valid contractを理由なく消さない
+- conversation historyをRequirementsへ積まない
+- write successを確認する
+- Current Repositoryから再取得して主要Contract / rule preservationを確認する
+- save failureを`Requirements complete`と扱わない
 
-Rule移動時は**新Ownerへ存在することだけでなく、旧Ownerの詳細Copyが残っていないこと**まで確認します。
+Userが毎回「保存して」と言うことを前提にしません。
 
-### SHOULD: 大きい文書は責務で分ける
+## 9. Task-first Structure / Flow Contract
 
-単純な文字数だけで分割しません。次の場合は分割を検討します。
+Structure / Flow Researchの正本は`docs/22-task-first-structure-flow-research.md`です。
 
-- 1 Fileで複数のNormative responsibilityを持つ
-- Current ContractとHistoryが混在する
-- Routerと詳細Ruleが混在する
-- Common RuleとProject固有Evidenceが混在する
-- 全体を読まないと必要箇所へ到達できない
+MeaningfulなIA / Navigation / Task Flowでは:
 
-## 8. Router / Preflight Contract
+- Page / Sidebar / Featureを先にTemplate化せずUser Goal / Taskから導く
+- Information / Function → IA → Navigation / Flow / State → Page / Viewの関係を考える
+- Visual stylingとStructure decisionを分ける
+- Project固有のSitemap / Flow / State Matrixは対象Projectへ保存する
+- `STRUCTURE_FLOW`だけを理由にVisual Researchを自動要求しない
 
-- Meaningful / Systemic作業では `docs/21-rule-routing-preflight.md` を確認する
-- UserがGuideの章番号を知らなくてもAgent側で必要Ruleを選ぶ
-- `maintenance/rule-router.json` をMachine-readable Routing正本とする
-- `START_HERE.md`はHuman Summaryとし、詳細Routingの第二正本にしない
-- Required DocはCurrent Guide Revisionから実際に読む
-- Meaningful Visual Change / Researchable Question / Storage Migration / Game Completion等のStable Gateを必要時に発火する
-- MeaningfulなIA / Navigation / Task Flowは`STRUCTURE_FLOW` Domainで`docs/22`へRouteし、専用Stable Gateを機械的に増やさない
-- 小さなBugや文言修正へFull Guide / Deep Researchを機械的に要求しない
-- 作業途中でScope / Riskが変われば追加OwnerへRe-routeする
-- 重要なHuman RouteとMachine Routeは同じ代表TaskでParity確認する
-- Owner Registryへ登録した重要Docを実質到達不能にしない
-- Core / High-cost Decisionという分類だけでUser回答待ちを標準停止条件にしない
+## 10. Conversation Handoff / Recovery Contract
 
-Guide自身のDeep Review、Storage Migration、Meaningful Visual Change、Game主要Flow、Cross-Repository GitHub Infrastructure等、見落としCostが高いCaseはGolden Routing Caseで守ることを優先します。
+Conversation移行・Recoveryの正本は`docs/23-conversation-handoff-recovery.md`です。
 
-初期Routing実装は意図的に小さく保ちます。専用Session DB、永続Receipt、複雑なRisk Score、巨大なResolver Frameworkは実運用で必要性が確認されるまで必須にしません。
+- Conversation historyをProject Source of Truthにしない
+- Requirements途中は必要に応じてDraft、実装途中はBranch / PR / Commit等でCheckpointを残す
+- PromptなしでもTarget RepositoryとCurrent work refをEvidenceから一意に復元できれば作業を再開できる
+- stale / duplicate active conversationは作成日時でなくGitHub Evidenceで収束する
+- Current work refを一意に復元できない場合だけ、その変更経路を`unresolved`として止める
+- RecoveryでもRepository / Evidenceで解ける内容をUserへ不必要に質問しない
 
-## 9. History Contract
+## 11. Rule Preservation / Information Architecture
 
-### `REQUIREMENTS.md`
+Rule整理で意味を失いません。
 
-現在守るProject Contractだけを持ちます。実装済み改善要求を履歴として延々残しません。
+削除 /移動は少なくとも次のどれかに根拠を持ちます。
 
-### `CHANGELOG.md`
+- same meaningのNormative Ownerへ統合
+- HistoryをCHANGELOG / Work Report / Gitへ移動
+- project-specific evidenceをReference / Project Learningsへ移動
+- duplicate / obsolete / incorrect / overdesigned ruleを理由付きで退役
 
-Version単位の変更概要を持ちます。
+Rule moveはDestination + Source cleanupを1つのCompletion Conditionにします。
 
-### `作業報告書.md`
+単なる文字数ではなく**複数Normative responsibility**がある場合にOwner splitを検討します。
 
-直近作業の目的、変更、Validation、未確認を中心にします。長期Archiveにしません。
+## 12. Routing Contract
 
-### Git history
+- Meaningful / Systemic workはPreflight
+- Current RevisionのRequired Ownerを実際に読む
+- Human / Machine Routerの重要RouteをParity確認
+- Registered Ownerをunreachableにしない
+- Scope / Risk変化でRe-route
+- local bugへFull Guide / Deep Researchを強制しない
+- Structure / Flowは`docs/22`
+- conversation handoff / stale checkpointは`docs/23`
 
-詳細差分・過去実装の最終Archiveです。
+Router infrastructureは必要以上に巨大化しません。
 
-この分離により、過去ルールを失わずCurrent Source of Truthを読みやすく保ちます。
-
-## 10. Templates / Checklist Contract
+## 13. Templates / Checklist
 
 - TemplateはRule本文の正本にしない
-- RequirementsはCore Template + Conditional Requirement Packで構成し、Projectに該当するPackだけ利用する
-- Requirements PackはProject固有Decision / Inputを中心にし、Owner Rule本文を再掲しない
-- Quality ChecklistはCore + Conditional Routing +短いPass / Fail確認を中心にし、Owner Docの説明を複製しない
-- READMEはProject入口 / Source of Truth Routerを中心にする
-- SpecはCurrent Technical Contractを中心にし、Requirement Decisionを複製しない
-- Project RulesはProject固有Override / Exceptionだけを持つ
-- AGENTSはAgent Routerとして使い、Spec / Requirements / Common Rule本文を丸ごと複製しない
+- Requirements = Core + Conditional Packs
+- Quality Checklist = Core + Conditional Routing + short pass/fail checks
+- README Template = Project entry / SOT Router
+- Spec = Current Technical Contract
+- Project Rules = project-specific override / exception
+- AGENTS = Agent Router
+- Conversation templates = Current Repository / formal documentへ到達するRouter
 
-新しいProfile固有Sectionが増える場合、Core Templateへ直接積む前にConditional Packへ収められるか確認します。
-
-## 11. Catalog / Reference Contract
+## 14. Catalog / Reference / Learnings
 
 ### Catalog
 
-Failure / Success / Anti-Pattern / Visual DirectionはEvidenceと再利用条件を持ちます。
+Generalizable Failure / Success / Anti-pattern / visual evidenceを保存します。Normative RuleはOwnerへ置きます。
 
-Normative Rule本文はOwner Docへ置き、CatalogではRuleを再定義しすぎません。
+### Reference
 
-### References
+Research / named project pilot / time-specific snapshot等のnon-normative evidenceを保存できます。Current Project Stateの代用にはしません。
 
-外部Research、Working Hypothesis、Named Project Pilot、時点依存Snapshot等の非Normative Evidenceを保存できます。
+### PROJECT_LEARNINGS
 
-- 個別Project固有の最終RequirementはCommon Referenceだけに残さず対象Projectへ保存する
-- Named ProjectのPilot結果や当時のFile一覧をCommon Ownerの恒久Ruleとして固定しない
-- 古いReferenceをCurrent Stateの代用にせず、適用時はCurrent Repository /公式Sourceを再確認する
-- Common Ownerへ移すのはEvidenceから一般化できたBehaviorだけにする
+`web-project-guide`自身で起きた再発価値の高いFailure / Successを**継続蓄積**します。
 
-## 12. Validator Contract
+最低限:
 
-ValidatorはGuide品質の完全な代替ではありません。
+- what happened
+- root cause
+- final fix
+- detection / regression guard
+- prevention / next-time hint
 
-優先して自動確認するもの:
+一般化後もProject側Learningを無条件削除せず、resolved / promoted等の状態を残せます。
 
-- 必須File / JSON構文
-- Markdown相対Link
-- Owner Doc / Router参照整合
-- Owner Registryの実質到達性
-- Work Type / Domain / Signal / Gate参照整合
-- Gate ID一意性
-- Guide Version / CHANGELOG整合
-- Catalog ID整合
-- 代表Golden Routing Case
-- Conditional Template / ChecklistのRouting整合
-- Deep System Audit Procedureの到達性
-- 明確なProject-specific Evidence leakage Regression Guard
+## 15. Deep System Audit Contract
 
-文章の特定フレーズを大量に固定し、自然な書き換えを壊すTestへ寄せすぎません。
+Normative Ownerは`docs/14-continuous-improvement.md`、execution procedureは`maintenance/DEEP_SYSTEM_AUDIT.md`です。
 
-Semantic duplicationの完全自動判定を目指して巨大なRule Engineを作らず、機械化できない意味重複はDeep System Auditで確認します。
+Deep AuditではCurrent RouterからOwnerを動的取得し、Owner coverage / duplication / research separation / decision quality / failure evidence、Human / Machine parity、Template drift、Security / Platformのcurrent evidence、Repository operation等を必要範囲で確認します。
 
-## 13. Deep System Audit Contract
+**Score targetを終了条件にしません。** Current scopeとEvidenceでknown actionable findingを意図的に残さないことをCompletion Conditionとします。
 
-Guide自身を大きく点検する場合は、Current Repositoryを「まだ低品質かもしれない」という仮説から確認し、過去の修正報告を品質Evidenceの代用にしません。
+Audit resultは`maintenance/audits/`へ保存し、このRoot Requirementsへ一時Backlog / score tableを積みません。
 
-最低限次を横断照合します。
+## 16. Validator / Self-application
 
-- Entry / Source of Truth
-- Normative Owner topology
-- Human / Machine Router parity
-- Template / Checklist drift
-- Semantic duplication
-- Machine-readable Schema / Validator coverage
-- History / Project-specific Evidence leakage
-- Repository metadata / Workflow / Final-state operations
+Validatorは機械化可能なStructural Contractを優先します。
 
-実行Checklistは `maintenance/DEEP_SYSTEM_AUDIT.md`、Behavioral Ownerは `docs/14-continuous-improvement.md` とします。
+- required files / links
+- JSON / schema
+- owner reachability
+- router keys / gates / golden cases
+- version / changelog
+- catalog IDs
+- template routing
+- clear owner leakage marker
+- current workflow self-application（例: external Action SHA pin）
 
-## 14. 完成条件
+Prose wordingを大量固定しません。
 
-このGuideは少なくとも次を満たす状態を目標とします。
+Guide自身も自分のRuleを可能な範囲でself-applyします。
 
-- [ ] README / START_HEREから必要なOwnerへ短く辿れる
-- [ ] Meaningful作業ではRule Routing / Preflightが使える
-- [ ] Human / Machine Routerの重要Routeが代表Caseで一致する
-- [ ] Owner Registryの重要DocがRouting上Orphanになっていない
-- [ ] 同じ判断のNormative Ownerが原則1つ
-- [ ] Rule移動後に旧Ownerの詳細Copyが残っていない
-- [ ] Current RequirementsとHistoryが分離されている
-- [ ] Project-specific / time-specific EvidenceがCommon Ownerへ恒久Ruleとして混在していない
-- [ ] Templates / ChecklistがRule本文の第二正本になっていない
-- [ ] Conditional Templateは必要なProjectだけ読める
-- [ ] Guide Versionが一元管理されている
-- [ ] Validatorが構造上の重大driftを検出できる
-- [ ] Deep System AuditをCurrent Revisionから再実行できる
-- [ ] 既存Ruleを整理しても意味が失われていない
-- [ ] Repository / Requirements / Evidenceで解けるDecisionを不要なUser確認へ返さない
-- [ ] 重大な既知矛盾がない
-- [ ] 未確認事項が作業報告に明示されている
+## 17. Open Research Asset
 
-## 15. 非目標
+Requirements Decision Systemの未完了Research Contractは [`maintenance/research/requirements-decision-system.md`](maintenance/research/requirements-decision-system.md) に保存します。
 
-- Guideを短くするためだけに有用Ruleを削除する
-- 全作業へ全章を適用する
-- 全Projectを同じArchitecture / Visual / Storageへ揃える
-- Rule EngineそのものをProduct化する
-- Semantic duplicationを完全自動判定する巨大Analyzerを作る
-- Common Guideへ各Projectの詳細仕様・作業履歴を集積する
-- CI成功だけでGuide品質・Project完成を保証したとみなす
+Root RequirementsへResearch Domain一覧・調査手順・一時Findingを積みません。ResearchがCommon Ruleへ昇格する場合は`docs/01` / `docs/20` / `docs/14`等の既存Owner責務を維持し、Current Contractへ必要な恒久結果だけ反映します。
 
-## 16. Implementation Handoff
+Task-first Structure / Flow Researchは既に`docs/22`へPromotion済みのため、Phase履歴はCHANGELOG / Git / Work Reportへ置きます。
+
+## 18. History Contract
+
+- Requirements — Current Contract
+- CHANGELOG — release history
+- Work Report — current/recent work + validation + unverified
+- Project Learnings — accumulated recurrence knowledge
+- Audit Reports — point-in-time audit evidence / gap resolution
+- Research Assets — open / historical research evidence and contract
+- Git / PR — detailed archive
+
+## 19. Completion Contract
+
+このGuideはCurrent scopeで少なくとも次を満たす状態を目標とします。
+
+- [ ] README / START_HEREから必要Ownerへ短く辿れる
+- [ ] Machine RouterとHuman Routerの重要Routeが一致
+- [ ] Registered Ownerがreachable
+- [ ] same normative decisionの競合Ownerがない
+- [ ] Root RequirementsがRule本文 / audit backlog / research notebook化していない
+- [ ] Template / Checklistが第二Rule本文でない
+- [ ] Requirements persistenceが実行可能
+- [ ] Agent autonomyがOwner / Templateで一貫
+- [ ] Structure / FlowとVisualのOwner境界が一貫
+- [ ] Conversation Handoff / RecoveryがProject Managementと分離されている
+- [ ] Security / Electron等high-risk Ownerに重大Known Gapがない
+- [ ] Project-specific evidenceがCommon Ownerへ混入していない
+- [ ] PROJECT_LEARNINGSへrecurrence knowledgeを蓄積できる
+- [ ] Guide workflowが自分のsupply-chain ruleを可能な範囲でself-apply
+- [ ] Validatorが重大Structural driftを検出
+- [ ] Deep Auditでknown Critical / High actionable findingが残らない
+- [ ] Medium in-scope findingもfixまたは正当なevidence-deferred理由がある
+- [ ] Final PR / merged mainのValidationを確認
+- [ ] Tool / permission外の項目は具体的なmanual follow-upとして明示
+
+## 20. Non-goals
+
+- ShortenのためだけにRule削除
+- 全作業へ全章適用
+- 全Projectをsame architecture / visual / storage / navigationへ統一
+- Rule Engine自体をProduct化
+- Common Guideへindividual project historyを集積
+- CI successだけでQuality保証
+- 「90点」等のarbitrary scoreだけでDeep Audit終了
+
+## 21. Implementation Handoff
 
 - Requirements Status: Ready for implementation
 - Information Architecture cleanup: Implemented
 - Template / Checklist responsibility split: Implemented
-- Deep System Audit workflow: Implemented
-- Human / Machine routing parity guard: Implemented
-- Agent autonomy / User Confirmation Exception: Implemented
-- Task-first Structure / Flow Research owner: Implemented
+- Task-first Structure / Flow owner: Implemented
+- Deep System Audit method: Implemented
+- Agent autonomy / User Decision exception: Implemented
+- Conversation Handoff / Recovery owner: Pending final audit PR merge and validation
+- Exhaustive owner audit / remediation: In progress until current audit PR is merged and validated
 - Blocking Decisions: None
-- Important Assumptions: None
 
-今後新しい大規模Guide改善要件が生じた場合、Current Contractへ履歴として混ぜ込まず、必要ならIssue / ADR /一時Draftで検討し、確定・実装後にCurrent Contractへ必要な恒久Ruleだけ反映します。
-
-## 17. Phase 0 — Guide全体棚卸し Contract
-
-ResearchやCommon Ruleをさらに増やす前に、Current Guide全体のCoverage / Gap / Duplication / Decision Quality / Failure Evidenceを体系的に棚卸しできる状態を持ちます。
-
-目的は文章量を増やすことではなく、**どこが弱く、なぜ弱く、どう直し、何をResearchすべきかをGuide全体として把握すること**です。
-
-### Primary Audit
-
-Current RepositoryでOwnerとして登録されている全Owner Docを対象とします。現在の番号範囲やOwner数を固定値として盲信せず、README / Governance / Machine Router等のCurrent Stateから対象を解決します。
-
-### Secondary Audit
-
-以下はOwnerと同一採点にはしませんが、Normative duplication / role drift / routing不整合の監査対象とします。
-
-- `README.md`
-- `START_HERE.md`
-- `maintenance/rule-router.json`
-- `catalog/`
-- `references/`
-- `templates/`
-- Quality Checklist
-- Validator
-- その他Machine-readable設定
-
-### Owner Audit Axes
-
-各Ownerを最低限次の6軸で評価できることを要求します。
-
-1. `Coverage`
-2. `Gap Coverage`
-3. `Duplication`
-4. `Rule / Research Separation`
-5. `Decision Quality`
-6. `Failure Evidence`
-
-Coverageは文書量ではなく、そのOwnerが担当する主要Decisionを実際に判断できるかで評価します。
-
-### Score / Overall
-
-各評価軸は原則0〜3で記録します。
-
-- `3` — Strong
-- `2` — Mostly sufficient
-- `1` — Weak
-- `0` — Major problem
-
-単純合計だけで品質を決めません。重大なSecurity / Data / Migration / Release / Accessibility / Operability GapやRule Conflictを平均点より優先します。
-
-Owner全体のOverallは以下を使用できます。
-
-- `A — Healthy`
-- `B — Minor Improvement`
-- `C — Improvement Needed`
-- `D — Structural Problem`
-
-### Decision Quality
-
-重要なRuleについて、必要に応じて次が判断可能か確認します。
-
-```text
-Trigger
-↓
-Decision Criteria
-↓
-Action
-↓
-Exception / Trade-off
-↓
-Validation
-```
-
-全Ruleを同一Templateへ変換することは目的にしません。「このケースではどちらを選ぶべきか」を合理的に判断できることを基準にします。
-
-### Failure Evidence
-
-Failure Evidenceは次のLevelで整理できます。
-
-- `F0` — Failure Evidenceなし
-- `F1` — 想定Failureのみ
-- `F2` — 実Project / Postmortem / 外部実例あり
-- `F3` — Failure → Root Cause → Rule → Regression Guardまで追跡可能
-
-すべてのRuleをF3にすることは要求しません。SecurityやData loss等では強い公式Evidenceを利用できます。
-
-### Gap Classification
-
-Findingは最低限以下へ分類します。
-
-- `Rule Gap` — 判断方法は分かっているがGuideへ十分書かれていない
-- `Research Gap` — 正しい判断方法自体がまだ不明確
-- `Evidence Gap` — Ruleはあるが根拠 / Failure / Applicabilityが弱い
-- `Structural Gap` — Owner責務 / Routing / 配置 / 重複等の構造問題
-
-Rule不足をResearch不足として扱わず、Research GapだけをResearch Backlogへ送ります。
-
-### Finding Action / Severity / Research Priority
-
-Findingには必要に応じて次のActionを付けます。
-
-- `KEEP`
-- `CLARIFY`
-- `EXPAND`
-- `MOVE`
-- `MERGE`
-- `SPLIT`
-- `REMOVE`
-- `RESEARCH`
-- `ADD EVIDENCE`
-- `ROUTE FIX`
-
-SeverityはFinding自体の重大度として `Critical / High / Medium / Low` を使います。
-
-Research PriorityはResearch Gapだけに付け、`P0 / P1 / P2 / None`を使用します。SeverityとResearch Priorityを混同しません。
-
-### Cross-Owner Audit
-
-個別Owner監査後は少なくとも次を横断確認します。
-
-- Normative Rule重複
-- Rule Conflict
-- Owner不在Topic
-- 責務が広すぎる / 実質責務がないOwner
-- Router不整合
-- README / START_HEREでのRule再定義
-- Checklist-only / Template-only / Reference-only Rule
-- ResearchのNormative Rule化
-- Owner本文へのResearch過剰混入
-- Catalog Failure未反映
-- History / Current Contract混在
-- Project固有Rule混入
-- 古いPlatform / Version固有情報
-- 不要Rule
-- MUST / SHOULD / CONDITIONAL強度の不適切さ
-
-### Audit Baseline / Finding Evidence
-
-Audit開始時は最低限次を記録し、原則としてそのRevisionをAudit Baselineとして最後まで評価します。
-
-- Repository
-- Commit SHA
-- Guide Version
-- Audit Date
-- Owner Count
-
-Findingは点数だけでなく、最低限次を追跡可能にします。
-
-- Finding
-- 対象File / Section
-- 問題内容
-- なぜ問題か
-- Gap分類
-- Severity
-- Action
-- Research Priority（Research Gapのみ）
-
-同一Root Causeによる複数Fileの重複は、件数を水増しせずDuplication Clusterとしてまとめられます。
-
-### Audit Result / Research Flow
-
-Audit結果はCurrent `REQUIREMENTS.md`へ履歴として積みません。`maintenance/audits/`等のCurrent Guide構造に適した場所へAudit Reportを保存し、最低限次を含めます。
-
-- Audit Snapshot
-- Owner Audit Matrix
-- Gap Register
-- Duplication / Conflict Map
-- Action Backlog
-- Research Priority Map
-- Phase 0 Summary
-
-External Deep ResearchはPhase 0の主目的にしません。分類に必要な最小限の事実確認を除き、Research Gapを特定してからPhase 1以降へ送ります。
-
-### Phase 0 Non-goals
-
-- Ownerを同じ文章量へ揃える
-- 不足をすべてCommon Rule追加で解決する
-- 新Ownerを安易に増やす
-- Failureを数合わせで追加する
-- Score改善のためだけに追記する
-- Audit中に無計画な全面Rewriteを行う
-- Research件数を増やすこと自体を成果にする
-
-### Phase 0 Completion
-
-少なくとも以下を満たす状態をPhase 0完了とします。
-
-- 全Current Owner監査済み
-- 全Ownerの6軸評価とScore理由あり
-- Cross-Owner / Secondary Structure Audit済み
-- Findingに根拠がある
-- Gapが4分類されている
-- FindingにSeverity / Actionがある
-- Research GapだけにP0 / P1 / P2が設定されている
-- Audit Baselineが記録されている
-- Guide全体の強い領域 / 弱い領域 / 偏りを説明できる
-- 次のStructural CleanupとResearch順序をAudit結果から決定できる
-
-## 18. Requirements Persistence Contract
-
-対象Repositoryが存在する要件定義では、**会話上でDecisionがまとまっただけではRequirements Completeと扱いません。**
-
-### Requirements Persistence Gate
-
-標準Flowは次とします。
-
-```text
-Requirements discussion / decision
-↓
-Target Repositoryを解決
-↓
-Current REQUIREMENTS.mdを取得
-↓
-確定内容をCurrent Contractとして統合
-↓
-Repositoryへ保存
-↓
-Current Repositoryから再取得して保存結果を確認
-↓
-Requirements Complete
-↓
-Implementation Handoff
-```
-
-`Decision complete ≠ Requirements complete` とします。
-
-GitHub等のCurrent Source of Truthへ書き込み可能であり、対象RepositoryとRequirements Source of Truthが明確な場合、Userが毎回「保存して」と指示することを前提にしません。Requirements保存は要件定義Workflowの一部です。
-
-要件定義の個別決定・一時Discussionをそのまま履歴として`REQUIREMENTS.md`へ積み上げず、Current Contractとして必要な恒久内容だけ統合します。
-
-### Implementation Handoff
-
-RequirementsがRepositoryへ保存済みの場合、次の実装会話へ要件全文を巨大Promptとして再掲することを標準にしません。
-
-Implementation側はCurrent Repositoryを確認し、Current `REQUIREMENTS.md`を正式なSource of Truthとして読むことを基本とします。過去Conversationや手作業で再構成したPromptを第二のRequirements正本にしません。
-
-### Persistence Verification
-
-保存後は最低限次を確認します。
-
-- Current `REQUIREMENTS.md`を再取得できる
-- 今回確定した主要Contractが存在する
-- 既存Current Contractを不必要に失っていない
-- History / temporary discussionをCurrent Contractへ混在させていない
-
-Requirements Persistence Gateを通る前に「要件定義完了」「実装準備完了」と確定しません。
-
-## 19. Agent Autonomy / User Confirmation Contract
-
-Agent autonomyの詳細Behaviorは `docs/01-requirements.md` と `docs/21-rule-routing-preflight.md` を正本とします。
-
-このGuide自身のCurrent Contractとして、次だけを要求します。
-
-- Core / High-cost Decisionという分類だけを理由にUser回答待ちへしない
-- Current Repository / Current Requirements / Existing User Intent / Evidence / Compatibility / RiskからBest Reasonable Decisionを作る
-- Repository確認やResearchで解けるQuestionをUserへ投げ返さない
-- 可逆なDecisionでは安全で目的に合うDefaultを選ぶ
-- 重要Assumption / Riskは必要に応じて記録する
-- User Preferenceだけで主要体験が大きく変わる、重大衝突を解消できない、不可逆・破壊的変更に安全なRollbackがない、外部System / 権限 / 費用 /安全上の明示同意が必要等の場合だけUser Confirmation Exceptionへ送る
-
-README / START_HEREは詳細Ruleを複製せずRouterのまま維持します。
-
-## 20. Phase 1 — Requirements Decision System Research Contract
-
-Phase 1では、個別Frameworkを増やすのではなく、**曖昧なUser Requestから必要十分で検証可能なRequirementへ変換するEnd-to-Endの判断体系**を研究・設計します。
-
-主なNormative Owner候補は `docs/01-requirements.md` とし、一般Research Methodは `docs/20-evidence-first-research.md`、GuideへのRule配置・Promotion / Hygieneは `docs/14-continuous-improvement.md` を維持します。新しいOwner Docは、既存Ownerへ自然に統合できない責務がResearchで確認された場合のみ検討します。
-
-### Phase 1 Goal
-
-最終的に少なくとも次のFlowを一貫して判断できるRequirements Decision Systemを目標とします。
-
-```text
-Raw User Request
-↓
-Underlying Problem
-↓
-Desired Outcome
-↓
-Solution / Feature Candidate
-↓
-Scope / Priority Decision
-↓
-Research / Prototype / Validation
-↓
-Confirmed Requirement
-↓
-Current Contract / Change Management
-↓
-Observable Completion
-```
-
-### Research Domain 1 — Problem Discovery
-
-次を研究対象とします。
-
-- User自身も欲しいものが曖昧な場合の具体化
-- Request / Underlying Problem / Solution Ideaの分離
-- Need / Want / Solution Ideaの区別
-- Problemを掘る深さと停止条件
-- Userの説明だけで不足する場合のContext / Behavior / Friction / Desired OutcomeからのProblem Hypothesis
-- 複数Problemが混ざったRequestのDecision単位への分解
-- Problem Importanceの判断軸
-- Problem理解からSolution検討へ移る条件
-
-Userへ機械的に`なぜ？`を繰り返す方式を標準にはしません。
-
-### Research Domain 2 — Scope & Prioritization
-
-次を研究対象とします。
-
-- Featureを追加する条件
-- Featureを捨てる条件
-- `便利そう`とMeaningful Valueの分離
-- Core Outcomeを成立・検証できるMVP Boundary
-- MVPへ含めるべきFoundation / Risk検証要素
-- `Now / Later / Reject`等のScope分類
-- Feature Dependency / Sequence
-- Implementation CostだけでなくMaintenance / Testing / UI・Data Complexity / Migration / Failure Risk / Cognitive Loadを含むCost評価
-- RICE / MoSCoW / Kano等のPrioritization Frameworkの適用条件と限界
-- 必要な具体化とScope Creepの分離
-
-MVPを単なる最小Feature数とは扱いません。
-
-### Research Domain 3 — Evidence & Validation
-
-次を研究対象とします。
-
-- Researchだけで十分に絞れるDecision
-- Prototype / Testが必要なProject-specific Decision
-- Research ResultをRequirementへ変換する条件
-- `Confirmed / Provisional / Open`等のDecision Status運用
-- Sketch / Wireframe / Clickable Prototype / Technical Spike / Minimal Implementation / Data Prototype等の使い分け
-- Prototypeを本実装並みに重くしない停止条件
-- Hypothesis → Observable Signal → Pass / Fail Criteriaの関係
-- Prototype / Validation ResultをRequirementへ戻すFeedback Loop
-- User Test / Actual Useが必要な条件
-- Evidence不足時に無限Researchを続けずUnknown → Hypothesis → Cheap Testへ移る条件
-
-ResearchとPrototypeは競合する手段ではなく、必要に応じて `Research → Uncertainty Reduction → Prototype / Test` と接続します。
-
-### Research Domain 4 — Requirement Management
-
-次を研究対象とします。
-
-- Requirements肥大化の原因と整理方法
-- Current Contract / Decision History / Research Evidence / Implementation Detailの分離
-- 実装担当が重要判断をやり直さずに済むRequirement粒度
-- Requirement変更の `Clarification / Extension / Replacement / Removal / Breaking Change` 等の分類価値
-- Requirement変更時のImpact Analysis
-- Obsolete RequirementをCurrent Contractから外しつつ変更理由を追跡する方法
-- Requirement Conflictの発見と解決
-- Requirement Statusの有効性と管理Cost
-- Problem → Outcome → Requirement → ValidationのTraceabilityをどこまで持つべきか
-- Requirements Cleanupを実行するTrigger
-
-Requirementsは追記型の日記ではなく、常にCurrent Contractとして更新します。
-
-### Research Domain 5 — Completion / Observable Done
-
-次を研究対象とします。
-
-- 曖昧なCompletion ConditionをObservableな条件へ変換する方法
-- RequirementとAcceptance / Verification Criteriaの責務分離
-- Quantitative / Qualitative Criteriaの使い分け
-- Automated Test / Static Inspection / Browser Test / User Test / Actual Playtest / Real Device / Production確認の適用条件
-- Happy Path以外のFailure / Empty / Invalid / Reload / Restore / RecoveryをCompletionへ含める基準
-- Performance / Accessibility / Reliability / Security / Responsive / Compatibility等の非機能Requirementを観測可能にする方法
-- `Pass / Fail / Not Verified / Not Applicable`等の状態分離
-- Feature Complete / Release Ready / Requirements Complete等の部分完成の扱い
-- Risk / Importanceに応じたVerification Depth
-- Requirement変更時にCompletion Criteriaを再評価する仕組み
-
-最終的に `Requirement → Expected Outcome → Observable Evidence → Verification Method → Pass / Fail Criteria → Actual Result` が追えることを目標とします。
-
-### Research Method / Scope
-
-Phase 1は、Requirements Engineeringだけでなく必要に応じて以下のEvidenceを横断比較します。
-
-- Requirements Engineering
-- Product Discovery / Product Management
-- HCI / UX Research
-- Lean / MVP
-- Agile
-- Systems Engineering
-- Software Testing / Acceptance Criteria
-- Real Product / Project Postmortem
-- Individual / Small-team Development
-- AI-assisted Development
-
-有名Frameworkを知名度だけで採用しません。各Framework / Practiceについて、何を解決するか、Evidence、Failure / Limitation、Applicability、個人開発 + AI-assisted developmentへの適合性を確認し、Guideへは必要な原理だけを取り込みます。
-
-Research Depthは原則Deep Researchとし、Source件数そのものではなくResearch SaturationとDecision Qualityで終了を判断します。
-
-### Research Output
-
-Phase 1では最低限次を成果物候補とします。
-
-1. **Evidence Map** — Established / Context-dependent / Disputed / Unknown / Failure / Limitation
-2. **Requirements Decision Model** — ProblemからObservable CompletionまでのEnd-to-End Flow
-3. **Decision Rules** — Feature、MVP、Research / Prototype、Requirement Change、Completion等を実際に判断できるRule
-4. **Execution Support** — 必要な場合のみQuestion Pattern、Feature Decision Matrix、MVP判断、Prototype Trigger、Change Impact Check、Completion Criteria形式等
-
-Findingは内容に応じて次へ配置します。
-
-- Common Requirement Principle → `docs/01`候補
-- General Research Method → `docs/20`
-- Guide Promotion / Rule Hygiene → `docs/14`
-- Execution Aid → Template / Checklist
-- Evidence / Failure / Working Hypothesis → Catalog / Reference
-- Project-specific Finding → Common Guideへ入れない
-
-### Agent Autonomy Integration
-
-Phase 1はSection 19のAgent Autonomy / User Confirmation Contractと整合させます。
-
-目標は次のように判断できることです。
-
-```text
-AIがCurrent Contextから合理的に決められる
-→ Best Reasonable Decisionで進む
-
-Researchで解決できる
-→ Researchする
-
-Project固有UnknownをCheap Testで解決できる
-→ Prototype / Testする
-
-User Intentなしでは合理的に決められない
-→ Userへ確認する
-```
-
-Requirements精度向上を理由にUserへの質問数を増やすことを目的にしません。
-
-### Phase 1 Success Criteria
-
-Phase 1完了時は少なくとも次を満たします。
-
-- 5 Domainすべてで実用的なDecision Criteriaがある
-- Problem → Outcome → Requirement → CompletionがEnd-to-Endで接続されている
-- Featureを `Now / Later / Reject` 等へ根拠付きで分類できる
-- MVP BoundaryをCore Outcome基準で判断できる
-- Research / Prototype / User確認の使い分けを判断できる
-- Research / Prototypeを適切に終了しDecisionへ進める
-- Requirement変更をImpact込みでCurrent Contractへ反映できる
-- Observable Completion / Verification Methodを作成できる
-- Section 19のAgent Autonomy方針と矛盾しない
-- Guide全体を過剰Process化しない
-- 代表CaseでDecision Modelを通し、合理的な結果になることをValidationする
-- Common Rule化すべきFindingだけを選別し、既存Owner責務を壊さない
-
-代表Validation Caseには少なくとも、新規Site、既存SiteへのFeature追加、曖昧な`使いやすくしたい`要求、Feature過多、途中Requirement変更、Completionが曖昧なCaseを含めます。
-
-### Failure Criteria / Non-goals
-
-次の状態はPhase 1の失敗または再検討対象とします。
-
-- Framework名を列挙するだけでDecision Criteriaになっていない
-- 小規模Projectにも大量Document / Score / Traceability / Prototype / User Testを機械的に要求する
-- AIの判断精度向上ではなくUserへの質問増加で解決する
-- `Reject`が実質存在せずFeatureがLaterへ蓄積し続ける
-- Completion Criteriaが`使いやすい`、`高品質`、`正常に動く`等の非観測的表現だけになる
-- Requirements OwnerへResearch Method / Evidence / Execution Checklistを過剰に混在させる
-- Product Management全体へScopeを無制限に拡大する
-- 全Requirementへ固定Score、重いTraceability ID、Prototypeを強制する
-
-Phase 1はResearch量やRule数を増やすことではなく、**少ないRuleでRequirements Decision Qualityを上げること**を完成基準とします。
+Current auditの一時Finding / score /修正Statusは`maintenance/audits/`を参照します。
