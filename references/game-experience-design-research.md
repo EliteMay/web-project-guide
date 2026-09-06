@@ -1,866 +1,229 @@
-# Game Experience Design Research — Working Evidence / Discussion Handoff
+# Game Experience Design Research
 
-> Status: **Research in progress / 非Normative**
->
+> Status: Research in progress / non-normative
 > Updated: 2026-09-06
->
-> Purpose: Game制作の共通Ruleを増やしすぎず、UI / Game Screen / Interaction / Difficulty / Failure / Progression / Motivation / Pacing / System Design / Game Feelについて、研究・実例・議論から「毎Gameで正解を導くための判断Framework」を作るための作業記録。
->
-> **この文書は現時点ではGuideの確定Ruleではない。** `docs/19-game-development.md` 等のNormative Ownerを上書きしない。今後Evidenceを追加・反証・統合し、最終的に少数の上位原則 / Workflow / Checklist / Catalogへ整理するためのResearch Snapshotとして扱う。
+
+This file intentionally remains non-normative. It records research context, evidence, working hypotheses, counterexamples, and candidate frameworks for game experience design. It must not be treated as a universal rule set or copied mechanically into every game.
+
+## 1. Research purpose
+
+The original research started from UI / HUD questions around Scrap Factory, but the scope expanded because a genre-specific answer was not enough. The objective is now:
+
+> Build a framework that can derive an appropriate answer for a specific game, instead of prescribing one answer for all games.
+
+The research therefore compares papers, systematic reviews, platform-holder guidelines, GDC / developer material, real shipped games, UI screen databases, accessibility guidance, and counterexamples across many genres.
+
+The intended output is not a giant list of best practices. It is a compact decision framework plus optional domain lenses and a validation process.
 
 ---
 
-## 1. なぜこのResearchを始めたか
+## 2. Evidence-first research stance
 
-最初の目的は `EliteMay/game` の `Scrap Factory` のUI要件を考えることだった。
-
-ただし、特定のFactory Gameだけを参考に「良いHUDの形」を固定すると、次にFPS / RPG / Horror / Strategy / Puzzle / Racing等を作ったときに誤った共通Ruleになる可能性が高い。
-
-そのため方針を次へ変更した。
-
-- Popular Gameから小規模Gameまで**ジャンル横断**で見る。
-- 特定GameのFeature有無だけでなく、Game Screen全体を多角的に分析する。
-- Game実例は最低100タイトル規模を母数として扱う方針とする。
-- 論文、CHI / CHI PLAY、GDC、Game Developer記事、Platform HolderのGuideline、Game UI Database、Accessibility資料等もEvidenceへ入れる。
-- 「どのGameでもHUDを15%にする」のような完成形Ruleではなく、**そのGameのGenre / Camera / Task / State / Player / Inputに合う答えを毎回導くWorkflow**を共通化する。
-- 100本規模の横断調査は毎Projectで義務化しない。今回のような共通Framework形成では大きな母数を使い、通常Projectでは必要に応じ5〜20本程度のDomain / Adjacent Researchから始める案が有力。
-
-### 重要な正直な状態
-
-「最低100タイトルを母数にする」という方針は確定しているが、現時点でタイトル別の完全な監査表（全100+本に同一尺度でScoreを付けた表）はまだ作成していない。
-
-今後必要なら、Genre / Camera / UI Density / Persistence / Menu structure / Tutorial / Accessibility等の共通列を持つ100+ title analysis sheetを別途作る。
-
----
-
-## 2. 共通Guideへ何を書くべきか — 現時点の設計思想
-
-### 書かない方がよい例
+Research should follow the repository evidence-first workflow:
 
 ```text
-FPSはHUD 10%以下
-HPは左下
-Mapは右上
-Objectiveは右上
-Checkpointは5分間隔
-全GameにAdaptive Difficulty
+Question
+→ prior research
+→ evidence collection
+→ supporting / opposing / contextual evidence
+→ evidence map
+→ working decision
+→ prototype / playtest / measurement
+→ revision
 ```
 
-これらはGameによって正解が変わる。
+Evidence is decision material, not a substitute for game-specific judgment.
 
-### 共通Guideへ残す候補
+Do not mechanically require a fixed number of references. Broad discovery may use 100+ titles, while a normal project question may reach saturation with a much smaller set. Increase sample size when uncertainty, disagreement, novelty, or risk is high.
 
-1. **普遍性の高い上位原則**
-2. **正解を探すための判断軸**
-3. **Research Workflow**
-4. **Playtest / Validation方法**
-5. 条件別Checklist
+Evidence confidence and guide-promotion confidence are separate:
 
-### References / Catalogへ残すもの
-
-- Game Aではどうしているか
-- FPSではこういう傾向があった
-- StrategyではUI占有率が高くなる傾向
-- Eye Tracking研究の結果
-- Failure / DDA / HUD等の論文Evidence
-
-### 各GameのREQUIREMENTSへ残すもの
-
-- そのGameの具体HUD
-- Camera / Input
-- Difficulty Contract
-- Save / Failure Contract
-- Build UI
-- Progression
-- Tutorial
-- Assist settings
-- Visual Direction
-
-つまり最終構造は次が有力。
-
-```text
-web-project-guide
-  ↓
-共通原則 / Decision Framework
-  ↓
-GameごとのDomain / Genre Research
-  ↓
-各Game REQUIREMENTS
-  ↓
-実装
-  ↓
-Playtest
-  ↓
-PROJECT_LEARNINGS / Catalog / Evidence
-```
+- Strong evidence does not automatically imply a universal MUST rule.
+- A single developer case can be strong evidence of that game's intent but weak evidence for cross-game generalization.
+- Counterexamples matter.
+- A concept can remain useful as a working lens even when it should not become normative.
 
 ---
 
-## 3. Game UIではなく「Game Information Design」として考える
+## 3. Core meta-principle
 
-Researchを進めるほど、HUD / MenuだけをUIと考えるのは狭すぎると分かった。
+Do not fix universal answers for HUD density, camera, difficulty, progression, economy, map markers, tutorial style, recovery cost, or other game design choices.
 
-Playerへ情報を伝えるChannelには次がある。
+Instead:
 
-- World geometry
-- Lighting
-- Color
-- Material
-- Landmark
-- NPC gaze / body orientation
-- Animation
-- Motion
-- VFX
-- HUD
+1. Define the game's Core Experience and Intended Player Demand.
+2. Resolve the current Game State and Player Task.
+3. Choose the appropriate interaction / information surface.
+4. Apply only relevant design dimensions and domain lenses.
+5. Account for intended friction, uncertainty, constraints, accessibility, input, and platform context.
+6. Validate with actual players and telemetry where appropriate.
+
+A framework that applies to every game must also be able to say, intentionally, “this lens is not relevant here.”
+
+---
+
+## 4. Game Context
+
+Before applying any design conclusion, establish context.
+
+Candidate fields:
+
+- Genre / subgenre
+- Core verbs
+- Camera / perspective
+- Primary tasks
+- World importance
+- Information pressure
+- Action pace
+- Decision pace
+- Input devices
+- Platform / performance envelope
+- Session length
+- Player expertise
+- Difficulty / assistance expectations
+- Pacing authority
+- Service model
+- Physical / embodied context
+  - seated / standing
+  - room-scale
+  - outdoor / indoor
+  - body movement
+  - fatigue
+  - motion comfort
+  - real-world safety
+- Social topology
+  - solo
+  - co-op
+  - competitive
+  - asymmetric
+  - local party
+  - anonymous matchmaking
+  - persistent group
+  - friends
+  - spectators / audience
+
+`Genre` alone is never enough context.
+
+---
+
+## 5. Core Experience & Intended Player Demand
+
+The framework should start above “challenge.” Some games are not primarily about challenge.
+
+Ask:
+
+- What should the player do?
+- What should the player think about?
+- What should the player notice?
+- What should the player feel?
+- What should the player learn?
+- What should the player express or create?
+- What should the player coordinate with others?
+- What should be easy?
+- What should be difficult?
+- What should be uncertain?
+- What should feel constrained?
+- What should be calm, reflective, vulnerable, stressful, playful, or expressive?
+
+Possible player demands include:
+
+- Skill
+- Decision making
+- Attention
+- Exploration
+- Interpretation
+- Creativity
+- Expression
+- Social coordination
+- Physical movement
+- Emotional engagement
+- Relaxation
+
+This avoids over-applying “challenge” to cozy, narrative, creative, ambient, toy-like, or social experiences.
+
+---
+
+## 6. State → Task → Surface
+
+Cross-game screen analysis strongly suggests that current state and task often predict the correct UI structure better than genre alone.
+
+For each important state:
+
+```text
+Game State
+→ Primary Player Task
+→ Required Information / Decisions
+→ Appropriate Surface
+```
+
+Candidate surfaces:
+
+- World itself
 - World-space UI
-- Diegetic UI
-- Menu / Panel
-- Text
-- Audio
-- Spatial Audio
-- Haptic
-- Camera
+- Persistent HUD
+- Temporary HUD
+- Overlay
+- Local / contextual panel
+- Modal panel
+- Full-screen menu
+- Recallable reference / log
+- Meta-game screen
 
-したがって上位概念は次が有力。
+Example state matrix:
 
-```text
-Playerへ伝えたいInformation
-  ↓
-どの感覚Channelを使う？
-  ↓
-Visual / Audio / Haptic
-  ↓
-Visualならどこ？
-  ↓
-World / World-space / Diegetic / HUD / Menu
-  ↓
-いつ？
-  ↓
-Permanent / Contextual / Event-driven / Requested
-```
+| State | Player Task | Required Info | Decision Depth | Surface | Persistence | Input Mode | Interruption Cost |
+|---|---|---|---|---|---|---|---|
+| Explore | Navigate / discover | World / orientation / survival | Low | World + light HUD | Current | Movement | Very low |
+| Combat | Fight | Threat / HP / resources | Fast | HUD | Current | Combat | Very low |
+| Build | Place / validate | Cost / snap / I/O / validity | Medium | World + overlay | Until exit | Build | Low |
+| Inspect | Diagnose | State / cause | Medium | Local panel | Contextual | Inspect | Medium |
+| Inventory | Compare / manage | Items / stats | High | Full-screen | Session | Menu | High allowed |
+| Management | Plan / optimize | Economy / alerts / relationships | High | Full-screen | Recallable | Menu | High allowed |
 
-### 仮説
-
-**UIを減らす = 情報を減らす** ではない。
-
-HUDを削除する場合、その情報が必要ならWorld / Audio / Haptic / Animation等へRelocateする必要がある。
+The table must be adapted per game.
 
 ---
 
-## 4. UI Density / Screen Occupancy — 固定値ではなくStateで変える
+# Part I — Core design dimensions
 
-ジャンルによって通常HUDの密度には傾向差がある。
+## 7. Dimension A — Player Agency / Constraints / Systems
 
-例として過去研究ではFPSとRTSのHUD面積に大きな差が報告されている。また、Strategy / ManagementではUI自体がGameplayの主要部分になる一方、Horror / Immersive / ExplorationではWorld visibilityを優先するGameが多い。
+Do not equate agency with maximum freedom, control, power, or number of choices.
 
-ただし「Genre = HUD %」へ固定しない。
+Separate:
 
-同じGameでもStateで必要量が変わる。
+- Control — how much of the situation the player can directly control
+- Power — how strong the player is
+- Freedom — how many options exist
+- Agency — whether player intent / choice can meaningfully influence outcomes
 
-```text
-Exploration
-  ↓ Low density
-Combat / Hazard
-  ↓ Medium
-Build
-  ↓ Medium–High
-Machine Interaction
-  ↓ Local panel
-Inventory
-  ↓ High
-Management / Research
-  ↓ High / Fullscreen allowed
-```
+Meaningful constraints can create the experience:
 
-### Working concept: Adaptive Density UI
+- Journey restricts communication.
+- Pathologic 2 restricts time and possibility of saving everyone.
+- Survival games can use inventory or scarcity constraints.
+- Horror can restrict information and control.
+- Getting Over It uses severe progress loss as stakes.
 
-最適化対象は「UIを少なくすること」ではなく、**今のPlayer Taskへ必要な密度へ変えること**。
+Constraint is design material, not automatically a UX defect.
 
-Screen OccupancyはRuleではなくReview metricとして扱う案が有力。
+### Systems and possibility space
 
-見る項目:
+Feature Count ≠ Possibility Space.
 
-- Screen occupancy
-- Center obstruction
-- Edge density
-- Text amount
-- Popup frequency
-- Permanent / Temporary比率
-- World visibility
-- Gaze travel
-- Menu depth
+Distinguish:
 
----
+- Complexity — amount of rule / state understanding required
+- Depth — meaningful decisions produced after rules are understood
+- Breadth — number of systems / actions / content types
+- Possibility Space — possible actions / states / outcomes
+- Agency — ability to form goals and influence outcomes within that space
 
-## 5. Attention — Pixelではなく「注意」を有限資源として考える
+Complexity should earn its cost by generating useful decision, strategy, expression, risk, discovery, or meaning.
 
-Research全体で非常に強く残った考え。
+### Progression
 
-### Attention Budget
-
-Playerは画面上の全情報を同時に同じ強さで処理できない。
-
-### Attention Competition
-
-重要なのは個々のUIが正しいかだけではない。
-
-```text
-Enemy attack
-Low HP
-Quest Updated
-Achievement
-Tutorial Hint
-Loot acquired
-Factory Alert
-```
-
-が同時に出れば互いにCompetitionする。
-
-### Attention Hierarchy
-
-Game上のPriorityとVisual Salienceを大きく逆転させない。
-
-```text
-Enemy attack > Low HP > Current Objective > Loot > Achievement
-```
-
-なのにAchievementが最大Popup + Gold animation + SoundでEnemyより目立つ、という状態は避ける候補。
-
-### Salience Inflation
-
-強いCueを大量に使うと、全部が通常状態になる。
-
-- Red
-- Glow
-- Blink
-- Sudden onset
-- Motion
-- Sound
-- Large Text
-
-は**希少資源**として扱う考えが有力。
-
-### Center Budget
-
-Camera中心Game / FPSでは中央は最も価値の高いAttention Space。
-
-中央はAim / Enemy / Interactable / Build Preview等のPrimary Gameplayへ使われるため、理由なくLong text / Achievement / Statistics等で奪わない。
-
-ただしRTS / Rhythm / Card等ではFocal Zoneが異なるため、位置固定Ruleにはしない。
-
-### Motion Budget
-
-Motionは強いAttention Cueだが、FactoryのようにWorldが常時動くGameではMotionが大量に存在する。
-
-候補:
-
-- Gameplayとして意味のあるMotion → 常時可
-- 状態変化を知らせるMotion → 一時的
-- Decorative UI motion → 控えめ
-
-**Motion = 何か起きた** というVisual Languageを維持できるかを見る。
-
----
-
-## 6. Attention Zone Model — 位置ではなく役割
-
-論文の固定分類ではなく、Researchを整理するためのWorking Model。
-
-### Focal Zone
-
-Playerが直接見ている場所。
-
-- Aim target
-- Enemy
-- Machine
-- Placement
-- Interactable
-
-Primary Gameplay領域。
-
-### Awareness Zone
-
-直接読まなくても変化を感じたい領域。
-
-- HP
-- Ammo
-- Cooldown
-- Directional danger
-
-Peripheral Visionで量・変化を感じられる可能性がある。
-
-### Reference Zone
-
-必要なときに意識的に見る。
-
-- Minimap
-- Quest details
-- Cash
-- Production rate
-- Inventory capacity
-
-位置はGameによって変える。
-
----
-
-## 7. Visual Attention / Cue設計
-
-Researchで有力だったCue:
-
-- Local contrast
-- Motion
-- Sudden onset
-- Flicker / luminance change
-- Size difference
-- Text
-- Human / face
-- Gaze direction
-- Audio location
-
-ただし**Attention Strength Rankingを固定しない**。
-
-PlayerのTop-down Task（何を探しているか）とScene内Contrastによって効果は変わる。
-
-### Cue Consistency
-
-一度学習した意味を理由なく変えない。
-
-```text
-黄色 = 登れる
-```
-
-と学ばせた後、黄色をLoot / Danger / Decoration / Objectiveへ無秩序に使うとVisual Languageが壊れる。
-
-### Cue Competition
-
-Lighting / Landmark / Audio / Marker等が異なる方向へ誘導すると混乱する。
-
-### Attention Intensity Ladder — Working Model
-
-- Level 0 Ambient
-- Level 1 Discoverable
-- Level 2 Noticeable
-- Level 3 Important
-- Level 4 Critical
-
-Level 4を乱用しない。
-
-### Multimodal Redundancy
-
-Critical informationはVisual + Audio + 必要ならHaptic等を検討。
-
-ただし全情報を全Channelで重複させない。
-
-有力案:
-
-```text
-Critical → 2〜3 Channel
-Important → 1〜2
-Normal → 1中心
-Low → Passive / Requested
-```
-
-数値Ruleではなく設計指針。
-
----
-
-## 8. Alert / Notification
-
-### Notification Costは表示時間だけではない
-
-```text
-Interrupt
-+ Read
-+ Understand
-+ Remember previous goal
-+ Reorient
-+ Resume
-```
-
-までCostになる。
-
-### Notification Queue
-
-候補:
-
-- Critical → 即時、低Priorityを抑制
-- Important → Criticalがなければ表示
-- Normal → Queue
-- Low → Safe moment / Log
-
-### Alert成功モデル
-
-Warningは「見た」で成功ではない。
-
-```text
-1. Notice
-2. Understand
-3. Locate
-4. Act
-5. Confirm
-```
-
-Factory例:
-
-```text
-Smelter #12
-Stopped: Power shortage
-Available 18 / Required 25 MW
-[Locate]
-```
-
-修正後はRecoveryを確認できるFeedbackを返す。
-
----
-
-## 9. Cognitive Budget — UIを減らすだけでは不十分
-
-### Visual Minimalism ≠ Cognitive Minimalism
-
-HUDを消しても、Playerが次を頭で覚えるなら負担は残る。
-
-- あと何個必要
-- どのMachineが止まった
-- 何が原因
-- 次のObjective
-- どのRoute
-
-### Externalize Memory
-
-Gameが保持できる情報をPlayerに暗記させない。
-
-Alert Log / Quest Log / Recipe / Tracked Material / Recent Task等。
-
-### Meaningful vs Wasteful Cognitive Load
-
-残したい負荷:
-
-- Factory Layoutを考える
-- Upgradeを選ぶ
-- Boss Patternを読む
-- Routeを考える
-
-減らしたい負荷:
-
-- Buttonの場所を探す
-- 消えたPopupを覚える
-- 原因をUI不足から推測
-- 離れた表示を何度も往復
-- Modeを推測
-
-**GameのChallengeを簡単にするのではなく、Gameとして面白くない認知負荷を減らす。**
-
----
-
-## 10. Working Memory / Chunking / Decision Complexity
-
-### 個数Ruleにしない
-
-「人間は4個しか扱えないからUIは4個まで」のような誤用はしない。
-
-熟練Playerは複数要素を1つのChunk / Patternとして理解できる。
-
-### Split Attention
-
-一緒に理解する必要がある情報を離しすぎるとIntegration Costが増える。
-
-BuildではGhostとCost / Validity / I/O方向を近くに出す価値がある場合がある。
-
-World-space UIも、Objectとその情報を同時に理解する必要がある場合のSplit Attention低減として説明できる。
-
-### Choice Count ≠ Decision Complexity
-
-Decision Complexity候補:
-
-```text
-選択肢数
-× 比較項目
-× 必要知識
-× 不確実性
-× Time pressure
-```
-
-30 UpgradeでもCategory / Dependency / Recommendationが明確なら扱いやすい場合がある。
-
----
-
-## 11. Progressive Disclosureではなく「Complexity Staging」
-
-複雑なGameを単純化する必要はない。
-
-**複雑さをいつ・どの順番でPlayerへ渡すか**を設計する。
-
-例:
-
-```text
-Machineを見る
-→ Running / Stopped
-
-近付く
-→ Recipe / E Inspect
-
-Inspect
-→ Input / Output / Power / Efficiency
-
-Diagnostics
-→ History / Forecast / Expert data
-```
-
-### Depth Budget
-
-重要度が高いほど浅くする。
-
-- Critical → 0階層
-- Actionable detail → 0〜1
-- Detailed diagnosis → 1〜2
-- Expert data → 深くてもよい
-
-ただしPuzzle等では答えを教えすぎない。
-
----
-
-## 12. Recognition / Recall / Discoverability
-
-初心者へ大量Shortcut暗記を要求しない。
-
-### Layered Recognition
-
-```text
-今使える主要Action → Contextで表示
-関連Action → Context menu
-全Action → Menu / Guide
-Expert → Shortcut
-```
-
-Playerは Recognition → Learning → Recall へ自然に移れる。
-
-### Discoverability Failure
-
-機能があっても存在を知らなければ実質使えない。
-
-ただし常時Shortcutを大量表示する必要はない。
-
-初回Hint + Context Hint + Guide再確認などが候補。
-
----
-
-## 13. Affordance / Signifier / Expectation Alignment
-
-### Real Affordance
-
-実際に何ができるか。
-
-### Perceived Affordance / Signifier
-
-Playerが「できそう」と理解する手掛かり。
-
-問題:
-
-- 登れそうなのに登れない
-- 押せるButtonがDecorationに見える
-
-### Expectation Alignment
-
-```text
-できそうに見える
-↓
-実際にできる
-↓
-予測した結果が返る
-```
-
-これが「直感的」の一部。
-
----
-
-## 14. Interaction Grammar / Predictability
-
-Game全体で操作文法を持つ。
-
-例:
-
-```text
-E = world interact
-Esc = back / exit
-Left click = primary
-Right click = secondary
-```
-
-MenuもNavigation / Confirm / Back等のPatternを一貫させる。
-
-Consistencyの目的は見た目を揃えるだけでなく、**Playerが未経験Situationでも次のActionを予測できること**。
-
-### Game Interaction Loop
-
-```text
-1. Perceive — 何ができる？
-2. Predict — やると何が起きる？
-3. Act — 操作
-4. Confirm — Inputを受け付けた？
-5. Understand — 何が変わった？
-6. Recover / Continue — 次は？失敗ならどう直す？
-```
-
----
-
-## 15. Feedback / Constraint / Disabled State
-
-### Before / During / After
-
-- Before → Action Signifier
-- During → Input accepted / Progress
-- After → Outcome / New state
-
-### Direct Feedback
-
-操作対象そのものが変化する方が理解しやすい場合がある。
-
-Build例:
-
-- Ghost green → valid
-- Ghost red → invalid
-- Reason → collision / resource / slope
-
-### Constraint Before Error
-
-UI事故はError後に叱るより、可能なら事前に防ぐ。
-
-### Hidden vs Disabled
-
-- 普段存在するが今だけ使えない → Disabled + 必要なら理由
-- そのContextでは関係ない → Hidden候補
-
-### Explain Inaction
-
-Gray buttonだけで理由不明にしない。
-
-- Need material
-- Cooldown
-- Wrong mode
-- Too far
-- Locked
-- Invalid target
-
-など次Actionへつながる情報を検討。
-
----
-
-## 16. Mode Visibility / Continuity / Resumption
-
-Mode例:
-
-- Normal
-- Build
-- Dismantle
-- Scanner
-- Placement
-- Combat
-
-同じInputでも意味が変わる場合、Playerが今のModeを認識できないとMode Errorが起きる。
-
-### Mode Visibility
-
-Visual / behavior / 必要ならAudioで現在Modeを知覚可能にする。
-
-Exitも明確にする。
-
-### Context Continuity
-
-Menu / Notification / Cutscene / Death / Tutorial / Inventory等はPlayerのMental Contextを切る。
-
-Playerが戻ったとき:
-
-- 今何をしていた？
-- どこを直していた？
-- どのMode？
-- 次は何？
-
-を復元できるようにする。
-
-### Resume Context
-
-Recent task / previous target / current project / marker等を必要に応じ保持。
-
----
-
-## 17. Persistence of Information
-
-情報は次へ分類すると考えやすい。
-
-- Ephemeral — +10 Iron
-- Temporary — Quest updated
-- Persistent — Low HP / current build state
-- Recallable — Quest log / Alert history / Tutorial guide
-
-重要な情報を「一瞬出して消えて終わり」にするとWorking Memoryへ負荷を移す。
-
-Toastは消えてもLogに残す等を検討。
-
----
-
-## 18. Failure — 難易度とUI事故を分離する
-
-Failureを分類する。
-
-- Gameplay Failure
-- Skill / Execution Failure
-- Understanding Failure
-- Interface Failure
-- System Failure
-
-### Meaningful Failure
-
-FailureがChallenge / Learning / Riskへ意味を持つなら残せる。
-
-Interface事故 / Save loss / Softlock等をDifficultyとして扱わない。
-
-### Difficulty ≠ Punishment
-
-Celesteのように高いExecution Difficulty + 低いRetry Frictionは成立する。
-
-Dark SoulsのようにRecovery / Repetition自体がMastery / Riskへ意味を持つ場合もある。
-
-### Recovery Cost must have a purpose
-
-見るCost:
-
-- Time
-- Progress
-- Resource
-- Repetition
-- Cognitive
-- Navigation
-- Uncertainty
-- Emotional
-
-### Failure Scope Matching
-
-探索で失敗したPenaltyが探索成果へかかるのは理解しやすいが、無関係なFactory progressまで大幅に巻き戻すのは再検討。
-
----
-
-## 19. Undo / Confirmation / Save / Recovery
-
-### Reversible action
-
-できるだけDirect execution + Undo / Recoveryを優先候補。
-
-### Irreversible + High consequence
-
-Confirmation候補。
-
-Routine actionすべてへConfirmationを付けるとHabituationする。
-
-### Experiment Safety
-
-Factory / Building / Strategyでは Try → Observe → Fix がGameplayになる。
-
-無意味な高PenaltyでExperimentを殺さない。
-
-### Save / Checkpoint
-
-全GameへManual Saveを機械的に要求しない。
-
-決めること:
-
-- 何を失う
-- なぜ失う
-- どこから再開
-- Session中断可能性
-- Autosave trap
-- 過去stateへ戻す必要
-
-### Recovery State Integrity
-
-HP1 / Ammo0 / Enemy surrounded等のUnrecoverable Autosaveを避ける設計を検討。
-
----
-
-## 20. Difficulty / Challenge / Fairness
-
-### Difficulty Is Multidimensional
-
-Candidate axes:
-
-- Motor precision
-- Reaction
-- Timing
-- Perception
-- Memory
-- Knowledge
-- Planning
-- Decision
-- Resource management
-- Information load
-- Time pressure
-- Uncertainty
-- Punishment
-- Endurance
-
-### Core Challenge Alignment
-
-難しさはGameが上達してほしいSkillから作る。
-
-FactoryならLayout / Logistics / Power planning等はChallengeになってよい。
-
-- I/Oが見えない
-- Alert原因不明
-- Buttonが見つからない
-
-はInterface Challengeであり、Core Challengeとは分離する。
-
-### Fair Challenge Model
-
-- Readable
-- Predictable
-- Actionable
-- Consistent
-- Causal
-- Learnable
-
-Fairnessは敵とPlayerを同能力にすることではなく、Ruleを理解し結果へ影響できること。
-
-### Skill Test Integrity
-
-Challengeが本当に狙ったSkillを試しているか確認。
-
-Aim Gameで敵が背景に埋もれて見えない場合、AimではなくVisibilityをTestしている可能性がある。
-
----
-
-## 21. Difficulty Settings / Assist / DDA
-
-### Global Easy / Normal / Hardだけにしない候補
-
-Combat / Aim / Timing / Puzzle hints / Resource loss等、Challenge軸ごとの調整を検討。
-
-### Assistance ≠ Global Difficulty Reduction
-
-Aimだけ苦手なPlayerにFactory economyまで簡単にする必要はない。
-
-### Player Agency
-
-Hidden DDAを機械的なDefaultにしない。
-
-必要ならPlayer-controlled Assist / Settingsを優先候補とする。
-
-### Challenge Ownership
-
-Playerが自分で選んだChallengeだと感じられることを重視。
-
----
-
-## 22. Motivation / Progression / Reward
-
-Self-Determination Theoryから特に有力:
-
-- Competence
-- Autonomy
-- Relatedness（Gameによる）
-
-ただし全Gameで3要素最大化をMUSTにしない。Horror等ではPowerlessness / Isolationが意図的Experienceの場合がある。
-
-### Progression種類
+Progression types include:
 
 - Numerical
 - Capability
@@ -871,96 +234,37 @@ Self-Determination Theoryから特に有力:
 - Narrative
 - Mastery
 
-### Capability Progression
+Capability progression is especially strong when it changes what the player can do rather than only increasing numbers.
 
-数字が増えるだけでなく、できること / Strategy / Workflowが変わるProgressionは強い候補。
+`Progression` and `emergence` can coexist:
 
-### Progress Evidence
+```text
+Progression → opens rules / tools / possibility
+Emergence → player chooses how to combine and use them
+```
 
-「成長しました」と言うだけでなく、Playerが過去との差を体験・観測できるようにする。
+### Goal horizons
 
-### Autonomy
-
-選択肢数ではなく、Playerの選択がPlay style / World / Strategyへ意味ある差を残すかを見る。
-
----
-
-## 23. Retention / Rewardの扱い
-
-### Engagement ≠ Enjoyment
-
-Daily / Streak / Variable Reward等で戻ってきても、Core Gameが面白くなったとは限らない。
-
-### Behavioral Retention vs Experiential Engagement
-
-Guideでは「長く拘束する」を直接Optimization Goalにしない方向が有力。
-
-目指す候補:
-
-**Playerが自分から次のGoalを持ちたくなるGame。**
-
-### Manipulative Retentionを避ける方向
-
-- FOMO
-- Exit friction
-- Streak loss pressure
-- Gambling-like variable reinforcement
-
-を数字だけで正当化しない。
-
-### Reward should feed the Core Loop
-
-Rewardが次のCapability / Choice / Exploration / Strategyへつながるかを見る。
-
----
-
-## 24. Goal Horizon / Session Motivation
-
-Goalを複数Time Horizonで考える。
+Candidate horizons:
 
 - Long-term
 - Mid-term
 - Short-term
 - Immediate
 
-ただし全部をHUDへ並べない。
+Also distinguish:
 
-### Game-set / Player-set / Emergent Goal
+- Game-set goals
+- Player-set goals
+- Emergent goals
 
-Sandbox / FactoryではPlayer自身がGoalを生成できるSystemが重要。
+Sandbox / factory games may depend more on goal-generation capacity than quest count.
 
-### Goal Generation Capacity
+### Repetition, novelty, and grind
 
-Quest数ではなく、SystemからPlayer-set goalが生まれるかを見る。
+Repetition is not automatically boredom.
 
-### Session Closure
-
-有力な思想:
-
-**Satisfied Stop + Clear Continuation**
-
-```text
-今日の達成
-+ Save済み
-+ 安全に終了可能
-+ 次にやりたいことが見えている
-```
-
-Gameをやめにくくするのではなく、やめても続きを理解でき、また自分から戻りたくなる。
-
----
-
-## 25. Boredom / Novelty / Repetition
-
-### Repetition ≠ Boredom
-
-同じActionでもSituation / Decision / Learning / Expressionが変わればExperienceは変わる。
-
-### Boredom Working Hypothesis
-
-Learning / Discovery / Meaningful Decision / Expression等の変化が止まった状態でRiskが高まる。
-
-### Novelty Sources
+Potential novelty sources:
 
 - Content
 - Mechanical
@@ -975,32 +279,329 @@ Learning / Discovery / Meaningful Decision / Expression等の変化が止まっ�
 - Procedural
 - Creative
 
-### Stable Core, Evolving Experience
-
-Core Actionは反復してもよい。
-
-Experience側に意味ある変化を作る。
-
-### Meaningful Repetition vs Grind
-
 Working definition:
 
-**Grind = Meaningful Decision / Learning / Expressionがほぼ増えない反復を、外部Goalのため大量要求する状態。**
+> Grind = large amounts of repetition required for an external goal while meaningful decision, learning, or expression changes very little.
 
-### Clarity vs Mystery
-
-- Action / Ruleは分かる
-- Outcome / Discoveryは未知
-
-`Confusion` と `Mystery` を分ける。
+Keep this as a working definition, not a universal measured threshold.
 
 ---
 
-## 26. Pacing / Session Structure
+## 8. Dimension B — Perception / Information / Presentation
 
-PacingをAction speedだけで扱わない。
+The higher-level problem is Game Information Design, not only UI.
 
-Candidate axes:
+Possible channels:
+
+- World geometry
+- Lighting
+- Color
+- Materials
+- Landmarks
+- NPC gaze / body language
+- Animation
+- Motion / VFX
+- HUD
+- World-space UI
+- Diegetic UI
+- Menus
+- Text
+- Audio
+- Spatial audio
+- Haptics
+- Camera
+
+Working hierarchy:
+
+```text
+What information / feeling is needed?
+→ which sensory / presentation channel?
+→ where should it appear?
+→ when?
+→ with what persistence and salience?
+```
+
+Not every visual / audio / haptic element must be justified only as gameplay information. Atmosphere, emotion, identity, and feel are legitimate presentation goals.
+
+### Attention budget
+
+Attention is limited. Consider:
+
+- visual salience
+- movement
+- onset
+- flicker
+- size
+- text
+- faces / gaze
+- audio
+- haptic intensity
+- center-screen competition
+
+If every element is urgent, nothing is urgent.
+
+### Visual minimalism ≠ cognitive minimalism
+
+Removing HUD can increase memory burden if players must remember:
+
+- required material counts
+- broken machines
+- causes
+- objectives
+- routes
+
+Externalize memory when memory itself is not the intended challenge.
+
+Possible tools:
+
+- Alert log
+- Quest log
+- Recipe reference
+- Tracked materials
+- Recent task
+- History
+
+### Split attention and information locality
+
+Place information close to the object or decision when integration cost matters.
+
+Candidate locality mapping:
+
+- Object-specific → object / contextual panel
+- Global state → HUD / fixed region
+- Deep systemic → dedicated workspace / full-screen
+
+World-space UI can reduce split attention when the player must understand an object and its status together, but should not be treated as universally superior.
+
+### Persistence
+
+Classify information by persistence:
+
+- Ephemeral
+- Temporary
+- Persistent current state
+- Recallable
+- Historical
+
+Important information should not disappear permanently if later recall is needed.
+
+### Screen density
+
+Do not use a universal occupancy percentage.
+
+Useful evaluation dimensions can include:
+
+- Physical occupancy
+- Center interference
+- Visual salience
+- Motion
+- Task relevance
+- Gaze travel
+- Visual search performance
+- Subjective workload
+
+No single composite score is currently justified as a universal metric.
+
+---
+
+## 9. Dimension C — Interaction / Intent Fidelity
+
+Candidate interaction loop:
+
+```text
+1. Perceive — what can I do?
+2. Predict — what will happen?
+3. Act
+4. Acknowledge — did the game receive it?
+5. Outcome — what changed?
+6. Understand — why?
+7. Recover / continue
+```
+
+### Intent Fidelity
+
+Working definition:
+
+> The game recognizes what the player is trying to do, accepts it with appropriate timing, connects it to an expected result, and clearly communicates what changed.
+
+Literal input fidelity is not always the goal.
+
+Potential forgiveness:
+
+- Input buffer
+- Coyote time
+- Corner correction
+- Snap / target assistance
+
+Separate Intent Forgiveness from Dynamic Difficulty Adjustment.
+
+### Feedback
+
+Consider feedback before / during / after actions:
+
+- Before → signifier / constraint / prediction
+- During → input accepted / progress
+- After → outcome / new state
+
+Explain inaction when useful:
+
+- Missing resource
+- Cooldown
+- Wrong mode
+- Too far
+- Locked
+- Invalid target
+
+### Mode visibility
+
+When inputs change meaning by state or mode, keep the active mode understandable and exits predictable.
+
+Examples:
+
+- Normal
+- Build
+- Dismantle
+- Scanner
+- Placement
+- Combat
+
+### Responsiveness vs weight
+
+Do not buy “weight” only with delayed response.
+
+Weight can come from:
+
+- momentum
+- acceleration
+- animation follow-through
+- audio
+- recoil
+- camera
+- haptics
+- environment reaction
+
+A delayed outcome can be valid while acknowledgement remains immediate.
+
+---
+
+## 10. Dimension D — Learnability / Access
+
+Tutorials are only one part of a learning architecture.
+
+Candidate learning chain:
+
+```text
+Encounter
+→ Understand
+→ Demonstrate / infer
+→ Practice
+→ Feedback
+→ Independent use
+→ Transfer
+→ Combine
+→ Recall
+→ Mastery
+```
+
+### Learning modes
+
+Do not equate learnability with explanation.
+
+Possible modes:
+
+- Explicit instruction
+- Demonstration
+- Guided discovery
+- Systemic experimentation
+- Social learning
+- Reference learning
+
+The Witness-like discovery-driven learning is a valid design when the player can infer the system reliably enough.
+
+### Complexity staging
+
+Complex games need not be simplified. Stage complexity.
+
+Example:
+
+```text
+Machine visible
+→ Running / stopped
+
+Approach
+→ Recipe / inspect
+
+Inspect
+→ Inputs / outputs / power / efficiency
+
+Diagnostics
+→ history / forecast / expert data
+```
+
+### Prior knowledge and expertise
+
+Do not treat the player as globally beginner or expert.
+
+Per-mechanic expertise can differ:
+
+```text
+Movement → expert
+Aim → expert
+Inventory → intermediate
+Factory → beginner
+```
+
+Guidance may need to fade as competence rises, but do not auto-hide based only on a shallow success count.
+
+### Accessibility: barrier vs intended challenge
+
+Ask:
+
+```text
+What capability does this mechanic require?
+→ Is that requirement part of the intended experience?
+→ Or is it an incidental barrier?
+```
+
+Potential barriers include:
+
+- Perception
+- Input
+- Timing
+- Memory
+- Cognition
+- Communication
+- Motion comfort
+
+Possible assistance layers:
+
+1. Presentation alternative
+2. Input translation
+3. Execution assistance
+4. Decision assistance
+5. Automation / bypass
+
+Use presets as entry points when settings become complex, with granular controls when needed.
+
+Accessibility use should not automatically be treated as cheating. Competitive externality must be evaluated separately.
+
+---
+
+## 11. Dimension E — Continuity / Temporal Experience
+
+Game experience unfolds over time:
+
+```text
+Moment
+→ Activity
+→ Session
+→ Progression
+→ Full experience
+```
+
+### Pacing dimensions
+
+Possible pacing axes:
 
 - Action tempo
 - Threat
@@ -1008,339 +609,1472 @@ Candidate axes:
 - Cognitive load
 - Decision pressure
 - Movement impetus
-- Novelty rate
+- Novelty
 - Goal pressure
 - Information density
 - Reward frequency
 
-### Peaks Need Contrast
+Peaks often require contrast, but not every game needs the same recovery rhythm.
 
-高強度を価値あるPeakにするにはLow / Recoveryが必要な場合がある。
-
-### RecoveryもGameplay
-
-Combat後すぐInventory比較 / Skill Tree / 20 Loot整理を要求するとCognitive recoveryにならない。
-
-### Pacing Authority
+### Pacing authority
 
 - Designer-heavy
 - Shared
 - Player-heavy
 
-Sandbox / FactoryではPlayer-controlled pacingを尊重し、強制Interruptを乱用しない。
+Sandbox / factory games often benefit from respecting player-controlled pacing more than heavily authored linear experiences.
 
-### Micro / Meso / Macro
+### Continuity and resumption
 
-- Moment
-- Activity / Session
-- Progression / Full Experience
+Menus, notifications, cutscenes, death, tutorials, and interruptions can break mental context.
 
-を別々に評価。
+On return, the player may need to reconstruct:
 
----
+- what they were doing
+- current mode
+- current project
+- current goal
+- relevant cause / problem
 
-## 27. System Design — Feature数よりPossibility Space
+### Returning players
 
-### Feature Count ≠ Possibility Space
+A returning expert is not the same as a beginner.
 
-10個の独立Systemより、少数の異なる役割を持つSystemが意味ある相互作用を作る方がDepthを生む場合がある。
+Useful reconstruction may include:
 
-### Complexity / Depth / Breadthを分ける
+- previous objective
+- recent major event
+- current project
+- what changed since last play
+- control / reference access
 
-- Complexity — 理解・記憶するRule / State量
-- Depth — 理解したRuleから生まれるMeaningful Decisionの幅
-- Breadth — System / Content / Action種類
-- Possibility Space — 取り得るAction / State / Outcome全体
-- Agency — その中でGoalを持ち結果へ影響できる度合い
+### Failure / recovery
 
-### Complexity Must Earn Its Cost
+Classify failure:
 
-新System / Ruleは、新Decision / Strategy / Expression / Risk等を生む理由を持つ。
+- Gameplay failure
+- Skill / execution failure
+- Understanding failure
+- Interface failure
+- System failure
+- Temporal / performance failure when useful
 
-### Interaction Density
+Difficulty is not the same as punishment.
 
-System同士の関係を見る。
+Recovery costs can include:
 
-ただし全部を全部につなげる`Systemic Spaghetti`を避ける。
+- Time
+- Progress
+- Resource
+- Repetition
+- Cognitive effort
+- Navigation
+- Uncertainty
+- Emotional cost
 
-### Readable Interaction Network
-
-PlayerがSystem間の因果を学習できるようにする。
-
-### Systemic Promise
-
-一度World Ruleを教えたら、Scope内では理由なく破らない。
-
-ただし全Worldを完全Simulationにする必要はなく、対象Scopeを明確にする。
-
----
-
-## 28. Emergence + Progression
-
-EmergenceとAuthored Progressionは対立ではない。
-
-Factory等では:
-
-```text
-Progression
-→ 新Rule / Toolを段階的に開く
-
-Emergence
-→ 使い方 / 組合せ / LayoutをPlayerへ任せる
-```
-
-Progressionを「Content消費一本道」ではなく、**Possibility Spaceを段階的に開く仕組み**として使える。
-
-### Feature Unlock vs Possibility Unlock
-
-新Machine追加より、そのMachineで何が新しく可能になったかを見る。
-
-### Intentional Agency
-
-自由度の数ではなく、PlayerがSystemを理解しGoal → Plan → Actionを自分で作れること。
+Do not minimize recovery by default. Require the cost to have a purpose.
 
 ---
 
-## 29. Game Feel / Input / Responsiveness
+# Part II — Cross-cutting lenses
 
-Game FeelをJuiceだけで考えない。
+## 12. Lens 1 — Player / Experience Cost
 
-有力な3要素:
+Do not minimize all cost. Allocate cost intentionally.
 
-- Tuning
-- Juicing
-- Streamlining
+Possible costs:
 
-### Intent Fidelity
+- Attention
+- Cognitive
+- Motor
+- Time
+- Recovery
+- Social
+- Emotional
 
-Responsive Gameを「入力通り100%厳密」に限定しない。
+### Experience Cost Ownership
 
-有力な定義:
+Classify cost:
 
-**PlayerがやろうとしたことをGameが理解し、適切な速さで受け付け、期待する結果へつなぎ、変化を明確に返す。**
+- Intended — the cost is part of the core experience
+- Supporting — the cost enables another meaningful demand
+- Accidental — the cost adds little or no intended value
 
-### Per-Verb Response
+Examples:
 
-- Look / Aim
-- Move
-- Jump
-- Fire
-- Interact
-- Build
-- Menu
+- Getting Over It progress loss → intended stakes
+- Papers, Please document handling → meaningful labor
+- Survival inventory limits → supporting prioritization
+- Hidden button / unresponsive UI / unnecessary repeated memory → likely accidental
 
-でLatency requirementは異なる。
+### Designed Friction Test
 
-固定msを共通Ruleにしない。
+When a design is inconvenient, difficult, ambiguous, or costly, do not automatically remove it. Ask:
 
-### Acknowledgment vs Outcome
+1. Is the cost intentional?
+2. What experience does it create?
+3. Is it necessary for the Core Experience?
+4. Can the player learn its relationship to outcomes?
+5. Can the same effect be achieved with a lower cost?
+6. Are extreme cases bounded?
+7. Is an accessibility alternative needed?
+8. Does playtesting show the intended experience actually occurs?
 
-Outcomeに時間が必要でもInput acceptedは早く返す。
+“Intentional” is not a waiver from validation.
 
-```text
-Input
-→ immediate acknowledgment
-→ action / progress
-→ delayed outcome
-```
+---
 
-### Responsiveness vs Weight
+## 13. Lens 2 — Experience Contract
 
-重さをLatencyだけで買わない。
+Replace an absolute “trust / consistency” rule with a layered contract.
 
-- Animation follow-through
-- Momentum
-- Acceleration
-- Audio
-- Recoil
+Ask:
+
+- What can the player trust?
+- What can the player predict?
+- What should be inferred?
+- What is intentionally uncertain?
+- What may intentionally deceive the player?
+- What must never be unreliable?
+
+Examples:
+
+- Horror may make enemy position or perception unreliable.
+- Eternal Darkness-style effects may temporarily undermine UI trust.
+- Random systems may leave outcomes uncertain while rules remain learnable.
+- Real save integrity and real-money purchase information should not be treated as playful uncertainty.
+
+### Layered Predictability
+
+Unpredictable outcome does not imply an unlearnable system.
+
+A game can make:
+
+- low-level outcomes uncertain
+- high-level rules predictable
+
+Darkest Dungeon-like uncertainty can coexist with clear system state.
+
+### Uncertainty Contract
+
+Useful categories:
+
+- Must know
+- Can infer
+- Intentionally uncertain
+- Must never be uncertain
+
+---
+
+## 14. Lens 3 — Adaptive Context
+
+All design dimensions should be interpreted through context.
+
+Potential context variables:
+
+- Game
+- State
+- Task
+- Genre
 - Camera
-- Environment reaction
+- Player expertise
+- Input
+- Platform
+- Session
+- Physical environment
+- Social topology
+- Accessibility need
+- Service model
 
-等も使える。
-
-### Assist Execution, Preserve Decisions
-
-Snap / Coyote time / Input buffer / Forgiveness等でGameが試したくない精度要求を減らし、Meaningful decisionはPlayerへ残す。
-
-### Assistance Strength ≈ Intent Confidence
-
-Game側の意図推定にConfidenceが高いほど補助を強くできる候補。
-
-勝手なAuto-correctionでAgencyを奪わない。
+This is the primary defense against copying a successful solution from one game into an incompatible game.
 
 ---
 
-## 30. Camera / Motion / Accessibility
+# Part III — Domain lenses
 
-Game FeelとAccessibilityを対立させない。
+Activate only when the domain materially affects the Core Experience.
 
-Camera関連:
+## 15. Camera / Spatial Orientation / Motion Comfort
 
-- FOV
-- Sensitivity
-- Screen shake
-- Head bob
-- Motion blur
-- Weapon sway
-- Auto camera movement
+Candidate responsibilities:
 
-はGameに応じて調整可能性を検討。
+- Control / intent
+- Readability
+- Orientation
+- Motion comfort
 
-### Feel LayerとCore Mechanicsを分ける
+### Camera Motion Ownership
 
-Presentation effectを0にしてもCore Controlが壊れない設計を検討できる。
+Possible levels:
 
----
+- Player-controlled
+- Assisted
+- System-controlled
+- Forced
 
-## 31. 現時点の上位Framework候補
+Evaluate why the camera moves, who initiated it, predictability, override ability, and orientation impact.
 
-細かいRuleを数十個作らず、最終的には5〜8本程度の上位原則へ圧縮する方向。
+### Navigation Support ≠ Spatial Learning
 
-現時点の候補:
+Treat at least two axes separately:
 
-### A. Player Goal / Core Experience First
+- Immediate Navigation Support
+- Spatial Learning Support
 
-何をPlayerにさせたい・感じさせたいかから始める。
+A minimap can improve immediate route performance without necessarily improving spatial knowledge.
 
-### B. Cognitive Budget
+Determine whether spatial knowledge is actually a core skill in the target game.
 
-Attention / Working Memory / Perception / Decision / Motorを、Gameとして意味のないFrictionへ浪費させない。
+### Camera / Spatial Profile
 
-### C. Information Architecture
-
-何を、いつ、どこに、どの深さで、どのChannelで、どのSalienceで、どれくらい残すか設計する。
-
-### D. Interaction / Predictability
-
-何ができ、何が起き、Inputが受理され、結果が分かり、失敗から続けられるか。
-
-### E. Continuity / Recovery
-
-Mode / Menu / Failure / Notification / Session interruption後もMental Contextを失わせない。
-
-### F. Adaptive Context
-
-Genre / Camera / Primary Task / Game State / Expertise / Input / Platformに応じて最適解を変える。
-
-### G. Meaningful Challenge / Progression
-
-Gameが本当に試したいSkill / DecisionをChallengeにし、Progression / Reward / FailureをCore Loopへ接続する。
-
-### H. Validation
-
-「分かるはず」「気持ちいいはず」ではなく、実際のPlayer行動 / Playtest / 必要ならTelemetry / Eye Tracking等で確認する。
-
-まだ最終確定しない。
+- Camera purpose
+- Motion ownership
+- Spatial knowledge goal
+- Navigation assistance goal
+- Motion comfort risk
+- Platform / player context
+- Validation
 
 ---
 
-## 32. GameごとのResearch Workflow候補
+## 16. Combat Readability
 
-新Gameまたは大規模改修時:
+Readable does not mean easy.
+
+Candidate chain:
 
 ```text
-1. Core Experienceを定義
-2. Primary Player Tasks / Verbsを定義
-3. Genre / Camera / Input / Platform / Session Scaleを確認
-4. 同Genre + 隣接GenreのReferenceを調査
-5. UI / Game Screen / Interaction / Failure / Progression等を比較
-6. Game State Matrixを作る
-7. Information / Attention / Cognitive requirementsを整理
-8. UI / Interaction / Challenge Directionを決める
-9. Prototype / Vertical Slice
-10. Playtest
-11. Observationから修正
-12. Project Requirements / Learningsへ確定内容を保存
+Detect threat
+→ Identify source / type
+→ Interpret action
+→ Locate danger
+→ Understand timing
+→ Respond
+→ Confirm outcome
 ```
 
-通常ProjectでReference数を機械的に100本へ固定しない。
+### Gameplay Geometry Contract
 
-Research uncertaintyが高い場合に母数を増やす。
+Perceived danger / projectile / hit area should support accurate enough prediction of actual gameplay geometry when that prediction is part of the intended skill.
+
+### Gameplay Importance ≈ Presentation Salience
+
+High-impact events usually need stronger relative salience, but avoid a fixed size / color rule.
+
+### Intended Uncertainty
+
+Combat can intentionally hide information in horror, stealth, Hunt-like inference, etc.
+
+Separate readability axes from challenge axes.
+
+### Failure Attribution Test
+
+After failure, ask what killed the player, when it became apparent, where danger was, what counterplay existed, whether input was recognized, and why they believe they failed.
+
+The explanation should match the intended skill unless confusion itself is intentional.
 
 ---
 
-## 33. Game UI / Experience Profile候補
+## 17. Audio Design
 
-Gameごとに次を埋める案。
+Audio also has limited perceptual / attention capacity.
+
+Distinguish:
+
+- Energetic masking
+- Informational masking
+
+### Audio Information Chain
+
+```text
+Detect
+→ Identify
+→ Locate
+→ Interpret
+→ Prioritize
+→ Act
+→ Confirm
+```
+
+### Audio Grammar
+
+Learned audibility and meaning rules should be consistent enough to learn:
+
+- what a cue means
+- who can hear it
+- ally / enemy differences
+- state changes
+
+### Priority ≠ loudness
+
+Some games optimize for detectability over acoustic realism; others optimize for location / state inference.
+
+### Auditory Foreground Budget — working hypothesis
+
+Possible layers:
+
+- Foreground — critical actionable
+- Midground — useful state / context
+- Background — atmosphere
+- Decorative — flavor
+
+This is a working design lens, not a validated universal four-layer model.
+
+### Temporal Audio Budget — working hypothesis
+
+When important sounds collide, ask whether the events need to happen simultaneously before only increasing volume or ducking.
+
+### Intentional masking
+
+Weather, thunder, stealth, or environment can intentionally mask audio. Use the Experience Contract to decide what must be heard versus inferred.
+
+### Accessibility
+
+Critical audio may need visual / haptic alternatives, separate category volumes, captions, and direction where appropriate.
+
+---
+
+## 18. Haptics
+
+Haptics can serve different roles:
+
+- Information
+- Confirmation
+- Feel
+- Atmosphere
+
+Do not assume haptics always improve performance. Studies show experience benefits can occur without accuracy / score improvement.
+
+Critical information should not depend on haptics alone because haptics may be disabled, unsupported, uncomfortable, or inaccessible.
+
+### Haptic Salience Budget — working hypothesis
+
+Repeated high-intensity haptic events may flatten hierarchy, analogous to visual / audio salience inflation. Keep as a working hypothesis unless further evidence is needed for a specific game.
+
+---
+
+## 19. Input Device Design
+
+Design actions before physical bindings.
+
+```text
+Player Intent
+→ Game Action
+→ Required Control Property
+→ Device-native Mapping
+→ Device-specific Tuning
+→ Feedback
+```
+
+### Cross-device parity
+
+Do not require identical mechanics at the physical-input level.
+
+Prefer functional / intent equivalence.
+
+Examples:
+
+- Mouse → pointer selection
+- Controller → focus navigation + confirm
+- Touch → direct tap
+
+### Device compensation vs player assistance
+
+Separate:
+
+- Device compensation — deadzone, controller aim assistance, touch target enlargement
+- Player assistance — stronger snap aim, auto steering, automation
+
+### Touch
+
+Touch is a different interaction environment:
+
+- display and input surface are the same
+- finger occlusion
+- no hover
+- thumb reach
+- small screens
+- screen-space controls
+
+Working concept: Touch Occupancy should consider both UI and temporary finger / hand occlusion.
+
+### Remapping
+
+Prefer action remapping over simple physical button swapping where feasible.
+
+Prompts, tutorials, diagrams, and glyphs should reflect active bindings.
+
+### Input Continuity
+
+When multiple devices are supported, switching devices should not unnecessarily break game state or require restarting interaction. Update prompts appropriately.
+
+---
+
+## 20. Performance / Temporal Experience
+
+Performance is part of temporal interaction quality, not only technical cleanliness.
+
+Separate:
+
+- Throughput / FPS
+- Frame-time consistency
+- Input-to-feedback latency
+- Simulation update
+- Network latency / jitter / loss
+- Presentation / display
+
+### Temporal Integrity — working concept
+
+Player action and game response should be temporally consistent enough to learn and execute the intended skill.
+
+### Average is insufficient
+
+Measure relevant distributions and outliers:
+
+- Frame-time variation
+- Long frames
+- Hitch duration
+- Worst realistic gameplay state
+- Input-to-feedback latency
+- Server frame time
+- Network jitter / packet loss where relevant
+
+### Per-verb response
+
+Different actions have different temporal sensitivity:
+
+- Aim
+- Movement
+- Jump
+- Build placement
+- Menu
+- Save
+
+Do not set one universal millisecond threshold.
+
+### Temporal LOD — working engineering concept
+
+Critical systems may need high update frequency while background / inactive systems can update less frequently if gameplay integrity remains intact.
+
+### Performance Integrity
+
+If a player fails because of a hitch / latency spike rather than the intended skill, challenge integrity is broken.
+
+---
+
+## 21. Economy / Resource Loop
+
+Treat economy as a value / constraint / flow system, not only currency.
+
+Resources can include:
+
+- Money
+- Materials
+- Ammo
+- HP
+- Stamina
+- Inventory capacity
+- Workers
+- Power
+- Time
+- Action points
+
+### Resource Flow
+
+At minimum consider:
+
+- Source
+- Stock
+- Sink
+- Conversion
+- Scope / locality
+
+Single-player finite economies do not require the same equilibrium logic as persistent player economies.
+
+### Resource value
+
+Working model:
+
+```text
+Scarcity
++ Utility
++ Opportunity Cost
++ Future Possibility
+```
+
+Scarcity alone does not create value.
+
+### Scarcity types
+
+- Quantity
+- Access
+- Capacity
+- Time
+- Conversion
+- Information
+
+### Decision-producing Scarcity — working hypothesis
+
+Meaningful scarcity can create:
+
+- priority
+- route choice
+- risk / reward
+- build choice
+- saving vs spending
+- short-term vs long-term
+- specialization
+
+Wasteful scarcity may only increase repetitive acquisition time.
+
+### Resource acquisition
+
+Evaluate:
+
+- how obtained
+- repetition frequency
+- variation
+- decisions generated
+- whether mastery / automation changes the task
+
+### Purposeful Sink
+
+A sink is stronger when it converts resources into player goals / capability / expression rather than merely deleting value.
+
+### Economy progression
+
+A strong progression pattern may change the economic problem:
+
+```text
+Scarcity
+→ Efficiency
+→ Automation
+→ Scale
+→ Optimization
+```
+
+Do not assume early-game scarcity should persist unchanged into late game.
+
+### Economy validation
+
+Use simulation for network-level balance and real players for experience.
+
+Do not seek a universal optimal scarcity percentage or grind threshold.
+
+---
+
+## 22. Exploration / Curiosity / Navigation
+
+Exploration is not equal to distance traveled.
+
+Candidate curiosity loop:
+
+```text
+Notice
+→ Question / Prediction
+→ Decision to investigate
+→ Traversal
+→ Discovery
+→ Meaning
+→ New question
+```
+
+### Exploration goal types
+
+- Destination
+- Resource
+- Knowledge
+- Spatial
+- System
+- Collection
+- Experiential
+
+### Goal Gravity — working hypothesis
+
+Goals can pull attention strongly enough to suppress optional exploration.
+
+Possible high-gravity signals:
+
+- exact marker
+- route line
+- urgency
+- timer
+
+Possible lower-gravity guidance:
+
+- landmark
+- approximate area
+- world clue
+
+Do not treat lower gravity as universally superior.
+
+### Landmarks
+
+Possible roles:
+
+- Orientation
+- Navigation
+- Attraction
+- Identity
+- Memory
+
+Visual salience alone does not guarantee landmark quality.
+
+### Curiosity Contract
+
+If the world strongly signals “something meaningful is here,” repeated empty payoffs can teach players to ignore future cues.
+
+Cue strength and expected payoff should be calibrated, but payoff need not always be loot.
+
+### Exploration cost
+
+Working model:
+
+```text
+Expected discovery / strategic / curiosity value
+vs
+travel cost + risk + opportunity cost + uncertainty cost
+```
+
+Not a numeric formula.
+
+### Explorable Unknown
+
+Possible unknowns:
+
+- Spatial
+- Systemic
+- Narrative
+- Strategic
+- Resource
+- Temporal
+
+Exploration can happen in systems and knowledge, not only physical world traversal.
+
+---
+
+## 23. Randomness / Procedural Generation
+
+Randomness should be classified by role.
+
+Possible locations:
+
+- Situation randomness
+- Sequence randomness
+- Reward randomness
+- Outcome randomness
+- Generation randomness
+- Hidden randomness
+
+Decision timing matters:
+
+- Randomness revealed before a decision → adaptation opportunity
+- Random result after a carefully planned decision → different agency / fairness implications
+
+### Fairness dimensions
+
+Separate:
+
+- Statistical fairness
+- Perceived fairness
+- Strategic fairness
+
+### Randomness Envelope
+
+Bound randomness with requirements such as:
+
+- minimum quality
+- maximum punishment
+- required content
+- reachability
+- no softlock
+- difficulty range
+
+Procedural validity is only a minimum condition.
+
+### Meaningful variety
+
+More combinations ≠ more experiential variety.
+
+Stable rules + variable situations can preserve learnability while producing replay variation.
+
+### Randomness impact scope
+
+A low-impact optional reward can tolerate more variance than a random event that blocks main progression or destroys hours of progress.
+
+Consider guarantees, pity, alternatives, and recovery when impact grows.
+
+### Testing
+
+Use reproducible seeds where possible and validate many seeds plus actual playtests.
+
+---
+
+## 24. Adaptive Difficulty / Assistance
+
+Do not group all invisible assistance together.
+
+Separate:
+
+- Intent Forgiveness
+- Player-controlled Assistance
+- Adaptive Pacing
+- Dynamic Difficulty Adjustment
+- Outcome Manipulation / Rubber Banding
+
+DDA is not a universal best practice.
+
+### Adaptation Transparency
+
+Possible levels:
+
+- Hidden
+- Discoverable
+- Disclosed
+- Observable
+- Player-controlled
+
+### Learning Integrity
+
+Adaptive systems can distort cause-effect learning if the game secretly counters player improvement.
+
+### Success Tax — working hypothesis
+
+If player improvement automatically increases challenge enough to erase visible progress, competence feedback may disappear.
+
+### Adaptation Confidence
+
+Do not strongly adapt from weak player-state evidence.
+
+### Adaptation Envelope
+
+Bound adaptation so it does not erase the intended experience.
+
+### Adapt Context Before Outcome — working hypothesis
+
+Before secretly modifying hit chance, HP, damage, or outcome, consider whether encounter timing, composition, pacing, recovery, hints, or context can achieve the design goal with less distortion of causality.
+
+Competitive PvP requires much stricter fairness / externality analysis than private single-player assistance.
+
+---
+
+## 25. Multiplayer Communication / Team Information
+
+Treat communication as shared-state / intent synchronization, not only chat features.
+
+### Channel fit
+
+Consider:
+
+- Complexity
+- Urgency
+- Precision
+- Interaction cost
+- Social cost
+- Accessibility
+- Input / platform
+
+### Context Compression
+
+If the game already knows object identity, location, distance, state, etc., it can attach that context to a ping instead of making players verbalize everything.
+
+### Communication types — working synthesis
+
+- State
+- Intent
+- Request
+- Proposal
+- Commitment
+- Acknowledgement
+- Completion
+- Social
+
+### Communication cost
+
+Includes:
+
+- find command
+- select
+- interruption of current action
+- send
+- receiver notices
+- receiver interprets
+
+Urgent communication generally benefits from shallow interaction depth.
+
+### Common ground / shared mental model
+
+Communication quality should be assessed by whether team members develop enough shared understanding to coordinate, not only by message count.
+
+### Information freshness
+
+Team information may move through:
+
+- Current
+- Recent
+- Last known
+- Expired
+
+Do not leave stale information looking current.
+
+### Passive vs active sharing
+
+Automatically shared information can reduce communication cost but may also remove a communication skill if sharing itself is intended gameplay.
+
+### Communication challenge contract
+
+Define what is:
+
+- automatically shared
+- actively communicated
+- inferred
+- private
+
+### Safety
+
+Communication UX includes:
+
+- mute
+- block
+- report
+- spam protection
+- volume / filter settings
+
+Non-verbal systems can still be used abusively.
+
+---
+
+## 26. Narrative / Dialogue / Quest Presentation
+
+Treat narrative delivery as attention / context design as well as writing.
+
+### Narrative criticality
+
+Possible levels:
+
+- Required
+- Supporting
+- Optional
+- Secret
+
+### Precision requirement
+
+- Exact
+- Interpretive
+- Ambiguous
+
+Environmental storytelling is strong for interpretation and discovery, but not always for exact mission-critical information.
+
+### Narrative attention demand
+
+Do not assume “gameplay never stops” is always best. High-importance narrative can need low gameplay competition.
+
+### Objective vs meaning
+
+Separate:
+
+- What do I do?
+- Why does it matter?
+
+Both may be needed.
+
+### Context Reconstruction
+
+Returning players may need:
+
+- current objective
+- reason
+- relevant people
+- previous important event
+- player choice
+- unresolved question
+
+### Narrative agency
+
+Choice count does not equal agency.
+
+Consider:
+
+- whether options feel meaningfully different
+- whether the player understands relevant stakes
+- whether consequences occur
+- whether the player can recognize causal connection
+- whether that form of agency matches expectations for the game
+
+### Narrative Choice Loop — domain lens
+
+```text
+Understand situation
+→ understand choices
+→ predict meaningful differences
+→ choose
+→ acknowledgement
+→ consequence
+→ causal recognition
+```
+
+Useful but not a universal model of all narrative agency.
+
+---
+
+## 27. Retention / Monetization
+
+Retention itself is not inherently unethical. Distinguish voluntary motivation from pressure caused by loss.
+
+### Voluntary Return — working concept
+
+Desired pattern:
+
+```text
+Satisfied stop
++ safe exit
++ clear continuation
+→ player later returns voluntarily
+```
+
+This is not yet a standardized KPI.
+
+### Absence Cost
+
+Ask what a player loses by not playing:
+
+- nothing / recoverable opportunity
+- temporary bonus
+- streak
+- paid-value loss
+- permanent exclusive reward
+- progression decay
+
+Higher absence cost raises pressure / FOMO risk.
+
+### Recoverable Miss
+
+Seasonal or time-limited structure can preserve excitement while allowing later recovery through:
+
+- rotation
+- archives
+- old passes
+- alternative unlock
+- normal loot
+
+Seasonality and permanent loss do not have to be bundled.
+
+### Price Legibility
+
+Before a real-money decision, the player should be able to understand:
+
+- real price
+- what is received
+- duration / expiry
+- randomness / probability where applicable
+- gameplay impact
+- refund / cancellation context
+
+### Problem–Solution Integrity
+
+If monetization sells relief from friction, ask whether that friction would still exist if there were no purchase opportunity.
+
+### Decision Symmetry
+
+Do not make purchase entry extremely easy while intentionally hiding cancellation / refund / recovery.
+
+### Randomized monetization
+
+Treat paid random outcomes as higher risk than ordinary random gameplay because external money, repeat purchase, limited time, and competitive advantage can compound risk.
+
+Do not overstate causality from correlational loot-box / problem-gambling research.
+
+### Revenue / retention quality
+
+Do not evaluate only:
+
+- revenue
+- session length
+- retention
+
+Also consider, where relevant:
+
+- reason for return
+- regret
+- refund
+- complaints
+- unfinished paid value
+- pressure / obligation
+
+---
+
+# Part IV — Cross-domain patterns
+
+## 28. Clarity vs Mystery
+
+Do not optimize clarity globally.
+
+A useful split is:
+
+```text
+Action / Rule clarity
+vs
+Outcome / Discovery uncertainty
+```
+
+Mystery can be meaningful; confusion is usually a different failure mode.
+
+Use the Experience Contract to decide what must be known versus inferred or hidden.
+
+---
+
+## 29. Challenge Integrity
+
+Working high-level test:
+
+> Does the player's actual reason for success / failure match the skill, decision, or experience the game intended to test?
+
+Examples of integrity failures:
+
+- Boss timing challenge lost to frame hitch
+- Combat readability challenge lost to misleading geometry
+- Strategy mastery hidden by secret DDA counter-adjustment
+- Accessibility barrier mistaken for intended difficulty
+- UI confusion mistaken for resource-management difficulty
+
+---
+
+## 30. Recognition / Recall / Discoverability
+
+Candidate layered approach:
+
+```text
+Major current actions → contextual recognition
+Related actions → local / context menu
+All actions → reference / guide
+Expert → shortcut / automation
+```
+
+Discoverability failure means a useful feature can functionally not exist for a player who cannot find it.
+
+Do not solve discoverability by permanently showing every shortcut.
+
+---
+
+## 31. Alerts / interruption
+
+Alert cost includes more than reading:
+
+```text
+Notice
+→ understand
+→ remember
+→ reorient
+→ resume
+```
+
+Candidate alert-success chain:
+
+```text
+Notice
+→ Understand
+→ Locate
+→ Act
+→ Confirm
+```
+
+Use priority / grouping / timing rather than making every alert louder or larger.
+
+---
+
+## 32. Failure, Undo, Save, Recovery
+
+### Reversible actions
+
+Direct action + undo / recovery can often be better than confirmation for every routine action.
+
+### Irreversible / high consequence
+
+Confirmation becomes more valuable, especially for real-money or destructive actions.
+
+### Experiment safety
+
+In building / factory / strategy games, try → observe → fix can be gameplay. Avoid accidental penalties that suppress experimentation unless the risk is itself part of the intended experience.
+
+### Save contract
+
+Avoid unrecoverable autosave behavior that destroys progress without intentional design justification and clear expectation.
+
+---
+
+# Part V — Evidence confidence map
+
+## 33. High-confidence concepts
+
+Current high / very-high confidence candidates:
+
+- Context-first design
+- State / Task strongly influences UI needs
+- Accessibility: barrier vs intended challenge
+- Critical information should not rely on a single sensory channel when alternatives are materially needed
+- Tutorial effectiveness depends on complexity / familiarity / context
+- Action-first input architecture
+- Average FPS alone is insufficient; temporal consistency matters
+- DDA is context-dependent and not a universal best practice
+- Multiplayer coordination depends on communication / common ground rather than message count alone
+- Real-money purchase information and consent should be clear
+- Visual clutter can harm performance, including for experienced players
+
+High confidence does not automatically mean universal MUST wording.
+
+---
+
+## 34. Moderate / context-dependent concepts
+
+- Curiosity and exploration
+- State-based adaptive density
+- Information locality
+- Challenge vector / axis decomposition
+- Uncertainty Contract terminology
+- Narrative agency framework
+- Haptic role classification
+- Economy network / structural model
+- Healthy retention assessment
+
+These are strong enough to guide project research but still require context.
+
+---
+
+## 35. Working hypotheses / catalog-level concepts
+
+Useful but should not become universal rules without project-specific support:
+
+- Goal Gravity
+- Auditory Foreground Budget
+- Temporal Audio Budget
+- Haptic Salience Budget
+- Decision-producing Scarcity
+- Success Tax
+- Adapt Context Before Outcome
+- Temporal LOD
+- Touch Occupancy Budget
+- Curiosity Contract terminology
+
+These names can remain as thinking tools in research / catalogs.
+
+---
+
+## 36. Intentionally unresolved / not worth universalizing
+
+- Universal HUD occupancy percentage
+- Universal optimal resource scarcity
+- Universal grind threshold
+- Universal input latency threshold
+- Universal map-marker density
+- Universal difficulty value
+- Universal tutorial amount
+- Universal adaptive UI behavior
+
+These are project-specific validation problems, not missing universal constants.
+
+---
+
+# Part VI — Stress tests and counterexamples
+
+## 37. 150-game structural stress test
+
+The framework was stress-tested against 15 clusters × 10 representative games, including:
+
+- Competitive shooters
+- Action / open-world RPGs
+- Factory / simulation
+- Survival / crafting
+- Strategy / tactics / 4X
+- Roguelike / deckbuilder
+- Horror / stealth
+- Racing / sports
+- Rhythm / VR / motion
+- Puzzle / logic
+- Narrative / adventure
+- Social / party / co-op
+- Cozy / life / low-pressure
+- Mobile / live / idle
+- Fighting
+
+Main findings:
+
+1. Framework generally survived cross-genre application.
+2. “Challenge” was too narrow as the top-level term; `Intended Player Demand` is broader.
+3. `Validation` belongs outside the design dimensions as a process loop.
+4. Presentation includes atmosphere / emotion, not only information.
+5. Physical / embodied and social context must be part of Game Context.
+6. Fairness must be defined as a game-specific contract, not simple symmetry.
+7. Every domain lens should have a relevance / scale gate.
+
+---
+
+## 38. 120+ game-screen stress test
+
+A second stress test used large UI screen corpora across HUD, inventory, map, settings, tutorial, dialogue, and management surfaces.
+
+Main findings:
+
+1. `Game State → Player Task` often predicts UI structure more strongly than genre alone.
+2. HUD density should vary by state / task rather than remain globally uniform.
+3. Pixel occupancy alone is a weak UI-density metric.
+4. Overlay vs full-screen is a task / cognitive-workspace decision, not an immersion hierarchy.
+5. World-first games can legitimately use full-screen menus for deep tasks.
+6. Information locality is a strong cross-screen pattern.
+7. Maps and inventories must be designed around their actual decision role, not a universal layout.
+8. Settings are a meaningful experience-configuration surface, especially for accessibility / input / audio / performance.
+9. Tutorial surfaces can range from contextual hints to persistent reference.
+10. Visual language can remain consistent while density changes by task.
+11. Mobile is a distinct interaction environment, not a desktop layout shrunk down.
+12. Live-service games often need a distinct meta-game state / surface.
+
+Fixed rules rejected by this stress test include:
+
+- HUD should always be minimal
+- HUD must occupy less than a fixed percentage
+- Full-screen menus are inherently less immersive / worse
+- Diegetic UI is inherently superior
+- Fewer map markers are always better
+- Inventory should use one universal layout
+- Important information should always remain visible
+- Tutorials should always occur in active gameplay
+- Settings should always be simple
+- UI density should be globally consistent
+- Mobile should reuse desktop structure by shrinking it
+
+---
+
+## 39. Counterexample / falsification phase
+
+The framework was deliberately tested against games that succeed by preserving what ordinary UX advice might call friction, uncertainty, punishment, or constraint.
+
+Representative counterexamples:
+
+- Getting Over It — severe recovery cost / progress loss
+- Papers, Please — meaningful bureaucratic interaction cost
+- Pathologic 2 — scarcity, impossible optimization, sacrifice
+- Journey — deliberately constrained communication
+- Alien: Isolation — unpredictable threat behavior
+- Eternal Darkness — intentional interface / perception deception
+- Darkest Dungeon — disaster and uncertainty despite planning
+- Rain World — world not centered on player fairness
+- The Witness — discovery-driven learning with minimal explicit text
+
+Main conclusion:
+
+> “Inconvenient, difficult, ambiguous, unfair, or constrained” is not automatically a design failure. The question is what role it plays in the Core Experience, whether the player can learn the relevant relationship, whether extreme cases are appropriately bounded, and whether playtesting shows the intended experience actually occurs.
+
+Opposite safeguard:
+
+> “It is intentional” does not justify bad UX by itself.
+
+---
+
+# Part VII — Candidate compact framework
+
+## 40. Current framework candidate
+
+```text
+GAME CONTEXT
+Genre / Platform / Input / Camera
+Physical Context / Social Topology
+Session / Player / Expertise / Service Model
+
+                ↓
+
+CORE EXPERIENCE
+& INTENDED PLAYER DEMAND
+
+                ↓
+
+STATE → TASK → SURFACE
+
+                ↓
+
+5 DESIGN DIMENSIONS
+1. Player Agency / Constraints / Systems
+2. Perception / Information / Presentation
+3. Interaction / Intent Fidelity
+4. Learnability / Access
+5. Continuity / Temporal Experience
+
+                ↑
+
+3 CROSS-CUTTING LENSES
+• Player / Experience Cost
+• Experience Contract
+• Adaptive Context
+
+                ↓
+
+RELEVANT DOMAIN LENSES ONLY
+Combat / Camera / Audio / Haptics /
+Input / Performance / Economy /
+Exploration / Randomness / DDA /
+Multiplayer / Narrative /
+Retention / Monetization / etc.
+
+                ↓
+
+EVIDENCE + VALIDATION LOOP
+Research → Hypothesis → Prototype → Playtest
+→ Observation / Telemetry → Attribution → Revision
+```
+
+This is still a research hypothesis, not a final normative guide.
+
+---
+
+## 41. Relevance / Scale Gate
+
+Do not activate every domain lens for every project.
+
+Before using a domain lens, ask:
+
+> Does this materially affect the Core Experience or project risk?
+
+Examples:
+
+- Townscaper does not need a competitive economy audit.
+- VALORANT does not need a narrative-choice framework for core combat decisions.
+- A tiny game should not inherit large-game operational overhead mechanically.
+
+Depth should scale with relevance, uncertainty, project size, and risk.
+
+---
+
+## 42. Evidence + validation loop
+
+Validation is outside the five dimensions because it is a process applied to all of them.
+
+```text
+Research
+→ Hypothesis
+→ Prototype
+→ Playtest
+→ Observation / Telemetry
+→ Failure / Cause Attribution
+→ Revision
+→ Repeat
+```
+
+Useful validation targets include:
+
+- Player behavior
+- Comprehension
+- Failure attribution
+- Transfer / retention of learning
+- Shared mental model in teams
+- Response timing / performance traces
+- Economy simulation + player decision behavior
+- Visual search / eye tracking when justified
+- Accessibility testing with relevant players
+- Monetization understanding / regret / recovery where relevant
+
+Do not replace actual validation with “the player should understand this.”
+
+---
+
+# Part VIII — Project research workflow candidate
+
+## 43. Candidate game research workflow
+
+For a new game or substantial redesign:
+
+```text
+1. Define Core Experience & Intended Player Demand
+2. Define primary verbs / tasks
+3. Establish Game Context
+4. Select relevant domain lenses
+5. Research same-domain + adjacent references
+6. Build State → Task → Surface matrix
+7. Map information / interaction / cost / continuity needs
+8. Identify intentional constraints / uncertainty / friction
+9. Define experience contract
+10. Create design hypothesis
+11. Prototype / vertical slice
+12. Playtest / measure
+13. Attribute failures to intended vs accidental causes
+14. Revise
+15. Save confirmed project-specific decisions to Requirements / Learnings
+```
+
+Do not mechanically require a fixed reference count.
+
+---
+
+## 44. Candidate Game Experience Profile
+
+Possible project-side profile fields:
 
 - Genre
 - Camera
-- Primary Task
-- Core Verbs
-- World Importance
-- Information Pressure
-- Action Pace
-- Decision Pace
-- Input
-- Platform
-- Management Depth
-- Combat Importance
-- Navigation Need
-- Failure Cost
-- Session Length
-- Player Experience / Expertise
-- Visual Identity
-- Pacing Authority
-- Novelty Source
-- Variation Source
-- Difficulty Axes
-- Assistance Axes
+- Core Experience
+- Intended Player Demand
+- Primary verbs
+- Primary tasks
+- World importance
+- Information pressure
+- Action pace
+- Decision pace
+- Input / platform
+- Physical context
+- Social topology
+- Session length
+- Failure cost
+- Expertise
+- Visual / sensory identity
+- Pacing authority
+- Novelty source
+- Variation source
+- Difficulty / assistance axes
+- Relevant domain lenses
+- Experience contract
+- Validation plan
 
-### Game State Matrix候補
-
-| State | Primary Task | Required Info | Hideable Info | Density | Mode / Input | Failure / Exit |
-|---|---|---|---|---|---|---|
-| Explore | World / Navigation | Contextual | Detail stats | Low | Normal | Safe resume |
-| Combat | Fight | HP / threat / resources | Craft detail | Medium | Combat | Fast recovery |
-| Build | Placement | Cost / snap / I/O / validity | unrelated combat info | Medium-High | Build | Undo / dismantle |
-| Inventory | Manage items | Inventory info | most world HUD | High | Menu | Context preserved |
-| Management | Analyze / decide | Stats / alerts / comparison | world HUD | High | Full UI | Resume project |
-
-TableはGameに応じて変える。
+Not every project needs every field.
 
 ---
 
-## 34. Scrap Factoryへ適用した現時点の候補（未確定）
+# Part IX — Scrap Factory application context
 
-このResearchの開始点だったため、Project固有候補も記録しておく。ただし**まだ `EliteMay/game` の確定要件ではない**。
+## 45. Scrap Factory preliminary direction — still non-normative
 
-### Direction候補
+This research began from Scrap Factory UI questions, so project-specific hypotheses remain recorded here, but they are not `EliteMay/game` requirements until separately confirmed there.
 
-**Contextual Industrial / Adaptive Density UI**
+Working direction:
 
-### 状態別イメージ
+> Contextual Industrial / Adaptive Density
+
+Possible states:
 
 - Exploration → World-first, low density
-- Factory normal → low-medium
-- Hazard / combat → necessary survival info
-- Build → cost / rotation / snap / direction / I/O / invalid reasonを増やす
-- Machine inspect → Local panel
-- PC / Factory Management → High-density / Fullscreen allowed
+- Factory normal → low-medium density
+- Hazard / combat → survival / threat information
+- Build → cost / rotation / snap / direction / I/O / invalid reason
+- Machine inspect → local contextual panel
+- PC / Factory Management → high-density / full-screen allowed
 
-### 現UIで再検討候補
+Items to reconsider in the game project when appropriate:
 
-- Bottom-left control hintsとbottom-right shortcut barの重複
-- Cash / Revenue / Pack / Zoneを本当に常時必要とするか
-- Static helpをFirst-use + Context hint + Guideへ再構成可能か
+- Bottom-left control hints vs bottom-right shortcut redundancy
+- Cash / revenue / pack / zone always-on necessity
+- Static help vs first-use + context hint + recallable guide
+- Alert grouping
+- Contextual scanner / tracking / secure-case information
+- Detailed stats in management surface
+- Tutorial support that can fade while remaining recallable
 
-### 既存要件と相性がよい点
-
-- 3D Canvasを主役
-- Build専用情報をMode中だけ
-- Scanner / Tracking / Secure Case等をContextual
-- 詳細統計をFactory Managementへ
-- TutorialをObjective → Hint → Highlight → Detailed helpへ段階化
-- 同種Alertを集約
-
-Research完了後に `EliteMay/game/REQUIREMENTS.md` へ必要なProject固有部分だけ確定統合する。
+Do not copy these hypotheses into requirements without checking the current `EliteMay/game` source of truth and actual playtest needs.
 
 ---
 
-## 35. 主要Reference / Evidence Index
+# Part X — Evidence index
 
-以下は今回の議論で参照した主要資料。URL / Research detailは将来再確認し、確定Ruleへ昇格させるときは一次Source / Publication metadataを再検証する。
+## 46. Existing evidence categories
 
-### Game UI / HUD / Genre
+Keep using primary / high-authority sources where practical.
+
+### Game UI / HUD / genre
 
 - Using genres to customize usability evaluations of video games — https://doi.org/10.1145/1496984.1497006
 - Influence of head-up displays' characteristics on user experience in video games — https://www.sciencedirect.com/science/article/pii/S1071581915001779
@@ -1349,161 +2083,226 @@ Research完了後に `EliteMay/game/REQUIREMENTS.md` へ必要なProject固有�
 - Interface In Game — https://interfaceingame.com/
 - Game UI Database relaunch overview — https://www.gamedeveloper.com/design/game-ui-database-relaunches-with-new-features-video-support-and-over-55-000-screenshots
 
-### Attention / Eye Tracking / Visual Guidance
+### Attention / perception
 
 - Attention, Not Immersion — GDC Vault — https://gdcvault.com/play/1015464/Attention-Not-Immersion-Making-Your
 - Perceiving without looking: HUDs for peripheral vision — https://www.gamedeveloper.com/design/perceiving-without-looking-designing-huds-for-peripheral-vision
 - Visual clutter and action game experience — https://pubmed.ncbi.nlm.nih.gov/34717071/
+- Display clutter review — https://pubmed.ncbi.nlm.nih.gov/25790571/
 - Dynamic scene / FPS visual attention — https://pmc.ncbi.nlm.nih.gov/articles/PMC8566014/
 - Dynamic scene saliency review — https://pmc.ncbi.nlm.nih.gov/articles/PMC6802790/
-- Center bias — https://pubmed.ncbi.nlm.nih.gov/19761319/
-- Face / text fixation — https://pubmed.ncbi.nlm.nih.gov/20053101/
-- Text attention in scenes — https://pubmed.ncbi.nlm.nih.gov/22715197/
-- Gaze cueing — https://pmc.ncbi.nlm.nih.gov/articles/PMC1950440/
-- Level design eye tracking — https://www.sciencedirect.com/science/article/pii/S1875952116000021
-- Lighting / landmarks / auditory cues — https://pure.hud.ac.uk/en/publications/the-effect-of-lighting-landmarks-and-auditory-cues-on-human-perfo/
 
-### Accessibility / Information presentation
+### Accessibility
 
+- AbleGamers Accessible Player Experiences — https://accessible.games/accessible-player-experiences/
 - Xbox Accessibility Guidelines — https://learn.microsoft.com/en-us/gaming/accessibility/xbox-accessibility-guidelines/
-- XAG 102 Text Display — https://learn.microsoft.com/en-us/gaming/accessibility/xbox-accessibility-guidelines/102
-- XAG 103 Sensory alternatives / multimodal information — https://learn.microsoft.com/en-us/gaming/accessibility/xbox-accessibility-guidelines/103
-- XAG 108 Difficulty and challenge — https://learn.microsoft.com/en-us/xbox/accessibility/xbox-accessibility-guidelines/108
-- XAG 112 UI navigation — https://learn.microsoft.com/en-us/xbox/accessibility/xbox-accessibility-guidelines/112
-- XAG 117 Motion — https://learn.microsoft.com/en-us/xbox/accessibility/xbox-accessibility-guidelines/117
+- XAG 103 sensory alternatives — https://learn.microsoft.com/en-us/gaming/accessibility/xbox-accessibility-guidelines/103
+- XAG 107 input — https://learn.microsoft.com/en-us/xbox/accessibility/xbox-accessibility-guidelines/107
+- XAG 108 difficulty / challenge — https://learn.microsoft.com/en-us/xbox/accessibility/xbox-accessibility-guidelines/108
+- XAG 109 cognitive accessibility — https://learn.microsoft.com/en-us/xbox/accessibility/xbox-accessibility-guidelines/109
+- XAG 110 haptics — https://learn.microsoft.com/en-us/xbox/accessibility/xbox-accessibility-guidelines/110
+- XAG 116 time limits — https://learn.microsoft.com/en-us/gaming/accessibility/xbox-accessibility-guidelines/116
+- XAG 117 motion — https://learn.microsoft.com/en-us/xbox/accessibility/xbox-accessibility-guidelines/117
+- XAG 120 communication — https://learn.microsoft.com/en-us/xbox/accessibility/xbox-accessibility-guidelines/120
 - Game Accessibility Guidelines — https://gameaccessibilityguidelines.com/
 
-### Cognitive Load / Working Memory / Choice
+### Cognitive load / learning
 
-- Cowan, magical number 4 / Working Memory — https://www.researchgate.net/publication/11830840_The_magical_number_4_in_short-term_memory_A_reconsideration_of_mental_storage_capacity
-- Game interface workload / usability — https://doi.org/10.1145/3290688.3290749
+- Cowan, Working Memory / magical number 4 reconsideration
 - Multiple Resource Theory — https://pubmed.ncbi.nlm.nih.gov/18689052/
-- Choice overload meta-analysis 2010 — https://ideas.repec.org/a/oup/jconrs/v37y2010i3p409-425.html
-- Choice overload moderators 2015 — https://doi.org/10.1016/j.jcps.2014.08.002
-- Redundancy / multimedia review — https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2023.1148035/full
-
-### Tutorial / Learning
-
-- Game tutorial literature review — https://www.sciencedirect.com/science/article/pii/S2405844022027700
+- Choice overload meta-analysis — https://ideas.repec.org/a/oup/jconrs/v37y2010i3p409-425.html
+- Game tutorial A/B testing, 45,000+ players — https://grail.cs.washington.edu/projects/game-abtesting/chi2012/chi2012.pdf
+- Game tutorial literature review — https://pmc.ncbi.nlm.nih.gov/articles/PMC9676530/
 - Apple Game Onboarding — https://developer.apple.com/app-store/onboarding-for-games/
+- Expertise reversal meta-analysis 2025 — https://doi.org/10.1016/j.learninstruc.2025.102142
 
-### Affordance / Interaction / Feedback
+### Interaction / input / feedback
 
 - Don Norman: Signifiers, not affordances — https://jnd.org/signifiers-not-affordances/
-- DiGRA game affordance research — https://dl.digra.org/index.php/dl/article/view/687
-- Apple Feedback — https://developer.apple.com/design/human-interface-guidelines/feedback
 - Apple Game Controls — https://developer.apple.com/design/human-interface-guidelines/game-controls
-- Xbox UI navigation — https://learn.microsoft.com/en-us/xbox/accessibility/xbox-accessibility-guidelines/112
-
-### Failure / Recovery / Difficulty
-
-- Celeste failure / resilience study — https://www.sciencedirect.com/science/article/pii/S1071581923002082
-- Positive experiences of failure — https://eprints.whiterose.ac.uk/id/eprint/176162/
-- Celeste developer interview — https://www.nintendo.com/jp/topics/article/19b31c18-6544-11e8-b9c0-063b7ac45a6d
-- Dark Souls Q&A / retry philosophy — https://blog.playstation.com/2011/02/04/dark-souls-qa-variety-is-the-spice-of-death/
-- Confirmation dialogs — https://www.nngroup.com/articles/confirmation-dialog/
-- Apple Undo and Redo — https://developer.apple.com/design/human-interface-guidelines/undo-and-redo
-- Apple Alerts — https://developer.apple.com/design/human-interface-guidelines/alerts
-- DDA CHI PLAY — https://doi.org/10.1145/3116595.3116623
-- DDA comparison 2024 — https://www.mdpi.com/2813-2084/3/2/12
-
-### Motivation / Progression / Engagement
-
-- Ryan, Rigby, Przybylski SDT / video games — https://pure.ewha.ac.kr/en/publications/the-motivational-pull-of-video-games-a-self-determination-theory-
-- Positive feedback / competence / autonomy — https://www.sciencedirect.com/science/article/pii/S0747563215000527
-- Extrinsic rewards meta-analysis — https://pubmed.ncbi.nlm.nih.gov/10589297/
-- GDC Intrinsic and Extrinsic Player Motivation — https://www.gdcvault.com/play/1015985/Intrinsic-and-Extrinsic-Player-Motivation
-- Variable reward serious game study — https://journal.seriousgamessociety.org/index.php/IJSG/article/view/47
-
-### Novelty / Boredom / Pacing
-
-- Repetition and enjoyment — https://pubmed.ncbi.nlm.nih.gov/30896242/
-- Learning progress and game enjoyment — https://www.nature.com/articles/s41598-025-14628-2
-- Novelty satisfaction in games — https://academic.oup.com/iwc/article-abstract/38/3/342/7629773
-- Gameplay Loop model — https://www.researchgate.net/publication/310480261_The_Gameplay_Loop_a_Player_Activity_Model_for_Game_Design_and_Analysis
-- Game pace / All Ghillied Up analysis — https://www.gamedeveloper.com/design/examining-game-pace-how-single-player-levels-tick
-- Pacing structure — https://www.gamedeveloper.com/design/gameplay-fundamentals-revisited-part-2-building-a-pacing-structure
-
-### Emergence / Systems / Agency
-
-- Jesper Juul, emergence and progression — https://jesperjuul.net/text/openandtheclosed.html
-- Player agency / possibility space — https://www.degruyterbrill.com/document/doi/10.1515/fns-2020-0012/html?lang=en
-- Clint Hocking, Designing to Promote Intentional Play — https://www.gdcvault.com/play/1013427/Designing-to-Promote-Intentional
-- Machinations / emergent behavior analysis — https://ojs.aaai.org/index.php/AIIDE/article/view/12477
-- Emergent gameplay practical analysis — https://www.gamedeveloper.com/design/examining-emergent-gameplay
-
-### Game Feel / Input
-
-- Game Feel survey — https://doi.org/10.1109/TG.2021.3072241
-- Latency and in-game perspective — https://www.researchgate.net/publication/374449075_The_Effects_of_Latency_and_In-Game_Perspective_on_Player_Performance_and_Game_Experience
-- Reading the Player's Mind — https://www.gdcvault.com/play/1012339/Reading-the-Player-s-Mind
+- Steam Input — https://partner.steamgames.com/doc/features/steam_controller/
+- Reading the Player's Mind — GDC Vault
 - Forgiveness Mechanics — https://www.gdcvault.com/play/1026606/Forgiveness-Mechanics-Reading-Minds-for/
-- Game animation responsiveness — https://www.gamedeveloper.com/design/5-tips-to-make-your-game-animations-better
+
+### Camera / spatial / motion comfort
+
+- John Nesky, 50 Camera Mistakes — GDC
+- Xbox XAG 117 Motion — https://learn.microsoft.com/en-us/xbox/accessibility/xbox-accessibility-guidelines/117
+- 2025 cybersickness meta-analysis / review material referenced in research
+- Spatial navigation assistance / learning studies referenced in research notes
+
+### Combat readability
+
+- FromSoftware interviews / challenge readability material referenced in research
+- Riot VALORANT hit-registration / clarity developer material
+- Riot League VFX clarity / Ashe hitbox alignment material
+- Hades Early Access combat readability updates
+- Xbox XAG 103 multisensory critical cues
+
+### Audio
+
+- Auditory attention / cocktail-party research — https://pubmed.ncbi.nlm.nih.gov/28044012/
+- Informational masking overview material referenced in research
+- Overwatch GDC, Play by Sound
+- VALORANT footstep / audio-priority developer articles
+- Hunt: Showdown audio readability / binaural / CrySpatial developer articles
+- Xbox XAG 103 / 104 / 105
+
+### Haptics
+
+- Gaming haptics narrative review 2025 — https://pmc.ncbi.nlm.nih.gov/articles/PMC12099099/
+- CHI 2026 haptic gaming study — https://axis.korea.ac.kr/publications/2026_CHI_HapticGaming
+- Stop-signal audio / haptic study — https://www.tandfonline.com/doi/full/10.1080/10447318.2023.2285624
+
+### Economy / scarcity
+
+- Scarcity / uncertainty serious-game experiment 2026 — https://link.springer.com/article/10.1007/s11238-026-10141-8
+- Virtual-world economy / Glitch transaction research — https://www.sciencedirect.com/science/article/pii/S1875952114000330
+- GEEvo economy balancing simulation — https://arxiv.org/abs/2404.18574
+- Factorio developer economy / bottleneck / infinite research material
+- Millennia economy developer material
+- Old School RuneScape Grand Exchange Tax / Item Sink material
+
+### Exploration / curiosity
+
+- Curiosity and spatial exploration 2024 — https://www.nature.com/articles/s44271-024-00174-6
+- CHI PLAY curiosity-driven level design patterns material
+- Outer Wilds developer interviews
+- Far Cry 5 curiosity / world guidance developer material
+- Breath of the Wild level-design analyses / developer references
+
+### Randomness / PCG
+
+- XCOM 2 randomness developer discussion
+- Spelunky procedural-generation developer material
+- Slay the Spire randomness / adaptive reward / room-weight material
+- PCG benchmark / workshop material
+- Procedural-content A/B player-experience studies
+
+### DDA
+
+- CHI PLAY 2017 DDA — https://doi.org/10.1145/3116595.3116623
+- DDA comparison 2024 — https://www.mdpi.com/2813-2084/3/2/12
+- DDA goal-oriented reconsideration 2024 — https://www.sciencedirect.com/science/article/pii/S1875952124000314
+- Left 4 Dead AI Director material
+
+### Multiplayer / social
+
+- Social gaming systematic review, 263 studies — https://doi.org/10.1016/j.chb.2023.107851
+- Multiplayer teamwork / CSCW systematic review 2025
+- MMOG collaboration review 2026 — https://www.mdpi.com/2073-431X/15/2/134
+- Ping to Win, 84,489 players / 10,293 matches — https://www.brianckeegan.com/assets/pdf/2016_CHI_ping.pdf
+- Apex smart communication developer material
+- Journey social design GDC material
+- Overwatch ping developer material
+
+### Narrative / agency
+
+- Theoretical vs perceived agency — https://rise.csit.carleton.ca/pubs/ThueBulitko_ICIDS_2010.pdf
+- AIIDE perceived agency research — https://ojs.aaai.org/index.php/AIIDE/article/view/12437
+- CHI 2021 narrative-focused player agency — https://pgl.jp/papers/10.1145/3411764.3445540
+- CD Projekt quest-design material
+- Pathologic 2 Mindmap case
+- Environmental storytelling GDC
+
+### Performance / latency
+
+- Frame-rate variation CHI 2023 — https://web.cs.wpi.edu/~claypool/papers/frame-variation-chi-23/
+- Latency switching CHI PLAY 2022
+- Android Frame Pacing documentation
+- Riot VALORANT 128-tick servers
+- Riot Peeker's Advantage material
+
+### Retention / monetization
+
+- Daily Quests or Daily Pests — https://research-portal.uu.nl/en/publications/daily-quests-or-daily-pests-the-benefits-and-pitfalls-of-engageme/
+- Loot-box / problem-gambling systematic reviews referenced in research
+- Youth dark-pattern / chance-reward review 2026
+- Dark-pattern systematic review 2025
+- FTC Fortnite purchase dark-pattern enforcement material
+- FTC Genshin randomized monetization complaint material
+- Apple App Store Review Guidelines
+- EU consumer / virtual-currency principles
+- Halo Infinite non-expiring Battle Pass material
+- Deep Rock Galactic season / recoverable cosmetics material
+
+### Counterexamples / intentional friction
+
+- Getting Over It developer interviews
+- Papers, Please design interviews
+- Pathologic 2 difficulty / design statements
+- Journey social-design GDC
+- Alien: Isolation AI / fear design GDC
+- Eternal Darkness fourth-wall / interface deception analyses
+- Darkest Dungeon design interviews
+- Rain World ecosystem developer material
+- The Witness developer interviews
 
 ---
 
-## 36. 現時点でまだ確定していないこと
+# Part XI — Remaining open questions
 
-次はまだResearch / Debateが必要。
+## 47. What is intentionally not finalized yet
 
-1. 上位Frameworkを最終的に何本へ圧縮するか。
-2. どれを `docs/19-game-development.md` のNormative Ruleへ昇格させるか。
-3. どれを `docs/04-ui-ux-accessibility.md` / `docs/07-testing-quality.md` / Catalog / Checklistへ置くか。
-4. Game UI Domain Researchで通常何本を見るか。固定数にするかCondition-basedにするか。
-5. 100+ title analysisを表形式で正式実施するか。
-6. Game Screen Occupancyをどう測るか。Pixel % / Visual weight / attention mapのどれを使うか。
-7. Adaptive UIが習熟Playerにどこまで自動変化してよいか。
-8. Dynamic Difficulty / Hidden Assistanceをどの条件なら許容するか。
-9. Ethical retention / monetization ruleをGame Guideへどこまで入れるか。
-10. Game Feel / latencyをPerformance Owner (`docs/05`) とGame Owner (`docs/19`) のどこまでで分担するか。
-11. Emergence / Possibility SpaceをMini Gameへ過剰適用しない条件。
-12. AccessibilityとCore Challengeの境界をどうRequirementsで書くか。
+The common normative guide is still not updated from this research.
 
----
+Remaining decisions before promotion:
 
-## 37. 次会話での再開方法
+1. Exact final names for the five design dimensions.
+2. Which concepts belong in `docs/19-game-development.md` versus other owner docs / catalogs.
+3. Whether `State → Task → Surface` becomes a required project artifact or an optional tool.
+4. How much of the Experience Contract should become normative language.
+5. Which domain lenses deserve dedicated catalog / reference files instead of a long owner doc.
+6. How to keep the final normative layer compact enough to avoid turning the guide into a design textbook.
+7. What validators / checklists should enforce, if any, without over-applying large-game rules to small games.
 
-次会話では長い引継ぎPromptを作る必要はない。
+Project-specific values remain project-specific:
 
-最初に最新の `EliteMay/web-project-guide` の `README.md` / `START_HERE.md` を確認した後、この文書を読む。
-
-再開Point:
-
-> `references/game-experience-design-research.md` の続きとして、まだGuide Ruleへ確定せず、論文・GDC・開発者資料・Game実例を増やしながら議論を続ける。
-
-次の調査候補:
-
-- Camera / Spatial Orientation / Motion Sicknessをより深く
-- Audio design / sound priority / masking / spatial cues
-- Controller / Keyboard / Touch別Interaction Design
-- Combat readability / enemy silhouette / hit readability
-- Economy / scarcity / inflation / resource loop
-- Exploration / curiosity / navigation / map design
-- Procedural generation / randomness / fairness
-- Social / multiplayer communication / ping / team UI
-- Narrative UI / dialogue / quest presentation
-- AccessibilityをCore Experienceへ自然に統合する方法
-- OnboardingからExpertまでの長期Learnability
-- UI / Game Screenの100+ title structured comparison
-
-最終段階で:
-
-1. Evidenceを再確認
-2. 反証 / Genre例外を整理
-3. 4〜8本程度の上位原則へ圧縮
-4. Owner Docを決める
-5. Checklist / Catalog / Project-sideへ分配
-6. `docs/19-game-development.md` 等へ必要最小限だけ統合
-7. Guide Validator / Documentation consistencyを確認
+- HUD density
+- Map-marker density
+- Difficulty values
+- Resource rates
+- Economy tuning
+- Latency targets
+- Tutorial amount
+- Assistance strength
+- Randomness bounds
 
 ---
 
-## 38. このResearchの最重要メタ原則
+## 48. Research saturation status
 
-現時点で最も一貫している結論は次。
+### Broadly saturated for common-framework purposes
 
-> **共通Game Guideに「正解のGame画面・HUD・難易度・Progression」を固定しない。**
->
-> 代わりに、Player Goal / Cognitive Budget / Information / Interaction / Continuity / Challenge / Context / Validationから、そのGameのGenre・Camera・Task・State・Player・Inputに合う正解を毎回Researchし、Playtestで検証できるFrameworkを持つ。
+- Context-first design
+- UI / state / attention
+- Accessibility
+- Learnability
+- Input architecture
+- Performance / temporal quality
+- Camera
+- Combat readability
+- Audio
+- DDA
+- Randomness
+- Multiplayer communication
+- Exploration
 
-そして、Evidence / ReferenceはRuleの代わりではなく、**判断の質を上げる材料**として扱う。
+### Sufficient, add research only when project relevance is high
+
+- Narrative
+- Haptics
+- Economy
+- Retention / monetization
+
+### Project validation is more valuable than more universal research
+
+- Economy tuning
+- HUD density
+- Difficulty values
+- Latency targets
+- Map density
+- Resource rates
+- exact adaptive thresholds
+
+The next high-value step is not another broad research domain. It is to decide how to distribute this research into a compact normative framework, domain reference / catalogs, and project-side research / validation workflow without losing conditionality or creating guide bloat.
