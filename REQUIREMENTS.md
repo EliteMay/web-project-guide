@@ -335,8 +335,9 @@ Guide自身を大きく点検する場合は、Current Repositoryを「まだ低
 - Template / Checklist responsibility split: Implemented
 - Deep System Audit workflow: Implemented
 - Human / Machine routing parity guard: Implemented
-- Unresolved Core Decisions: None
-- Unresolved High-cost Decisions: None
+- Requirements persistence workflow: Implemented
+- Agent autonomy / confirmation boundary: Implemented
+- Unresolved Blocking Decisions: None
 
 今後新しい大規模Guide改善要件が生じた場合、Current Contractへ履歴として混ぜ込まず、必要ならIssue / ADR /一時Draftで検討し、確定・実装後にCurrent Contractへ必要な恒久Ruleだけ反映します。
 
@@ -540,75 +541,228 @@ External Deep ResearchはPhase 0の主目的にしません。分類に必要な
 
 対象Repositoryが存在する要件定義では、**会話上でDecisionがまとまっただけではRequirements Completeと扱いません。**
 
-### Requirements Persistence Gate
+Requirements Workflowは [01 Requirements](docs/01-requirements.md) を正本とし、Current Contractとして次を要求します。
 
-標準Flowは次とします。
+- 要件定義中は、各Turnを機械的にCommitせず、意味のあるDecision群がまとまった区切りで`REQUIREMENTS_DRAFT.md`へRepository-backed Checkpointを残す
+- Userが毎回「保存して」と指示することを前提にしない
+- 要件定義完了時は、最新Checkpoint → 正式`REQUIREMENTS.md`統合 → GitHub保存 → Current Repositoryから再取得して保存結果確認 → Draft解消 → Implementation Handoffの順で進める
+- `Decision complete ≠ Requirements complete`とし、正式保存確認前に「要件定義完了」「実装準備完了」と確定しない
+- Implementation Promptや会話Summaryを第二のRequirements Source of Truthにしない
 
-```text
-Requirements discussion / decision
-↓
-Target Repositoryを解決
-↓
-Current REQUIREMENTS.mdを取得
-↓
-確定内容をCurrent Contractとして統合
-↓
-Repositoryへ保存
-↓
-Current Repositoryから再取得して保存結果を確認
-↓
-Requirements Complete
-↓
-Implementation Handoff
-```
+## 19. Agent Autonomy / User Confirmation Contract
 
-`Decision complete ≠ Requirements complete` とします。
+Userへの質問・承認待ちを通常Workflowの標準停止条件にしません。
 
-GitHub等のCurrent Source of Truthへ書き込み可能であり、対象RepositoryとRequirements Source of Truthが明確な場合、Userが毎回「保存して」と指示することを前提にしません。Requirements保存は要件定義Workflowの一部です。
+Current Repository、Current Requirements、Existing User Intent、Research / Evidence、Compatibility / Riskから**Best Reasonable Decision**を選べる場合は、必要なAssumption / Riskを記録して作業を継続します。
 
-要件定義の個別決定・一時Discussionをそのまま履歴として`REQUIREMENTS.md`へ積み上げず、Current Contractとして必要な恒久内容だけ統合します。
+Core / High-cost / Systemic等の分類名だけをUser確認Triggerにしません。Repository確認やResearchで解決できる内容もUserへ投げ返しません。
 
-### Implementation Handoff
+User確認を必要とする境界は`docs/21-rule-routing-preflight.md`、Requirements固有のDecision Ruleは`docs/01-requirements.md`を正本とします。外部・破壊的・不可逆Operationで明示Approvalが必要、Userだけが持つCredential / Permissionが必要、Evidenceでも解けないMaterial Intent /重大Conflict、Safety / Legal / Security上の明示確認等は例外です。
 
-RequirementsがRepositoryへ保存済みの場合、次の実装会話へ要件全文を巨大Promptとして再掲することを標準にしません。
+このContractはOwner Doc / Template / Validatorへ実装済みとし、詳細RuleをこのCurrent Contractへ重複しません。
 
-Implementation側はCurrent Repositoryを確認し、Current `REQUIREMENTS.md`を正式なSource of Truthとして読むことを基本とします。過去Conversationや手作業で再構成したPromptを第二のRequirements正本にしません。
+## 20. Phase 1 — Requirements Decision System Research Contract
 
-### Persistence Verification
+Phase 1では、個別Frameworkを増やすのではなく、**曖昧なUser Requestから必要十分で検証可能なRequirementへ変換するEnd-to-Endの判断体系**を研究・設計します。
 
-保存後は最低限次を確認します。
+主なNormative Owner候補は `docs/01-requirements.md` とし、一般Research Methodは `docs/20-evidence-first-research.md`、GuideへのRule配置・Promotion / Hygieneは `docs/14-continuous-improvement.md` を維持します。新しいOwner Docは、既存Ownerへ自然に統合できない責務がResearchで確認された場合のみ検討します。
 
-- Current `REQUIREMENTS.md`を再取得できる
-- 今回確定した主要Contractが存在する
-- 既存Current Contractを不必要に失っていない
-- History / temporary discussionをCurrent Contractへ混在させていない
+### Phase 1 Goal
 
-Requirements Persistence Gateを通る前に「要件定義完了」「実装準備完了」と確定しません。
-
-## 19. Agent Autonomy / User Confirmation Contract — Pending Implementation
-
-現行Owner Docに存在する、Core Decision / High-cost Decision等でUser回答待ちを標準停止条件とするRuleは見直し対象です。
-
-新しい方向性は、Userへの質問・承認待ちを通常Workflowの標準停止条件にせず、以下を基準にBest Reasonable Decisionで継続することです。
+最終的に少なくとも次のFlowを一貫して判断できるRequirements Decision Systemを目標とします。
 
 ```text
-Current Repository
-+ Current Requirements
-+ Existing User Intent
-+ Evidence
-+ Compatibility / Risk
+Raw User Request
 ↓
-Best Reasonable Decision
+Underlying Problem
 ↓
-必要なAssumption / Riskを記録
+Desired Outcome
 ↓
-作業継続
+Solution / Feature Candidate
+↓
+Scope / Priority Decision
+↓
+Research / Prototype / Validation
+↓
+Confirmed Requirement
+↓
+Current Contract / Change Management
+↓
+Observable Completion
 ```
 
-Repository確認やResearchで解決できる内容を最初からUserへ投げ返しません。
+### Research Domain 1 — Problem Discovery
 
-この変更は`docs/01-requirements.md`だけで完了扱いにせず、`docs/00`、`docs/21`、README、START_HERE、Templates、その他関連参照を確認して矛盾を整理します。
+次を研究対象とします。
 
-外部System、権限、安全上の要件等で明示的確認が必須な操作は例外です。
+- User自身も欲しいものが曖昧な場合の具体化
+- Request / Underlying Problem / Solution Ideaの分離
+- Need / Want / Solution Ideaの区別
+- Problemを掘る深さと停止条件
+- Userの説明だけで不足する場合のContext / Behavior / Friction / Desired OutcomeからのProblem Hypothesis
+- 複数Problemが混ざったRequestのDecision単位への分解
+- Problem Importanceの判断軸
+- Problem理解からSolution検討へ移る条件
 
-このSectionは現時点では**実装待ちのCurrent Requirement**です。Owner Doc側へ反映・Validation後に、恒久RuleをOwnerへ移し、このSectionをCurrent Contractとして必要な最小形へ整理します。
+Userへ機械的に`なぜ？`を繰り返す方式を標準にはしません。
+
+### Research Domain 2 — Scope & Prioritization
+
+次を研究対象とします。
+
+- Featureを追加する条件
+- Featureを捨てる条件
+- `便利そう`とMeaningful Valueの分離
+- Core Outcomeを成立・検証できるMVP Boundary
+- MVPへ含めるべきFoundation / Risk検証要素
+- `Now / Later / Reject`等のScope分類
+- Feature Dependency / Sequence
+- Implementation CostだけでなくMaintenance / Testing / UI・Data Complexity / Migration / Failure Risk / Cognitive Loadを含むCost評価
+- RICE / MoSCoW / Kano等のPrioritization Frameworkの適用条件と限界
+- 必要な具体化とScope Creepの分離
+
+MVPを単なる最小Feature数とは扱いません。
+
+### Research Domain 3 — Evidence & Validation
+
+次を研究対象とします。
+
+- Researchだけで十分に絞れるDecision
+- Prototype / Testが必要なProject-specific Decision
+- Research ResultをRequirementへ変換する条件
+- `Confirmed / Provisional / Open`等のDecision Status運用
+- Sketch / Wireframe / Clickable Prototype / Technical Spike / Minimal Implementation / Data Prototype等の使い分け
+- Prototypeを本実装並みに重くしない停止条件
+- Hypothesis → Observable Signal → Pass / Fail Criteriaの関係
+- Prototype / Validation ResultをRequirementへ戻すFeedback Loop
+- User Test / Actual Useが必要な条件
+- Evidence不足時に無限Researchを続けずUnknown → Hypothesis → Cheap Testへ移る条件
+
+ResearchとPrototypeは競合する手段ではなく、必要に応じて `Research → Uncertainty Reduction → Prototype / Test` と接続します。
+
+### Research Domain 4 — Requirement Management
+
+次を研究対象とします。
+
+- Requirements肥大化の原因と整理方法
+- Current Contract / Decision History / Research Evidence / Implementation Detailの分離
+- 実装担当が重要判断をやり直さずに済むRequirement粒度
+- Requirement変更の `Clarification / Extension / Replacement / Removal / Breaking Change` 等の分類価値
+- Requirement変更時のImpact Analysis
+- Obsolete RequirementをCurrent Contractから外しつつ変更理由を追跡する方法
+- Requirement Conflictの発見と解決
+- Requirement Statusの有効性と管理Cost
+- Problem → Outcome → Requirement → ValidationのTraceabilityをどこまで持つべきか
+- Requirements Cleanupを実行するTrigger
+
+Requirementsは追記型の日記ではなく、常にCurrent Contractとして更新します。
+
+### Research Domain 5 — Completion / Observable Done
+
+次を研究対象とします。
+
+- 曖昧なCompletion ConditionをObservableな条件へ変換する方法
+- RequirementとAcceptance / Verification Criteriaの責務分離
+- Quantitative / Qualitative Criteriaの使い分け
+- Automated Test / Static Inspection / Browser Test / User Test / Actual Playtest / Real Device / Production確認の適用条件
+- Happy Path以外のFailure / Empty / Invalid / Reload / Restore / RecoveryをCompletionへ含める基準
+- Performance / Accessibility / Reliability / Security / Responsive / Compatibility等の非機能Requirementを観測可能にする方法
+- `Pass / Fail / Not Verified / Not Applicable`等の状態分離
+- Feature Complete / Release Ready / Requirements Complete等の部分完成の扱い
+- Risk / Importanceに応じたVerification Depth
+- Requirement変更時にCompletion Criteriaを再評価する仕組み
+
+最終的に `Requirement → Expected Outcome → Observable Evidence → Verification Method → Pass / Fail Criteria → Actual Result` が追えることを目標とします。
+
+### Research Method / Scope
+
+Phase 1は、Requirements Engineeringだけでなく必要に応じて以下のEvidenceを横断比較します。
+
+- Requirements Engineering
+- Product Discovery / Product Management
+- HCI / UX Research
+- Lean / MVP
+- Agile
+- Systems Engineering
+- Software Testing / Acceptance Criteria
+- Real Product / Project Postmortem
+- Individual / Small-team Development
+- AI-assisted Development
+
+有名Frameworkを知名度だけで採用しません。各Framework / Practiceについて、何を解決するか、Evidence、Failure / Limitation、Applicability、個人開発 + AI-assisted developmentへの適合性を確認し、Guideへは必要な原理だけを取り込みます。
+
+Research Depthは原則Deep Researchとし、Source件数そのものではなくResearch SaturationとDecision Qualityで終了を判断します。
+
+### Research Output
+
+Phase 1では最低限次を成果物候補とします。
+
+1. **Evidence Map** — Established / Context-dependent / Disputed / Unknown / Failure / Limitation
+2. **Requirements Decision Model** — ProblemからObservable CompletionまでのEnd-to-End Flow
+3. **Decision Rules** — Feature、MVP、Research / Prototype、Requirement Change、Completion等を実際に判断できるRule
+4. **Execution Support** — 必要な場合のみQuestion Pattern、Feature Decision Matrix、MVP判断、Prototype Trigger、Change Impact Check、Completion Criteria形式等
+
+Findingは内容に応じて次へ配置します。
+
+- Common Requirement Principle → `docs/01`候補
+- General Research Method → `docs/20`
+- Guide Promotion / Rule Hygiene → `docs/14`
+- Execution Aid → Template / Checklist
+- Evidence / Failure / Working Hypothesis → Catalog / Reference
+- Project-specific Finding → Common Guideへ入れない
+
+### Agent Autonomy Integration
+
+Phase 1はSection 19のAgent Autonomy / User Confirmation Contractと整合させます。
+
+目標は次のように判断できることです。
+
+```text
+AIがCurrent Contextから合理的に決められる
+→ Best Reasonable Decisionで進む
+
+Researchで解決できる
+→ Researchする
+
+Project固有UnknownをCheap Testで解決できる
+→ Prototype / Testする
+
+User Intentなしでは合理的に決められない
+→ Userへ確認する
+```
+
+Requirements精度向上を理由にUserへの質問数を増やすことを目的にしません。
+
+### Phase 1 Success Criteria
+
+Phase 1完了時は少なくとも次を満たします。
+
+- 5 Domainすべてで実用的なDecision Criteriaがある
+- Problem → Outcome → Requirement → CompletionがEnd-to-Endで接続されている
+- Featureを `Now / Later / Reject` 等へ根拠付きで分類できる
+- MVP BoundaryをCore Outcome基準で判断できる
+- Research / Prototype / User確認の使い分けを判断できる
+- Research / Prototypeを適切に終了しDecisionへ進める
+- Requirement変更をImpact込みでCurrent Contractへ反映できる
+- Observable Completion / Verification Methodを作成できる
+- Section 19のAgent Autonomy方針と矛盾しない
+- Guide全体を過剰Process化しない
+- 代表CaseでDecision Modelを通し、合理的な結果になることをValidationする
+- Common Rule化すべきFindingだけを選別し、既存Owner責務を壊さない
+
+代表Validation Caseには少なくとも、新規Site、既存SiteへのFeature追加、曖昧な`使いやすくしたい`要求、Feature過多、途中Requirement変更、Completionが曖昧なCaseを含めます。
+
+### Failure Criteria / Non-goals
+
+次の状態はPhase 1の失敗または再検討対象とします。
+
+- Framework名を列挙するだけでDecision Criteriaになっていない
+- 小規模Projectにも大量Document / Score / Traceability / Prototype / User Testを機械的に要求する
+- AIの判断精度向上ではなくUserへの質問増加で解決する
+- `Reject`が実質存在せずFeatureがLaterへ蓄積し続ける
+- Completion Criteriaが`使いやすい`、`高品質`、`正常に動く`等の非観測的表現だけになる
+- Requirements OwnerへResearch Method / Evidence / Execution Checklistを過剰に混在させる
+- Product Management全体へScopeを無制限に拡大する
+- 全Requirementへ固定Score、重いTraceability ID、Prototypeを強制する
+
+Phase 1はResearch量やRule数を増やすことではなく、**少ないRuleでRequirements Decision Qualityを上げること**を完成基準とします。
