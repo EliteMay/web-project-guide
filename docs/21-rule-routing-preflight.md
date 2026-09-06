@@ -71,15 +71,22 @@ Routingのための分類は、必要最小限の軸だけ使います。
 - `SECURITY`
 - `TESTING_QUALITY`
 - `GITHUB_PAGES`
+- `MAINTENANCE`
 - `PROJECT_MANAGEMENT`
 - `ELECTRON`
 - `DISTRIBUTION`
 - `DEPENDENCIES_ASSETS`
+- `CONTINUOUS_IMPROVEMENT`
 - `OBSERVABILITY`
+- `CROSS_REPOSITORY_GITHUB`
 - `GAME_DESIGN`
 - `LEARNING_CONTENT`
 - `RESEARCH`
 - `GOVERNANCE_ROUTING`
+
+`MAINTENANCE` Work Typeは「保守作業である」という作業種類を示し、`MAINTENANCE` DomainはVersion / Runtime Path / Legacy / Patch等の保守Ruleが実際に関係する場合に使います。
+
+Guide自身の改善・Deep Reviewでは原則として `MAINTENANCE + GOVERNANCE_ROUTING + CONTINUOUS_IMPROVEMENT` を組み合わせます。Cross-Repository GitHub基盤の変更では必要に応じて `CROSS_REPOSITORY_GITHUB` を追加します。
 
 ### Change Scope
 
@@ -189,6 +196,8 @@ MUST相当のOverrideでは理由・影響・代替策を残します。
 - Meaningful Visual Changeへ発展
 - Game Core Loop / Progression変更へ発展
 - User Requirementが変わった
+- Guide改善でCommon Rule / Owner / Router / Validatorへ影響が広がった
+- 単一Repository作業からCross-Repository GitHub Infrastructure変更へ発展した
 
 同じConversationだから同じRoutingを永久に使う、とは扱いません。
 
@@ -221,16 +230,25 @@ Profileは現行の分類を維持し、Profile体系そのものの再設計は
 
 これらへRouting Rule本文を複製しません。詳細判断はこの章、機械Routingは`rule-router.json`へ戻します。
 
+### MUST: Human / Machine Routerを代表Caseで一致させる
+
+`START_HERE.md`へ重要Routeを追加・変更した場合、`rule-router.json`のWork Type / Domain / Signalで同じOwnerへ到達できることを確認します。逆にMachine Routerへ重要Domainを追加した場合も、人間向け入口からその作業を発見できるか確認します。
+
+特にGuide自身の改善、Storage Migration、Meaningful Visual Change、Game主要Flow、Cross-Repository GitHub Infrastructure等、見落としCostが高いCaseはGolden CaseでRegression Guardを持つことを優先します。
+
 ## Validation
 
 Guide Validatorでは少なくとも次を確認します。
 
 - Router JSON / Schemaが存在しJSONとして読める
 - Owner Doc参照先が存在する
+- Work Type / Domain / Signal / Gateの参照先が有効
 - Stable Gate IDが重複しない
 - Gate Ownerが一意
 - 代表Golden Caseで必要DocがRoutingされる
+- Owner Registryの重要DocがRoute / Gateから実質到達不能になっていない
 - `START_HERE.md`からこの章へ辿れる
+- Guide自身のDeep Reviewで`docs/14`へMachine Routerから到達できる
 
 文章の特定フレーズを大量固定して品質保証の代わりにしません。文章表現ではなく、Owner / Route / Gate / Link等の構造Contractを優先して検証します。
 
