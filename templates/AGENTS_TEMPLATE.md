@@ -1,18 +1,20 @@
 # AGENTS.md
 
-> このファイルはCoding Agent向けの**入口 / Router**です。Project仕様のSource of Truthを重複して持ちません。
+> このファイルはCoding Agent向けの**入口 / Router**です。Project仕様やCommon Rule本文のSource of Truthを重複して持ちません。
 
 ## Read First
 
-作業前に、今回の変更に関係する範囲で次を確認してください。
+1. 対象RepositoryのCurrent Stateを確認
+2. 採用している `web-project-guide` の `START_HERE.md`
+3. Meaningful / Systemicな作業では `docs/21-rule-routing-preflight.md` に従い、今回必要なOwner Docを解決・読込
+4. Project側の `README.md`
+5. `REQUIREMENTS.md` / `仕様書.md` / Current Spec
+6. `PROJECT_RULES.md`（存在する場合）
+7. `PROJECT_LEARNINGS.md`（存在する場合）
+8. Remote Diagnostic Handoff（有効な場合）
+9. 変更対象のCode / Data / Test
 
-1. `README.md`
-2. `仕様書.md` またはProjectの現行Spec
-3. `PROJECT_RULES.md` / Project固有ルール
-4. `PROJECT_LEARNINGS.md`
-5. Remote Diagnostic Handoff（有効な場合）
-6. 採用している `web-project-guide` の `START_HERE.md` と関連章
-7. 変更対象のCode / Data / Test
+Guide全文を毎回読むのではなく、Rule Routingで必要と判断されたOwner Docだけを追加確認します。Memoryや過去ConversationをCurrent Guide読込の代用にしません。
 
 ## Project
 
@@ -53,7 +55,7 @@ Remote Diagnostic Handoffを使わない場合は`disabled`とします。
 
 ここへAPI Secret、`service_role`、Access Token等を書きません。
 
-Remote handoffが有効でProviderへ接続できる場合、同じ症状をユーザーへ再質問する前に最新Runtime Evidenceを確認します。Providerが利用できない場合は作業を止めず、Local ExportへFallbackします。
+Remote handoffが有効でProviderへ接続できる場合、同じ症状をUserへ再質問する前に最新Runtime Evidenceを確認します。Providerが利用できない場合は作業を止めず、Local ExportへFallbackします。
 
 ## Non-breakable Rules
 
@@ -75,7 +77,7 @@ Remote handoffが有効でProviderへ接続できる場合、同じ症状をユ�
 | UI | | |
 | Tests | | |
 
-同じ責務のVersioned Patch / Duplicate Runtimeを増やさないでください。
+同じ責務のVersioned Patch / Duplicate Runtimeを増やしません。
 
 ## High-risk Areas
 
@@ -87,13 +89,24 @@ Remote handoffが有効でProviderへ接続できる場合、同じ症状をユ�
 - Electron / OS integration:
 - Other:
 
-高コスト判断はAI提案でも勝手に確定せず、Project Rules / ADR /影響確認に従ってください。
+高コスト判断はAI提案でも勝手に確定せず、Project Rules / ADR /影響確認に従います。
+
+## Re-routing Trigger
+
+作業中に次が判明したら、`docs/21-rule-routing-preflight.md`へ戻って必要Ownerを追加確認します。
+
+- Scopeが局所からMeaningful / Systemicへ拡大
+- Storage / Migration追加
+- Auth / API / Cloud追加
+- Meaningful Visual Changeへ発展
+- Game Core Loop / Completion変更へ発展
+- User Requirement変更
 
 ## Change Policy
 
 - 小規模変更はSmallest Safe Changeを優先する。
 - 大規模RewriteをDefaultにしない。
-- 既存保存データ / URL /主要機能を壊す変更は事前に影響を整理する。
+- Existing Save / URL /主要機能を壊す変更は事前に影響を整理する。
 - 一時Script / Debug / Workflowを残さない。
 - AI生成Codeも最終状態のTest / Validationを通す。
 - Remote Diagnosticsを導入していても、Provider障害をCore機能の障害へしない。
@@ -109,6 +122,6 @@ Remote handoffが有効でProviderへ接続できる場合、同じ症状をユ�
 
 ## Nested AGENTS.md
 
-このProject内でSubdirectory固有のTechnology / Command / Ruleが本当に異なる場合だけNested `AGENTS.md`を置きます。
+Subdirectory固有のTechnology / Command / Ruleが本当に異なる場合だけNested `AGENTS.md`を置きます。
 
 Rootと同じ内容を複製せず、そのScopeで異なる点だけ記録してください。
