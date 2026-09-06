@@ -113,7 +113,7 @@ Routingのための分類は、必要最小限の軸だけ使います。
 
 `STRUCTURE_FLOW`はUser Goal / TaskからInformation Architecture、Navigation構造、Task Flow、State、Search / Browse、Recovery等を設計・再設計する場合に使います。Navigation barのColor / Typography等だけを変える場合は`VISUAL` / `UI_UX`を使います。
 
-`CONVERSATION_HANDOFF`は会話移行、stale checkpoint、PromptなしRecovery、同じ固定会話の重複Active、Current work ref復元等に使います。Behavioral Ownerは [23 Conversation Handoff / Recovery](23-conversation-handoff-recovery.md) です。
+`CONVERSATION_HANDOFF`は会話移行、stale checkpoint、PromptなしRecovery、同じ固定会話の重複Active、Current work ref復元等に使います。Behavioral Ownerは [23 Conversation Handoff / Recovery](23-conversation-handoff-recovery.md) です。Machine Registry上のOwner pathは `docs/23-conversation-handoff-recovery.md` です。
 
 `MAINTENANCE` Work Typeは「保守作業である」という作業種類を示し、`MAINTENANCE` DomainはVersion / Runtime Path / Legacy / Patch等の保守Ruleが実際に関係する場合に使います。
 
