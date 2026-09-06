@@ -4,7 +4,7 @@
 
 このTemplate自体はProject固有要件や実装状態のSource of Truthではありません。要件の正本は対象Repositoryの`REQUIREMENTS.md`等、実装の現在状態はGitHub上のCurrent Repository / Branch / Pull Requestです。このPromptは新しい会話から正本へ安全に到達するためのRouterとして使います。
 
-Conversation Handoff / PromptなしRecovery / stale checkpoint / duplicate active conversationのBehavioral Ownerは [22 Conversation Handoff / Recovery](../docs/22-conversation-handoff-recovery.md) です。Promptを貼り忘れても、Target RepositoryとCurrent work refをGitHub Evidenceから一意に復元できる場合は作業を再開できます。
+Conversation Handoff / PromptなしRecovery / stale checkpoint / duplicate active conversationのBehavioral Ownerは [23 Conversation Handoff / Recovery](../docs/23-conversation-handoff-recovery.md) です。Promptを貼り忘れても、Target RepositoryとCurrent work refをGitHub Evidenceから一意に復元できる場合は作業を再開できます。
 
 ## 使用方法
 
