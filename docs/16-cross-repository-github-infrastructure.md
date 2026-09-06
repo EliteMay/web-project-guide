@@ -46,6 +46,37 @@ SHOULD: 複数Repositoryで同じGitHub運用を繰り返す場合、Personal Ac
 
 共通RepositoryはGitHub運用のDefaultです。Project固有の正本は各RepositoryのRequirements / Spec / Project Rules / Tests等へ残します。
 
+## GitHub Actions Supply-chain
+
+GitHub Actionsで第三者Action / Workflowを実行すると、Repository contentや付与したPermissionへそのCodeが影響できます。Workflow dependencyも通常のDependencyとして管理します。
+
+### SHOULD: Actionはfull-length Commit SHAへ固定する
+
+GitHub公式のSecure Useでは、Actionを**full-length Commit SHAへpinすることがimmutable releaseを利用する方法**として推奨されています。
+
+```yaml
+steps:
+  - uses: actions/checkout@<full-commit-sha>
+```
+
+- GitHub公式Actionも含め、可能ならfull SHA固定を優先する
+- SHAが本物のAction RepositoryのCommitであることを確認する
+- `@main` / `@master`等のmoving branchを継続Workflowの既定にしない
+- `@v4`等のTagは利便性がある一方move可能であることを理解し、Risk / update運用に応じて使用する
+- Dependabot等でAction更新を追跡する場合も、更新PRを通常のValidationへ通す
+- Repository / Organization Policyでfull-length SHA pinningをRequireできる場合はRiskに応じて検討する
+
+Action更新時は「新Tagが出たから」だけでSHAを書き換えず、Release Note / source /必要Permission /重大変更を確認します。
+
+### MUST: Workflow Permissionを必要最小限にする
+
+- `permissions:`を明示し、不要なwrite権限を与えない
+- PR由来のuntrusted inputをShell / Scriptへ直接展開しない
+- Secretを不要なJob / Stepへ渡さない
+- fork / pull_request_target等、外部CodeとSecret / write permissionが交差するTriggerは追加Reviewする
+
+Project固有のSecurity判断は [06 Security](06-security.md) を正本とします。
+
 ## Reusable Workflow
 
 SHOULD: 複数Projectで繰り返すGitHub Actions処理は、共通部分だけReusable Workflowへ切り出すことを検討します。
@@ -137,6 +168,18 @@ mainからInstaller / Update Metadata / Stable Release等へ直接繋がるProje
 小規模な文言修正まで必ずPR必須にすると、Smallest Safe Change方針と衝突します。
 
 Project Profile / Release Risk / Data Loss Riskに合わせて設定します。
+
+## Branch Lifecycle
+
+SHOULD: Merge済み /破棄済みの短命Branchを無制限に残しません。
+
+- PR Merge後に不要なwork branchを削除する
+- Repository設定で`delete branch on merge`を有効化でき、運用上問題がなければ利用を検討する
+- 長期Branchは役割とOwnerを明確にする
+- Branch削除前に未Mergeのunique commit / open PRがないことを確認する
+- Branch名だけで不要と判断せず、PR / ancestry / diffを確認する
+
+古いBranchの存在自体はRuntime Bugではありませんが、Current work ref RecoveryやAgentのRepository理解を曖昧にするため、定期的に整理します。
 
 ## Dependabot
 
@@ -271,10 +314,13 @@ Common Rule本文へCurrent Snapshotとして埋め込まず、保存価値が�
 ## 確認Checklist
 
 - [ ] 共通化対象とProject固有対象を分けた
+- [ ] Third-party Action / reusable workflowの参照Riskを確認し、必要ならfull commit SHAへ固定した
+- [ ] Workflow Permissionを必要最小限にした
 - [ ] Reusable Workflowを`@main`へ恒久依存していない
 - [ ] 中央Workflow更新をPilotしてから展開した
 - [ ] `.github`共通Repository自体のValidationがある
 - [ ] Ruleset強度がProject Riskに合う
+- [ ] 完了済み短命Branchを理由なく残し続けていない
 - [ ] Dependabot PRを無条件Auto Mergeしない
 - [ ] Issue FormへSecret /個人情報を要求しない
 - [ ] GitHub Projectsを仕様のSource of Truthにしていない
