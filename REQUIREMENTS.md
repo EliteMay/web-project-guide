@@ -55,6 +55,7 @@ Common Rule本文は `docs/` の各Owner Docを正本とし、この文書へ詳
 - Governance / Source of Truth / Rule Budget
 - 作業種類・Risk Signalから必要Owner Docへ到達するRouting
 - Architecture / Data / UI / Performance / Security / Testing等の共通判断
+- User Goal / TaskからIA / Navigation / Flow / Stateへ落とすStructure / Flow Research Workflow
 - GitHub Pages / Electron / Game / AI-assisted development等の共通Workflow
 - Templates / Checklist
 - Failure / Success / Anti-Pattern / Visual Evidence Catalog
@@ -69,6 +70,7 @@ Common Rule本文は `docs/` の各Owner Docを正本とし、この文書へ詳
 - 個別GameのGame Design
 - 個別学習サイトの教材本文
 - Site固有画面一覧
+- Site固有Sitemap / Navigation / User Flow / State Matrix
 - Site固有Storage Schema / Key
 - Project固有Visual Direction
 - Project固有Bug履歴
@@ -85,7 +87,7 @@ Project固有情報は対象RepositoryをSource of Truthとします。
 |---|---|---|
 | `README.md` | Guide概要 / 最短入口 | README |
 | `START_HERE.md` | 人間向け作業Router | START_HERE |
-| `docs/00-21` | Common Rule / Behavioral Owner | 各Owner Doc |
+| `docs/00-22` | Common Rule / Behavioral Owner | 各Owner Doc |
 | `maintenance/rule-router.json` | Machine-readable Routing | Router JSON |
 | `maintenance/review-policy.json` | Review / Deep Audit機械設定 | Review metadata |
 | `maintenance/DEEP_SYSTEM_AUDIT.md` | Deep Audit実行Checklist | `docs/14`の実行補助 |
@@ -198,6 +200,7 @@ Rule移動時は**新Ownerへ存在することだけでなく、旧Ownerの詳�
 - `START_HERE.md`はHuman Summaryとし、詳細Routingの第二正本にしない
 - Required DocはCurrent Guide Revisionから実際に読む
 - Meaningful Visual Change / Researchable Question / Storage Migration / Game Completion等のStable Gateを必要時に発火する
+- MeaningfulなIA / Navigation / Task Flowは`STRUCTURE_FLOW` Domainで`docs/22`へRouteし、専用Stable Gateを機械的に増やさない
 - 小さなBugや文言修正へFull Guide / Deep Researchを機械的に要求しない
 - 作業途中でScope / Riskが変われば追加OwnerへRe-routeする
 - 重要なHuman RouteとMachine Routeは同じ代表TaskでParity確認する
@@ -335,6 +338,7 @@ Guide自身を大きく点検する場合は、Current Repositoryを「まだ低
 - Template / Checklist responsibility split: Implemented
 - Deep System Audit workflow: Implemented
 - Human / Machine routing parity guard: Implemented
+- Task-first Structure / Flow Research owner: Implemented
 - Unresolved Core Decisions: None
 - Unresolved High-cost Decisions: None
 
@@ -348,7 +352,7 @@ ResearchやCommon Ruleをさらに増やす前に、Current Guide全体のCovera
 
 ### Primary Audit
 
-Current RepositoryでOwnerとして登録されている全Owner Docを対象とします。現在の`00〜21`という番号やOwner数を固定値として盲信せず、README / Governance / Machine Router等のCurrent Stateから対象を解決します。
+Current RepositoryでOwnerとして登録されている全Owner Docを対象とします。現在の番号範囲やOwner数を固定値として盲信せず、README / Governance / Machine Router等のCurrent Stateから対象を解決します。
 
 ### Secondary Audit
 
