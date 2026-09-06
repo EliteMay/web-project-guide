@@ -81,6 +81,7 @@ Project固有情報はTarget RepositoryをSource of Truthとします。
 | `maintenance/review-policy.json` | Review metadata |
 | `maintenance/DEEP_SYSTEM_AUDIT.md` | Deep audit execution checklist |
 | `maintenance/audits/` | Non-normative audit result history |
+| `maintenance/research/` | Current / pending guide research contracts; not Common Rule owners |
 | `templates/` | Project input / handoff / execution templates |
 | `catalog/` | Failure / Success / Anti-pattern / visual evidence |
 | `references/` | Non-normative research / project-specific evidence |
@@ -137,7 +138,7 @@ Decision behaviorの正本は`docs/01-requirements.md`です。
 - Repository / Requirements / Existing User Intent / Researchで解けることを再質問しない
 - Core / High-costというLabelだけで回答待ちにしない
 - Safe / reversible decisionはAssumption / Riskを記録して進められる
-- User Decisionはnon-inferable preference、external permission / billing / account action、safe alternativeのないirreversible destructive choice、Evidenceでも解けないmaterial conflict等へ絞る
+- User Decisionはnon-inferable preference、external permission / billing / account action、明示的なsafety / legal / security consent、safe alternativeのないirreversible destructive choice、Evidenceでも解けないmaterial conflict、作業に必須だがRepository / tool / contextから取得できない値等へ絞る
 
 Template / Project Management / RoutingはこのContractと競合してはいけません。
 
@@ -297,13 +298,32 @@ Guide自身も自分のRuleを可能な範囲でself-applyします。
 - CI successだけでQuality保証
 - 「90点」等のarbitrary scoreだけでDeep Audit終了
 
-## 18. Implementation Handoff
+## 18. Current Pending Research Contract
 
-- Requirements Status: Ready for implementation
+Requirements Decision SystemのPhase 1 Researchは**未実装のCurrent Requirement**として維持します。
+
+詳細Contract: [`maintenance/research/requirements-decision-system.md`](maintenance/research/requirements-decision-system.md)
+
+目的:
+
+- Raw User Request → Underlying Problem → Desired Outcome → Scope / Priority → Research / Prototype / Validation → Confirmed Requirement → Observable CompletionをEnd-to-Endで判断できる体系を研究する
+- Problem Discovery / Scope & Prioritization / Evidence & Validation / Requirement Management / Observable Doneの5 Domainを扱う
+- Requirements精度向上をUserへの質問増加だけで解決しない
+- Current Agent Autonomy Contractと整合させる
+- Common Ruleへ昇格するFindingだけを既存Ownerへ配置し、Research Contract自体をCommon Rule本文にしない
+
+Status: **Pending research**
+
+このContractを実装済み扱いにせず、完了時は必要な恒久RuleをOwnerへ反映してからCurrent Requirementを更新・退役させます。
+
+## 19. Implementation Handoff
+
+- Requirements Status: Ready for current implemented guide behavior
 - Information Architecture cleanup: Implemented
 - Template / Checklist responsibility split: Implemented
 - Deep System Audit method: Implemented
 - Exhaustive owner audit / remediation: In progress until current audit PR is merged and validated
+- Requirements Decision System Phase 1 Research: Pending research（別の将来作業。今回のAudit CompletionをBlockしない）
 - Blocking Decisions: None
 
 Current auditの一時Finding / score /修正Statusは`maintenance/audits/`を参照します。
