@@ -51,7 +51,7 @@ Gameの規模・継続時間・World Scale・State量・Platformに応じて、M
 - ProgressionでPlayerの判断・行動・効率・Masteryを意味のある形で変える。
 - Game RuleとRendering / UIを分離する。
 - Balance値をAdjustable ParameterとしてPlaytest可能に保つ。
-- TutorialはContextualに教え、実際の操作へ接続する。
+- Tutorial / GuidanceはGameのComplexity、Player familiarity、Failure cost、Experiment safetyに合わせ、実際の操作・理解へ接続する。
 
 ### CONDITIONAL
 
@@ -64,7 +64,8 @@ Gameの規模・継続時間・World Scale・State量・Platformに応じて、M
 - Random / Procedural → Seed / Reachability / Required Content保証を確認
 - Economyがある → Source / Sink / Duplication / Dominant Strategyを確認
 - Failure / Deathがある → Loss / Retry / Recovery Contractを定義
-- Audioが重要 → Gameplay Sound / Mix / Visual Fallbackを確認
+- Audioが重要 → Gameplay Sound / Mix / Sensory alternativeを確認
+- Multiplayer / Social interactionが重要 → Shared Information / Communication Cost / Abuse Risk / Accessibilityを確認
 
 ### MAY
 
@@ -84,6 +85,129 @@ Core ExperienceやUserが求めるGameの方向そのものをResearch Consensus
 
 小さなBalance値調整や、原因が明確なGame Bugへ毎回Deep Researchを要求しません。
 
+Cross-genreのResearch Context、Evidence Confidence、反例、Domain Lens候補は [Game Experience Design Research](../references/game-experience-design-research.md) に非NormativeなReferenceとして保存します。Reference内のWorking HypothesisやGame固有例を、この章のMUSTへ自動変換しません。
+
+## Game Experience Decision Framework
+
+Game Designでは、一般的なUX Best Practiceを機械的に最大化せず、**そのGameでなぜそのDesignが必要か**をCore Experienceから逆算します。
+
+### SHOULD: Core ExperienceとIntended Player Demandを先に定義する
+
+Core Experienceに加えて、Playerへ何を要求したいかを必要範囲で明確にします。
+
+Intended Player Demandには、Gameに応じて次のようなものがあります。
+
+- Skill / Execution
+- Decision / Planning
+- Attention / Perception
+- Exploration / Discovery
+- Expression / Creativity
+- Coordination / Social interaction
+- Interpretation / Narrative engagement
+- Physical movement
+- Emotional engagement
+- Relaxation / Low-pressure interaction
+
+`Challenge`はPlayer Demandの一種類であり、Cozy / Creative / Narrative等のGameへ高いDifficultyやFailureを理由なく追加しません。
+
+### SHOULD: State → Task → SurfaceでGame Screenを考える
+
+同じGameでも、Explore / Combat / Build / Inventory / Map / Management等でPrimary Taskと必要情報は変わります。
+
+意味のあるUI / Interaction設計では必要に応じて次の順で整理します。
+
+```text
+Game State
+→ Primary Player Task
+→ Required Information / Decision Depth
+→ Surface
+```
+
+Surface候補:
+
+- World itself
+- World-space UI
+- Persistent / Temporary HUD
+- Overlay
+- Local Panel
+- Full-screen Menu / Management Surface
+- Recallable Reference / Log
+- Meta-game Surface
+
+HUDを常に少なくする、Full-screenを避ける、Diegetic UIを優先する等を共通正解にしません。Primary Taskに必要なCognitive Workspace、World Visibility、Interruption Cost、Information Localityを見て選びます。
+
+短いMini GameやState差が小さいGameへState Matrixの文書化を機械的に要求しません。
+
+### 5つのDesign Dimension
+
+Game固有の重要判断は、必要に応じて次のDimensionから確認します。すべてを毎回同じ深さで埋めるChecklistにはしません。
+
+1. **Player Agency / Constraints / Systems** — 何を選べるか、何を制約するか、System / Resource / Progression / RandomnessがどんなDecisionやExpressionを作るか
+2. **Perception / Information / Presentation** — 何をいつ、どのChannel / Salience / Persistenceで知覚・理解・感じさせるか
+3. **Interaction / Intent Fidelity** — Player Intentをどう入力し、Gameがどう受理・Feedback・Outcomeへつなぐか
+4. **Learnability / Access** — どう参加し、理解し、Practiceし、習熟し、必要なBarrierを調整できるか
+5. **Continuity / Temporal Experience** — Moment / Activity / Session / Progressionをどう繋ぎ、Failure / Menu / 中断 / Returning後にどうContextを復元するか
+
+### 3つのCross-cutting Lens
+
+#### Player / Experience Cost
+
+次のCostを一律に最小化しません。
+
+- Attention / Cognitive
+- Motor
+- Time
+- Recovery / Repetition
+- Social
+- Emotional
+
+Cost / Friction / Constraintを残す場合は、Core Experienceへどんな役割を持つかを説明できることを優先します。
+
+#### Experience Contract
+
+Playerが何を信頼でき、何を予測・推測でき、何を意図的に不確実にするかをGameごとに決めます。
+
+例えばMystery / Horror / RoguelikeではUncertainty自体がCore Experienceになり得ます。一方、Save integrity、Real-money purchase、Core input acknowledgement等、Game外の損失や重大な誤認につながる領域を同じ理由で曖昧にしません。
+
+Fairnessも単純な左右対称へ固定せず、Competitive Integrity、Harsh Survival、Catch-up、World-driven uncertainty等、そのGameでPlayerが期待すべきContractを定義します。
+
+#### Adaptive Context
+
+正解は少なくとも次によって変わり得ます。
+
+- Game State / Primary Task
+- Genre / Camera
+- Player expertise / familiarity
+- Input / Platform
+- Physical / embodied context
+- Solo / Co-op / Competitive / Asymmetric等のSocial topology
+- Session length / Service model
+
+過去に成功した別Gameや同GenreのPatternを、Context確認なしで最初の答えにしません。
+
+### Relevance / Scale Gate
+
+Domain Lensや追加設計作業を使う前に、次を確認します。
+
+> その領域はCore ExperienceまたはProject Riskへ実質的に影響するか？
+
+`No`なら深掘りしません。Combat / Camera / Audio / Haptics / Economy / Exploration / Randomness / DDA / Multiplayer / Narrative / Retention等を、すべてのGameへ機械的に適用しません。
+
+### Intentional Friction / UncertaintyのSafeguard
+
+「不便・難しい・曖昧・高Penalty・制約がある」ことだけではDesign Failureではありません。
+
+意図的に残す場合は必要に応じて次を確認します。
+
+1. 何のExperienceを作るか
+2. PlayerがRule / Cause-effectを学べるか
+3. Extreme caseがCore Experienceを壊す範囲まで暴れないか
+4. Accessibility / AssistanceのAlternativeが必要か
+5. より小さいCostで同じ価値を作れないか
+6. Actual Playtestで本当に狙ったExperienceになったか
+
+逆に「意図的だから」でAccidental FrictionやBad UXを正当化しません。
+
 ## Game完成の基本モデル
 
 Game完成はFeature数やMap数ではなく、中心体験が実際に通るかで判断します。
@@ -99,6 +223,7 @@ Game完成はFeature数やMap数ではなく、中心体験が実際に通るか
 Game Requirementsでは最低限次を明確にします。
 
 - **Core Experience** — Playerに最も楽しませたい中心体験
+- **Intended Player Demand** — Playerへ何を考え・感じ・学び・実行・表現してほしいか
 - **Supporting Systems** — Core Experienceを強化するSystem
 - **Non-goals** — このGameを何にしないか
 
@@ -180,7 +305,7 @@ Major Progressionは単なる数値増加ではなく、Playerの判断や行動
 
 進行GateはCore Experienceを実際に経験することで進む設計を優先し、単一のMoney / XP等だけへ無条件に依存させません。
 
-Pacingは原則として `Introduce → Try → Understand → Combine → Next` の順を使い、理解前にSystemを大量投入しません。
+学習が必要なSystemでは `Introduce → Try → Understand → Combine → Next` を候補にし、理解前にSystemを大量投入しないことを優先します。Discovery自体がCore Experienceなら、Explicit TutorialよりGuided Discovery / Experimentationを選べます。
 
 AutomationやFast Travel等は理解済みの反復を短縮できますが、Progressionの結果としてCore Experience自体をPlayerから取り上げないようにします。
 
@@ -216,6 +341,8 @@ Failure / Deathがある場合は次を明確にします。
 - Retryまでの時間
 - Failureが次のFailureを過度に誘発しないRecovery手段
 
+Recovery Costは小さいほど良いとは限りません。高いProgress loss / Walkback / Scarcity等をStakes、Mastery、Vulnerability等へ意図的に使う場合は、その役割をRequirementsで説明し、Actual Playtestで価値がCostを上回ることを確認します。
+
 ## Game Content / World
 
 Contentは量ではなくGameplay Roleを持つことを重視します。
@@ -238,7 +365,7 @@ Main Progression上の必須Itemを極端な低確率Randomだけへ依存させ
 
 Procedural GenerationはDefaultにせず、採用時のみNavigation、Difficulty、Objective reachability、重要Item availability、Save、Reproducibility、Testingを確認します。
 
-World Size自体を品質Goalにせず、Gameplay Densityを重視します。
+World Size自体を品質Goalにせず、Core Experienceに必要なTraversal、Quiet Space、Discovery、Encounter、Decisionの密度とPacingを評価します。高密度そのものを品質Goalにしません。
 
 ## Difficulty / Balance
 
@@ -254,7 +381,7 @@ Requirementsでは「何を難しくするか」「何を難易度として使�
 
 Difficulty ModeでGameを別の単純Grindへ変えません。
 
-Failure後は学習内容が残っている間にRetryできることを優先し、意味のない長距離Walkback等を避けます。
+Immediate masteryを試すGameでは、Failure後に学習内容が残っている間にRetryできることを優先できます。一方、Recovery / Loss自体がCore Experienceなら高いCostを許容できます。どちらも意図とPlaytest結果で判断します。
 
 **Grinding ≠ Difficulty** として、時間消費と意味のある難しさを分離評価します。
 
@@ -329,7 +456,7 @@ Visual制作をFinal Polishだけへ先送りせず、Gameplay Phaseと並行す
 
 Camera Shake、Head Bob、Motion Blur、FOV Kick等はGameplayを妨げない強度を優先し、必要に応じて調整 / OFF可能にします。
 
-AudioはFeedback、Gameplay Information、Atmosphereに分けます。重要情報を音だけへ依存させません。
+AudioはFeedback、Gameplay Information、Atmosphereに分けます。重要情報は、音知覚自体がCore Player Demandでない限り、必要に応じてVisual / Haptic / Caption等のAlternativeを検討します。
 
 大量Entity GameではAudio Spamを避け、Distance、Grouping、Priority、Cooldown、Voice limit等を必要に応じて使います。
 
@@ -337,27 +464,36 @@ UI / UX / Accessibility一般は [04 UI / UX / Accessibility](04-ui-ux-accessibi
 
 ## Controls / Tutorial / Accessibility
 
-Tutorialは開始時に長文をまとめて読ませるより、必要な操作が発生した時点で短く教え、実際に操作させる **Contextual Tutorial** を基本とします。
+Tutorial / Guidanceは一律の形式へ固定しません。
 
-TutorialではKeyだけでなく、何をするか、なぜするか、成功すると何が起きるかを必要範囲で伝えます。
+GameのComplexity、Mechanic familiarity、Failure cost、Experiment safety、Player expertiseに応じて、必要なものだけ組み合わせます。
+
+- Explicit instruction
+- Contextual hint
+- Demonstration
+- Guided discovery
+- Safe experimentation
+- Recallable Help / Controls / Codex
+
+初見Playerが自力で学べる単純・慣習的なMechanicまで長文Tutorialで遮らず、複雑・非慣習的・Failure costが高いMechanicでは必要なScaffoldingを増やします。
+
+教える必要があるMechanicでは、Keyだけでなく何をするか、なぜするか、成功すると何が起きるかを必要範囲で伝え、実際にPracticeできる状態を優先します。
 
 Tutorial Stepの完了判定は、可能な限り通常Gameplayと同じRule / Event / Analyzerを参照します。例えば「自動搬送を1回成功させる」が条件ならCash増加等の代理指標だけで完了させず、実際の搬送・生産・販売Eventが成立したことを判定します。Tutorial専用の別判定で通常Game Ruleと矛盾させません。
 
-Tutorial終了後は最初のGoal / Progressionへ自然に接続します。
+Guidanceが不要になったPlayerには邪魔を減らし、必要なGameでは後からHelp / Controls / Codex等へ戻れるようにします。Returning PlayerではFull Tutorialを最初から強制するより、Current Goal / Controls / 変更点等のContext Reconstructionを検討します。
 
-必要なGameではHelp / Controls / Codex等で後から再確認できるようにします。
+HUDは情報を全部常時表示せず、常時必要な情報、状況依存情報、詳細画面へ分けます。DensityはGame全体で固定せず、State / Task / Surfaceに合わせて変えられます。
 
-HUDは情報を全部常時表示せず、常時必要な情報、状況依存情報、詳細画面へ分けます。
+Error / Blocked Stateでは単に「できない」と表示するだけでなく、Resource不足、Storage Full、Power不足、Path Block等、Playerが改善できるReasonを必要に応じて伝えます。ただしPuzzle / Mystery等で原因推論自体がCore Demandなら答えを直接表示しません。
 
-Error / Blocked Stateでは単に「できない」と表示するだけでなく、Resource不足、Storage Full、Power不足、Path Block等、Playerが改善できるReasonを伝えます。
-
-InputはResponsivenessを優先し、複雑なDesktop GameではKey Remapを検討します。同じKeyをContextで使う場合もPlayerがActionを予測できることを重視します。
+InputはPhysical ButtonよりGame Action / Player Intentを先に考え、Keyboard / Mouse / Controller / Touch等へDeviceに合うMappingを検討します。Remap対応時はPrompt / Tutorial / Glyphも現在Bindingと一致させます。
 
 3D / Camera GameではSensitivity、FOV、Invert、Sprint Toggle、Head Bob、Screen Shake、Motion Blur等をGame規模に応じて調整可能にします。
 
-AccessibilityとDifficultyを分離します。字幕、色覚対応、Camera Shake OFF等をEasy Mode扱いしません。
+AccessibilityとDifficultyを分離します。字幕、色覚対応、Camera Shake OFF等をEasy Mode扱いしません。Gameが本当に試したいSkill / Decisionと、参加前のPerception / Input / Cognition Barrierを分けて考えます。
 
-重要情報を色だけ・音だけへ依存させません。
+Critical informationを単一Sensory Channelだけへ理由なく依存させません。ただしPerceptionそのものがCore Demandの場合は、Alternative / AssistがCore Challengeへ与える影響を明示して設計します。
 
 ## Testing / Playtest / Debugging
 
@@ -378,6 +514,8 @@ Bugがないことだけで面白さ・遊びやすさを保証しません。
 Happy Pathだけでなく、Resource不足、Inventory Full、Death / Failure、Invalid interaction、Reward重複、Save Reloadによる再取得等、主要Edge Case / basic exploitを確認します。
 
 長時間GameではLong Session Test、大量Entity GameではLate-game / Stress Testを条件付きで実施します。
+
+意図的なFriction / Uncertainty / Punishment / Assistanceを導入・変更した場合は、Playerが実際に何を理解し、何を原因として成功 / Failureしたかを確認します。「意図したから」でPlaytestを省略しません。
 
 Bug修正では `reproduce → evidence / state → root cause → smallest safe fix → regression guard → runtime confirmation → related flow` を基本Flowとします。
 
@@ -427,7 +565,7 @@ Main Game Complete後のEndgame、Extra Challenge、Achievement、Cosmetic、New
 `GAME` Profileでは、Game規模に応じて次から必要な項目をRequirementsへ整理します。
 
 1. Game Overview
-2. Core Experience / Supporting Systems / Non-goals
+2. Core Experience / Intended Player Demand / Supporting Systems / Non-goals
 3. Core Loops
 4. Playable MVP
 5. Progression
@@ -440,9 +578,10 @@ Main Game Complete後のEndgame、Extra Challenge、Achievement、Cosmetic、New
 12. Visual / Audio Direction
 13. Performance / Scale
 14. Development Phases
-15. Non-goals / Do Not Break
-16. Completion Criteria
-17. Adjustable Parameters
+15. Primary Completion Condition / Completion Criteria
+16. Adjustable Parameters
+17. Relevant Game Context / Domain Lens（必要時）
+18. State → Task → Surface / Experience Contract（重要な場合）
 
 Mini GameへLong-running Save Game用の巨大Requirementsを強制しません。
 
@@ -491,6 +630,8 @@ Project LearningをすぐCommon Ruleへ昇格させず、[Guide Governance](00-g
 - Decorative VisualでGameplay Readabilityを壊す
 - Main Progression必須要素を極端なRandomだけへ依存させる
 - Main Goalを完成させずFeature追加を続ける
+- 一般UXの「摩擦を減らす」をCore Experience確認なしで機械的に適用する
+- 「意図的な不便」を理由にAccidental Friction / Accessibility Barrier / Input failureを正当化する
 
 ## Completion Gate
 
