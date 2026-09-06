@@ -148,6 +148,8 @@ if (!/Current Contract|現在のProject Contract/.test(requirements)) {
 const readme = read('README.md');
 const startHere = read('START_HERE.md');
 const governance = read('docs/00-governance.md');
+const requirementsOwner = read('docs/01-requirements.md');
+const requirementsConversationTemplate = read('templates/REQUIREMENTS_CONVERSATION_TEMPLATE.md');
 const routingGuide = read('docs/21-rule-routing-preflight.md');
 const continuousImprovement = read('docs/14-continuous-improvement.md');
 const deepAudit = read('maintenance/DEEP_SYSTEM_AUDIT.md');
@@ -168,6 +170,24 @@ if (!continuousImprovement.includes('../maintenance/DEEP_SYSTEM_AUDIT.md')) {
 }
 if (!deepAudit.includes('../docs/14-continuous-improvement.md')) {
   errors.push('maintenance/DEEP_SYSTEM_AUDIT.md: missing normative owner link');
+}
+
+for (const marker of [
+  '## Repository-backed Requirements Checkpoint',
+  '### MUST: 要件定義を会話だけに保持しない',
+  '### MUST: 再開時はRepositoryから復元する',
+  '### MUST: 完了Trigger後の保存とHandoffを追加確認待ちにしない'
+]) {
+  if (!requirementsOwner.includes(marker)) errors.push(`docs/01: missing requirements workflow guard -> ${marker}`);
+}
+if (requirementsOwner.includes('Draft保存の標準タイミングは**会話移行時のみ**')) {
+  errors.push('docs/01: legacy conversation-migration-only Draft save rule must not return');
+}
+if (!requirementsConversationTemplate.includes('意味のある決定がまとまった区切りで `REQUIREMENTS_DRAFT.md` を自動保存')) {
+  errors.push('REQUIREMENTS_CONVERSATION_TEMPLATE.md: missing automatic meaningful checkpoint instruction');
+}
+if (!requirementsConversationTemplate.includes('追加の「保存する？」「実装Promptを出す？」確認を挟まず')) {
+  errors.push('REQUIREMENTS_CONVERSATION_TEMPLATE.md: missing no-extra-confirmation completion handoff instruction');
 }
 
 const requirementTemplate = read('templates/REQUIREMENTS_TEMPLATE.md');
