@@ -14,9 +14,10 @@ Domain固有項目は [Conditional Packs](requirements/README.md) から該当�
 会話での進め方は [01 Requirements](../docs/01-requirements.md) を正本とします。
 
 - Recommendation-by-default: Yes / No
-- Userが決めるCore Decisions:
-- User確認が必要なHigh-cost / Risk Decisions:
+- Best Reasonable Decision: Enabled / Disabled
 - Userが自動決定を止めた項目:
+- 明示的なUser Preference:
+- User Confirmation Exceptionに該当する項目:
 
 ## 1. 目的 / 成功条件
 
@@ -104,7 +105,7 @@ Project固有の追加Packが必要なら、Common Guideを増やす前に対象
 
 ## 10. High-cost / Hard-to-change Decisions
 
-Projectに該当するものだけ記録します。
+Projectに該当するものだけ記録します。High-costであること自体はUser確認の自動Triggerではありません。
 
 - Storage / Schema / ID:
 - URL / Deployment / Release:
@@ -114,13 +115,17 @@ Projectに該当するものだけ記録します。
 - Cross-module contract:
 - その他:
 
-## 11. 変更可能範囲
+## 11. 変更可能範囲 / Assumption
 
 ### 原則として改善してよい
 
 - 
 
-### User確認が必要
+### Important Assumptions
+
+- 
+
+### User Confirmation Exception
 
 - 
 
@@ -146,7 +151,7 @@ Project固有の完成条件:
 - [ ] 必要なStatic / Runtime / Browser / Visual / Playtest / Real-device Validationを実施、または未確認を明記
 - [ ] 必要なDocumentationがCurrent Stateと一致
 - [ ] 重大Known Issueが残っていない、または完成不可として明示
-- [ ] 未解決Core / High-cost Decisionがない、または未確定として明示
+- [ ] 実装開始を妨げるBlocking Decisionがない、またはNot readyとして明示
 
 追加Project-specific completion:
 
@@ -163,6 +168,6 @@ Project固有の完成条件:
 - Status: Ready for implementation / Not ready
 - Requirements updated:
 - GitHub save verified: Yes / No
-- Unresolved Core Decisions: None / 
-- Unresolved High-cost Decisions: None / 
+- Blocking Decisions: None / 
+- Important Assumptions: None / 
 - Implementation conversation: `Repository名（実装）`
