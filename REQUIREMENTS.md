@@ -339,3 +339,276 @@ Guide自身を大きく点検する場合は、Current Repositoryを「まだ低
 - Unresolved High-cost Decisions: None
 
 今後新しい大規模Guide改善要件が生じた場合、Current Contractへ履歴として混ぜ込まず、必要ならIssue / ADR /一時Draftで検討し、確定・実装後にCurrent Contractへ必要な恒久Ruleだけ反映します。
+
+## 17. Phase 0 — Guide全体棚卸し Contract
+
+ResearchやCommon Ruleをさらに増やす前に、Current Guide全体のCoverage / Gap / Duplication / Decision Quality / Failure Evidenceを体系的に棚卸しできる状態を持ちます。
+
+目的は文章量を増やすことではなく、**どこが弱く、なぜ弱く、どう直し、何をResearchすべきかをGuide全体として把握すること**です。
+
+### Primary Audit
+
+Current RepositoryでOwnerとして登録されている全Owner Docを対象とします。現在の`00〜21`という番号やOwner数を固定値として盲信せず、README / Governance / Machine Router等のCurrent Stateから対象を解決します。
+
+### Secondary Audit
+
+以下はOwnerと同一採点にはしませんが、Normative duplication / role drift / routing不整合の監査対象とします。
+
+- `README.md`
+- `START_HERE.md`
+- `maintenance/rule-router.json`
+- `catalog/`
+- `references/`
+- `templates/`
+- Quality Checklist
+- Validator
+- その他Machine-readable設定
+
+### Owner Audit Axes
+
+各Ownerを最低限次の6軸で評価できることを要求します。
+
+1. `Coverage`
+2. `Gap Coverage`
+3. `Duplication`
+4. `Rule / Research Separation`
+5. `Decision Quality`
+6. `Failure Evidence`
+
+Coverageは文書量ではなく、そのOwnerが担当する主要Decisionを実際に判断できるかで評価します。
+
+### Score / Overall
+
+各評価軸は原則0〜3で記録します。
+
+- `3` — Strong
+- `2` — Mostly sufficient
+- `1` — Weak
+- `0` — Major problem
+
+単純合計だけで品質を決めません。重大なSecurity / Data / Migration / Release / Accessibility / Operability GapやRule Conflictを平均点より優先します。
+
+Owner全体のOverallは以下を使用できます。
+
+- `A — Healthy`
+- `B — Minor Improvement`
+- `C — Improvement Needed`
+- `D — Structural Problem`
+
+### Decision Quality
+
+重要なRuleについて、必要に応じて次が判断可能か確認します。
+
+```text
+Trigger
+↓
+Decision Criteria
+↓
+Action
+↓
+Exception / Trade-off
+↓
+Validation
+```
+
+全Ruleを同一Templateへ変換することは目的にしません。「このケースではどちらを選ぶべきか」を合理的に判断できることを基準にします。
+
+### Failure Evidence
+
+Failure Evidenceは次のLevelで整理できます。
+
+- `F0` — Failure Evidenceなし
+- `F1` — 想定Failureのみ
+- `F2` — 実Project / Postmortem / 外部実例あり
+- `F3` — Failure → Root Cause → Rule → Regression Guardまで追跡可能
+
+すべてのRuleをF3にすることは要求しません。SecurityやData loss等では強い公式Evidenceを利用できます。
+
+### Gap Classification
+
+Findingは最低限以下へ分類します。
+
+- `Rule Gap` — 判断方法は分かっているがGuideへ十分書かれていない
+- `Research Gap` — 正しい判断方法自体がまだ不明確
+- `Evidence Gap` — Ruleはあるが根拠 / Failure / Applicabilityが弱い
+- `Structural Gap` — Owner責務 / Routing / 配置 / 重複等の構造問題
+
+Rule不足をResearch不足として扱わず、Research GapだけをResearch Backlogへ送ります。
+
+### Finding Action / Severity / Research Priority
+
+Findingには必要に応じて次のActionを付けます。
+
+- `KEEP`
+- `CLARIFY`
+- `EXPAND`
+- `MOVE`
+- `MERGE`
+- `SPLIT`
+- `REMOVE`
+- `RESEARCH`
+- `ADD EVIDENCE`
+- `ROUTE FIX`
+
+SeverityはFinding自体の重大度として `Critical / High / Medium / Low` を使います。
+
+Research PriorityはResearch Gapだけに付け、`P0 / P1 / P2 / None`を使用します。SeverityとResearch Priorityを混同しません。
+
+### Cross-Owner Audit
+
+個別Owner監査後は少なくとも次を横断確認します。
+
+- Normative Rule重複
+- Rule Conflict
+- Owner不在Topic
+- 責務が広すぎる / 実質責務がないOwner
+- Router不整合
+- README / START_HEREでのRule再定義
+- Checklist-only / Template-only / Reference-only Rule
+- ResearchのNormative Rule化
+- Owner本文へのResearch過剰混入
+- Catalog Failure未反映
+- History / Current Contract混在
+- Project固有Rule混入
+- 古いPlatform / Version固有情報
+- 不要Rule
+- MUST / SHOULD / CONDITIONAL強度の不適切さ
+
+### Audit Baseline / Finding Evidence
+
+Audit開始時は最低限次を記録し、原則としてそのRevisionをAudit Baselineとして最後まで評価します。
+
+- Repository
+- Commit SHA
+- Guide Version
+- Audit Date
+- Owner Count
+
+Findingは点数だけでなく、最低限次を追跡可能にします。
+
+- Finding
+- 対象File / Section
+- 問題内容
+- なぜ問題か
+- Gap分類
+- Severity
+- Action
+- Research Priority（Research Gapのみ）
+
+同一Root Causeによる複数Fileの重複は、件数を水増しせずDuplication Clusterとしてまとめられます。
+
+### Audit Result / Research Flow
+
+Audit結果はCurrent `REQUIREMENTS.md`へ履歴として積みません。`maintenance/audits/`等のCurrent Guide構造に適した場所へAudit Reportを保存し、最低限次を含めます。
+
+- Audit Snapshot
+- Owner Audit Matrix
+- Gap Register
+- Duplication / Conflict Map
+- Action Backlog
+- Research Priority Map
+- Phase 0 Summary
+
+External Deep ResearchはPhase 0の主目的にしません。分類に必要な最小限の事実確認を除き、Research Gapを特定してからPhase 1以降へ送ります。
+
+### Phase 0 Non-goals
+
+- Ownerを同じ文章量へ揃える
+- 不足をすべてCommon Rule追加で解決する
+- 新Ownerを安易に増やす
+- Failureを数合わせで追加する
+- Score改善のためだけに追記する
+- Audit中に無計画な全面Rewriteを行う
+- Research件数を増やすこと自体を成果にする
+
+### Phase 0 Completion
+
+少なくとも以下を満たす状態をPhase 0完了とします。
+
+- 全Current Owner監査済み
+- 全Ownerの6軸評価とScore理由あり
+- Cross-Owner / Secondary Structure Audit済み
+- Findingに根拠がある
+- Gapが4分類されている
+- FindingにSeverity / Actionがある
+- Research GapだけにP0 / P1 / P2が設定されている
+- Audit Baselineが記録されている
+- Guide全体の強い領域 / 弱い領域 / 偏りを説明できる
+- 次のStructural CleanupとResearch順序をAudit結果から決定できる
+
+## 18. Requirements Persistence Contract
+
+対象Repositoryが存在する要件定義では、**会話上でDecisionがまとまっただけではRequirements Completeと扱いません。**
+
+### Requirements Persistence Gate
+
+標準Flowは次とします。
+
+```text
+Requirements discussion / decision
+↓
+Target Repositoryを解決
+↓
+Current REQUIREMENTS.mdを取得
+↓
+確定内容をCurrent Contractとして統合
+↓
+Repositoryへ保存
+↓
+Current Repositoryから再取得して保存結果を確認
+↓
+Requirements Complete
+↓
+Implementation Handoff
+```
+
+`Decision complete ≠ Requirements complete` とします。
+
+GitHub等のCurrent Source of Truthへ書き込み可能であり、対象RepositoryとRequirements Source of Truthが明確な場合、Userが毎回「保存して」と指示することを前提にしません。Requirements保存は要件定義Workflowの一部です。
+
+要件定義の個別決定・一時Discussionをそのまま履歴として`REQUIREMENTS.md`へ積み上げず、Current Contractとして必要な恒久内容だけ統合します。
+
+### Implementation Handoff
+
+RequirementsがRepositoryへ保存済みの場合、次の実装会話へ要件全文を巨大Promptとして再掲することを標準にしません。
+
+Implementation側はCurrent Repositoryを確認し、Current `REQUIREMENTS.md`を正式なSource of Truthとして読むことを基本とします。過去Conversationや手作業で再構成したPromptを第二のRequirements正本にしません。
+
+### Persistence Verification
+
+保存後は最低限次を確認します。
+
+- Current `REQUIREMENTS.md`を再取得できる
+- 今回確定した主要Contractが存在する
+- 既存Current Contractを不必要に失っていない
+- History / temporary discussionをCurrent Contractへ混在させていない
+
+Requirements Persistence Gateを通る前に「要件定義完了」「実装準備完了」と確定しません。
+
+## 19. Agent Autonomy / User Confirmation Contract — Pending Implementation
+
+現行Owner Docに存在する、Core Decision / High-cost Decision等でUser回答待ちを標準停止条件とするRuleは見直し対象です。
+
+新しい方向性は、Userへの質問・承認待ちを通常Workflowの標準停止条件にせず、以下を基準にBest Reasonable Decisionで継続することです。
+
+```text
+Current Repository
++ Current Requirements
++ Existing User Intent
++ Evidence
++ Compatibility / Risk
+↓
+Best Reasonable Decision
+↓
+必要なAssumption / Riskを記録
+↓
+作業継続
+```
+
+Repository確認やResearchで解決できる内容を最初からUserへ投げ返しません。
+
+この変更は`docs/01-requirements.md`だけで完了扱いにせず、`docs/00`、`docs/21`、README、START_HERE、Templates、その他関連参照を確認して矛盾を整理します。
+
+外部System、権限、安全上の要件等で明示的確認が必須な操作は例外です。
+
+このSectionは現時点では**実装待ちのCurrent Requirement**です。Owner Doc側へ反映・Validation後に、恒久RuleをOwnerへ移し、このSectionをCurrent Contractとして必要な最小形へ整理します。
