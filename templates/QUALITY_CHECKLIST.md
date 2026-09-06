@@ -29,7 +29,7 @@
 | Data / Save / Import / Migration | Data safety | [03](../docs/03-data-storage.md) |
 | Page Load / 重いRuntime | Performance / Reliability | [05](../docs/05-performance-reliability.md) |
 | Runtime Diagnostics / Remote Handoff | Observability | [15](../docs/15-development-observability.md) |
-| GitHub Pages / 公開Site | Pages / Public URL | [08](../docs/08-github-pages.md) |
+| GitHub Pages / 公開Site | Pages / Public URL / Repository discoverability | [08](../docs/08-github-pages.md) / [10](../docs/10-project-management.md) |
 | Public / Auth / API / Cloud | Security / Dependency | [06](../docs/06-security.md) / [13](../docs/13-dependencies-assets.md) |
 | `LEARNING` | Learning Content | [01](../docs/01-requirements.md) |
 | `GAME` | Game / Playtest | [19](../docs/19-game-development.md) |
