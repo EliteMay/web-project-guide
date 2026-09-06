@@ -89,7 +89,7 @@ Remote handoffが有効でProviderへ接続できる場合、同じ症状をUser
 - Electron / OS integration:
 - Other:
 
-高コスト判断はAI提案でも勝手に確定せず、Project Rules / ADR /影響確認に従います。
+高コスト判断でも、重要という理由だけでUser回答待ちにしません。Current Repository / Requirements / Project Rules / ADR / EvidenceからBest Reasonable Decisionを選び、必要なAssumption / Riskを記録して進めます。Userにしか決められない主要Preference、明示Approvalが必要な外部・破壊的Operation、必要Credential / Permission等が残る場合だけ確認します。詳細は`docs/21-rule-routing-preflight.md`と関係Ownerを正本とします。
 
 ## Re-routing Trigger
 
