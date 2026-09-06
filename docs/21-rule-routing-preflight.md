@@ -1,0 +1,248 @@
+# 21 Rule Routing / Preflight
+
+この章は、ChatGPT / Coding Agentが作業開始前に**今回必要なOwner Docを選び、実際に確認してから判断・実装へ進むための正本**です。
+
+目的はGuide全文を毎回読むことでも、大規模なRule Engineを運用することでもありません。必要Ruleの読み忘れを防ぎながら、作業に不要な章まで機械的に読むことを避けます。
+
+機械可読なRouting表は [`maintenance/rule-router.json`](../maintenance/rule-router.json) を正本とします。この章はBehavior /判断方法の正本です。`START_HERE.md` は人間向けSummaryです。
+
+## Core Contract
+
+### MUST: Meaningfulな作業はPreflightしてから進める
+
+原則として次の順で進めます。
+
+```text
+Current Repository / User Intent
+↓
+Work Type / Domain / Risk Signalを分類
+↓
+rule-router.jsonからRequired Docs / Gatesを解決
+↓
+Required DocsをCurrent Guide Revisionから実際に読む
+↓
+必要なProject側Source of Truthを読む
+↓
+Research / 要件確定 / 推奨 / 実装
+↓
+必要なValidation
+```
+
+`README.md`や`START_HERE.md`を読んだだけで、必要Owner Docを読んだ扱いにはしません。
+
+ただし、Typo修正や原因と正解が明確な局所Bugへ大規模Preflightを要求しません。小規模作業でも関係する専門Ownerだけは必要範囲で確認します。
+
+## User Rule Knowledge Independence
+
+UserがGuideの章番号、Profile、Gate名を覚えていることを前提にしません。
+
+原則としてAgent側で判断します。
+
+- どのOwner Docが必要か
+- Meaningful Visual Changeか
+- Researchable Questionか
+- Save / Migration / Security等の高Risk条件があるか
+- GAME / LEARNING / ELECTRON等の専門Domainが関係するか
+
+Userへ確認するのは、Product Intent、Core Decision、破壊的変更、保存互換性を壊すか等、Userにしか決められない事項を中心とします。
+
+## Classification
+
+Routingのための分類は、必要最小限の軸だけ使います。
+
+### Work Type — 原則1つ
+
+- `REQUIREMENTS`
+- `RESEARCH`
+- `IMPLEMENTATION`
+- `BUG_FIX`
+- `REVIEW`
+- `DATA_CONTENT`
+- `DEPLOYMENT`
+- `MAINTENANCE`
+
+### Domain — 必要なものだけ複数可
+
+- `ARCHITECTURE`
+- `DATA_STORAGE`
+- `UI_UX`
+- `VISUAL`
+- `PERFORMANCE_RELIABILITY`
+- `SECURITY`
+- `TESTING_QUALITY`
+- `GITHUB_PAGES`
+- `PROJECT_MANAGEMENT`
+- `ELECTRON`
+- `DISTRIBUTION`
+- `DEPENDENCIES_ASSETS`
+- `OBSERVABILITY`
+- `GAME_DESIGN`
+- `LEARNING_CONTENT`
+- `RESEARCH`
+- `GOVERNANCE_ROUTING`
+
+### Change Scope
+
+- `LOCAL` — 影響が明確な局所変更
+- `MEANINGFUL` — 複数Component / Flow / Design Decisionへ影響
+- `SYSTEMIC` — Architecture / Storage / Major Navigation / Common Rule等へ広く影響
+
+`MODERATE`等の中間分類を増やしすぎず、Routing上必要な差だけ持ちます。
+
+### Risk Signal
+
+Riskを独立した巨大Score Systemにせず、該当条件をSignalとして扱います。
+
+代表例:
+
+- `EXISTING_SAVE`
+- `SCHEMA_CHANGE`
+- `MIGRATION`
+- `AUTH_REQUIRED`
+- `EXTERNAL_API`
+- `PUBLIC_RELEASE`
+- `REAL_DEVICE_REQUIRED`
+- `MEANINGFUL_VISUAL_CHANGE`
+- `RESEARCHABLE_QUESTION`
+
+高Risk Signalがある場合、古いREADMEやmetadataの不足だけを理由に必要Ownerを外しません。
+
+## Repository Evidence
+
+Current StateとDesired Stateを分けます。
+
+### Desired State
+
+1. Current User Request
+2. Current Requirements / Project-specific decisions
+
+### Current State
+
+原則として次を重視します。
+
+```text
+Current Runtime / Code / Data
+↓
+正式Requirements / Spec
+↓
+Project metadata
+↓
+README / Project Rules / AGENTS
+↓
+Project Learnings / Work Report
+↓
+過去Conversation / Memory
+```
+
+Repository全体を毎回全文精読しません。README / Requirements / Spec / Project Rules / Learnings / metadata /主要Directoryを必要範囲で確認し、Save / Supabase / Auth / WebGL / Electron /大量Data等のSignalがあれば該当Domainだけ深掘りします。
+
+## Required Docの扱い
+
+### MUST: Current Revisionを読む
+
+次はRequired Doc読込の代用にしません。
+
+- Memory
+- 過去Conversation
+- 古いZIP
+- 以前読んだGuide
+- 古いRevisionの要約
+
+同じGuide Commit / 同じblobであることを確認できる場合は再読込を省略できます。
+
+## Stable Gates
+
+読み飛ばすと事故になりやすいCross-cutting判断だけGateを持ちます。
+
+| Gate | Owner | 発火条件 |
+|---|---|---|
+| `RULE-PREFLIGHT-GATE` | `docs/21-rule-routing-preflight.md` | Meaningful / Systemic作業 |
+| `VISUAL-RESEARCH-GATE` | `docs/18-domain-first-visual-research.md` | Meaningful Visual Change |
+| `RESEARCHABLE-QUESTION-GATE` | `docs/20-evidence-first-research.md` | 重要かつ不確実なResearchable Question |
+| `STORAGE-MIGRATION-GATE` | `docs/03-data-storage.md` | 既存Save / Schema / Storage変更 |
+| `GAME-PLAYTEST-GATE` | `docs/19-game-development.md` | GAMEの主要Flow / Completion変更 |
+
+Gateを増やすこと自体を目的にしません。通常のRuleはOwner Doc単位でRoutingします。
+
+## Fail / Fallback
+
+Required Docを取得できない場合、そのDocに依存する高Risk判断を確認済みとして進めません。
+
+ただし全作業を無条件停止するのではなく、取得できないRuleに依存しない局所作業だけ安全に続けられるかを判断します。
+
+`Not applicable` と `Override` を混同しません。
+
+- **Not applicable** — そもそも条件に該当しない
+- **Override** — 条件には該当するが、明示的な理由で外す
+
+MUST相当のOverrideでは理由・影響・代替策を残します。
+
+## Re-routing
+
+作業中にScopeが変わったらRoutingを更新します。
+
+代表Trigger:
+
+- 局所修正から大規模変更へ拡大
+- Storage / Migrationが必要と判明
+- Auth / API / Cloud追加
+- Meaningful Visual Changeへ発展
+- Game Core Loop / Progression変更へ発展
+- User Requirementが変わった
+
+同じConversationだから同じRoutingを永久に使う、とは扱いません。
+
+## Project Profilesとの関係
+
+Project ProfileはProjectの性質を示す補助情報です。Routingの全判断をProfileだけで行いません。
+
+例えば`GAME + STATIC + DATA`でも、今回の作業が単なるREADME文言修正ならGame Playtestを要求しません。逆にProfileに`DATA`が書かれていなくても、実装が大量JSON / Migrationを扱っていればData / Storage Ruleを候補へ追加します。
+
+Profileは現行の分類を維持し、Profile体系そのものの再設計は別の明確な必要性が出たときに行います。
+
+## Machine-readable Router
+
+[`maintenance/rule-router.json`](../maintenance/rule-router.json) は次だけを担当します。
+
+- Owner Doc Registry
+- Stable Gate Registry
+- Work Typeの基本Route
+- Domain → Owner Doc
+- Risk Signal → Required Doc / Gate
+- 代表Golden Cases
+
+最初からSession Receipt、永続Cache、専用CLI、複雑なRisk Scoreを必須化しません。実運用で不足が確認された機能だけ追加します。
+
+## Human Router / Agent Adapter
+
+- `README.md` — Guide全体の短い入口
+- `START_HERE.md` — 人間向け作業Route
+- `AGENTS.md` — Project固有Agent入口
+
+これらへRouting Rule本文を複製しません。詳細判断はこの章、機械Routingは`rule-router.json`へ戻します。
+
+## Validation
+
+Guide Validatorでは少なくとも次を確認します。
+
+- Router JSON / Schemaが存在しJSONとして読める
+- Owner Doc参照先が存在する
+- Stable Gate IDが重複しない
+- Gate Ownerが一意
+- 代表Golden Caseで必要DocがRoutingされる
+- `START_HERE.md`からこの章へ辿れる
+
+文章の特定フレーズを大量固定して品質保証の代わりにしません。文章表現ではなく、Owner / Route / Gate / Link等の構造Contractを優先して検証します。
+
+## 非目標
+
+- Guide全文を毎回読む
+- 小さなBugにもResearch / Full Checklistを強制する
+- Userへ「どのGuideを読むか」を決めさせる
+- Profileだけで全Routingを決める
+- AgentのMemoryだけで必要Ruleを再構成する
+- 最初から大規模なRule Engine / Session DB / Cache Systemを作る
+
+## 完成条件
+
+Rule Routingは、Agentが今回の作業に必要な正本を**作業前に到達・読込でき、不要な章を機械的に増やさず、作業途中のScope変化でも追加Ruleへ戻れる**状態を完成基準とします。

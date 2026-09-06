@@ -1,204 +1,160 @@
 # START HERE
 
-このページは、`web-project-guide` を毎回すべて読むためのページではなく、**今回の作業に必要な正本へ最短で移動するRouter**です。
+このページは `web-project-guide` の**人間向けRouter**です。詳細Ruleをここへ複製しません。
 
-詳細ルールをここへ複製しません。判断に迷う場合は最初に [Guide Governance](docs/00-governance.md) を確認します。
+Meaningful / Systemicな作業では、最初に [Rule Routing / Preflight](docs/21-rule-routing-preflight.md) を確認し、今回必要なOwner Docを決めてから進めます。Machine-readable Routingは [`maintenance/rule-router.json`](maintenance/rule-router.json) が正本です。
 
-## 新しいWebサイトを作る
+## 新しいサイト / アプリ / ゲームを作る
 
-1. [Guide Governance](docs/00-governance.md)
-2. [要件定義](docs/01-requirements.md)
-3. [Project Profiles](docs/12-project-profiles.md)
-4. 必要な専門章だけ確認
-   - Architecture → [02](docs/02-architecture.md)
-   - Data / Storage → [03](docs/03-data-storage.md)
-   - UI / UX → [04](docs/04-ui-ux-accessibility.md)
-   - Performance → [05](docs/05-performance-reliability.md)
-   - Security → [06](docs/06-security.md)
-   - GitHub Pages → [08](docs/08-github-pages.md)
-   - Electron → [11](docs/11-electron-distribution.md)
-   - Game Development → [19](docs/19-game-development.md)
-5. User-facing UIは [Visual Quality Baseline](docs/17-visual-quality-baseline.md)
-6. Visual Directionが重要なら [Domain-first Visual Research](docs/18-domain-first-visual-research.md) → [UI / UX / Accessibility](docs/04-ui-ux-accessibility.md)
-7. Interactive Projectなら [Development Observability / Project Memory](docs/15-development-observability.md)
-8. 必要なTemplateを作成
-9. 完成前に [Testing / Quality](docs/07-testing-quality.md) と [Quality Checklist](templates/QUALITY_CHECKLIST.md)
+1. [00 Governance](docs/00-governance.md)
+2. [01 Requirements](docs/01-requirements.md)
+3. [12 Project Profiles](docs/12-project-profiles.md)
+4. [21 Rule Routing / Preflight](docs/21-rule-routing-preflight.md)
+5. 今回必要な専門Ownerだけ読む
+6. 完成前に [07 Testing / Quality](docs/07-testing-quality.md) と [Quality Checklist](templates/QUALITY_CHECKLIST.md)
 
-## 学習・解説サイトを作る / 直す
+User-facing UIがある場合は [17 Visual Quality Baseline](docs/17-visual-quality-baseline.md) も確認します。
 
-1. [Project Profiles](docs/12-project-profiles.md) で `LEARNING` を選ぶ
-2. [要件定義](docs/01-requirements.md#learning--explanation-content) でStarting Knowledge / 学習順 / Content Depth Contract / 理解確認を決める
-3. 教材がJSON等で大量にある場合は `DATA` Profileも併用し、[Data / Storage](docs/03-data-storage.md) を確認
-4. 学習画面の読みやすさ・Navigationは [UI / UX / Accessibility](docs/04-ui-ux-accessibility.md)
-5. 見た目を大きく変える場合は [Domain-first Visual Research](docs/18-domain-first-visual-research.md)
-6. 完成前に「教材が存在する」だけでなく、初心者が前提から理解できるか、主要Lessonから次の学習・確認へ進めるかを確認
-7. [Testing / Quality](docs/07-testing-quality.md) と [Quality Checklist](templates/QUALITY_CHECKLIST.md) で最終状態を確認
+## 学習・解説サイト
 
-学習サイトではDashboardや教材件数が揃っていても、説明が用語紹介だけで終わる場合は完成扱いにしません。詳細基準は要件定義のLearning節を正本とします。
+- Requirements / Learning Content → [01](docs/01-requirements.md)
+- Project Profile → [12](docs/12-project-profiles.md)
+- UI / 読みやすさ → [04](docs/04-ui-ux-accessibility.md)
+- 大きなVisual変更 → [18](docs/18-domain-first-visual-research.md)
+- 大量Data → [03](docs/03-data-storage.md)
 
-## ゲームを作る / 直す
+教材が存在するだけで完成扱いせず、Starting Knowledge、学習順、説明深度、理解確認、次の学習導線を確認します。
 
-1. [Project Profiles](docs/12-project-profiles.md) で `GAME` を選ぶ
-2. [要件定義](docs/01-requirements.md#game-requirements) でCore Experience / Playable MVP / Primary Completion Condition等の必要事項を決める
-3. Game固有のCore Loop / Progression / Game State semantics / Playtest / Phase Gateは [Game Development](docs/19-game-development.md) を正本とする
-4. Save技術詳細は [Data / Storage](docs/03-data-storage.md)、Runtime Performance一般は [Performance / Reliability](docs/05-performance-reliability.md) を必要時に確認
-5. UI / Visual変更は [UI / UX / Accessibility](docs/04-ui-ux-accessibility.md) と [Visual Quality Baseline](docs/17-visual-quality-baseline.md)、大規模変更なら [Domain-first Visual Research](docs/18-domain-first-visual-research.md)
-6. 完成前はStatic Testだけで終わらせず、[Testing / Quality](docs/07-testing-quality.md) と [Quality Checklist](templates/QUALITY_CHECKLIST.md) のGAME項目でRuntime Validation / Actual Playtestを確認
+## ゲーム
 
-Mini GameへSave / LOD / Stress Test等を機械的に要求しません。詳細な適用条件はGame Development章を正本とします。
+- Requirements入口 → [01](docs/01-requirements.md)
+- GAME Profile → [12](docs/12-project-profiles.md)
+- Game-specific設計 / Completion / Playtest → [19](docs/19-game-development.md)
+- Save → [03](docs/03-data-storage.md)
+- Performance → [05](docs/05-performance-reliability.md)
+- UI / Visual → [04](docs/04-ui-ux-accessibility.md) / [17](docs/17-visual-quality-baseline.md)
+- 大きなVisual変更 → [18](docs/18-domain-first-visual-research.md)
 
-## 調査してから方針を決める / 正解が分からない重要問題
+主要Flow / Completionへ影響する変更ではActual PlaytestをStatic Testで置き換えません。
 
-1. Current Repository / Requirements / User Intentを確認し、Researchable Questionを明確にする
-2. 一般Research Methodは [Evidence-first Research](docs/20-evidence-first-research.md) を使う
-3. Visualなら [Domain-first Visual Research](docs/18-domain-first-visual-research.md)、Gameなら [Game Development](docs/19-game-development.md) 等のTopic固有Ownerも必要範囲で確認
-4. Evidence Mapを前提にDiscussionし、Project固有Decisionを決める
-5. Researchだけで決まらない部分はPrototype / Test / Playtest / Measurement等へ渡す
+## 調査して方針を決める
 
-このRouteは重要なResearchable Question用です。単純な事実確認、原因と正解が明確な局所Bug、小さな文言修正へDeep Researchを機械的に要求しません。
+重要かつ不確実なResearchable Question:
 
-## 既存サイトのバグを直す
+1. [20 Evidence-first Research](docs/20-evidence-first-research.md)
+2. Topic-specific Owner
+3. Evidence Map / Discussion
+4. Project-specific Decision
+5. Requirements / Prototype / Validation
 
-1. 現在のGitHub Repositoryを確認
-2. README / Spec / Project Rules / `PROJECT_LEARNINGS.md` を必要範囲だけ確認
-3. [GitHub中心のプロジェクト管理](docs/10-project-management.md)
-4. Diagnostics採用Projectなら [Development Observability / Project Memory](docs/15-development-observability.md) のEvidenceを先に確認
-5. 症状に関係する専門章 / [Failure Catalog](catalog/failures.md) を確認
-6. Smallest Safe Changeを選び実装
-7. 最終Commitで [Testing / Quality](docs/07-testing-quality.md) と必要なChecklistを確認
+単純な事実確認や原因が明確な局所BugへDeep Researchを強制しません。
 
-小規模Bugでフル要件定義や無関係な章を読み直す必要はありません。
+## 既存サイトのBug Fix
 
-## UIだけ直す
+1. Current Repositoryを確認
+2. README / Requirements / Spec / Rules / Learningsを必要範囲で確認
+3. [10 Project Management](docs/10-project-management.md)
+4. 症状に関係する専門Owner
+5. Smallest Safe Change
+6. [07 Testing / Quality](docs/07-testing-quality.md)
 
-### 局所的なUI Bug
+局所BugでFull Guideを読みません。
 
-Alignment、overflow、clipping、既存ComponentのState等、原因と正解が明確な修正:
+## UI / 見た目
 
-- [Visual Quality Baseline](docs/17-visual-quality-baseline.md)
-- [UI / UX / Accessibility](docs/04-ui-ux-accessibility.md)
-- [Testing / Quality](docs/07-testing-quality.md)
+### 局所Bug
 
-### 見た目・Layout・Theme・Navigationを意味のある範囲で変える
+Alignment / overflow / clipping / Component State等:
 
-1. 現在UI / Screenshot / User feedbackを確認
-2. [Domain-first Visual Research](docs/18-domain-first-visual-research.md)
-3. [UI / UX / Accessibility](docs/04-ui-ux-accessibility.md)
-4. [Visual Quality Baseline](docs/17-visual-quality-baseline.md)
-5. 必要なら [Validated Visual Direction Catalog](catalog/validated-visual-directions.md) を**補助Referenceとして**確認
-6. 最終状態をBrowser / Screenshotで確認
+- [04 UI / UX / Accessibility](docs/04-ui-ux-accessibility.md)
+- [17 Visual Quality Baseline](docs/17-visual-quality-baseline.md)
+- [07 Testing](docs/07-testing-quality.md)
 
-過去の成功例をDomain Researchより先に当てはめません。
+### Meaningful Visual Change
 
-## 見た目を何度直しても微妙
+Layout / Navigation / Theme / Page Composition /大規模Redesign:
 
-[Domain-first Visual Research](docs/18-domain-first-visual-research.md) の **Visual Foundation Reset** を確認します。
+1. Current UI / Screenshot / User Feedback
+2. [18 Domain-first Visual Research](docs/18-domain-first-visual-research.md)
+3. [04 UI / UX / Accessibility](docs/04-ui-ux-accessibility.md)
+4. [17 Visual Quality Baseline](docs/17-visual-quality-baseline.md)
+5. Browser / Screenshotで最終確認
 
-局所Patchを続けるか、Purpose / IA / Layoutから再設計するかを先に判断します。
+何度直しても改善しない場合は `18` のVisual Foundation Resetを確認します。
 
-## Visual Designを完成Reviewする
+## 保存 / JSON / Migration
 
-- [Visual Quality Baseline](docs/17-visual-quality-baseline.md)
-- [Visual Design Review Gate](docs/04-ui-ux-accessibility.md#visual-design-review-gate)
-- [Testing / Quality](docs/07-testing-quality.md)
-- [Quality Checklist](templates/QUALITY_CHECKLIST.md) のVISUAL REVIEW
+- Data / Storage / Import / Restore → [03](docs/03-data-storage.md)
+- Version / Compatibility → [09](docs/09-maintenance.md)
+- Testing → [07](docs/07-testing-quality.md)
 
-## ChatGPT / Codex / Claude等へ大きく実装を任せる
+既存Save / Schema変更では `STORAGE-MIGRATION-GATE` を適用します。
 
-- [GitHub中心のプロジェクト管理](docs/10-project-management.md) のAI Coding Agent方針
-- Agent向け入口が必要なら [AGENTS Template](templates/AGENTS_TEMPLATE.md)
-- AI生成Codeも [Testing / Quality](docs/07-testing-quality.md) と通常のSecurity / Storage / Visual基準を通す
-- Visual変更が大きい場合は [Domain-first Visual Research](docs/18-domain-first-visual-research.md) を先に行う
+## Architecture / Patch整理
 
-## 「こうなった」と説明する前に診断データを使う
+- [02 Architecture](docs/02-architecture.md)
+- [09 Version / Maintenance](docs/09-maintenance.md)
+- [10 Project Management](docs/10-project-management.md)
 
-- [Development Observability / Project Memory](docs/15-development-observability.md)
-- `PROJECT_LEARNINGS.md`
-- Remote Diagnostic Handoff採用時は最新のSanitized Snapshot
+旧Runtime / Patch / Observer後付けを増やすのではなく正式責務へ統合します。
 
-ユーザーへ同じ症状を再説明してもらう前に、既にあるEvidenceを確認します。
+## GitHub Pages / 公開
 
-## ZIPを毎回作らずChatGPTへ診断を渡す
+- [08 GitHub Pages](docs/08-github-pages.md)
+- [10 Project Management](docs/10-project-management.md)
+- [07 Testing](docs/07-testing-quality.md)
 
-[Development Observability / Project Memory](docs/15-development-observability.md) のRemote Diagnostic Handoffを正本として確認します。
+公開URLを確認できる場合は最終状態と対応するURLを確認します。
 
-Storage固有の判断は [Data / Storage](docs/03-data-storage.md)、Security固有の判断は [Security](docs/06-security.md) を追加で確認します。
+## Electron / Windows配布
 
-## 保存形式・JSON・データ構造を変える
+- [11 Electron / Distribution](docs/11-electron-distribution.md)
+- [06 Security](docs/06-security.md)
+- [07 Testing](docs/07-testing-quality.md)
+- [15 Observability](docs/15-development-observability.md)
 
-- [Data / Storage](docs/03-data-storage.md)
-- [Version / Maintenance](docs/09-maintenance.md)
-- 高リスク判断は [ADR Template](templates/ADR_TEMPLATE.md)
-- 完成前は [Quality Checklist](templates/QUALITY_CHECKLIST.md) のDATA / TOOL
+Setup.exe / Auto Update / Windows固有機能をCIだけで実機確認済み扱いにしません。
 
-## Backup / Import / Restoreを作る・直す
+## 外部API / CDN / Supabase
 
-- [Data / Storage](docs/03-data-storage.md) のImport / Restore
-- [Quality Checklist](templates/QUALITY_CHECKLIST.md) のDATA / TOOL
+- [05 Performance / Reliability](docs/05-performance-reliability.md)
+- [06 Security](docs/06-security.md)
+- [13 Dependencies / Assets](docs/13-dependencies-assets.md)
+- 保存を伴う場合は [03 Data / Storage](docs/03-data-storage.md)
 
-## 既存サイトの構造を整理する / Patchを統合する
+## AI / Coding Agentへ大きく任せる
 
-- [Architecture](docs/02-architecture.md)
-- [Version / Maintenance](docs/09-maintenance.md)
-- [GitHub中心のプロジェクト管理](docs/10-project-management.md)
-- Runtime / hardcode / DOM patch系の [Failure Catalog](catalog/failures.md)
+- [21 Rule Routing / Preflight](docs/21-rule-routing-preflight.md)
+- [10 Project Management](docs/10-project-management.md)
+- Projectに`AGENTS.md`があればそのRouter
+- 通常と同じTesting / Security / Storage / Visual基準
 
-## GitHub Pagesで動かない
+Memoryや古い会話だけでCurrent Repositoryを推測しません。
 
-- [GitHub Pages](docs/08-github-pages.md)
-- [Testing / Quality](docs/07-testing-quality.md)
+## 複数RepositoryのGitHub運用
 
-## Electronを作る・直す
-
-- [Electron / Distribution](docs/11-electron-distribution.md)
-- [Security](docs/06-security.md)
-- [Development Observability / Project Memory](docs/15-development-observability.md)
-- [Testing / Quality](docs/07-testing-quality.md)
-
-Setup.exe / Auto Update / Release Contractの詳細はElectron章を正本とし、このRouterへ複製しません。
-
-## 外部API・CDN・Supabase等を導入する
-
-- [Performance / Reliability](docs/05-performance-reliability.md)
-- [Security](docs/06-security.md)
-- [Dependencies / Assets](docs/13-dependencies-assets.md)
-- Data保存を伴う場合は [Data / Storage](docs/03-data-storage.md)
-- Runtime診断を伴う場合は [Development Observability](docs/15-development-observability.md)
-
-## 複数RepositoryのGitHub運用を共通化する
-
-[Cross-Repository GitHub Infrastructure](docs/16-cross-repository-github-infrastructure.md) を正本として確認します。
-
-実装側のAccount共通Defaultは `EliteMay/.github`、Project固有仕様は各Repositoryへ残します。
+[16 Cross-Repository GitHub Infrastructure](docs/16-cross-repository-github-infrastructure.md) を確認します。
 
 ## Guide自体を改善する
 
-1. [Guide Governance](docs/00-governance.md) のRule Budget / Single Normative Ownerを確認
-2. [Continuous Improvement](docs/14-continuous-improvement.md)
-3. External Evidenceが必要なResearchable Questionでは [Evidence-first Research](docs/20-evidence-first-research.md)
-4. [`maintenance/review-policy.json`](maintenance/review-policy.json)
-5. 新しいRuleを追加する前に、既存Rule・Catalog・Checklist・Project側へ統合できないか確認
-6. Owner Docを決め、README / START HEREから辿れることを確認
-7. 高影響変更はBranch / Pull Request
-8. 最終CommitでGuide Validatorを確認
+1. [00 Governance](docs/00-governance.md)
+2. [21 Rule Routing / Preflight](docs/21-rule-routing-preflight.md)
+3. [14 Continuous Improvement](docs/14-continuous-improvement.md)
+4. External Evidenceが必要なら [20 Evidence-first Research](docs/20-evidence-first-research.md)
+5. 既存Owner / Catalog / Checklist / Project側へ統合できないか確認
+6. Owner / Router / Validatorを整合
+7. 最終CommitでGuide Validatorを確認
 
-Evidence-first ResearchをGuide改善の全作業へ機械的に必須化しません。外部Evidenceや不確実なResearchable Questionがある場合に利用し、Rule Promotion / Rule HygieneはContinuous ImprovementとGovernanceの責務を維持します。
-
-## ルールの読み方
-
-- **MUST / 必須** — 原則守る
-- **SHOULD / 原則** — 通常守るが明確な理由で外せる
-- **MAY / 推奨** — 条件に合う場合に採用
-- **CONDITIONAL / 条件付き** — 指定条件のときだけ適用
-
-詳細は [Guide Governance](docs/00-governance.md) を正本とします。
+新Rule追加と同時に、重複・History混在・Orphan Ruleを減らせないか確認します。
 
 ## 完成前
 
-1. [Quality Checklist](templates/QUALITY_CHECKLIST.md) をProject Profile / 変更内容に合わせて実施
-2. User-facing UIは [Visual Quality Baseline](docs/17-visual-quality-baseline.md)
-3. README / Spec / Work Report / Project Learningsを必要範囲だけ更新
-4. 未確認事項を明記
-5. 一時Script / Workflow / Debug資産をCleanup
-6. **Cleanup後の最終Commit**でCI / Pages / Regressionを確認
-7. 重大な既知Bugが残る場合は完成扱いにしない
+必要範囲で次を確認します。
+
+- [Quality Checklist](templates/QUALITY_CHECKLIST.md)
+- README / Spec / Work Report / Learnings整合
+- Cleanup後の最終Commit
+- CI / Pages / Regression
+- User-facing UIならVisual確認
+- 実機が必要ならReal-device確認または未確認明記
+- 重大Known Issueが残る場合は完成扱いにしない

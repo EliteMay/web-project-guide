@@ -1,12 +1,20 @@
 # Web Project Guide
 
-個人向けWebサイト / Electron制作で、**毎回同じ失敗を繰り返さず、設計・実装・保存・検証の判断基準を揃えるためのSource of Truth**です。
+個人向けWebサイト / Webアプリ / Electronアプリ / Browser Game制作で、**毎回同じ失敗を繰り返さず、必要な判断基準だけを確実に読むためのSource of Truth**です。
 
-最初から全章を読む必要はありません。まず **[START HERE](START_HERE.md)** で今回の作業種類を選んでください。
+最初から全章を読む必要はありません。
+
+1. [START HERE](START_HERE.md) で今回の作業Routeを確認
+2. Meaningful / Systemicな作業では [Rule Routing / Preflight](docs/21-rule-routing-preflight.md) で必要Ownerを解決
+3. 今回必要なOwner Docだけ読む
+4. 対象ProjectのCurrent Repository / Requirements / Spec / Rules / Learningsを必要範囲で確認
+5. 実装・調査・要件整理後、必要なValidationを行う
 
 Guide Versionの正本は [`guide-version.json`](guide-version.json)、変更履歴は [`CHANGELOG.md`](CHANGELOG.md) です。
 
 ## 基本優先順位
+
+Trade-off時は原則として次を優先します。
 
 1. 操作性
 2. 分かりやすさ
@@ -15,55 +23,84 @@ Guide Versionの正本は [`guide-version.json`](guide-version.json)、変更履
 5. 保守・修正しやすさ
 6. 見た目
 
-この順番はTrade-off時の優先順位です。**User-facing UIの見た目を未調整のまま完成扱いしてよい、という意味ではありません。** User-facing UIは [Visual Quality Baseline](docs/17-visual-quality-baseline.md) を最低品質として満たします。
+見た目が6番目でも、User-facing UIを未調整のまま完成扱いしません。最低品質は [Visual Quality Baseline](docs/17-visual-quality-baseline.md) を参照します。
 
-MUST / SHOULD / MAY / CONDITIONAL、仕様衝突、Source of Truth、Rule Budgetは [Guide Governance](docs/00-governance.md) を正本とします。
+MUST / SHOULD / MAY / CONDITIONAL、Source of Truth、Rule Budgetは [Guide Governance](docs/00-governance.md) が正本です。
 
-## 主な入口
+## Owner Docs
 
-- [START HERE](START_HERE.md) — 作業種類別の最短ルート
-- [00 Guide Governance](docs/00-governance.md) — ルール強度・優先順位・Rule Budget・正本管理
-- [01 要件定義](docs/01-requirements.md)
-- [02 Architecture](docs/02-architecture.md)
-- [03 Data / Storage](docs/03-data-storage.md)
-- [04 UI / UX / Accessibility](docs/04-ui-ux-accessibility.md)
-- [05 Performance / Reliability](docs/05-performance-reliability.md)
-- [06 Security](docs/06-security.md)
-- [07 Testing / Quality](docs/07-testing-quality.md)
-- [08 GitHub Pages](docs/08-github-pages.md)
-- [09 Version / Maintenance](docs/09-maintenance.md)
-- [10 GitHub中心のプロジェクト管理](docs/10-project-management.md)
-- [11 Electron / Distribution](docs/11-electron-distribution.md)
-- [12 Project Profiles](docs/12-project-profiles.md)
-- [13 Dependencies / Assets](docs/13-dependencies-assets.md)
-- [14 Continuous Improvement](docs/14-continuous-improvement.md) — 実ProjectとWeb標準からGuideを定期改善
-- [15 Development Observability / Project Memory](docs/15-development-observability.md) — 失敗・成功・診断ログを次回修正へ引き継ぐ
-- [16 Cross-Repository GitHub Infrastructure](docs/16-cross-repository-github-infrastructure.md) — `.github` / Reusable Workflow / Ruleset / Dependabot / Projectsの役割分担
-- [17 Visual Quality Baseline](docs/17-visual-quality-baseline.md) — User-facing UIで必須の見た目の最低品質
-- [18 Domain-first Visual Research](docs/18-domain-first-visual-research.md) — 大きな見た目変更前に同種Site / Appを調査するVisual固有Workflow
-- [19 Game Development](docs/19-game-development.md) — Game固有のCore Loop / Progression / Playtest / Phase Gate
-- [20 Evidence-first Research](docs/20-evidence-first-research.md) — 重要なResearchable Questionの一般Research Workflow
+| Topic | Owner |
+|---|---|
+| Governance / Rule Budget | [00](docs/00-governance.md) |
+| Requirements | [01](docs/01-requirements.md) |
+| Architecture | [02](docs/02-architecture.md) |
+| Data / Storage / Migration | [03](docs/03-data-storage.md) |
+| UI / UX / Accessibility | [04](docs/04-ui-ux-accessibility.md) |
+| Performance / Reliability | [05](docs/05-performance-reliability.md) |
+| Security | [06](docs/06-security.md) |
+| Testing / Verification | [07](docs/07-testing-quality.md) |
+| GitHub Pages | [08](docs/08-github-pages.md) |
+| Version / Maintenance | [09](docs/09-maintenance.md) |
+| Project Management | [10](docs/10-project-management.md) |
+| Electron / Distribution | [11](docs/11-electron-distribution.md) |
+| Project Profiles | [12](docs/12-project-profiles.md) |
+| Dependencies / Assets | [13](docs/13-dependencies-assets.md) |
+| Continuous Improvement | [14](docs/14-continuous-improvement.md) |
+| Observability / Project Memory | [15](docs/15-development-observability.md) |
+| Cross-Repository GitHub | [16](docs/16-cross-repository-github-infrastructure.md) |
+| Visual minimum quality | [17](docs/17-visual-quality-baseline.md) |
+| Visual Research / Redesign | [18](docs/18-domain-first-visual-research.md) |
+| Game Development | [19](docs/19-game-development.md) |
+| Evidence-first Research | [20](docs/20-evidence-first-research.md) |
+| Rule Routing / Preflight | [21](docs/21-rule-routing-preflight.md) |
 
-## 過去事例から学ぶ
+Machine-readable Routingは [`maintenance/rule-router.json`](maintenance/rule-router.json) を正本とします。
 
-Catalogは**Ruleの正本ではなくEvidence / Reference**です。
+## 重要な共通原則
 
-- [Failure Catalog](catalog/failures.md) — 実際に発生した高コスト失敗
-- [Success Pattern Catalog](catalog/success-patterns.md) — 再利用価値の高い設計
-- [Anti-Pattern Catalog](catalog/anti-patterns.md) — 原則避ける実装
-- [Validated Visual Direction Catalog](catalog/validated-visual-directions.md) — 評価Evidence付きのVisual Reference
+- 同じ判断のNormative Ownerを複数作らない。
+- Project固有仕様は対象Projectへ置き、Common Guideへ混ぜない。
+- 保存データを壊す変更ではMigration / Backup / Rollbackを考える。
+- 公開GitHub / Pagesへ秘密情報を置かない。
+- 未実装・未確認を完成済み / 確認済みとして扱わない。
+- User-facing UIはVisual Quality Baselineを満たす。
+- Meaningful Visual Changeは必要なResearchを先に行う。
+- AI生成Codeも既存仕様・Test・最終状態のValidationを通す。
+- 新しいCommon Ruleを追加する前に、既存Owner / Catalog / Checklist / Project側へ統合できないか確認する。
+- Requirementsへ実装済み改善履歴を積み続けない。
 
-Visual Referenceは [Domain-first Visual Research](docs/18-domain-first-visual-research.md) の代わりに使いません。
+詳細は各Owner Docを正本とします。
+
+## Project Profiles
+
+Projectの性質を補助的に表すため、必要に応じて組み合わせます。
+
+`STATIC` / `DATA` / `LEARNING` / `GAME` / `MEDIA` / `AI-HANDOFF` / `CLOUD` / `ELECTRON` / `TOOL` / `PUBLIC-CONTENT`
+
+Profileだけで今回必要なRuleを決めません。実際の変更内容・Runtime・Risk Signalも見てRoutingします。詳細は [Project Profiles](docs/12-project-profiles.md) を参照してください。
+
+## Catalog / References
+
+CatalogはRule本文ではなく、実例・Evidence・再利用条件です。
+
+- [Failure Catalog](catalog/failures.md)
+- [Success Pattern Catalog](catalog/success-patterns.md)
+- [Anti-Pattern Catalog](catalog/anti-patterns.md)
+- [Validated Visual Direction Catalog](catalog/validated-visual-directions.md)
+
+Research / Standards / Working Hypothesisは `references/` に置きます。Project固有の最終RequirementはCommon Referenceだけに残しません。
 
 ## Templates
 
+Project開始時に全部使う必要はありません。必要なものだけ利用します。
+
 - [Requirements](templates/REQUIREMENTS_TEMPLATE.md)
-- [Requirements Conversation Resume](templates/REQUIREMENTS_CONVERSATION_TEMPLATE.md) — 要件定義を別日・別会話で現在Repositoryから再開するための開始Prompt
-- [Implementation Conversation Handoff](templates/IMPLEMENTATION_CONVERSATION_TEMPLATE.md) — 要件定義完了後に新しい実装会話へ移るための開始Prompt
+- [Requirements Conversation Resume](templates/REQUIREMENTS_CONVERSATION_TEMPLATE.md)
+- [Implementation Conversation Handoff](templates/IMPLEMENTATION_CONVERSATION_TEMPLATE.md)
 - [README](templates/README_TEMPLATE.md)
 - [Specification](templates/SPEC_TEMPLATE.md)
 - [Project Rules](templates/PROJECT_RULES_TEMPLATE.md)
-- [AGENTS](templates/AGENTS_TEMPLATE.md) — Coding Agent向けの薄い入口 / Router
+- [AGENTS](templates/AGENTS_TEMPLATE.md)
 - [ADR](templates/ADR_TEMPLATE.md)
 - [Work Report](templates/WORK_REPORT_TEMPLATE.md)
 - [Project Learnings](templates/PROJECT_LEARNINGS_TEMPLATE.md)
@@ -71,106 +108,41 @@ Visual Referenceは [Domain-first Visual Research](docs/18-domain-first-visual-r
 - [Quality Checklist](templates/QUALITY_CHECKLIST.md)
 - [CHANGELOG](templates/CHANGELOG_TEMPLATE.md)
 
-## 最低限の共通原則
+## ChatGPT Projectでの会話名
 
-READMEでは詳細ルールを再掲せず、特に重要な入口だけを要約します。
+ChatGPT Project側で会話名の固定形式が定義されている場合は、そのProject設定を優先します。
 
-- 同じ情報・判断のSource of Truthを複数作らない。
-- 保存データを壊す変更はMigration / Backup / Rollbackを考える。
-- 公開GitHub / GitHub Pagesへ秘密情報を置かない。
-- 未実装・未確認を完成済み / 確認済みとして扱わない。
-- User-facing UIはVisual Quality Baselineを満たす。
-- 大きなVisual変更はDomain-first Visual Researchを先に行い、過去成功例を最初の答えにしない。
-- 各Projectは再発防止価値の高い失敗・成功を `PROJECT_LEARNINGS.md` に残す。
-- AI生成Codeも既存仕様・Test・最終状態のValidationを通す。
-- 新しい共通Ruleを追加する前に、既存Ruleへの統合・Catalog / Checklist / Project側への配置を確認する。
-
-詳細は各Owner Docを正本とします。
-
-## ChatGPT Project内の会話名
-
-### MUST: Projectで定義した会話名を固定して使用する
-
-ChatGPT Project内で作業する場合、会話名は依頼文や現在の作業内容から自由に自動生成せず、Project側で定義された固定形式を優先します。
-
-基本形式:
+このGuideでは基本区分だけを共通語彙として扱います。
 
 - `Repository名（実装）`
 - `Repository名（UI・見た目）`
 - `Repository名（不具合・改善）`
 - `Repository名（相談・調査）`
 
-必要な場合のみ:
-
-- `Repository名（データ・コンテンツ）`
-- `Repository名（GitHub・公開）`
-
-たとえば対象Repositoryが `game` で実装作業を行う場合、依頼文が `HUDを実装して`、`続きやって`、`機能追加して` 等でも、会話名は **`game（実装）`** とします。
-
-次を禁止します。
-
-- 最初の依頼文をそのまま会話名にする
-- 作業内容を要約した独自タイトルへ変更する
-- `HUD実装`、`ゲーム実装`、`機能追加` 等の独自カテゴリを作る
-- 同じ作業区分の途中で会話名を変更する
-- Projectで定義されていない区分を勝手に追加する
-
-同じ区分の作業を続ける場合は、原則として既存の対応会話を使用し、作業内容が変わっても区分が同じなら会話名を変更しません。
-
-会話タイトルの自動生成とこの固定ルールが衝突する場合は、**この固定ルールを優先**します。誤ったタイトルになっていることに気づいた場合は、Projectで定義された固定形式へ戻します。
-
-## Project Profile
-
-全サイトへ同じルールを機械的に適用しません。必要に応じて次のProfileを組み合わせます。
-
-`STATIC` / `DATA` / `LEARNING` / `GAME` / `MEDIA` / `AI-HANDOFF` / `CLOUD` / `ELECTRON` / `TOOL` / `PUBLIC-CONTENT`
-
-学習・解説・資格対策等で「理解してもらうこと」が主要価値なら`LEARNING`を選びます。Data量が多い場合は`DATA + LEARNING`のように併用します。Gameplay Rule / Player Action / Success-Failure / Progression等が主要価値なら`GAME`を選び、必要に応じて既存Profileと併用します。
-
-詳細は [Project Profiles](docs/12-project-profiles.md) を参照してください。
-
-## Continuous Improvement
-
-Guideは固定された完成品として扱わず、実ProjectとWeb標準から継続改善します。
-
-- GitHub上でアクセス可能なProjectの最近の差分・Project Learnings・高コスト修正を確認
-- 一般Web Ruleは一次・公式情報を優先
-- 他Projectは原則Read-only
-- Rule追加時は重複・Orphan Rule・Project固有Ruleの混入を同時に確認
-- 新しい知見がなければ変更しない
-- MUST / Governance等の高影響変更はBranch / Pull Requestを優先
-
-運用ルールは [Continuous Improvement](docs/14-continuous-improvement.md)、一般Research Methodは [Evidence-first Research](docs/20-evidence-first-research.md)、機械可読設定は [`maintenance/review-policy.json`](maintenance/review-policy.json) を正本とします。
+必要な場合のみ `データ・コンテンツ` / `GitHub・公開` を使います。ChatGPT UI固有の詳細運用をCommon Web Ruleへ増やしません。
 
 ## Guide自身の品質確認
 
-このRepoはpush / pull request時に [`tests/validate-guide.mjs`](tests/validate-guide.mjs) を実行します。
+push / pull request時に [`tests/validate-guide.mjs`](tests/validate-guide.mjs) を実行します。
 
-主な確認:
+主な確認対象:
 
-- 必須Docs / Catalog / Templateの存在
-- READMEから番号付きDocsへ辿れること
-- START HEREの主要Route
+- 必須Docs / Templates / Routerの存在
+- Markdown相対Link
 - Guide Version / CHANGELOG整合
-- Markdown相対リンク
-- H1
 - Catalog ID整合
-- Governanceの重要Contract
+- Owner / Gate / Router参照整合
+- 代表Golden Routing Case
 
-Workflow: [Validate Guide](.github/workflows/validate-guide.yml)
+Validator成功は文章品質や実Projectの完成を自動保証するものではありません。
 
-Account共通GitHub実装は [`EliteMay/.github`](https://github.com/EliteMay/.github) が担当し、`web-project-guide`は判断基準を担当します。
+Account共通GitHub実装は [`EliteMay/.github`](https://github.com/EliteMay/.github) が担当し、このRepositoryは判断基準を担当します。
 
-## 完成の考え方
+## 履歴の置き場所
 
-「コードを書いた」「CIが通った」だけでは完成扱いにしません。
+- `REQUIREMENTS.md` — 現在のProject Contract
+- `CHANGELOG.md` — Version単位の変更概要
+- `作業報告書.md` — 直近作業 / Validation / 未確認
+- Git history — 詳細差分
 
-要求された主要機能が通常利用でき、重大な既知バグがなく、保存互換性を壊さず、必要な文書が現行実装と一致し、未確認事項が明記されている状態を完成の基準とします。
-
-User-facing UIがある場合はVisual Quality Baselineも完成条件に含めます。
-
-具体的な確認項目は [Quality Checklist](templates/QUALITY_CHECKLIST.md) を利用してください。
-
-## 由来
-
-VReview / English Worksheet Lab / LyricTube / ASMRTube / Lineup Lab / AP Study Notes / DesignShelf / osu! Hub等で実際に発生した問題と、W3C・MDN・web.dev・OWASP等の一般的なWebベストプラクティスを統合しています。
+Current RequirementsとHistoryを同じファイルへ積み上げません。
