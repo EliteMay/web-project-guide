@@ -14,19 +14,21 @@
 - 完成条件
 
 結果を大きく左右しない不明点は、仮定を明記したうえで進めます。
-重要な仕様だけ確認します。
+重要な仕様でも、Current Repository / Current Requirements / Existing User Intent / Evidenceから合理的に決められる内容はUser回答待ちにしません。
 
 ## 対話型要件定義 Workflow
 
-ChatGPT / Coding Agentと会話しながら要件定義する場合は、**重要な判断だけUserへ確認し、それ以外はおすすめ案を採用して進める**ことを基本とします。
+ChatGPT / Coding Agentと会話しながら要件定義する場合は、**Userにしか決められないMaterial Decisionだけ確認し、それ以外はBest Reasonable Decisionで進める**ことを基本とします。
 
-目的は、質問を増やしすぎずにUserがProjectの核を保持し、実装前に必要な大きな判断だけ確実に決めることです。
+目的は、質問を増やしてDecisionをUserへ戻すことではなく、UserがProjectの核を保持しながら、Repository / Requirements / Evidenceを使って必要十分な要件を継続的に確定することです。
 
 ### Decision Class
 
 要件定義中の判断を次の3種類へ分けます。
 
-#### Core Decision — Userが決める
+この分類は**影響度・検証深度・Rollbackの必要性を判断するためのもの**であり、User回答待ちにするかどうかを直接決める分類ではありません。
+
+#### Core Decision — Productの核へ大きく影響
 
 変更すると「別のSite / App / Game」と言えるほど、目的・主要体験・主要利用者・主要機能の意味が変わる判断です。
 
@@ -39,17 +41,24 @@ ChatGPT / Coding Agentと会話しながら要件定義する場合は、**重�
 - Single / Multi、閲覧中心 / 編集中心等の大きな機能方針
 - 利用者が変わることで内容自体が大きく変わる場合のTarget Audience
 
-### MUST: Core Decisionは勝手に確定しない
+### MUST: Core DecisionをUser回答待ちの自動Triggerにしない
 
-Agentはおすすめ案を示してよいですが、Core DecisionはUserの回答を待ちます。
+Core Decisionでも、最初に次を確認します。
 
-判断に迷う場合は次を基準にします。
+```text
+Current Repository
++ Current Requirements
++ Existing User Intent
++ Research / Evidence
+↓
+Best Reasonable Decisionを選べる？
+```
 
-> ここを変えると、Userが想像していたProductとは別物になるか？
+合理的な最善案を選べる場合は、その案を採用し、必要ならAssumption / Riskを短く記録して進めます。
 
-YESならCore Decisionとして扱います。
+Userへ確認するのは、意味のある複数案が残り、既存User IntentからPreferenceを合理的に推定できず、選択によってProductの主要体験が大きく変わる場合等、**Userにしか決められないMaterial Intent**が残るときです。
 
-#### High-cost / Risk Decision — 原則Userへ確認
+#### High-cost / Risk Decision — 検証と影響確認を強める
 
 Productの核そのものではなくても、後から変えると大きな手戻り・費用・データ互換性問題・公開事故につながる判断です。
 
@@ -68,9 +77,13 @@ Productの核そのものではなくても、後から変えると大きな手�
 - Migrationが必要な変更
 - Security上の重要変更
 
-ただし、実質的に安全な選択肢が1つしかない場合は、理由を短く説明してAgentが進めて構いません。
+### MUST: High-cost / Risk Decisionも重要度だけで停止しない
 
-Userが選ぶ意味のある選択肢が2つ以上ある場合に確認を優先します。
+高Cost / 高Riskであることは、Impact Analysis、Research、Migration、Backup、Rollback、Validation等を強める理由です。**Userへ判断を返す理由そのものではありません。**
+
+Current Repository / Requirements / Evidenceから安全なBest Reasonable Decisionを選べる場合は、そのまま進めます。
+
+User確認を優先するのは、外部System / Account / 課金 / 公開範囲 / 破壊的・不可逆Operation等で明示Approvalが必要、必要Credential / PermissionをUserだけが提供できる、または重大なRequirement衝突をEvidenceでも解けない場合です。
 
 #### Default Decision — Agentがおすすめを決める
 
@@ -103,52 +116,55 @@ A / Bがありますが、今回はBの方が安全なのでBを採用します�
 
 Decision Classとは別に、**その判断をResearchで先に絞るべきか**を次の観点で分類します。
 
-- **User Preference** — Userが決める。ResearchはPreferenceそのものを上書きしない
+- **User Preference** — Existing User Intentから合理的に推定できず、Userにしか決められないPreferenceだけ確認対象にする
 - **Researchable Question** — 既存Evidenceがあり得るため [20 Evidence-first Research](20-evidence-first-research.md) を先に使う
-- **Project-specific Decision** — Research結果とProject固有条件を見てUser + AIでDiscussionする
+- **Project-specific Decision** — Research結果とProject固有条件を見てBest Reasonable Decisionを選び、必要なAssumption / Riskを記録する
 - **Confirmed Requirement** — 決定した内容を正式な`REQUIREMENTS.md`へ反映する
 
-Core DecisionでもResearchableな部分はResearchできますが、Research結果だけでUser Intentを自動確定しません。
+Core DecisionでもResearchableな部分はResearchできます。Research結果だけでUser Intentを捏造しませんが、既存User IntentとEvidenceから合理的に決められる内容を毎回Userへ戻しません。
 
 ## Recommendation-by-default — 標準動作
 
-要件定義は、Userが毎回`おすすめで`と指定しなくても、原則として**Recommendation-by-default**で進めます。
+要件定義は、Userが毎回`おすすめで`と指定しなくても、原則として**Recommendation-by-default + Best Reasonable Decision**で進めます。
 
 - Default DecisionはAgentがおすすめを選んで進める
+- Core / High-cost Decisionでも、Current Contextから合理的な最善案を選べるなら採用して進める
+- Researchで絞れる重要QuestionはUserへ投げ返す前にResearchする
 - 明らかに安全・妥当な推奨案がある場合は、承認待ちにせず採用する
 - 同じ種類の判断で毎回`ok` / `OK`等の承認を求めない
-- Core DecisionはUserへ確認する
-- High-cost / Risk Decisionは、意味のある選択肢が複数ある場合に確認する
-- Userの好みだけで決まり、見た目・体験・主要挙動へ明確な差が出るうえ、既存Contextから好みを推定できない場合は確認する
-- Userが`ここは考えたい`、`毎回確認して`等で自動決定を止めた範囲だけ、確認中心へ切り替える
+- Userにしか決められないMaterial Preference、明示Approvalが必要なOperation、必要Credential / Permission等だけ確認する
+- Userが`ここは考えたい`、`毎回確認して`等で明示的に確認中心を求めた範囲だけ、そのPreferenceを優先する
 
-通常は判断の大半をAgent側で進め、Userへの質問は例外にします。目安として8〜9割程度をAgent側で決めても構いませんが、**質問数や自動決定率をQuotaにはしません**。Decisionの影響度を優先します。
+通常は判断の大半をAgent側で進め、Userへの質問は例外にします。質問数や自動決定率をQuotaにはしません。**「質問しないこと」自体ではなく、合理的に解けるDecisionをUserへ返さないこと**を重視します。
 
 `ok` / `OK` / `それで` / `そのまま` / 選択肢記号等が直前案への承認として文脈上明確な場合、同じ確認を繰り返しません。
 
-### MUST: 質問する閾値を高く保つ
+### MUST: 質問は最終手段にする
 
-次のいずれかに該当する場合だけ、Userへの確認を優先します。
+Userへの確認を優先するのは、原則として次のいずれかです。
 
-1. **Productの核が変わる** — 目的、主要体験、主要利用者、主要機能の意味が変わるCore Decision
-2. **後戻りCostまたはRiskが高い** — 大規模な作り直し、データ互換性、費用、公開範囲、Security、Migration等へ影響し、意味のある選択肢が複数ある
-3. **User Preferenceが決定要因** — 技術・Evidenceでは絞れず、選択によってUserが直接感じる体験差が大きい
-4. **既存の明示要件と衝突する** — 現在のUser要求、崩してはいけない仕様、正式Requirementsのどれを優先すべきか自動判断すると破壊的になり得る
-5. **不可逆または破壊的** — 主要機能削除、保存Data破棄、公開状態変更等で、誤判断した場合の復旧Costが高い
+1. **Userにしか決められないMaterial Intent** — 意味のある複数案が残り、Existing User IntentからPreferenceを合理的に推定できず、結果が主要体験を大きく変える
+2. **明示Approvalが必要** — 外部System / Account / 課金 / 公開範囲 / 破壊的・不可逆Operation等でUser承認なしに進めるべきでない
+3. **Userだけが必要情報を持つ** — Credential / Secret / Permission /物理操作 /未共有の必須情報等が必要
+4. **重大なSource of Truth衝突を解けない** — Current User Request、正式Requirements、保存互換性等が衝突し、既存優先順位やEvidenceでも安全に解決できない
+5. **Safety / Legal / Security上の明示確認が必要** — 誤判断Costが高く、標準RuleやEvidenceだけでは進めるべきでない
 
 実用上の最終判定は次を使います。
 
-> Userが後から知ったときに「そこは勝手に決めるべきではなかった」と合理的に感じる可能性が高いか？
+> Current Repository / Requirements / Existing User Intent / Research / Evidenceを確認しても、合理的なBest Reasonable Decisionを選べないか？
 
-YESなら確認します。NOなら、原則としておすすめ案を採用して進めます。
+YESなら必要な1〜3問だけ確認します。NOなら、Assumption / Riskを必要範囲で示して進めます。
 
 逆に、次は原則として質問しません。
 
+- `Core Decision` / `High-cost Decision`という分類だけを理由にする
 - 一方が明らかに安全・妥当・低Costで、Userが選ぶ実質的な意味がない
+- Repository確認やResearchで答えを絞れる
 - 後から容易に変更できる
 - File構成、Naming、標準的なError handling、Test方法等の実装詳細
 - 細かなSpacing、配置、文言等で、既存方針から自然に決められる
-- ResearchやCurrent Repository確認で先に答えを絞れる重要Question
+- Existing User IntentからPreference / Directionが既に明確
+- 合理的なBest Reasonable Decisionを選び、Assumption / Riskを記録して継続できる
 
 Researchで解決できる内容を、最初からUser Preferenceとして投げ返しません。
 
@@ -156,7 +172,7 @@ Researchで解決できる内容を、最初からUser Preferenceとして投げ
 
 ### SHOULD: 質問は必要なものだけに絞り、無駄なTurnを増やさない
 
-質問が必要な場合も、独立している重要判断は最大2〜3件まで同じTurnにまとめて構いません。
+質問が本当に必要な場合も、独立している重要判断は最大2〜3件まで同じTurnにまとめて構いません。
 
 前の回答によって次の選択肢自体が変わる場合だけ、1件ずつ順番に確認します。
 
@@ -164,24 +180,12 @@ Researchで解決できる内容を、最初からUser Preferenceとして投げ
 
 1. 今何を決めるか
 2. 2〜3個の意味のある選択肢
-3. おすすめ案
-4. おすすめ理由を短く説明
+3. おすすめ案が残るならその案
+4. なぜUser回答が必要なのかを短く説明
 
 の順にします。
 
-例:
-
-```text
-今決めること: Gameの中心
-
-A. 探索中心
-B. 自動化中心 ← おすすめ
-C. 戦闘中心
-おすすめ: B
-理由: 工場・効率化要素を主要体験として活かしやすいため。
-```
-
-選択肢の差が小さく、Userが選ぶ価値が低い場合は質問せずDefault Decisionとして進めます。
+User回答なしでも合理的に決められるなら、このQuestion Formatを使うためだけに質問を作りません。
 
 ## 会話の長さとSummary
 
@@ -261,7 +265,7 @@ Visual固有のReference framing / KEEP・FIX・REMOVE / Candidate比較は [18 
 Current Repository / Project Context
 → User PreferenceかResearchable Questionか分類
 → Researchable QuestionならEvidence-first Research
-→ Project固有条件を含めDiscussion
+→ Project固有条件を含めBest Reasonable Decision
 → Confirmed RequirementをREQUIREMENTS.mdへ反映
 ```
 
@@ -319,7 +323,7 @@ GitHubへのDraft書き込みが失敗した場合は、保存済みとして扱
 3. `REQUIREMENTS_DRAFT.md`が存在する場合はその未確定差分
 4. README / SPEC / Project Rules / `PROJECT_LEARNINGS.md` / 現在実装等、今回の判断に必要なCurrent Repository Evidence
 
-GitHubへ保存済みの確定Decisionを最初から聞き直しません。質問は、未解決のCore / High-cost Decisionまたは新しいUser変更要求など、現在のRepository Evidenceだけでは決められない内容へ絞ります。
+GitHubへ保存済みの確定Decisionを最初から聞き直しません。質問は、Repository / Requirements / Existing User Intent / Evidenceでも合理的に解けないUser-only Material Decisionへ絞ります。
 
 ## 要件定義の完了ライン
 
@@ -340,7 +344,7 @@ GitHubへ保存済みの確定Decisionを最初から聞き直しません。質
 
 CSS値、class名、Function名、Componentの細分化等の実装詳細は、特別な理由がなければ実装段階へ回します。
 
-未解決のCore Decision / High-cost Decisionがある場合は、完成扱いせず明示します。
+未解決のBlocking Decisionがある場合は、完成扱いせず明示します。Core / High-cost分類だけを理由に未解決扱いしません。
 
 完了時は全体を短く要約し、Projectの正式な`REQUIREMENTS.md`へ反映します。
 
@@ -358,7 +362,7 @@ Repository名（相談・調査）
 → 意味のある区切りごとにREQUIREMENTS_DRAFT.mdへCheckpoint
 → Userが「要件定義終わり」等、完了を明示
 → 最新CheckpointをGitHubへ保存して成功確認
-→ 完了条件 / 未解決Decisionを確認
+→ 完了条件 / Blocking Decisionを確認
 → 対象Repositoryの正式なREQUIREMENTS.mdへ統合
 → GitHubへの正式保存成功を確認
 → Draftを解消
@@ -378,7 +382,7 @@ Repository名（相談・調査）
 - 既存要件を理由なく丸ごと作り直さない
 - 現在も有効な過去要件を消さない
 - 今回変更した要件、必要な変更理由、未確認事項を残す
-- README / SPEC等と重大な矛盾がある場合は、破壊的に上書きせず確認する
+- README / SPEC等と重大な矛盾がある場合は、既存の優先順位とEvidenceで解決できるか先に確認し、それでも安全に解けない場合だけUser確認を行う
 - 仕様変更が確定した場合は、必要な関連文書も現行仕様と一致させる
 - 会話ログや長い議論の全文は保存せず、実装に必要な決定を残す
 
@@ -403,12 +407,11 @@ GitHubへの書き込みが失敗した場合、`保存済み`または`要件�
 
 - Status: Ready for implementation / Not ready
 - Requirements updated: YYYY-MM-DD
-- Unresolved Core Decisions: None / ...
-- Unresolved High-cost Decisions: None / ...
+- Unresolved Blocking Decisions: None / ...
 - Implementation conversation: Repository名（実装）
 ```
 
-`Ready for implementation`は、GitHubへの正式保存が成功し、実装開始を妨げる未解決Decisionがない場合だけ使います。
+`Ready for implementation`は、GitHubへの正式保存が成功し、実装開始を妨げる未解決Blocking Decisionがない場合だけ使います。
 
 ### MUST: 完了Trigger後の保存とHandoffを追加確認待ちにしない
 
@@ -423,7 +426,7 @@ Agentは同じWorkflow内で次まで進めます。
 5. 不要になったDraftを解消
 6. [Implementation Conversation Handoff Template](../templates/IMPLEMENTATION_CONVERSATION_TEMPLATE.md) を置換した完成済みPromptを出力
 
-未解決のCore / High-cost Decision、重大な文書衝突、GitHub書き込み失敗がある場合だけ、そのBlockerを示してHandoffを止めます。
+Repository / Requirements / Evidenceでも解けないBlocking Decision、重大な文書衝突、GitHub書き込み失敗がある場合だけ、そのBlockerを示してHandoffを止めます。
 
 ### Implementation Conversation Prompt
 
@@ -444,7 +447,8 @@ Agentは同じWorkflow内で次まで進めます。
 
 - 未実装なだけ → 要件に従って実装してよい
 - 軽微な古い記述 / Document差 → 現行要件へ合わせて必要な文書を更新してよい
-- 保存互換性破壊、主要機能削除、大きな既存挙動変更、どちらが正しいか不明 → User確認を優先
+- 保存互換性破壊、主要機能削除、大きな既存挙動変更等 → Current Requirements / Existing User Intent / EvidenceからBest Reasonable Decisionを選び、必要なImpact / Rollback / Validationを強める
+- 重大な衝突がEvidenceでも解けず、User-only Material Intentが必要 → User確認
 
 現在Codeが違うという理由だけで、正式要件を無視しません。一方で、要件が新しいという理由だけで既存データや重要仕様を破壊しません。
 
@@ -479,7 +483,7 @@ Draftが存在する場合は次を行います。
 
 1. 正式`REQUIREMENTS.md`とDraftを確認
 2. 今回確定した内容を正式要件へ統合
-3. README / SPEC等の重大な矛盾を確認
+3. README / SPEC等の重大な矛盾をCurrent Requirements / Evidenceで解けるか確認
 4. 正式`REQUIREMENTS.md`をGitHubへ保存
 5. 正式保存成功を確認
 6. Implementation Handoffを`Ready for implementation`へ更新可能か確認
@@ -488,17 +492,19 @@ Draftが存在する場合は次を行います。
 
 正式`REQUIREMENTS.md`の保存成功前にDraftを削除しません。正式保存またはDraft解消に失敗した場合は、その状態を明示し、完全なHandoff完了として扱いません。
 
-Userが`新しい相談・調査会話へ移りたい`等と明示した場合、重大な矛盾やGitHub書き込み失敗がなければ、追加の保存確認質問を増やさず、最新Draft保存 → 保存確認 → 再開Prompt生成まで進めます。
+Userが`新しい相談・調査会話へ移りたい`等と明示した場合、重大なBlockerやGitHub書き込み失敗がなければ、追加の保存確認質問を増やさず、最新Draft保存 → 保存確認 → 再開Prompt生成まで進めます。
 
 ### 実装中に大きな仕様変更が必要になった場合
 
-実装中にCore Decision / High-cost Decision相当の大きな仕様変更が必要になった場合は、原則として`Repository名（相談・調査）`側で要件を再整理します。
+実装中にCore Decision / High-cost Decision相当の大きな仕様変更が必要になった場合は、まずCurrent Requirements / Existing User Intent / EvidenceからBest Reasonable Decisionで要件を更新できるか判断します。
+
+要件を再整理する必要がある場合は、`Repository名（相談・調査）`側へ戻して正式Requirementsを更新します。Core / High-costという分類だけを理由にUser回答待ちへしません。
 
 ```text
 Repository名（実装）
 → 大きな仕様変更が必要
-→ Repository名（相談・調査）
-→ 要件更新
+→ 必要ならRepository名（相談・調査）
+→ 要件更新 / Best Reasonable Decision
 → 正式REQUIREMENTS.mdをGitHubへ保存
 → Ready for implementationを再確認
 → Repository名（実装）へ戻る
