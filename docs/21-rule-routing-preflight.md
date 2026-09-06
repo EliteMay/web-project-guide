@@ -157,6 +157,18 @@ Repository全体を毎回全文精読しません。README / Requirements / Spec
 
 同じGuide Commit / 同じblobであることを確認できる場合は再読込を省略できます。
 
+### MUST: Truncated / Partial Retrievalを読了扱いにしない
+
+Tool出力が途中で切れている、検索Snippetしか取得していない、または取得Line Rangeが今回の判断に必要なSectionを含んでいない場合、そのRequired Docを**読了済みとして扱いません**。
+
+- `truncated`等の表示がある場合は、必要な続きまたは該当Sectionを追加取得する
+- Search Result / Summary /冒頭だけから、後半に重要Ruleがないと推測しない
+- 今回のTaskに関係するCompletion / Handoff / Exception / Validation等のSectionがある場合は必要範囲で確認する
+- 全文取得が不要なTaskでは、関係Sectionを特定してTargeted Readしてよい
+- 取得不能なSectionへ依存する判断は、確認済みとして進めない
+
+「Fileを1回取得した」ことではなく、**今回の判断に必要なRuleを実際に確認できたこと**をRequired Doc読込の完了条件とします。
+
 ## Stable Gates
 
 読み飛ばすと事故になりやすいCross-cutting判断だけGateを持ちます。
