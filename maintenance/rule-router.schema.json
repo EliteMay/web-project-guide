@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/EliteMay/web-project-guide/maintenance/rule-router.schema.json",
+  "title": "Web Project Guide Rule Router",
+  "type": "object",
+  "required": ["schemaVersion", "routerId", "behaviorOwner", "owners", "gates", "workTypes", "domains", "signals", "goldenCases"],
+  "properties": {
+    "schemaVersion": { "type": "integer", "minimum": 1 },
+    "routerId": { "type": "string", "minLength": 1 },
+    "behaviorOwner": { "type": "string", "minLength": 1 },
+    "owners": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": { "type": "string", "minLength": 1 }
+    },
+    "gates": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["owner", "when"],
+        "properties": {
+          "owner": { "type": "string", "minLength": 1 },
+          "when": { "type": "array", "items": { "type": "string" }, "minItems": 1, "uniqueItems": true }
+        },
+        "additionalProperties": false
+      }
+    },
+    "workTypes": { "$ref": "#/$defs/routeMap" },
+    "domains": { "$ref": "#/$defs/routeMap" },
+    "signals": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "docs": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+          "gates": { "type": "array", "items": { "type": "string" }, "uniqueItems": true }
+        },
+        "additionalProperties": false
+      }
+    },
+    "goldenCases": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "workType", "domains", "signals", "mustInclude"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "workType": { "type": "string", "minLength": 1 },
+          "domains": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+          "signals": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+          "mustInclude": { "type": "array", "items": { "type": "string" }, "minItems": 1, "uniqueItems": true },
+          "mustNotRequire": { "type": "array", "items": { "type": "string" }, "uniqueItems": true }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "$defs": {
+    "routeMap": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "array",
+        "items": { "type": "string" },
+        "minItems": 1,
+        "uniqueItems": true
+      }
+    }
+  },
+  "additionalProperties": false
+}
