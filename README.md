@@ -40,8 +40,9 @@ MUST / SHOULD / MAY / CONDITIONAL、仕様衝突、Source of Truth、Rule Budget
 - [15 Development Observability / Project Memory](docs/15-development-observability.md) — 失敗・成功・診断ログを次回修正へ引き継ぐ
 - [16 Cross-Repository GitHub Infrastructure](docs/16-cross-repository-github-infrastructure.md) — `.github` / Reusable Workflow / Ruleset / Dependabot / Projectsの役割分担
 - [17 Visual Quality Baseline](docs/17-visual-quality-baseline.md) — User-facing UIで必須の見た目の最低品質
-- [18 Domain-first Visual Research](docs/18-domain-first-visual-research.md) — 大きな見た目変更前に同種Site / Appを調査するWorkflow
+- [18 Domain-first Visual Research](docs/18-domain-first-visual-research.md) — 大きな見た目変更前に同種Site / Appを調査するVisual固有Workflow
 - [19 Game Development](docs/19-game-development.md) — Game固有のCore Loop / Progression / Playtest / Phase Gate
+- [20 Evidence-first Research](docs/20-evidence-first-research.md) — 重要なResearchable Questionの一般Research Workflow
 
 ## 過去事例から学ぶ
 
@@ -139,7 +140,7 @@ Guideは固定された完成品として扱わず、実ProjectとWeb標準か�
 - 新しい知見がなければ変更しない
 - MUST / Governance等の高影響変更はBranch / Pull Requestを優先
 
-運用ルールは [Continuous Improvement](docs/14-continuous-improvement.md)、機械可読設定は [`maintenance/review-policy.json`](maintenance/review-policy.json) を正本とします。
+運用ルールは [Continuous Improvement](docs/14-continuous-improvement.md)、一般Research Methodは [Evidence-first Research](docs/20-evidence-first-research.md)、機械可読設定は [`maintenance/review-policy.json`](maintenance/review-policy.json) を正本とします。
 
 ## Guide自身の品質確認
 
