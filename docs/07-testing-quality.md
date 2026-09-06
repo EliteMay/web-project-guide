@@ -92,6 +92,25 @@ AI生成量が多いProject、既存実装の移植、互換性が重要な処�
 
 AIがCodeを書いたか人間が書いたかではなく、**期待結果を再現可能に判定できるか**を重視します。
 
+### Oracleを第二のSource of Truthにしない
+
+Test / Validatorは仕様を守るGuardですが、変更されるProject metadataやData全体を固定値で複製して、新しい正本にしません。
+
+仕様・Dataから導出できる値は、可能ならその正本から取得して検証します。固定値を使う場合は、**その値自体が守るべきContractである理由**を区別します。
+
+例:
+
+```text
+弱い: 現在のGuide patch version / build番号 /教材総件数を各Phase Validatorへ毎回複製
+強い: metadataの形式・互換範囲を検証し、教材集合は現行Index / Manifestから導出
+
+必要な固定値: 公開Quick Key 1〜5、Schema Version、Migration前後のGolden Output等
+```
+
+Requirements / Spec / Metadata / Data Contractを変更するときは、実装だけでなく関連するStatic Validator / E2E / Visual Oracleが**旧仕様を正解として固定していないか**も確認します。
+
+Oracleを緩めることが目的ではありません。変わる値の重複hardcodeを減らし、守るべきInvariant / Compatibility Contractはむしろ明示的に固定します。
+
 Oracle自体が誤っている可能性もあるため、Reference更新時は理由と影響を残します。
 
 ## Visual Design Review
