@@ -23,7 +23,7 @@ Required DocsをCurrent Guide Revisionから実際に読む
 ↓
 必要なProject側Source of Truthを読む
 ↓
-Research / 要件確定 / 推奨 / 実装
+Research / Best Reasonable Decision / 要件確定 / 実装
 ↓
 必要なValidation
 ```
@@ -43,8 +43,31 @@ UserがGuideの章番号、Profile、Gate名を覚えていることを前提に
 - Researchable Questionか
 - Save / Migration / Security等の高Risk条件があるか
 - GAME / LEARNING / ELECTRON等の専門Domainが関係するか
+- Current Repository / Requirements / Existing User Intentからどこまで自律的に決められるか
 
-Userへ確認するのは、Product Intent、Core Decision、破壊的変更、保存互換性を壊すか等、Userにしか決められない事項を中心とします。
+Product Intent、Core Decision、High-cost Decisionであっても、既存Context・正式Requirements・Evidenceから合理的に決められる場合はUser回答待ちを標準停止条件にしません。
+
+Userへ確認するのは、User Preferenceだけが決定要因で主要体験が大きく変わる、重大な明示要件同士の衝突を解消できない、不可逆・破壊的変更に安全なRollbackがない、外部System / 権限 / 費用 /安全上の明示同意が必要、または必要値が本当に欠落している等の例外を中心とします。詳細は [01 Requirements](01-requirements.md) のUser Confirmation Exceptionを正本とします。
+
+## Best Reasonable Decision
+
+Preflightで必要なSource of Truthを読んだ後は、質問へ逃がす前に次を使います。
+
+```text
+Current Repository
++ Current Requirements
++ Existing User Intent
++ Evidence
++ Compatibility / Risk
+↓
+Best Reasonable Decision
+↓
+必要なAssumption / Riskを記録
+↓
+作業継続
+```
+
+Repository確認やResearchで解決できる内容を、最初からUserへ投げ返しません。可逆なDecisionでは、安全で目的に合うDefaultを選びます。
 
 ## Classification
 
@@ -112,7 +135,7 @@ Riskを独立した巨大Score Systemにせず、該当条件をSignalとして�
 - `MEANINGFUL_VISUAL_CHANGE`
 - `RESEARCHABLE_QUESTION`
 
-高Risk Signalがある場合、古いREADMEやmetadataの不足だけを理由に必要Ownerを外しません。
+高Risk Signalは「必ずUserへ質問する」Signalではありません。必要Owner / Gateを読み、Riskを理解したうえでBest Reasonable Decisionを作るためのSignalです。
 
 ## Repository Evidence
 
@@ -213,6 +236,8 @@ MUST相当のOverrideでは理由・影響・代替策を残します。
 
 同じConversationだから同じRoutingを永久に使う、とは扱いません。
 
+Re-routing後も、Core / High-cost Decisionという分類だけでUser確認へ戻しません。新たに必要なOwner / Evidenceを読み、Best Reasonable Decisionで継続できるかを先に判断します。
+
 ## Project Profilesとの関係
 
 Project ProfileはProjectの性質を示す補助情報です。Routingの全判断をProfileだけで行いません。
@@ -269,10 +294,11 @@ Guide Validatorでは少なくとも次を確認します。
 - Guide全文を毎回読む
 - 小さなBugにもResearch / Full Checklistを強制する
 - Userへ「どのGuideを読むか」を決めさせる
+- Core / High-costという分類だけでUser回答待ちにする
 - Profileだけで全Routingを決める
 - AgentのMemoryだけで必要Ruleを再構成する
 - 最初から大規模なRule Engine / Session DB / Cache Systemを作る
 
 ## 完成条件
 
-Rule Routingは、Agentが今回の作業に必要な正本を**作業前に到達・読込でき、不要な章を機械的に増やさず、作業途中のScope変化でも追加Ruleへ戻れる**状態を完成基準とします。
+Rule Routingは、Agentが今回の作業に必要な正本を**作業前に到達・読込でき、不要な章を機械的に増やさず、作業途中のScope変化でも追加Ruleへ戻れ、Repository / Requirements / Evidenceで解けるDecisionを不要なUser確認へ投げ返さず継続できる**状態を完成基準とします。
