@@ -41,6 +41,18 @@ Common Rule本文は`docs/`、一般化済みのFailure / Success / Anti-Pattern
 - Prevention: Rule InfrastructureもSmallest Useful Systemから始め、実運用Evidenceなしで機能を増やさない。
 - Guide candidate: yes — Rule Budget / Routing Ownerへ反映。
 
+### PL-F-004 Checklist / Templateが第二のRule本文になった
+
+- Date: 2026-09-06
+- Status: resolved
+- Severity: medium
+- Symptom: `QUALITY_CHECKLIST.md`や`REQUIREMENTS_TEMPLATE.md`へVisual / Storage / Diagnostics / Game / Electron等の詳細説明が増え、Owner Docと同じ内容を複数回読む構造になった。
+- Root Cause: 「忘れないためにChecklistへ追加」を繰り返し、実行確認・入力欄というTemplate責務を超えた。
+- Final Fix: Quality ChecklistをCore + Conditional Routing +短いCheckへ縮小し、RequirementsはCore + Conditional Packへ分割。詳細RuleはOwnerへ戻した。
+- Regression Guard: ValidatorでConditional Packの存在・Route、ChecklistのConditional Routing、Visual Owner linkを確認。
+- Prevention: Rule追加時はOwnerへ本文、Templateには入力、ChecklistにはPass / Failできる実行確認だけ置く。
+- Guide candidate: yes — Governance / Requirements Template Contractへ反映済み。
+
 ## Success
 
 ### PL-S-001 Ruleを消さず責務を戻す整理
@@ -53,3 +65,14 @@ Common Rule本文は`docs/`、一般化済みのFailure / Success / Anti-Pattern
 - Reuse when: Common documentationが成長してCurrent ContractとHistoryが混ざったとき。
 - Avoid when: 単一の短いDocumentを不要に細分化する場合。
 - Guide candidate: yes — Governance / Requirementsへ反映済み。
+
+### PL-S-002 Core + Conditional Packで入力負荷を下げる
+
+- Date: 2026-09-06
+- Goal: Requirementsの情報量を維持しつつ、関係ないProjectに不要な欄を読ませない。
+- Adopted Pattern: CommonなProject ContractだけをCore Templateへ置き、Visual / Learning / Game / Diagnosticsを条件付きPackへ分離。
+- Why it worked: Domain-specificなDecision fieldを失わず、通常Projectが読むTemplateを短くできる。
+- Trade-off: Pack RouterとLink integrityをValidatorで維持する必要がある。
+- Reuse when: 1つのTemplateにProfile固有Sectionが増え続けたとき。
+- Avoid when: Packが1〜2項目しかなく、分割のNavigation Costの方が高い場合。
+- Guide candidate: yes — Current RequirementsのTemplate Contractへ反映済み。
