@@ -31,9 +31,9 @@ Current work ref: {{WORK_REF}}
 
 古い会話や記憶だけを基準にせず、現在のGitHub上の内容を優先してください。
 
-既存仕様と要件定義に矛盾がある場合は、破壊的な変更を勝手に行わず重要な矛盾を示してください。
+既存仕様と要件定義に矛盾がある場合も、Core / High-cost等の分類だけを理由にUser回答待ちへせず、Current Requirements、Existing User Intent、Current Repository、Research / EvidenceからBest Reasonable Decisionを選べるか先に確認してください。安全に解けない重大ConflictだけをBlocking Decisionとして示してください。
 
-`REQUIREMENTS.md`のImplementation Handoffが`Ready for implementation`でない、GitHubへの正式保存が確認できない、または未解決のCore Decision / High-cost Decisionが残っている場合は、そのまま実装を開始せず状態を示してください。
+`REQUIREMENTS.md`のImplementation Handoffが`Ready for implementation`でない、GitHubへの正式保存が確認できない、または未解決のBlocking Decisionが残っている場合は、そのBlockerを示してください。Core / High-costという分類だけを未解決Blockerとして扱わないでください。
 
 実装途中の引き継ぎでは、未完成のCheckpointを完成済みとして扱わず、指定されたBranch / Pull Request / Commitと必要なWork Reportを確認して、その続きから進めてください。
 
@@ -50,7 +50,8 @@ Current work ref: {{WORK_REF}}
 - 対象Repositoryへ正式な要件定義が保存済み
 - GitHubへの保存成功を確認済み
 - `REQUIREMENTS.md`のImplementation Handoffが`Ready for implementation`
-- 未解決のCore Decision / High-cost Decisionがある場合は明示済み
+- 未解決のBlocking Decisionがある場合は明示済み
+- Core / High-costという分類だけをHandoff停止条件にしない
 - `REQUIREMENTS.md`等の正式要件とPrompt本文で異なる仕様を追加しない
 - Promptは会話履歴を複製せず、最新Repositoryと正式文書を読むよう案内する
 
