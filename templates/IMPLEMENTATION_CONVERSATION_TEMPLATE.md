@@ -31,13 +31,13 @@ Current work ref: {{WORK_REF}}
 
 古い会話や記憶だけを基準にせず、現在のGitHub上の内容を優先してください。
 
-既存仕様と要件定義に矛盾がある場合は、破壊的な変更を勝手に行わず重要な矛盾を示してください。
+既存仕様と要件定義に矛盾がある場合は、Current Requirements、Runtime / Data、Existing User Intent、Evidence、Compatibility / Riskを確認し、Best Reasonable Decisionで解決できるか先に判断してください。破壊的・不可逆で安全なRollbackがない、User Preferenceだけが決定要因、重大な明示要件衝突を解消できない等のUser Confirmation ExceptionだけUserへ確認してください。
 
-`REQUIREMENTS.md`のImplementation Handoffが`Ready for implementation`でない、GitHubへの正式保存が確認できない、または未解決のCore Decision / High-cost Decisionが残っている場合は、そのまま実装を開始せず状態を示してください。
+`REQUIREMENTS.md`のImplementation Handoffが`Ready for implementation`でない、GitHubへの正式保存が確認できない、または実装開始を妨げるBlocking Decisionが残っている場合は、そのまま実装を開始せず状態を示してください。
 
 実装途中の引き継ぎでは、未完成のCheckpointを完成済みとして扱わず、指定されたBranch / Pull Request / Commitと必要なWork Reportを確認して、その続きから進めてください。
 
-指定されたCurrent work refが見つからない場合は、Pull Request、Commit、Merge履歴、Work Report等のGitHub Evidenceから同じCheckpointを復元してください。復元できない場合は`main`から推測で続けず、Current work refを未確認として示し、実装を開始しないでください。
+指定されたCurrent work refが見つからない場合は、Pull Request、Commit、Merge履歴、Work Report等のGitHub Evidenceから同じCheckpointを復元してください。復元できない場合は`main`から推測で続けず、Current work refを未確認として示してください。
 
 会話名：
 {{REPOSITORY_NAME}}（実装）
@@ -50,7 +50,8 @@ Current work ref: {{WORK_REF}}
 - 対象Repositoryへ正式な要件定義が保存済み
 - GitHubへの保存成功を確認済み
 - `REQUIREMENTS.md`のImplementation Handoffが`Ready for implementation`
-- 未解決のCore Decision / High-cost Decisionがある場合は明示済み
+- 実装開始を妨げるBlocking Decisionがある場合は明示済み
+- Important Assumptionがある場合は正式要件または適切な記録へ残している
 - `REQUIREMENTS.md`等の正式要件とPrompt本文で異なる仕様を追加しない
 - Promptは会話履歴を複製せず、最新Repositoryと正式文書を読むよう案内する
 
@@ -62,7 +63,7 @@ Current work ref: {{WORK_REF}}
 - 完了済みの変更なら通常のValidationを行い、必要ならMergeまで完了している
 - 未完成の変更なら、無理にmainへ入れずBranch / Pull Request等へCheckpointを保存している
 - 次の会話が読むべきBranch / Pull Request / Commitを`{{WORK_REF}}`で特定できる
-- `{{WORK_REF}}`が消失している場合は、PR / Commit / Merge履歴等のEvidenceから復元し、復元できなければ実装を開始しない
+- `{{WORK_REF}}`が消失している場合は、PR / Commit / Merge履歴等のEvidenceから復元し、復元できなければ未確認として示す
 - 必要に応じてWork Reportへ「完了したこと / 未完了 / 未確認 / 次に行うこと」を残している
 - 再利用価値の高い失敗・成功だけ`PROJECT_LEARNINGS.md`へ反映している
 - GitHubへの保存成功を確認するまで、会話移行の保存完了を主張しない
