@@ -8,10 +8,12 @@ Normative Rule本文ではありません。監査方法の正本は `docs/14-co
 
 - Repository: `EliteMay/web-project-guide`
 - Baseline commit: `31c2f87a2f149db36634df30d6c48c1e732c5918`
-- Guide version: `1.18.0`
+- Baseline Guide version: `1.18.0`
 - Audit date: 2026-09-07
-- Current owner count: 22 (`docs/00`〜`docs/21`)
+- Baseline owner count: 22 (`docs/00`〜`docs/21`)
 - Secondary surfaces: README / START_HERE / REQUIREMENTS / templates / catalog / references / maintenance JSON / validator / workflow / repository metadata
+
+このBaselineは監査開始時のPoint-in-time Evidenceです。監査中にCurrent mainへv1.19.0 `docs/22-task-first-structure-flow-research.md`が追加されたため、最終Candidateは`docs/00〜23`の24 Owner構成です。
 
 ## Scoring
 
@@ -31,88 +33,124 @@ Normative Rule本文ではありません。監査方法の正本は `docs/14-co
 5. Decision Quality
 6. Failure Evidence
 
-Overallは点数だけでなく重大Gapを優先して `A / B / C / D` で付けます。
+Overallは点数だけでなく重大Gapを優先して `A / B / C / D` で付けました。**Scoreは監査停止条件ではありません。**
 
 ## Owner Audit Matrix — Baseline
 
-| Owner | Coverage | Gap | Dup | R/R Sep | Decision | Failure | Overall | Main finding |
+| Owner | Coverage | Gap | Dup | R/R Sep | Decision | Failure | Overall | Baseline finding |
 |---|---:|---:|---:|---:|---:|---:|---|---|
-| 00 Governance | 3 | 3 | 3 | 3 | 3 | 2 | A | 基本構造は強い。Agent autonomyの停止条件だけCurrent pending requirementと未同期。 |
-| 01 Requirements | 3 | 2 | 2 | 3 | 1 | 2 | C | Core / High-costをUser回答待ちにする旧ContractがCurrent autonomy requirementと競合。Requirements Persistenceも詳細がRequirements側へ逆流。 |
-| 02 Architecture | 3 | 2 | 3 | 3 | 3 | 3 | A | 現時点でBlocking Gapなし。 |
+| 00 Governance | 3 | 3 | 3 | 3 | 3 | 2 | A | Agent autonomyの停止条件がCurrent requirementと未同期。 |
+| 01 Requirements | 3 | 2 | 2 | 3 | 1 | 2 | C | Core / High-costをUser回答待ちにする旧Contract、Persistence責務重複。 |
+| 02 Architecture | 3 | 2 | 3 | 3 | 3 | 3 | A | Blocking Gapなし。 |
 | 03 Data / Storage | 3 | 3 | 3 | 3 | 3 | 3 | A | Migration / destructive import / resetまで強い。 |
-| 04 UI / UX / Accessibility | 3 | 2 | 2 | 2 | 3 | 3 | B | Common Owner本文へNamed `DesignShelf`運用が混入。WCAG 2.2の新しい操作条件に補強余地。 |
+| 04 UI / UX / Accessibility | 3 | 2 | 2 | 2 | 3 | 3 | B | Named Companion Tool運用混入、WCAG 2.2 interaction coverage不足。 |
 | 05 Performance / Reliability | 3 | 3 | 3 | 3 | 3 | 2 | A | Soft budget / measurement / exceptionsが明確。 |
-| 06 Security | 2 | 1 | 3 | 3 | 1 | 1 | D | AuthN/AuthZ/session/CSRF/CSP/upload/public endpoint abuseが薄い。Electron securityも不足。P0補強対象。 |
+| 06 Security | 2 | 1 | 3 | 3 | 1 | 1 | D | AuthN/AuthZ/session/CSRF/CSP/upload/public endpoint abuseが薄い。 |
 | 07 Testing / Quality | 3 | 3 | 3 | 3 | 3 | 3 | A | Static / E2E / oracle / final-state / verification stateが整理済み。 |
-| 08 GitHub Pages | 3 | 2 | 3 | 3 | 3 | 2 | A | Pages固有責務へ整理済み。重大Gapなし。 |
+| 08 GitHub Pages | 3 | 2 | 3 | 3 | 3 | 2 | A | Pages固有責務へ整理済み。 |
 | 09 Version / Maintenance | 3 | 3 | 3 | 3 | 3 | 3 | A | Preflight重複解消済み。 |
-| 10 Project Management | 3 | 2 | 2 | 3 | 1 | 3 | C | `確認が必要な変更`とParallel conflictでUser停止をDefaultにする旧Contractがautonomy requirementと競合。Conversation運用が巨大化しているが現時点では単なる長さだけで分割しない。 |
-| 11 Electron / Distribution | 3 | 1 | 3 | 3 | 2 | 2 | C | Release/Updaterは強いがElectron公式Security Checklistの重要項目が不足。 |
-| 12 Project Profiles | 2 | 2 | 3 | 3 | 2 | 1 | B | 補助分類として有効。ProfileだけでRoutingしないBoundaryも明確。 |
-| 13 Dependencies / Assets | 3 | 2 | 3 | 3 | 2 | 2 | B | Package/assetは十分。GitHub Actions supply-chain pinningをCross-repo Ownerと連携して補強余地。 |
-| 14 Continuous Improvement | 3 | 2 | 3 | 3 | 2 | 3 | B | Deep Auditはあるが、新Phase 0の6軸/Gaps/停止条件がRequirements側へ詳細逆流。Ownerへ回収が必要。 |
-| 15 Observability / Project Memory | 3 | 2 | 2 | 3 | 3 | 3 | B | Diagnosticsは強い。PROJECT_LEARNINGSの継続蓄積・昇格後も履歴を失わない方針を明文化する。 |
-| 16 Cross-Repository GitHub | 3 | 2 | 3 | 3 | 3 | 2 | B | Named Pilot分離済み。ただしGuide自身のActionsがmutable tag参照でself-application違反。 |
+| 10 Project Management | 3 | 2 | 2 | 3 | 1 | 3 | C | User停止DefaultとConversation Recovery責務の肥大化。 |
+| 11 Electron / Distribution | 3 | 1 | 3 | 3 | 2 | 2 | C | Release/Updaterは強いがElectron Security Checklist不足。 |
+| 12 Project Profiles | 2 | 2 | 3 | 3 | 2 | 1 | B | 補助分類として有効。 |
+| 13 Dependencies / Assets | 3 | 2 | 3 | 3 | 2 | 2 | B | Actions supply-chain pinning補強余地。 |
+| 14 Continuous Improvement | 3 | 2 | 3 | 3 | 2 | 3 | B | Deep Audit詳細がRoot Requirementsへ逆流。 |
+| 15 Observability / Project Memory | 3 | 2 | 2 | 3 | 3 | 3 | B | PROJECT_LEARNINGSの継続蓄積Contract不足。 |
+| 16 Cross-Repository GitHub | 3 | 2 | 3 | 3 | 3 | 2 | B | Guide自身のActionsがmutable tag参照。 |
 | 17 Visual Baseline | 3 | 3 | 3 | 3 | 3 | 2 | A | Minimum Gateへ責務限定済み。 |
 | 18 Visual Research | 3 | 3 | 3 | 3 | 3 | 2 | A | Domain research / candidate / foundation resetが明確。 |
-| 19 Game Development | 3 | 3 | 3 | 3 | 3 | 3 | A | 長いがGame-specific responsibilityとして一貫。長さだけで分割しない。 |
-| 20 Evidence-first Research | 3 | 2 | 3 | 3 | 2 | 2 | B | `100件規模`という数値目安がQualityよりCountを目的化させるRisk。Saturation / coverage中心へ修正。Decision後のUser停止もautonomyと整合が必要。 |
-| 21 Rule Routing / Preflight | 3 | 2 | 3 | 3 | 2 | 3 | B | Router parityは強い。Userへ聞く条件が旧Core/High-cost Contractを参照しておりautonomyと未同期。 |
+| 19 Game Development | 3 | 3 | 3 | 3 | 3 | 3 | A | Game-specific responsibilityとして一貫。 |
+| 20 Evidence-first Research | 3 | 2 | 3 | 3 | 2 | 2 | B | `100件規模`目安がCount目的化Risk。 |
+| 21 Rule Routing / Preflight | 3 | 2 | 3 | 3 | 2 | 3 | B | User確認条件が旧Core / High-cost Contractと未同期。 |
 
-## High-impact Gap Register
+## Gap Resolution Register
 
-| ID | Area | Gap type | Severity | Action | Research priority | Status |
-|---|---|---|---|---|---|---|
-| G-001 | Agent autonomy | Structural / Rule Gap | High | EXPAND + MERGE | None | open |
-| G-002 | Requirements Phase 0 detail | Structural Gap | High | MOVE | None | open |
-| G-003 | Requirements Persistence detail | Structural Gap | Medium | MOVE | None | open |
-| G-004 | Security | Research + Rule Gap | Critical | RESEARCH + EXPAND | P0 | open |
-| G-005 | Electron Security | Research + Rule Gap | Critical | RESEARCH + EXPAND | P0 | open |
-| G-006 | docs04 DesignShelf named content | Structural Gap | High | MOVE | None | open |
-| G-007 | Research 100-source heuristic | Rule Gap | Medium | CLARIFY / REMOVE | None | open |
-| G-008 | GitHub Actions SHA pinning | Evidence / Rule Gap | High | EXPAND + FIX SELF | None | open |
-| G-009 | PROJECT_LEARNINGS accumulation | Rule Gap | Medium | CLARIFY | None | open |
-| G-010 | Branch lifecycle debt | Repository metadata / Structural debt | High | CLEANUP / SETTING | None | open |
-| G-011 | Repository metadata | Repository metadata | Low | CLARIFY / MANUAL | None | open |
-| G-012 | Audit stopping condition | Structural Gap | High | EXPAND | None | open |
-| G-013 | WCAG 2.2 interaction details | Research + Rule Gap | Medium | RESEARCH + CLARIFY | P1 | open |
+| ID | Area | Severity | Final action | Status |
+|---|---|---|---|---|
+| G-001 | Agent autonomy | High | `docs/01` / `docs/10` / `docs/21` / TemplatesをBest Reasonable Decisionへ統一 | **resolved** |
+| G-002 | Requirements Phase 0 detail | High | Audit procedureを`docs/14` + `maintenance/DEEP_SYSTEM_AUDIT.md`へ戻しRoot RequirementsをCurrent Contract化 | **resolved** |
+| G-003 | Requirements Persistence detail | Medium | Behavioral ownerを`docs/01`へ統合 | **resolved** |
+| G-004 | Web Security | Critical | AuthN/AuthZ / session / CSRF / CSP / file import / abuse / security verificationを`docs/06`へ補強 | **resolved** |
+| G-005 | Electron Security | Critical | contextIsolation / sandbox / IPC / navigation / external URL / permission / CSP等を`docs/11`へ補強 | **resolved** |
+| G-006 | docs04 named Companion content | High | Generic ruleだけ`docs/04`、named tool EvidenceはReferenceへ分離 | **resolved** |
+| G-007 | Research source-count heuristic | Medium | 固定件数を撤去し`Decision Coverage + Research Saturation`へ変更 | **resolved** |
+| G-008 | GitHub Actions SHA pinning | High | Guide workflowをfull Commit SHA固定、`docs/16`へself-application可能なContract追加 | **resolved** |
+| G-009 | PROJECT_LEARNINGS accumulation | Medium | 長期蓄積・Promotion後もProject Evidenceを保持するContractをOwner / Templateへ追加 | **resolved** |
+| G-010 | Branch lifecycle debt | High | Branch lifecycle Ruleを`docs/10`へ追加。既存Branch削除 / repo settingは管理API外としてExternal Follow-upへ分離 | **externally blocked portion only** |
+| G-011 | Repository metadata | Low | 推測設定せずExternal Follow-upへ分離 | **external/manual** |
+| G-012 | Audit stopping condition | High | Score-only completionを禁止し、known actionable finding + final PR/main validation基準へ変更 | **resolved** |
+| G-013 | WCAG 2.2 interaction details | Medium | Focus Not Obscured / Target Size / Dragging / Redundant Entry / Accessible Authenticationを`docs/04`へ追加 | **resolved** |
 
-## Duplication / Conflict Map
+Current Guide source内に意図的に残しているCritical / High / Medium actionable findingはありません。Repository Admin権限を必要とする項目だけ別Reportで追跡します。
 
-### D-001 Requirements vs Continuous Improvement
+## Responsibility / Conflict Resolution
 
-`REQUIREMENTS.md` Section 17 contains the detailed six-axis Phase 0 Audit mechanics. This is useful behavior but belongs to `docs/14` + `maintenance/DEEP_SYSTEM_AUDIT.md`; Requirements should only require that the audit exists and is completed.
+### Root Requirements
 
-### D-002 Requirements vs Requirements Owner
+BaselineではPhase 0の採点・Gap分類・Research手順、Phase 1 Research Contract等がRoot `REQUIREMENTS.md`へ逆流していました。
 
-Requirements Persistence details are partly in Root `REQUIREMENTS.md` and partly in `docs/01`. Behavioral owner should be `docs/01` with Root Requirements retaining only this guide project's current contract.
+Final Candidateでは:
 
-### D-003 Agent autonomy conflict cluster
+- Root `REQUIREMENTS.md` = Current Project Contract
+- `docs/14` + `maintenance/DEEP_SYSTEM_AUDIT.md` = Deep Audit behavior / procedure
+- `maintenance/audits/` = point-in-time finding / score / resolution
+- `maintenance/research/requirements-decision-system.md` = 未完了Requirements Decision System Research Asset
 
-Current pending requirement says Best Reasonable Decision should be default, while `docs/01`, `docs/10`, `docs/21`, Requirements/Implementation/AGENTS templates still contain user-wait semantics for Core / High-cost decisions.
+へ分離しました。
 
-### D-004 Visual common-owner leakage
+### Agent Autonomy
 
-`docs/04` embeds a named DesignShelf workflow. The generic design-direction comparison principle is common; the named companion tool is project-specific/reference evidence.
+Core / High-costというLabelだけでUser回答待ちにせず、Current Repository / Requirements / User Intent / Evidence / Compatibility / RiskからBest Reasonable Decisionを作るContractへ統一しました。
 
-### D-005 Supply-chain self-application
+User Decisionはnon-inferable preference、safe alternativeのないirreversible destructive choice、external permission / billing / account action、Evidenceでも解消不能なmaterial contract conflict等へ限定します。
 
-Cross-repository guidance favors immutable reusable workflow references, but this repository's own `validate-guide.yml` uses `actions/checkout@v4` and `actions/setup-node@v4` mutable tags.
+### UI / Visual / Structure
 
-## External Evidence Used for P0/P1 Gaps
+Named Companion ToolのCurrent運用はCommon Owner本文からReferenceへ分離しました。
+
+監査中に別PRでv1.19.0 `docs/22-task-first-structure-flow-research.md`がCurrent mainへ追加されたため、Current Candidateでは:
+
+- `docs/22` = Task-first Structure / Flow Research
+- `docs/23` = Conversation Handoff / Recovery
+
+とし、Owner番号衝突を回避しました。
+
+### Conversation Recovery
+
+`docs/10`から独立したConversation Handoff / stale checkpoint / duplicate active conversation / Current work ref Recovery責務を`docs/23`へ分離しました。
+
+Machine Router / START_HERE / AGENTS / Conversation Templatesへ同じRouteを接続し、Prompt / Conversation Summaryを第二Source of Truthにしません。
+
+### Supply-chain Self-application
+
+Guide自身の`actions/checkout` / `actions/setup-node`をfull-length Commit SHAへ固定しました。Focused Audit Validatorでmoving tagへのRegressionを検出します。
+
+## Concurrent Main Integration Finding
+
+監査Branch作業中、Current mainへv1.19.0 Task-first Structure / Flow OwnerがMergeされました。Audit Branchはその時点で独自`docs/22`を使用しており、単純MergeではCurrent mainの新Ownerを覆い戻すRiskがありました。
+
+対応:
+
+1. latest main README / START_HERE / Owner Registry / Versionを再取得
+2. main v1.19.0 + final validation commitをAudit Branchへ統合
+3. `docs/22-task-first-structure-flow-research.md`をCurrent mainどおり保持
+4. 未MergeだったConversation Handoff Ownerを`docs/23`へ移番
+5. README / START_HERE / Governance / Router / Templatesを再同期
+6. Final PR前の`behind_by = 0`をCompletion Checkへ追加
+7. `PL-F-013`として再発防止をProject Learningsへ記録
+
+## External Evidence Used
 
 - Electron official Security Checklist: context isolation, sandbox, permission handlers, CSP, navigation/new-window restriction, untrusted `shell.openExternal` avoidance, current Electron, IPC sender validation, custom protocol/fuses where relevant.
-- OWASP Authorization: least privilege, deny by default, permission checks on every request.
-- OWASP CSRF: state-changing cookie-authenticated requests need an explicit CSRF strategy; SameSite is defense in depth in many deployments.
-- OWASP CSP: CSP is defense in depth against XSS/clickjacking/cross-site leaks.
-- OWASP File Upload: allowlisted extensions, content validation, safe names, size limits, authorization, safe storage.
-- GitHub Secure Use: full-length commit SHA is the immutable way to pin Actions; repository policy can require it.
-- WCAG 2.2: Focus Not Obscured, Dragging Movements, Target Size, Redundant Entry, Accessible Authentication add relevant UI conditions.
+- OWASP Authorization: least privilege, deny by default, permission checks on requests.
+- OWASP CSRF: cookie-authenticated state-changing requestでは明示的CSRF strategyを検討し、SameSiteだけへ依存しない。
+- OWASP CSP: CSPはXSS等へのDefense in Depthとして扱う。
+- OWASP File Upload: allowlist、content validation、安全な名前、size limit、authorization、安全なstorage。
+- GitHub secure use guidance: external Actionsはfull-length Commit SHAでimmutable pinning可能。
+- WCAG 2.2: Focus Not Obscured, Dragging Movements, Target Size, Redundant Entry, Accessible Authentication。
 
 ## Repository Surface Baseline
 
-Observed at audit start:
+Audit開始時には次を確認しました。
 
 - description: unset
 - homepage: unset
@@ -121,44 +159,51 @@ Observed at audit start:
 - rulesets: none
 - `delete_branch_on_merge`: false
 - `has_pages`: true
-- many historical branches remain, including merged feature/refactor/audit branches and `tmp-ignore`
-- current guide validation workflow uses mutable `@v4` Action refs
+- historical branch debtあり
+- guide validation workflowがmutable `@v4` Action refを使用
 
-Repository settings / license decisions are not silently invented. Safe source changes are fixed in the audit PR; settings not exposed by the current connector are tracked as explicit manual/external follow-up.
+Source内で修正できるWorkflow pinning / Branch lifecycle Ruleは修正済みです。Repository Admin / metadata項目は [`2026-09-07-external-repository-admin.md`](2026-09-07-external-repository-admin.md) を参照します。
 
-## Research Priority Map
+## Regression Guard
 
-### P0
+既存`tests/validate-guide.mjs`はv1.19.0 Task-first Structure / Flowを含む通常のGuide structural contractを維持します。
 
-1. Web security decision coverage (`docs/06`)
-2. Electron application security (`docs/11`)
+追加`tests/validate-audit-contract.mjs`では、今回の実Failureに絞って次を確認します。
 
-### P1
-
-1. WCAG 2.2 interaction/accessibility deltas relevant to the existing UI owner
-
-### P2
-
-None currently. Do not create research work merely to fill a tier.
+- `docs/22` Task-first Ownerと`docs/23` Conversation Ownerの共存
+- Human / Machine RouterのConversation Recovery route
+- old `docs/22-conversation-handoff-recovery.md`参照消失
+- Root RequirementsへPhase 0 / Phase 1 procedureが再流入していない
+- WCAG 2.2 interaction coverage
+- Research fixed-count heuristicの再導入防止
+- Web / Electron Security主要Boundary
+- PROJECT_LEARNINGS accumulation contract
+- GitHub Actions full-SHA pinning
 
 ## Stopping Condition
 
-This audit does **not** stop because an average score reaches a target number.
+このAuditは平均Scoreでは終了しません。
 
-It stops only when:
+完了条件:
 
-1. all Critical / High actionable findings are resolved or externally blocked with a precise reason;
-2. all Medium actionable in-scope findings are resolved unless changing them would reduce correctness or rule preservation;
-3. remaining Low findings are either fixed, not applicable, external/manual-only, or explicitly evidence-deferred;
-4. no known contradiction is being relabeled as “good enough”;
-5. final PR diff, validation, and merged-main validation are green.
+1. Critical / High actionable findingがresolved、またはExternal block理由が具体的
+2. Medium in-scope findingがresolved、またはEvidence上保留が正しい
+3. Low findingがfixed / not applicable / external-only / evidence-deferredのいずれか
+4. known contradictionを`good enough`として隠していない
+5. Final PR diff review済み
+6. Final PR Head validation green
+7. Squash Merge成功
+8. merged `main` validation green
 
-## Phase 0 Status
+## Current Status
 
-- All 22 current owners: audited at baseline
+- Baseline 22 Owners: audited
+- Current Candidate 24 Owners (`docs/00〜23`): responsibility integration reviewed
 - Secondary structure: audited
-- Repository surface: audited
-- P0 research: in progress
-- Structural cleanup: in progress
-- Final scores: pending fixes
-- Completion: **not complete**
+- P0 / P1 research needed for this audit: completed
+- Source-level actionable remediation: **complete**
+- External Repository Admin follow-up: explicit / separate
+- Release target: `1.20.0`
+- PR #46 final validation: **pending**
+- Merge / post-merge main validation: **pending**
+- Audit Completion: **not complete until final PR + merged-main validation are green**
