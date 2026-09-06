@@ -33,6 +33,8 @@ const requiredFiles = [
   'docs/19-game-development.md',
   'docs/20-evidence-first-research.md',
   'docs/21-rule-routing-preflight.md',
+  'maintenance/README.md',
+  'maintenance/DEEP_SYSTEM_AUDIT.md',
   'maintenance/review-policy.json',
   'maintenance/rule-router.json',
   'maintenance/rule-router.schema.json',
@@ -93,6 +95,7 @@ const markdownFiles = [
   ...walk(path.join(root, 'catalog')),
   ...walk(path.join(root, 'references')),
   ...walk(path.join(root, 'templates')),
+  ...walk(path.join(root, 'maintenance')),
   path.join(root, 'README.md'),
   path.join(root, 'START_HERE.md'),
   path.join(root, 'REQUIREMENTS.md'),
@@ -146,6 +149,8 @@ const readme = read('README.md');
 const startHere = read('START_HERE.md');
 const governance = read('docs/00-governance.md');
 const routingGuide = read('docs/21-rule-routing-preflight.md');
+const continuousImprovement = read('docs/14-continuous-improvement.md');
+const deepAudit = read('maintenance/DEEP_SYSTEM_AUDIT.md');
 
 for (const requiredLink of [
   'docs/21-rule-routing-preflight.md',
@@ -158,6 +163,12 @@ if (!governance.includes('docs/21-rule-routing-preflight.md') && !governance.inc
   errors.push('docs/00-governance.md: missing Rule Routing owner registration');
 }
 if (!routingGuide.includes('../maintenance/rule-router.json')) errors.push('docs/21: missing machine router link');
+if (!continuousImprovement.includes('../maintenance/DEEP_SYSTEM_AUDIT.md')) {
+  errors.push('docs/14: missing Deep System Audit procedure link');
+}
+if (!deepAudit.includes('../docs/14-continuous-improvement.md')) {
+  errors.push('maintenance/DEEP_SYSTEM_AUDIT.md: missing normative owner link');
+}
 
 const requirementTemplate = read('templates/REQUIREMENTS_TEMPLATE.md');
 for (const pack of [
@@ -184,8 +195,23 @@ if (!/^## Minimum Completion Gate$/m.test(visualBaseline)) {
 }
 
 const pagesOwner = read('docs/08-github-pages.md');
+const projectManagement = read('docs/10-project-management.md');
 if (!/^## 公開URL \/ Repository導線$/m.test(pagesOwner)) {
-  errors.push('docs/08: missing public URL / repository discoverability section');
+  errors.push('docs/08: missing public URL / repository boundary section');
+}
+if (!pagesOwner.includes('10-project-management.md')) {
+  errors.push('docs/08: repository discoverability must route to docs/10');
+}
+if (!projectManagement.includes('Repository discoverability')) {
+  errors.push('docs/10: missing repository discoverability owner section');
+}
+
+const crossRepoOwner = read('docs/16-cross-repository-github-infrastructure.md');
+if (!crossRepoOwner.includes('../references/cross-repository-github-pilot-evidence.md')) {
+  errors.push('docs/16: missing project-specific pilot evidence reference');
+}
+for (const projectName of ['DesignShelf', 'ASMRTube', 'osu-hub']) {
+  if (crossRepoOwner.includes(projectName)) errors.push(`docs/16: project-specific named evidence leaked into common owner -> ${projectName}`);
 }
 
 for (const [rel, section] of [
@@ -197,9 +223,30 @@ for (const [rel, section] of [
 }
 
 const router = readJson('maintenance/rule-router.json');
-readJson('maintenance/rule-router.schema.json');
-readJson('maintenance/review-policy.json');
+const routerSchema = readJson('maintenance/rule-router.schema.json');
+const reviewPolicy = readJson('maintenance/review-policy.json');
 readJson('templates/DIAGNOSTICS_SCHEMA_TEMPLATE.json');
+
+if (routerSchema) {
+  if (routerSchema?.properties?.signals?.minProperties !== 1) {
+    errors.push('rule-router.schema.json: signals must reject an empty signal registry');
+  }
+  if (routerSchema?.$defs?.routeMap?.minProperties !== 1) {
+    errors.push('rule-router.schema.json: route maps must reject empty registries');
+  }
+}
+
+if (reviewPolicy) {
+  if (reviewPolicy.deepSystemAudit?.procedure !== 'maintenance/DEEP_SYSTEM_AUDIT.md') {
+    errors.push('review-policy.json: deepSystemAudit procedure is missing or incorrect');
+  }
+  if (reviewPolicy.deepSystemAudit?.owner !== 'docs/14-continuous-improvement.md') {
+    errors.push('review-policy.json: deepSystemAudit owner must be docs/14-continuous-improvement.md');
+  }
+  if (!Array.isArray(reviewPolicy.deepSystemAudit?.surfaces) || reviewPolicy.deepSystemAudit.surfaces.length < 5) {
+    errors.push('review-policy.json: deepSystemAudit must define cross-system audit surfaces');
+  }
+}
 
 if (router) {
   if (router.behaviorOwner !== 'docs/21-rule-routing-preflight.md') {
@@ -224,6 +271,24 @@ if (router) {
     if (!Array.isArray(gate.when) || gate.when.length === 0) errors.push(`rule-router.json: ${gateId} missing trigger`);
   }
 
+  for (const [signalName, signal] of Object.entries(router.signals || {})) {
+    const docs = signal.docs || [];
+    const gates = signal.gates || [];
+    if (docs.length === 0 && gates.length === 0) errors.push(`rule-router.json: ${signalName} has no docs or gates`);
+    for (const gateId of gates) {
+      if (!router.gates?.[gateId]) errors.push(`rule-router.json: ${signalName} references unknown gate -> ${gateId}`);
+    }
+  }
+
+  const reachableOwnerDocs = new Set();
+  for (const rels of Object.values(router.workTypes || {})) for (const rel of rels) reachableOwnerDocs.add(rel);
+  for (const rels of Object.values(router.domains || {})) for (const rel of rels) reachableOwnerDocs.add(rel);
+  for (const signal of Object.values(router.signals || {})) for (const rel of signal.docs || []) reachableOwnerDocs.add(rel);
+  for (const gate of Object.values(router.gates || {})) reachableOwnerDocs.add(gate.owner);
+  for (const [ownerId, rel] of Object.entries(router.owners || {})) {
+    if (!reachableOwnerDocs.has(rel)) errors.push(`rule-router.json: owner is registered but unreachable -> ${ownerId} (${rel})`);
+  }
+
   function resolveCase(testCase) {
     const docs = new Set(router.workTypes?.[testCase.workType] || []);
     for (const domain of testCase.domains || []) {
@@ -239,12 +304,36 @@ if (router) {
   for (const testCase of router.goldenCases || []) {
     if (caseIds.has(testCase.id)) errors.push(`rule-router.json: duplicate golden case id -> ${testCase.id}`);
     caseIds.add(testCase.id);
+
+    if (!router.workTypes?.[testCase.workType]) {
+      errors.push(`routing golden case ${testCase.id}: unknown work type -> ${testCase.workType}`);
+    }
+    for (const domain of testCase.domains || []) {
+      if (!router.domains?.[domain]) errors.push(`routing golden case ${testCase.id}: unknown domain -> ${domain}`);
+    }
+    for (const signalName of testCase.signals || []) {
+      if (!router.signals?.[signalName]) errors.push(`routing golden case ${testCase.id}: unknown signal -> ${signalName}`);
+    }
+
     const resolved = resolveCase(testCase);
     for (const rel of testCase.mustInclude || []) {
       if (!resolved.has(rel)) errors.push(`routing golden case ${testCase.id}: missing required route -> ${rel}`);
     }
     for (const rel of testCase.mustNotRequire || []) {
       if (resolved.has(rel)) errors.push(`routing golden case ${testCase.id}: over-routed -> ${rel}`);
+    }
+  }
+
+  const guideAuditCase = (router.goldenCases || []).find((testCase) => testCase.id === 'guide-deep-system-review');
+  if (!guideAuditCase) {
+    errors.push('rule-router.json: missing guide-deep-system-review golden case');
+  } else {
+    const resolved = resolveCase(guideAuditCase);
+    for (const rel of ['docs/00-governance.md', 'docs/14-continuous-improvement.md', 'docs/21-rule-routing-preflight.md']) {
+      if (!resolved.has(rel)) errors.push(`guide deep review routing parity: missing -> ${rel}`);
+    }
+    if (!startHere.includes('docs/14-continuous-improvement.md')) {
+      errors.push('START_HERE.md: guide improvement human route must include docs/14');
     }
   }
 }
