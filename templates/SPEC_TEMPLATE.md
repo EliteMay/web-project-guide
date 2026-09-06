@@ -1,68 +1,84 @@
 # 仕様書
 
-## 1. 概要
+このTemplateは**現在実装されるTechnical Contract**を書くためのものです。目的・Scope・User Decisionは`REQUIREMENTS.md`を正本とし、ここへ重複させません。
 
-- プロジェクト:
-- Guide Version:
+## 1. Source of Truth
+
+- Requirements: `REQUIREMENTS.md`
+- Project Rules: `PROJECT_RULES.md`（存在する場合）
+- Adopted Guide Version:
 - Profiles:
 
-## 2. 目的
+## 2. Runtime / Architecture
 
-- 
-
-## 3. 主要利用フロー
+- Entry point:
+- Main runtime:
+- Major modules / responsibilities:
+- External runtime dependency:
 
 ```text
-開始
+User action
 ↓
-
+Controller / Logic
 ↓
-完了
+Data / State
+↓
+Renderer / Output
 ```
 
-## 4. 画面仕様
+## 3. Surface / Screen Contract
 
-| 画面 | 目的 | 主操作 | 状態 |
+| Surface | Responsibility | Main Action | Required State |
 |---|---|---|---|
 | | | | Loading / Empty / Error / Success |
 
-## 5. データ仕様
+## 4. Data Contract
 
-| データ | 正本 | ID | Schema | 保存先 |
-|---|---|---|---|---|
-| | | | | |
+| Data | Source of Truth | ID / Schema | Consumer |
+|---|---|---|---|
+| | | | |
 
-## 6. 保存・復元
+## 5. Storage / Migration
 
-- 保存タイミング:
-- 未保存状態:
-- Backup:
-- Restore:
-- Migration:
+| Data | Storage | Key / Version | Backup / Restore |
+|---|---|---|---|
+| | | | |
 
-## 7. 外部依存
+- Save timing:
+- Unsaved state:
+- Migration path:
+- Existing data compatibility:
+- Reset / destructive operation contract:
 
-- API:
-- CDN:
-- DB:
-- Failure / Fallback:
+## 6. External Integration
 
-## 8. 崩してはいけない仕様
+| Service / API | Purpose | Auth / Config | Failure / Fallback |
+|---|---|---|---|
+| | | | |
+
+## 7. Compatibility / Release Contract
+
+- URL / Route compatibility:
+- Browser / Runtime support:
+- GitHub Pages / Electron notes:
+- Existing user data:
+- Version / Build source:
+
+## 8. Technical Invariants
+
+Requirementsの「崩してはいけない仕様」を技術的にどう守るかだけ記録します。
 
 1. 
 2. 
 
-## 9. 互換性
+## 9. Validation Contract
 
-- Existing Data:
-- URL:
-- GitHub Pages:
-- Browser:
+- Static validation:
+- Unit / Integration:
+- Browser / E2E:
+- Visual / Playtest / Real-device（該当時）:
+- Regression guard:
 
-## 10. 完成条件
-
-- [ ] 
-
-## 11. 未確認・既知の制約
+## 10. Known Technical Constraints / Unverified
 
 - 
