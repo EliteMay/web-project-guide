@@ -205,6 +205,7 @@ Rule移動時は**新Ownerへ存在することだけでなく、旧Ownerの詳�
 - 作業途中でScope / Riskが変われば追加OwnerへRe-routeする
 - 重要なHuman RouteとMachine Routeは同じ代表TaskでParity確認する
 - Owner Registryへ登録した重要Docを実質到達不能にしない
+- Core / High-cost Decisionという分類だけでUser回答待ちを標準停止条件にしない
 
 Guide自身のDeep Review、Storage Migration、Meaningful Visual Change、Game主要Flow、Cross-Repository GitHub Infrastructure等、見落としCostが高いCaseはGolden Routing Caseで守ることを優先します。
 
@@ -318,6 +319,7 @@ Guide自身を大きく点検する場合は、Current Repositoryを「まだ低
 - [ ] Validatorが構造上の重大driftを検出できる
 - [ ] Deep System AuditをCurrent Revisionから再実行できる
 - [ ] 既存Ruleを整理しても意味が失われていない
+- [ ] Repository / Requirements / Evidenceで解けるDecisionを不要なUser確認へ返さない
 - [ ] 重大な既知矛盾がない
 - [ ] 未確認事項が作業報告に明示されている
 
@@ -338,9 +340,10 @@ Guide自身を大きく点検する場合は、Current Repositoryを「まだ低
 - Template / Checklist responsibility split: Implemented
 - Deep System Audit workflow: Implemented
 - Human / Machine routing parity guard: Implemented
+- Agent autonomy / User Confirmation Exception: Implemented
 - Task-first Structure / Flow Research owner: Implemented
-- Unresolved Core Decisions: None
-- Unresolved High-cost Decisions: None
+- Blocking Decisions: None
+- Important Assumptions: None
 
 今後新しい大規模Guide改善要件が生じた場合、Current Contractへ履歴として混ぜ込まず、必要ならIssue / ADR /一時Draftで検討し、確定・実装後にCurrent Contractへ必要な恒久Ruleだけ反映します。
 
@@ -589,33 +592,20 @@ Implementation側はCurrent Repositoryを確認し、Current `REQUIREMENTS.md`�
 
 Requirements Persistence Gateを通る前に「要件定義完了」「実装準備完了」と確定しません。
 
-## 19. Agent Autonomy / User Confirmation Contract — Pending Implementation
+## 19. Agent Autonomy / User Confirmation Contract
 
-現行Owner Docに存在する、Core Decision / High-cost Decision等でUser回答待ちを標準停止条件とするRuleは見直し対象です。
+Agent autonomyの詳細Behaviorは `docs/01-requirements.md` と `docs/21-rule-routing-preflight.md` を正本とします。
 
-新しい方向性は、Userへの質問・承認待ちを通常Workflowの標準停止条件にせず、以下を基準にBest Reasonable Decisionで継続することです。
+このGuide自身のCurrent Contractとして、次だけを要求します。
 
-```text
-Current Repository
-+ Current Requirements
-+ Existing User Intent
-+ Evidence
-+ Compatibility / Risk
-↓
-Best Reasonable Decision
-↓
-必要なAssumption / Riskを記録
-↓
-作業継続
-```
+- Core / High-cost Decisionという分類だけを理由にUser回答待ちへしない
+- Current Repository / Current Requirements / Existing User Intent / Evidence / Compatibility / RiskからBest Reasonable Decisionを作る
+- Repository確認やResearchで解けるQuestionをUserへ投げ返さない
+- 可逆なDecisionでは安全で目的に合うDefaultを選ぶ
+- 重要Assumption / Riskは必要に応じて記録する
+- User Preferenceだけで主要体験が大きく変わる、重大衝突を解消できない、不可逆・破壊的変更に安全なRollbackがない、外部System / 権限 / 費用 /安全上の明示同意が必要等の場合だけUser Confirmation Exceptionへ送る
 
-Repository確認やResearchで解決できる内容を最初からUserへ投げ返しません。
-
-この変更は`docs/01-requirements.md`だけで完了扱いにせず、`docs/00`、`docs/21`、README、START_HERE、Templates、その他関連参照を確認して矛盾を整理します。
-
-外部System、権限、安全上の要件等で明示的確認が必須な操作は例外です。
-
-このSectionは現時点では**実装待ちのCurrent Requirement**です。Owner Doc側へ反映・Validation後に、恒久RuleをOwnerへ移し、このSectionをCurrent Contractとして必要な最小形へ整理します。
+README / START_HEREは詳細Ruleを複製せずRouterのまま維持します。
 
 ## 20. Phase 1 — Requirements Decision System Research Contract
 
@@ -769,7 +759,7 @@ Findingは内容に応じて次へ配置します。
 
 ### Agent Autonomy Integration
 
-Phase 1はSection 19のAgent Autonomy / User Confirmation見直しと整合させます。
+Phase 1はSection 19のAgent Autonomy / User Confirmation Contractと整合させます。
 
 目標は次のように判断できることです。
 
