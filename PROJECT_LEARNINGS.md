@@ -1,8 +1,8 @@
 # PROJECT LEARNINGS
 
-このファイルは `web-project-guide` 自身の**運用・情報設計に関する再発防止知見**だけを残します。
+このファイルは `web-project-guide` 自身の**運用・情報設計に関する再発防止知見**を長期的に蓄積する正本です。
 
-Common Rule本文は`docs/`、一般化済みのFailure / Success / Anti-Patternは`catalog/`が正本です。ここへそれらを複製しません。
+Common Rule本文は`docs/`、一般化済みのFailure / Success / Anti-Patternは`catalog/`が正本です。ここへそれらを複製しません。Common Ruleへ昇格した後も、このRepositoryで何が起きたかというProject Evidenceは残します。
 
 ## Failure
 
@@ -89,6 +89,71 @@ Common Rule本文は`docs/`、一般化済みのFailure / Success / Anti-Pattern
 - Prevention: Project-specific / time-specific EvidenceはReference / Catalog / Project Learningsへ置き、適用時はCurrent GitHubを再確認する。
 - Guide candidate: yes — Governance / Continuous Improvement境界へ反映済み。
 
+### PL-F-008 点数を監査の停止条件のように扱った
+
+- Date: 2026-09-07
+- Status: resolved
+- Severity: high
+- Symptom: 「70点台前半」と評価した時点で、まだ具体的な修正候補が残っているのに作業が終了したように見える報告をした。
+- Root Cause: Scoreを弱点探索用ではなく、暗黙の満足ラインとして扱ってしまった。さらに最終文が「何が未完了か」を明示せず、Userから完了状態を判別しにくかった。
+- Final Fix: Deep Auditの停止条件を`actionable findingが残っていない / external-blocked理由が明確 / final PR + main validation済み`へ変更。User-facing final statusは`作業状況：完了 / 未完了`を明示する運用へ変更。
+- Detection method: Audit ReportのGap Register / Completion GateとUser-facing statusを照合。
+- Regression Guard: `maintenance/review-policy.json`と`maintenance/DEEP_SYSTEM_AUDIT.md`でScore-only completionを禁止。
+- Prevention: Scoreは診断値としてのみ使い、既知Findingが残る限り終了しない。
+- Guide candidate: yes — `docs/14` / Deep System Auditへ反映。
+
+### PL-F-009 Agent AutonomyをOwnerだけ直してTemplateに旧停止条件が残った
+
+- Date: 2026-09-07
+- Status: resolved
+- Severity: high
+- Symptom: `docs/01`ではBest Reasonable Decisionへ移行した一方、Requirements / AGENTS / Conversation Templatesには`Core / High-cost = User回答待ち`の旧Contractが残った。
+- Root Cause: Behavior変更をOwner単体の編集として扱い、同じBehaviorを参照するAdapter / Templateの横断検索を完了条件にしなかった。
+- Final Fix: `docs/01` / `docs/21` / `docs/22`とRequirements / AGENTS / Conversation Templatesを同じAutonomy Contractへ統一。
+- Detection method: Template / Owner semantic sweep。
+- Regression Guard: Validatorで旧User-wait markerとdocs22 routeを確認。
+- Prevention: Cross-cutting behavior変更はOwner → Router → Templates → Validatorの順で同じ代表Caseを通す。
+- Guide candidate: yes — Routing / Template Contractへ反映。
+
+### PL-F-010 Deep Audit詳細が再びRoot REQUIREMENTSへ逆流した
+
+- Date: 2026-09-07
+- Status: resolved
+- Severity: high
+- Symptom: Phase 0の6軸採点、Gap分類、Research Priority等の実行方法がRoot `REQUIREMENTS.md`へ大きく追加され、Current Contractが再びRule本文化し始めた。
+- Root Cause: 「今回必要な監査要件」と「恒久的な監査手順」の保存先を分けなかった。
+- Final Fix: Root Requirementsは「Deep Auditが再実行可能である」というProject Contractだけへ戻し、詳細手順は`docs/14` + `maintenance/DEEP_SYSTEM_AUDIT.md` + audit reportsへ分離。
+- Detection method: Requirements responsibility review。
+- Regression Guard: ValidatorでPhase 0 audit procedure markerのRoot Requirements再混入を検出。
+- Prevention: Current Requirementsへ手順詳細を入れる前に、その内容がBehavioral Owner / Checklistの責務ではないか確認する。
+- Guide candidate: yes — Current Contract / History separationへ反映。
+
+### PL-F-011 Guideが自分のSupply-chain Ruleを自己適用できていなかった
+
+- Date: 2026-09-07
+- Status: resolved
+- Severity: high
+- Symptom: Guideはexternal reusable workflowのSHA固定を推奨していたが、自身の`validate-guide.yml`は`actions/checkout@v4` / `actions/setup-node@v4`のmoving tagを使用していた。
+- Root Cause: Common Ruleの追加時に対象Product Repoだけを想定し、Guide自身へのSelf-application auditをしなかった。
+- Final Fix: Workflowをfull-length Commit SHAへ固定し、`docs/16`へAction dependency全般のSupply-chain Contractを追加。
+- Detection method: Repository surface audit。
+- Regression Guard: Validatorで`uses:`参照が40桁SHAであることを確認。
+- Prevention: Common Ruleを追加・強化したらGuide自身が該当するかSelf-application checkを行う。
+- Guide candidate: yes — Governance self-application / docs16へ反映。
+
+### PL-F-012 独立責務を「長いだけ」と見て分離を保留した
+
+- Date: 2026-09-07
+- Status: resolved
+- Severity: medium
+- Symptom: `docs/10`がGitHub Project変更WorkflowとConversation Handoff / stale checkpoint recoveryを同時に所有していたが、以前は「長文だが専門Owner」として保留していた。
+- Root Cause: File lengthを分割しない原則を強く意識しすぎ、**責務が独立しているか**の判定を弱めた。
+- Final Fix: GitHub変更Workflowは`docs/10`、Conversation Handoff / Recoveryは新しい`docs/22`へ分離し、Machine Router / Human Router / Templatesを接続。
+- Detection method: Owner responsibility matrix / task routing test。
+- Regression Guard: docs22 required + owner registration + conversation recovery golden case。
+- Prevention: 「長いから分ける」は避けるが、「異なるTaskが別々にRoutingできる」は分割Evidenceとして扱う。
+- Guide candidate: yes — Governance / Deep Auditへ反映。
+
 ## Success
 
 ### PL-S-001 Ruleを消さず責務を戻す整理
@@ -123,3 +188,25 @@ Common Rule本文は`docs/`、一般化済みのFailure / Success / Anti-Pattern
 - Reuse when: Documentation SystemやAgent Rule Systemを大きく整理した後の再監査。
 - Avoid when: Typoや単一Link修正だけの局所作業。
 - Guide candidate: yes — `docs/14` + `maintenance/DEEP_SYSTEM_AUDIT.md`へ反映済み。
+
+### PL-S-004 ResearchはSource CountよりDecision Coverageで止める
+
+- Date: 2026-09-07
+- Goal: Deep Researchを少数Source biasから守りつつ、100件等の数値自体を作業Goalにしない。
+- Adopted Pattern: Broad DiscoveryはTopicに応じた幅で行い、終了条件を`Decision Coverage + Research Saturation`へ置く。Countは透明性の記録だけにする。
+- Why it worked: Evidenceが少数の一次Sourceへ集約されるTopicと、多数の実例比較が必要なTopicの両方を同じ固定Quotaへ押し込めずに済む。
+- Trade-off: Saturation判断は完全自動化できず、Evidence Map / Opposing Evidence / ApplicabilityのReviewが必要。
+- Reuse when: Research量の数字が品質指標化し始めたとき。
+- Avoid when: 法定件数等、外部Contract自体が固定Sample数を要求する場合。
+- Guide candidate: yes — `docs/20`へ反映。
+
+### PL-S-005 Audit ReportをCurrent Finding Registerとして保存する
+
+- Date: 2026-09-07
+- Goal: 長い監査が途中で切れても「何を見た / 何が残る / どう直した」をGitHubだけから復元する。
+- Adopted Pattern: `maintenance/audits/`へbaseline / owner matrix / finding / severity / action / final statusを保存し、修正時にResolvedへ更新する。
+- Why it worked: Conversation Summaryに依存せず、監査進捗と未解決FindingをCurrent Repositoryから追跡できる。
+- Trade-off: ReportをCommon Rule本文にしないよう、次回AuditではCurrent Ownerを再読する必要がある。
+- Reuse when: 多数Owner /複数PRにまたがるSystem audit。
+- Avoid when: 単一Fileの小修正。
+- Guide candidate: yes — `docs/14` / Audit archiveへ反映。
