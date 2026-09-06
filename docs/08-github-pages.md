@@ -41,15 +41,11 @@ https://<user>.github.io/<repo>/
 
 ## 公開URL / Repository導線
 
-公開して実際に使える代表Site URLがある場合は、Projectを開いた人が迷わず到達できるようにします。
+この章はGitHub Pages上の**実公開確認・Path・Pages固有Contract**を担当します。
 
-原則として:
+README上部やRepository About `Website`等の、Hosting方式を問わない**Repository discoverability /公開Siteへの導線**は [10 Project Management](10-project-management.md) を正本とします。
 
-- README上部付近から代表Site URLへ到達できる
-- GitHub RepositoryのAbout欄 `Website` に代表URLを設定する
-- 複数URLがある場合も、About欄にはPrimary URLを1つ置き、他はREADMEへ整理する
-
-公開URLを確認できていない場合は推測で「公開済み」と書きません。
+ここでは公開URLを確認できていない場合に推測で「公開済み」とせず、実際のPages URLと最終Commitの対応を確認します。
 
 ## 404 / Recovery
 
