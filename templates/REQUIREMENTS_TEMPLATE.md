@@ -109,8 +109,12 @@ User-facing UIがある場合、[Visual Quality Baseline](../docs/17-visual-qual
 
 - Game Overview:
 - Core Experience:
+- Intended Player Demand:
 - Supporting Systems:
 - Non-goals:
+- Relevant Game Context / Domain Lens（該当時）:
+- State → Task → Surface（重要な場合）:
+- Experience Contract / Intentional Constraint・Uncertainty（重要な場合）:
 - Primary Completion Condition:
 - Moment-to-Moment Loop:
 - Core Gameplay Loop:
@@ -126,7 +130,7 @@ User-facing UIがある場合、[Visual Quality Baseline](../docs/17-visual-qual
 - Development Phases / Phase Gate:
 - Adjustable Parameters:
 
-Prototype / Playable MVP / Main Game Completeを区別し、起動・移動だけをPlayable完成条件にしません。
+Prototype / Playable MVP / Main Game Completeを区別し、起動・移動だけをPlayable完成条件にしません。`State → Task → Surface`やDomain Lens等はCore Experienceへ実質的に影響する場合だけ使い、小規模Gameへ機械的に要求しません。
 
 ## 6. データ構成
 
@@ -230,7 +234,7 @@ Prototype / Playable MVP / Main Game Completeを区別し、起動・移動だ�
 - [ ] `LEARNING` ProfileではStarting Knowledge / 学習順 / Content Depth Contractを定義
 - [ ] `LEARNING` Profileでは主要Lessonが用語紹介だけで終わらず、必要な説明・具体例・理解確認を持つ
 - [ ] `LEARNING` Profileでは次の学習 / 復習への導線を確認
-- [ ] `GAME` ProfileではCore Experience / Playable MVP / Primary Completion Conditionを定義
+- [ ] `GAME` ProfileではCore Experience / Intended Player Demand / Playable MVP / Primary Completion Conditionを定義
 - [ ] `GAME` Profileでは現在Phaseの主要Gameplay FlowをRuntimeでEnd-to-End確認
 - [ ] `GAME` ProfileではActual Playtestを実施し、Static Testだけで完成扱いしていない
 - [ ] `GAME` Profileで永続Saveがある場合、Save / Reload / Existing Saveを必要範囲で確認
