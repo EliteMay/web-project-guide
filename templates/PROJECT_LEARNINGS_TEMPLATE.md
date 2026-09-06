@@ -1,15 +1,24 @@
 # PROJECT LEARNINGS
 
-このファイルは、Project内で発生した**再発防止価値の高い失敗**と、今後も再利用したい**成功パターン**を長期的に残すための正本です。
+このファイルは、Project内で発生した**再発防止価値の高い失敗**と、今後も再利用したい**成功パターン**を長期的に蓄積するための正本です。
 
-作業報告書は「今回何を変更したか」、このファイルは「このProjectから何を学んだか」を記録します。
+Work Reportは「今回何を変更したか」、このファイルは「このProjectから何を学んだか」を記録します。
+
+## Accumulation Contract
+
+- 再発価値のあるLearningは今後もこのFileへ継続して追加する。
+- 新しいLearningを追加するために、過去の有効なLearningを理由なく削除しない。
+- Common Guide / Catalogへ一般化・昇格した後も、**このProjectで何が起きたかというProject Evidenceは残す**。必要なら「Promoted to ...」を追記する。
+- 同じRoot Causeの重複記録は統合してよいが、過去Evidenceを失う場合は統合理由と参照先を残す。
+- 単なる作業履歴・全Commitの要約はここへ積まず、Work Report / CHANGELOG / Git historyへ分ける。
+- Statusは`open / resolved / monitoring / superseded`等でCurrent Stateが分かるように更新する。
 
 ## Failure
 
 ### PL-F-001 タイトル
 
 - Date:
-- Status: open / resolved / monitoring
+- Status: open / resolved / monitoring / superseded
 - Severity: low / medium / high / critical
 - Cost: low / medium / high / very-high
 - Symptom:
@@ -23,6 +32,7 @@
 - Regression Guard:
 - Prevention:
 - Related Issue / PR / Commit:
+- Promoted to Guide / Catalog:
 - Guide candidate: yes / no
 - Guide note:
 
@@ -40,6 +50,7 @@
 - Reuse when:
 - Avoid when:
 - Related files / tests:
+- Promoted to Guide / Catalog:
 - Guide candidate: yes / no
 - Guide note:
 
