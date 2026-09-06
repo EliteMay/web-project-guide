@@ -82,6 +82,47 @@
     "newChapterRequiresDistinctResponsibility": true,
     "ruleAdditionMustCheckConsolidation": true
   },
+  "deepSystemAudit": {
+    "enabled": true,
+    "procedure": "maintenance/DEEP_SYSTEM_AUDIT.md",
+    "owner": "docs/14-continuous-improvement.md",
+    "assumption": "start from a low-score hypothesis and require current repository evidence to earn confidence",
+    "surfaces": [
+      "entry and source-of-truth integrity",
+      "normative owner topology",
+      "human and machine routing parity",
+      "template and checklist drift",
+      "semantic duplication across documents",
+      "machine-readable schemas and validator coverage",
+      "history and project-specific evidence leakage",
+      "repository metadata, workflows and final-state operations"
+    ],
+    "requiredRepresentativeCases": [
+      "guide deep review",
+      "local UI bug",
+      "meaningful visual change",
+      "existing save and schema migration",
+      "game primary flow or completion change",
+      "cross-repository GitHub infrastructure change",
+      "researchable question"
+    ],
+    "findingClasses": [
+      "blocking contradiction",
+      "structural debt",
+      "documentation polish",
+      "deferred by evidence",
+      "repository metadata"
+    ],
+    "completionRequires": [
+      "blocking contradictions fixed or explicitly unresolved",
+      "rule preservation checked when moving or consolidating guidance",
+      "human-machine routing parity reviewed on representative cases",
+      "structural regression guards added where automation is appropriate",
+      "final branch or pull request diff reviewed",
+      "pull request head validation checked",
+      "post-merge main validation checked"
+    ]
+  },
   "webSources": [
     {
       "name": "W3C Web Accessibility Initiative",
