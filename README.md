@@ -53,6 +53,7 @@ MUST / SHOULD / MAY / CONDITIONAL、Source of Truth、Rule Budgetは [Guide Gove
 | Game Development | [19](docs/19-game-development.md) |
 | Evidence-first Research | [20](docs/20-evidence-first-research.md) |
 | Rule Routing / Preflight | [21](docs/21-rule-routing-preflight.md) |
+| Task-first Structure / Flow Research | [22](docs/22-task-first-structure-flow-research.md) |
 
 Machine-readable Routingは [`maintenance/rule-router.json`](maintenance/rule-router.json) を正本とします。
 
@@ -65,6 +66,7 @@ Machine-readable Routingは [`maintenance/rule-router.json`](maintenance/rule-ro
 - 未実装・未確認を完成済み / 確認済みとして扱わない。
 - User-facing UIはVisual Quality Baselineを満たす。
 - Meaningful Visual Changeは必要なResearchを先に行う。
+- MeaningfulなIA / Navigation / Task Flow変更ではTask-first Structure / Flow Researchを使う。
 - AI生成Codeも既存仕様・Test・最終状態のValidationを通す。
 - 新しいCommon Ruleを追加する前に、既存Owner / Catalog / Checklist / Project側へ統合できないか確認する。
 - Requirementsへ実装済み改善履歴を積み続けない。

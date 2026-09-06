@@ -39,6 +39,7 @@ UserがGuideの章番号、Profile、Gate名を覚えていることを前提に
 原則としてAgent側で判断します。
 
 - どのOwner Docが必要か
+- MeaningfulなIA / Navigation / Task Flow変更か
 - Meaningful Visual Changeか
 - Researchable Questionか
 - Save / Migration / Security等の高Risk条件があるか
@@ -89,6 +90,7 @@ Routingのための分類は、必要最小限の軸だけ使います。
 - `ARCHITECTURE`
 - `DATA_STORAGE`
 - `UI_UX`
+- `STRUCTURE_FLOW`
 - `VISUAL`
 - `PERFORMANCE_RELIABILITY`
 - `SECURITY`
@@ -106,6 +108,8 @@ Routingのための分類は、必要最小限の軸だけ使います。
 - `LEARNING_CONTENT`
 - `RESEARCH`
 - `GOVERNANCE_ROUTING`
+
+`STRUCTURE_FLOW`はUser Goal / TaskからInformation Architecture、Navigation構造、Task Flow、State、Search / Browse、Recovery等を設計・再設計する場合に使います。Navigation barのColor / Typography等だけを変える場合は`VISUAL` / `UI_UX`を使います。
 
 `MAINTENANCE` Work Typeは「保守作業である」という作業種類を示し、`MAINTENANCE` DomainはVersion / Runtime Path / Legacy / Patch等の保守Ruleが実際に関係する場合に使います。
 
@@ -204,7 +208,7 @@ Tool出力が途中で切れている、検索Snippetしか取得していない
 | `STORAGE-MIGRATION-GATE` | `docs/03-data-storage.md` | 既存Save / Schema / Storage変更 |
 | `GAME-PLAYTEST-GATE` | `docs/19-game-development.md` | GAMEの主要Flow / Completion変更 |
 
-Gateを増やすこと自体を目的にしません。通常のRuleはOwner Doc単位でRoutingします。
+Gateを増やすこと自体を目的にしません。通常のRuleはOwner Doc単位でRoutingします。`STRUCTURE_FLOW`も現時点ではDomain Routeとして扱い、専用Stable Gateは設けません。
 
 ## Fail / Fallback
 
@@ -226,6 +230,7 @@ MUST相当のOverrideでは理由・影響・代替策を残します。
 代表Trigger:
 
 - 局所修正から大規模変更へ拡大
+- IA / Navigation / Task Flowの再設計が必要と判明
 - Storage / Migrationが必要と判明
 - Auth / API / Cloud追加
 - Meaningful Visual Changeへ発展

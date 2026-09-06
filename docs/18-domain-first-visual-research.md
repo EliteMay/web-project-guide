@@ -15,6 +15,18 @@
 
 Visual Design原則は [04 UI / UX / Accessibility](04-ui-ux-accessibility.md)、最低品質は [17 Visual Quality Baseline](17-visual-quality-baseline.md) を正本とします。
 
+User Goal / TaskからInformation Architecture、Navigation構造、Task Flow、State、Page / Viewを導くResearch Workflowは [22 Task-first Structure / Flow Research](22-task-first-structure-flow-research.md) を正本とします。
+
+```text
+Navigationの分類・階層・到達経路を変える
+→ docs/22
+
+Navigation UIのLayout / Density / Typography / Color等を変える
+→ docs/18 + docs/04
+```
+
+構造とVisualを両方変える場合は、Task / IA / Flowを先に整理してからVisual Directionへ進みます。
+
 ## 目的
 
 同じ「良いDesign」でも、Project Type / User Task / Content / Audience / 利用頻度 / 画面密度によって適否が変わります。
@@ -32,13 +44,15 @@ Visual Design原則は [04 UI / UX / Accessibility](04-ui-ux-accessibility.md)�
 
 次のような変更では、CSSを本格修正する前に、そのサイトと同じ用途・ジャンル・Taskに近い現行Site / Appを調査します。
 
-- Page Compositionを大きく変える
-- Navigationを変更する
+- Page Composition / Layoutを大きく変える
+- Navigation UIのPlacement / Density / Visual hierarchyを大きく変える
 - Theme / Visual Directionを刷新する
-- Dashboard / Workspace / Knowledge Site等の構造を組み直す
+- Dashboard / Workspace / Knowledge Site等のVisual Compositionを組み直す
 - 「もっと良い見た目にして」のように方向自体が未確定
 - 既存Visualの評価が低く、Foundationから直す
 - 新規PageでVisual Directionが完成度へ大きく影響する
+
+IA / Navigation structure / Primary Task Flow自体を変える場合は、先に [22 Task-first Structure / Flow Research](22-task-first-structure-flow-research.md) で構造判断を行います。
 
 重要かつ不確実なVisual Directionでは、まず [Evidence-first Research](20-evidence-first-research.md) の必要なResearch DepthでBroad Researchを行い、その後この章でVisual固有の重点比較と設計判断を行います。
 
@@ -266,9 +280,8 @@ Foundation Resetでは原則として次へ戻ります。
 ```text
 Purpose / User Task
 → Content / Data / State
+→ IA / Navigation / Task Flowに問題があればdocs/22で再設計
 → Target Type / Domain Research
-→ Information Architecture
-→ Navigation / Main Structure
 → Wireframe
 → Design Direction
 → Typography / Spacing / Hierarchy
@@ -314,16 +327,17 @@ AIへ「見た目を良くして」と依頼された場合、いきなりCSSを
 
 ```text
 1. Current Repo / Screenshot / Requirementsを確認
-2. Target Typeを定義
-3. 必要な強度でEvidence-first Researchを行う
-4. Representative Visual Referencesを重点比較
-5. Domain Research Brief
-6. KEEP / FIX / REMOVE
-7. 必要なら2〜3 Directionを比較
-8. Candidateを実装
-9. Current vs Candidateを確認
-10. Visual Review
-11. User feedbackをEvidenceへ残す
+2. IA / Navigation / Task Flow自体を変えるならdocs/22で先に整理
+3. Target Typeを定義
+4. 必要な強度でEvidence-first Researchを行う
+5. Representative Visual Referencesを重点比較
+6. Domain Research Brief
+7. KEEP / FIX / REMOVE
+8. 必要なら2〜3 Directionを比較
+9. Candidateを実装
+10. Current vs Candidateを確認
+11. Visual Review
+12. User feedbackをEvidenceへ残す
 ```
 
 AI自身が過去に作った成功例を最初の答えとして使わないことを基本とします。
@@ -333,6 +347,7 @@ AI自身が過去に作った成功例を最初の答えとして使わないこ
 大きなVisual変更で次を説明できない場合、Design Directionの検討不足と扱います。
 
 - このProjectは何種類のSite / Appか
+- IA / Navigation / Task Flow変更が必要だった場合、docs/22で構造判断を先に行ったか
 - 必要なResearch DepthでどんなEvidence / Candidateを調べたか
 - どのRepresentative Visual Referencesを重点比較したか
 - そのCategoryで共通していた構造は何か

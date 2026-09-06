@@ -33,6 +33,7 @@ const requiredFiles = [
   'docs/19-game-development.md',
   'docs/20-evidence-first-research.md',
   'docs/21-rule-routing-preflight.md',
+  'docs/22-task-first-structure-flow-research.md',
   'maintenance/README.md',
   'maintenance/DEEP_SYSTEM_AUDIT.md',
   'maintenance/review-policy.json',
@@ -148,21 +149,39 @@ if (!/Current Contract|現在のProject Contract/.test(requirements)) {
 const readme = read('README.md');
 const startHere = read('START_HERE.md');
 const governance = read('docs/00-governance.md');
+const uiUx = read('docs/04-ui-ux-accessibility.md');
+const visualResearch = read('docs/18-domain-first-visual-research.md');
 const routingGuide = read('docs/21-rule-routing-preflight.md');
+const structureFlowResearch = read('docs/22-task-first-structure-flow-research.md');
 const continuousImprovement = read('docs/14-continuous-improvement.md');
 const deepAudit = read('maintenance/DEEP_SYSTEM_AUDIT.md');
 
 for (const requiredLink of [
   'docs/21-rule-routing-preflight.md',
+  'docs/22-task-first-structure-flow-research.md',
   'maintenance/rule-router.json'
 ]) {
   if (!readme.includes(requiredLink)) errors.push(`README.md: missing routing entry -> ${requiredLink}`);
 }
 if (!startHere.includes('docs/21-rule-routing-preflight.md')) errors.push('START_HERE.md: missing Rule Routing / Preflight route');
+if (!startHere.includes('docs/22-task-first-structure-flow-research.md')) errors.push('START_HERE.md: missing Structure / Flow Research route');
 if (!governance.includes('docs/21-rule-routing-preflight.md') && !governance.includes('21-rule-routing-preflight.md')) {
   errors.push('docs/00-governance.md: missing Rule Routing owner registration');
 }
+if (!governance.includes('docs/22-task-first-structure-flow-research.md')) {
+  errors.push('docs/00-governance.md: missing Structure / Flow Research owner registration');
+}
 if (!routingGuide.includes('../maintenance/rule-router.json')) errors.push('docs/21: missing machine router link');
+if (!routingGuide.includes('STRUCTURE_FLOW')) errors.push('docs/21: missing STRUCTURE_FLOW domain guidance');
+if (!uiUx.includes('22-task-first-structure-flow-research.md')) errors.push('docs/04: missing Structure / Flow Research route');
+if (!visualResearch.includes('22-task-first-structure-flow-research.md')) errors.push('docs/18: missing structural research boundary route');
+for (const ownerLink of [
+  '04-ui-ux-accessibility.md',
+  '18-domain-first-visual-research.md',
+  '20-evidence-first-research.md'
+]) {
+  if (!structureFlowResearch.includes(ownerLink)) errors.push(`docs/22: missing responsibility boundary route -> ${ownerLink}`);
+}
 if (!continuousImprovement.includes('../maintenance/DEEP_SYSTEM_AUDIT.md')) {
   errors.push('docs/14: missing Deep System Audit procedure link');
 }
@@ -334,6 +353,23 @@ if (router) {
     }
     if (!startHere.includes('docs/14-continuous-improvement.md')) {
       errors.push('START_HERE.md: guide improvement human route must include docs/14');
+    }
+  }
+
+  const structureFlowCase = (router.goldenCases || []).find((testCase) => testCase.id === 'meaningful-structure-flow-requirements');
+  if (!structureFlowCase) {
+    errors.push('rule-router.json: missing meaningful-structure-flow-requirements golden case');
+  } else {
+    const resolved = resolveCase(structureFlowCase);
+    for (const rel of [
+      'docs/04-ui-ux-accessibility.md',
+      'docs/20-evidence-first-research.md',
+      'docs/22-task-first-structure-flow-research.md'
+    ]) {
+      if (!resolved.has(rel)) errors.push(`structure flow routing parity: missing -> ${rel}`);
+    }
+    if (resolved.has('docs/18-domain-first-visual-research.md')) {
+      errors.push('structure flow routing parity: visual research must not be required without visual scope');
     }
   }
 }

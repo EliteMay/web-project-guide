@@ -24,7 +24,8 @@
     "VISUAL_RESEARCH": "docs/18-domain-first-visual-research.md",
     "GAME_DESIGN": "docs/19-game-development.md",
     "RESEARCH": "docs/20-evidence-first-research.md",
-    "RULE_ROUTING": "docs/21-rule-routing-preflight.md"
+    "RULE_ROUTING": "docs/21-rule-routing-preflight.md",
+    "STRUCTURE_FLOW": "docs/22-task-first-structure-flow-research.md"
   },
   "gates": {
     "RULE-PREFLIGHT-GATE": {
@@ -62,6 +63,7 @@
     "ARCHITECTURE": ["docs/02-architecture.md"],
     "DATA_STORAGE": ["docs/03-data-storage.md"],
     "UI_UX": ["docs/04-ui-ux-accessibility.md", "docs/17-visual-quality-baseline.md"],
+    "STRUCTURE_FLOW": ["docs/22-task-first-structure-flow-research.md", "docs/04-ui-ux-accessibility.md"],
     "VISUAL": ["docs/04-ui-ux-accessibility.md", "docs/17-visual-quality-baseline.md"],
     "PERFORMANCE_RELIABILITY": ["docs/05-performance-reliability.md"],
     "SECURITY": ["docs/06-security.md"],
@@ -135,6 +137,22 @@
         "docs/18-domain-first-visual-research.md",
         "docs/19-game-development.md",
         "docs/20-evidence-first-research.md"
+      ]
+    },
+    {
+      "id": "meaningful-structure-flow-requirements",
+      "workType": "REQUIREMENTS",
+      "domains": ["STRUCTURE_FLOW"],
+      "signals": ["RESEARCHABLE_QUESTION"],
+      "mustInclude": [
+        "docs/01-requirements.md",
+        "docs/12-project-profiles.md",
+        "docs/04-ui-ux-accessibility.md",
+        "docs/20-evidence-first-research.md",
+        "docs/22-task-first-structure-flow-research.md"
+      ],
+      "mustNotRequire": [
+        "docs/18-domain-first-visual-research.md"
       ]
     },
     {

@@ -8,6 +8,25 @@
 - Loading / Empty / Error / Success の4状態を考える。
 - 0件画面には復帰操作を置く。
 
+## Task-first Structure / Flow
+
+### SHOULD: Page / Featureより先にUser Goal / Taskを見る
+
+主要なPage、Navigation、機能群をTemplateとして先に固定せず、Userが達成したいGoal / Needと主要Taskから必要Information / Functionを導きます。
+
+```text
+User Goal / Need
+→ Task
+→ Information / Function
+→ Information Architecture
+→ Navigation / Flow / State
+→ Page / View
+```
+
+意味のあるIA / Navigation構造 / Task Flow / Search・Browse / Recovery / Returning User等のResearch Workflowは [22 Task-first Structure / Flow Research](22-task-first-structure-flow-research.md) を正本とします。この章ではUI / UX / Accessibilityの一般原則を維持し、Structure Research Workflowを重複定義しません。
+
+Navigationの分類・階層・到達経路を変える場合は`docs/22`、Navigation UIのLayout / Typography / Color等のVisual変更は [18 Domain-first Visual Research](18-domain-first-visual-research.md) とこの章を使います。
+
 ## Visual Design Quality
 
 Visual Designの目的は、装飾量を増やすことではなく、**情報の関係・優先度・操作方法を視覚的に理解しやすくし、そのProjectらしい構造を作ること**です。
