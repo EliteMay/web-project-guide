@@ -1,343 +1,233 @@
 # 01 要件定義
 
-新規制作では、実装前に最低限以下を整理します。
+この章はProject Requirements Workflow、Decision Classification、Requirements Persistence / Handoffの正本です。
 
 ## 必須項目
 
-- 目的: 何を解決するサイト / アプリか
-- 利用者: 自分だけ / 友人共有 / 一般公開
-- 必要機能: MVPと後回し機能を分ける
-- 画面構成: 各画面の役割と主要導線
-- データ構成: 何をJSON / 保存データにするか
-- 保存方法: localStorage / IndexedDB / GitHub JSON / 外部DB / Electron userData等
+新規制作では実装前に最低限次を整理します。
+
+- 目的: 何を解決するSite / App / Gameか
+- 利用者: 自分 / 友人共有 / 一般公開等
+- 必要機能: MVPとLaterを分ける
+- 主要利用Flow
+- 画面 / Surfaceと役割
+- Data / Storage
+- External dependency / Deployment
 - 崩してはいけない仕様
-- 完成条件
+- 重要な非機能要件
+- 観測可能な完成条件
+- 未確認事項
 
-結果を大きく左右しない不明点は、仮定を明記したうえで進めます。
-重要な仕様だけ確認します。
+結果を大きく左右しない不明点は、Current Repository / Existing User Intent / Evidenceから合理的な仮定を置き、記録して進めます。
 
-## 対話型要件定義 Workflow
+## Agent Autonomy / Decision Contract
 
-ChatGPT / Coding Agentと会話しながら要件定義する場合は、**重要な判断だけUserへ確認し、それ以外はおすすめ案を採用して進める**ことを基本とします。
+### MUST: Best Reasonable DecisionをDefaultにする
 
-目的は、質問を増やしすぎずにUserがProjectの核を保持し、実装前に必要な大きな判断だけ確実に決めることです。
+要件定義は「質問して承認を待つ」ことを標準Flowにしません。
+
+```text
+Current Repository
++ Current Requirements
++ Existing User Intent
++ Project Learnings / Evidence
++ Compatibility / Risk
+↓
+Best Reasonable Decision
+↓
+必要なAssumption / Riskを記録
+↓
+作業継続
+```
+
+Repository確認やResearchで解決できる内容をUserへ投げ返しません。
 
 ### Decision Class
 
-要件定義中の判断を次の3種類へ分けます。
+判断の**影響度**を次へ分類します。Classは「必ずUserへ聞く」という意味ではありません。
 
-#### Core Decision — Userが決める
+#### Core Decision
 
-変更すると「別のSite / App / Game」と言えるほど、目的・主要体験・主要利用者・主要機能の意味が変わる判断です。
-
-例:
-
-- Site / Appの一番の目的
-- Gameで何をして楽しむか
-- 学習Siteで何をどう学べるようにするか
-- 戦闘中心 / 自動化中心 / 探索中心等の主要体験
-- Single / Multi、閲覧中心 / 編集中心等の大きな機能方針
-- 利用者が変わることで内容自体が大きく変わる場合のTarget Audience
-
-### MUST: Core Decisionは勝手に確定しない
-
-Agentはおすすめ案を示してよいですが、Core DecisionはUserの回答を待ちます。
-
-判断に迷う場合は次を基準にします。
-
-> ここを変えると、Userが想像していたProductとは別物になるか？
-
-YESならCore Decisionとして扱います。
-
-#### High-cost / Risk Decision — 原則Userへ確認
-
-Productの核そのものではなくても、後から変えると大きな手戻り・費用・データ互換性問題・公開事故につながる判断です。
+変更すると別Productと言えるほど、目的・主要体験・主要利用者・主要機能の意味が変わる判断です。
 
 例:
 
-- 保存Schema / 既存データ互換性の大変更
-- Web / Electron等Platformの大変更
-- 外部DB / Auth / API / Provider導入
-- 有料Service導入
-- 公開範囲変更
-- Login必須化
-- 主要URL / Deployment方式変更
+- Site / Appの主要目的
+- GameのCore Experience
+- 学習Siteで何をどこまで学べるようにするか
+- 閲覧中心 / 編集中心等の大きなProduct方針
+
+Core Decisionでも、Current Requirements・明示済みUser Intent・既存Project Contractから答えが一意に近い場合はそのまま進めます。
+
+#### High-cost / Risk Decision
+
+後から変えると大きな手戻り、Data互換、費用、公開事故、Security Riskにつながる判断です。
+
+例:
+
+- Storage Schema / Migration
+- Web / Electron等Platform変更
+- External DB / Auth / API / paid provider
+- 公開範囲 / Login requirement
+- URL / Deployment方式
 - 主要機能削除
-- Framework / Architectureの全面変更
-- 大規模なPage Structure / Navigation変更
-- Migrationが必要な変更
-- Security上の重要変更
+- Framework / Architecture全面変更
+- 大規模Navigation / IA変更
 
-ただし、実質的に安全な選択肢が1つしかない場合は、理由を短く説明してAgentが進めて構いません。
+High-costだから自動的に停止するのではなく、まず影響・Rollback・safe alternativeを評価します。
 
-Userが選ぶ意味のある選択肢が2つ以上ある場合に確認を優先します。
+#### Default Decision
 
-#### Default Decision — Agentがおすすめを決める
+File分割、Naming、一般的Error handling、Test方法、標準的Accessibility / Performance対策、既存方針から自然に決まる細かなUI等です。
 
-結果を大きく左右しない技術・実装・細部の判断です。
+Default Decisionは原則Agentが決めて進めます。
 
-例:
+## User Decisionが本当に必要な条件
 
-- File分割
-- JSON構造の細部
-- CSS / Component構成
-- Naming
-- Error handlingの一般的な方法
-- Testの具体的方法
-- Accessibility / Performanceの標準対策
-- 細かなUI配置
+Userへの質問は例外です。次のどれかが成立するときだけ優先します。
 
-### SHOULD: Default Decisionは確認待ちにしない
+1. **Non-inferable preference** — EvidenceやCurrent Contextでは決められず、選択でUser体験が大きく変わる。
+2. **Equal viable product directions** — 主要体験が異なる複数案が同程度に妥当で、既存Intentから選べない。
+3. **Irreversible destructive decision** — Data消去、主要機能廃止、公開範囲変更等で、安全な可逆案もCurrent Contract上の答えもない。
+4. **External permission / legal / billing / account confirmation** — User本人の権限・購入・公開・契約等、Agentが推測してはいけない外部Decision。
+5. **Material contract conflict** — 現在の明示User要求とNon-breakable Contractが競合し、どちらを優先すべきかEvidenceから解決できない。
 
-可能なら候補と採用理由を短く示して、そのままおすすめ案を採用します。
+質問前に必ず次を試します。
 
-例:
+- Current Repository / Requirements / Project Rulesを確認
+- 過去に明示済みのUser Intentを確認
+- Researchable Questionなら [20 Evidence-first Research](20-evidence-first-research.md)
+- reversible / smallest-safe alternativeを検討
 
-```text
-A / Bがありますが、今回はBの方が安全なのでBを採用します。
-```
+安全な可逆案があり、後から変更可能ならそれを採用して進めることを優先します。
 
-「どれがいい？」を細部ごとに繰り返しません。
+### 質問するとき
 
-### Evidence-first Decision Classification
+必要な質問だけをまとめます。
 
-Decision Classとは別に、**その判断をResearchで先に絞るべきか**を次の観点で分類します。
+- 今何を決めるか
+- 2〜3の意味ある選択肢
+- 推奨案
+- 推奨理由 / Risk
 
-- **User Preference** — Userが決める。ResearchはPreferenceそのものを上書きしない
-- **Researchable Question** — 既存Evidenceがあり得るため [20 Evidence-first Research](20-evidence-first-research.md) を先に使う
-- **Project-specific Decision** — Research結果とProject固有条件を見てUser + AIでDiscussionする
-- **Confirmed Requirement** — 決定した内容を正式な`REQUIREMENTS.md`へ反映する
+同じ種類の`ok`確認を繰り返しません。
 
-Core DecisionでもResearchableな部分はResearchできますが、Research結果だけでUser Intentを自動確定しません。
+## Evidence-first Decision Classification
 
-## Recommendation-by-default — 標準動作
+Decision Classとは別に、Researchが必要かを分類します。
 
-要件定義は、Userが毎回`おすすめで`と指定しなくても、原則として**Recommendation-by-default**で進めます。
+- **User Preference** — User固有の好み。既に分かっていれば再質問しない。
+- **Researchable Question** — 外部Evidenceで絞れる。`docs/20`へRouting。
+- **Project-specific Decision** — Evidence + Project条件でBest Reasonable Decisionを選ぶ。
+- **Confirmed Requirement** — 正式`REQUIREMENTS.md`へ反映可能。
 
-- Default DecisionはAgentがおすすめを選んで進める
-- 明らかに安全・妥当な推奨案がある場合は、承認待ちにせず採用する
-- 同じ種類の判断で毎回`ok` / `OK`等の承認を求めない
-- Core DecisionはUserへ確認する
-- High-cost / Risk Decisionは、意味のある選択肢が複数ある場合に確認する
-- Userの好みだけで決まり、見た目・体験・主要挙動へ明確な差が出るうえ、既存Contextから好みを推定できない場合は確認する
-- Userが`ここは考えたい`、`毎回確認して`等で自動決定を止めた範囲だけ、確認中心へ切り替える
-
-通常は判断の大半をAgent側で進め、Userへの質問は例外にします。目安として8〜9割程度をAgent側で決めても構いませんが、**質問数や自動決定率をQuotaにはしません**。Decisionの影響度を優先します。
-
-`ok` / `OK` / `それで` / `そのまま` / 選択肢記号等が直前案への承認として文脈上明確な場合、同じ確認を繰り返しません。
-
-### MUST: 質問する閾値を高く保つ
-
-次のいずれかに該当する場合だけ、Userへの確認を優先します。
-
-1. **Productの核が変わる** — 目的、主要体験、主要利用者、主要機能の意味が変わるCore Decision
-2. **後戻りCostまたはRiskが高い** — 大規模な作り直し、データ互換性、費用、公開範囲、Security、Migration等へ影響し、意味のある選択肢が複数ある
-3. **User Preferenceが決定要因** — 技術・Evidenceでは絞れず、選択によってUserが直接感じる体験差が大きい
-4. **既存の明示要件と衝突する** — 現在のUser要求、崩してはいけない仕様、正式Requirementsのどれを優先すべきか自動判断すると破壊的になり得る
-5. **不可逆または破壊的** — 主要機能削除、保存Data破棄、公開状態変更等で、誤判断した場合の復旧Costが高い
-
-実用上の最終判定は次を使います。
-
-> Userが後から知ったときに「そこは勝手に決めるべきではなかった」と合理的に感じる可能性が高いか？
-
-YESなら確認します。NOなら、原則としておすすめ案を採用して進めます。
-
-逆に、次は原則として質問しません。
-
-- 一方が明らかに安全・妥当・低Costで、Userが選ぶ実質的な意味がない
-- 後から容易に変更できる
-- File構成、Naming、標準的なError handling、Test方法等の実装詳細
-- 細かなSpacing、配置、文言等で、既存方針から自然に決められる
-- ResearchやCurrent Repository確認で先に答えを絞れる重要Question
-
-Researchで解決できる内容を、最初からUser Preferenceとして投げ返しません。
-
-## 質問の出し方
-
-### SHOULD: 質問は必要なものだけに絞り、無駄なTurnを増やさない
-
-質問が必要な場合も、独立している重要判断は最大2〜3件まで同じTurnにまとめて構いません。
-
-前の回答によって次の選択肢自体が変わる場合だけ、1件ずつ順番に確認します。
-
-質問する場合は原則として:
-
-1. 今何を決めるか
-2. 2〜3個の意味のある選択肢
-3. おすすめ案
-4. おすすめ理由を短く説明
-
-の順にします。
-
-例:
-
-```text
-今決めること: Gameの中心
-
-A. 探索中心
-B. 自動化中心 ← おすすめ
-C. 戦闘中心
-おすすめ: B
-理由: 工場・効率化要素を主要体験として活かしやすいため。
-```
-
-選択肢の差が小さく、Userが選ぶ価値が低い場合は質問せずDefault Decisionとして進めます。
-
-## 会話の長さとSummary
-
-### MUST: 要件定義の各Turn末尾で今回の決定を短く要約する
-
-説明が長くなっても、最後だけで今回何が決まったか分かるようにします。
-
-原則としてTurn末尾に次を短く示します。
-
-```text
-今回決まったこと
-- 今回新しく確定した内容
-- 必要なら次に決める内容
-```
-
-毎回過去の全決定を再掲しません。
-
-- 各Turn: 今回新しく決まったことだけ
-- 大きな区切り: ここまでの主要確定事項を短く整理
-- 要件定義完了時: 全体Summary + 正式な`REQUIREMENTS.md`へ反映
-
-長い理由説明より、**決定内容が見失われないこと**を優先します。
-
-## 標準の進行順
-
-Projectに合わない項目は省略できますが、原則として後から変えるCostが高い順に進めます。
-
-1. Productの核 / 目的
-2. 主な利用者（内容へ大きく影響する場合）
-3. MVP / 主要機能
-4. 主要利用フロー
-5. High-cost / Risk Decision
-6. 主要画面 / Navigation
-7. 主要Data / 保存
-8. Visual Directionの大枠
-9. 崩してはいけない仕様
-10. 重要な非機能要件
-11. 観測可能な完成条件
-12. 未確認事項
-
-要件定義では「何を作るか / 何を守るか」を決め、CSS値・関数名・内部変数等の「どうCodeにするか」まで決めすぎません。
+ResearchはUser Intentを勝手に上書きしませんが、Research後に毎回User承認を必須にもしません。
 
 ## Requirements Research
 
 ### Existing Project
 
-既存Projectでは、要件定義を始める前にCurrent Repositoryを確認します。
-
-必要範囲だけ次を確認します。
+要件判断前にCurrent Repositoryを必要範囲で確認します。
 
 - README / Requirements / Spec / Project Rules
 - `PROJECT_LEARNINGS.md`
-- 現在の主要実装
-- Storage / Schema / Deployment等、今回の判断に関係する部分
+- Current Runtime / Data
+- Storage / Schema / Deployment
+- Tests / Work Report / relevant diagnostic evidence
 
-過去会話や古いZIPだけを現在仕様として扱いません。
+古いConversation / ZIP / MemoryだけをCurrent Stateにしません。
 
 ### Researchable Question
 
-外部情報、既存研究、実Product / Game、User Evidence等によって答えが変わり得る重要Questionは、最初からSolution案だけを比較せず [20 Evidence-first Research](20-evidence-first-research.md) へRoutingします。
+Browser / Platform / API / Security / License / Architecture / UI / Game Design / Learning method等、外部Evidenceで答えが変わり得る重要Questionは [20](20-evidence-first-research.md) を使います。
 
-一般Research Methodの正本は`docs/20`です。この章ではQuick / Standard / Deepの探索方法、Source Quality、Opposing Evidence、Bias、Saturation、Evidence Map等を重複定義しません。
+Visual固有Researchは [18](18-domain-first-visual-research.md)、Game固有Design / Playtestは [19](19-game-development.md) の責務を維持します。
 
-例:
+## 標準の進行順
 
-- Browser / Platform / API / Providerの現在仕様
-- Security / License / 法令
-- Architecture / 技術選定
-- UI / UX / Tutorial / Onboarding
-- Game Design / Progression / Difficulty
-- 学習方法・教材構成
-- 正解が明確でない重要な改善判断
+後から変えるCostが高い順を基本にします。
 
-Visual固有のReference framing / KEEP・FIX・REMOVE / Candidate比較は [18 Domain-first Visual Research](18-domain-first-visual-research.md)、Game固有設計 / Actual Playtestは [19 Game Development](19-game-development.md) の責務を維持します。
+1. Productの核 / 目的
+2. 主な利用者
+3. MVP / Non-goals
+4. 主要利用Flow
+5. High-cost / Risk Decision
+6. 主要Surface / Navigation
+7. Data / Storage
+8. Visual Directionの大枠（該当時）
+9. Non-breakable Contract
+10. 非機能要件
+11. Completion Contract
+12. 未確認 / Assumption
+
+CSS値、Function名、内部変数等の実装詳細まで要件で固定しすぎません。
+
+## Requirements Persistence Gate
+
+### MUST: Decision complete ≠ Requirements complete
+
+Target Repositoryがあり書込み可能な要件定義では、会話でDecisionがまとまっただけでは完了扱いにしません。
 
 ```text
-Current Repository / Project Context
-→ User PreferenceかResearchable Questionか分類
-→ Researchable QuestionならEvidence-first Research
-→ Project固有条件を含めDiscussion
-→ Confirmed RequirementをREQUIREMENTS.mdへ反映
+Requirements discussion / decision
+↓
+Target Repository解決
+↓
+Current REQUIREMENTS.md取得
+↓
+確定内容をCurrent Contractとして統合
+↓
+Repositoryへ保存
+↓
+Current Repositoryから再取得
+↓
+主要Contract / rule preservation確認
+↓
+Requirements Complete
 ```
 
-細かなDefault Decisionや原因と正解が明確な局所修正のために、Researchを機械的に重くしません。
+Userが毎回「保存して」と指示することを前提にしません。TargetとSource of Truthが明確で書込み可能なら、正式保存はWorkflowの一部として実行します。
+
+### Current Contractとして統合する
+
+- 既存の有効Requirementを理由なく消さない。
+- 今回確定した恒久Decisionだけ統合する。
+- Conversation log / temporary debate /実装履歴を積まない。
+- 仕様変更でREADME / Spec等が陳腐化する場合は必要な関連文書も合わせる。
+- 大きなConflictは破壊的上書き前にCurrent ContractとEvidenceで解決する。
+
+### Persistence Verification
+
+保存後:
+
+- Current `REQUIREMENTS.md`を再取得できる
+- 今回の主要Contractが存在する
+- 既存Current Contractを不必要に失っていない
+- temporary historyが混入していない
+
+保存失敗を`保存済み`と表現しません。
 
 ## 要件定義の完了ライン
 
-要件定義は、**実装担当が大きな判断で迷わず作業を開始できる状態**になれば完了とします。
+実装担当が大きな判断で迷わず開始できる状態を完了とします。
 
-最低限、Projectに該当する次が決まっていることを確認します。
+最低限:
 
-- Productの核
-- 主な利用者
-- MVP
-- 主要利用フロー
-- High-cost / Risk Decision
-- 主要画面
-- 主要Data / 保存
-- 崩してはいけない仕様
-- 重要な非機能要件
-- 完成条件
+- Product core
+- User / Scope
+- MVP / Flow
+- Major high-cost constraints
+- Surface
+- Data / Storage
+- Non-breakable contract
+- Non-functional requirements
+- Completion conditions
 
-CSS値、class名、Function名、Componentの細分化等の実装詳細は、特別な理由がなければ実装段階へ回します。
+Open Decisionが残っていても、実装を妨げずsafe defaultで進められるものはAssumptionとして記録してReadyにできます。
 
-未解決のCore Decision / High-cost Decisionがある場合は、完成扱いせず明示します。
+**本当に実装を止めるOpen Decision**だけ`Blocking Decision`として区別します。
 
-完了時は全体を短く要約し、Projectの正式な`REQUIREMENTS.md`へ反映します。
-
-## 要件定義完了 → GitHub保存 → 実装会話 Handoff
-
-### MUST: 正式要件をGitHubへ保存してから実装へ進む
-
-ChatGPT Project等で要件定義と実装を別会話へ分ける場合、会話履歴そのものを引き継ぎの正本にしません。
-
-原則として次の流れを使います。
-
-```text
-Repository名（相談・調査）
-→ 要件定義
-→ Userが「要件定義終わり」等、完了を明示
-→ 完了条件 / 未解決Decisionを確認
-→ 対象Repositoryの正式なREQUIREMENTS.mdへ統合
-→ GitHubへの保存成功を確認
-→ Implementation HandoffをReadyにする
-→ 置換済みの実装会話開始Promptを出す
-→ Repository名（実装）の新しい会話
-→ 最新Guide + Current Repository + REQUIREMENTS.mdを確認
-→ 実装開始
-```
-
-要件定義中の各Turnを毎回GitHubへCommitする必要はありません。正式版へ反映する標準の合図は、Userが`要件定義終わり`等で完了を明示した時点とします。
-
-### MUST: `REQUIREMENTS.md`を正式な要件のSource of Truthにする
-
-要件定義完了時は、対象Repositoryの既存`REQUIREMENTS.md`を確認し、今回確定した内容を統合します。
-
-- 既存要件を理由なく丸ごと作り直さない
-- 現在も有効な過去要件を消さない
-- 今回変更した要件、必要な変更理由、未確認事項を残す
-- README / SPEC等と重大な矛盾がある場合は、破壊的に上書きせず確認する
-- 仕様変更が確定した場合は、必要な関連文書も現行仕様と一致させる
-- 会話ログや長い議論の全文は保存せず、実装に必要な決定を残す
-
-別の`HANDOFF.md`等へ同じ正式要件を複製しません。Implementation PromptはSource of Truthではなく、正式文書へ到達するためのRouterです。
-
-### MUST: 保存成功を確認するまで完了扱いにしない
-
-GitHubへの書き込みが失敗した場合、`保存済み`または`要件定義完了`として扱いません。
-
-- 保存失敗理由を明示する
-- 正式要件がGitHubへ反映されていない状態で実装開始を案内しない
-- 古い会話やMemoryを代替Source of Truthとして実装を始めない
-
-### Implementation Handoff Status
-
-正式要件には、実装を開始できる状態か判断できる短いHandoff情報を持たせます。
+## Implementation Handoff
 
 推奨形式:
 
@@ -346,274 +236,164 @@ GitHubへの書き込みが失敗した場合、`保存済み`または`要件�
 
 - Status: Ready for implementation / Not ready
 - Requirements updated: YYYY-MM-DD
-- Unresolved Core Decisions: None / ...
-- Unresolved High-cost Decisions: None / ...
+- Blocking Decisions: None / ...
+- Important Assumptions: None / ...
 - Implementation conversation: Repository名（実装）
 ```
 
-`Ready for implementation`は、GitHubへの正式保存が成功し、実装開始を妨げる未解決Decisionがない場合だけ使います。
+`Ready`は正式保存が確認でき、実装を止めるBlocking Decisionがない場合に使います。
 
-### Implementation Conversation Prompt
+新しい実装会話ではPrompt本文を第二Source of Truthにせず、Current Repository +正式Requirementsを読みます。
 
-要件定義完了後、新しい実装会話へ移る場合は [Implementation Conversation Handoff Template](../templates/IMPLEMENTATION_CONVERSATION_TEMPLATE.md) を使います。
-可能ならAgentがRepository URL / Full Name / Repository Nameを置換した完成済みPromptをそのまま出します。Userへ長い会話Summaryをコピーさせる必要はありません。
+Template: [Implementation Conversation Handoff](../templates/IMPLEMENTATION_CONVERSATION_TEMPLATE.md)
 
-実装会話では、Prompt自体ではなく次を確認してから作業を始めます。
+## Requirements Draft / Conversation移行
 
-1. 最新の`EliteMay/web-project-guide`の`README.md` / `START_HERE.md`
-2. 対象Repositoryの現在のGitHub状態
-3. 正式な`REQUIREMENTS.md`
-4. 変更に関係するREADME / SPEC / Project Rules / `PROJECT_LEARNINGS.md` / 実装
+要件定義途中で会話を移す必要がある場合、必要に応じてRoot `REQUIREMENTS_DRAFT.md`をCheckpointとして使えます。
 
-### REQUIREMENTSと現在実装が食い違う場合
+Draftは正式Requirementsではありません。
 
-正式な`REQUIREMENTS.md`は「これから実現する正式な要件」、現在のCode / Runtimeは「現在どうなっているかを確認するEvidence」として扱います。
+保存内容:
 
-- 未実装なだけ → 要件に従って実装してよい
-- 軽微な古い記述 / Document差 → 現行要件へ合わせて必要な文書を更新してよい
-- 保存互換性破壊、主要機能削除、大きな既存挙動変更、どちらが正しいか不明 → User確認を優先
+- ここまでの新しいDecision
+- 未確定 / Blocking候補
+- 既存Requirementから変更検討中の項目
+- 重要Conflict / Assumption
+- 次に確認する内容
 
-現在Codeが違うという理由だけで、正式要件を無視しません。一方で、要件が新しいという理由だけで既存データや重要仕様を破壊しません。
+Conversation log全文を保存しません。
 
-### Draft要件
-
-要件定義途中で別の`Repository名（相談・調査）`会話へ移る必要がある場合は、必要に応じてRepository rootの`REQUIREMENTS_DRAFT.md`へ途中状態を保存します。
-
-`REQUIREMENTS_DRAFT.md`は**未確定の引き継ぎ用Checkpoint**であり、正式要件のSource of Truthではありません。
-
-原則フロー:
+移行時:
 
 ```text
-Repository名（相談・調査）
-→ 要件定義途中
-→ Userが新しい相談・調査会話へ移りたいと明示
-→ 現在までの決定 / 未確定事項を整理
-→ REQUIREMENTS_DRAFT.mdを作成または統合更新
-→ GitHubへのDraft保存成功を確認
-→ Requirements Conversation Resume Templateを置換
-→ 新しいRepository名（相談・調査）
-→ REQUIREMENTS.md + REQUIREMENTS_DRAFT.md + Current Repositoryを確認
-→ 未確定事項から再開
+Current Requirements + Draft整理
+→ Draft保存
+→ 保存確認
+→ Resume Prompt
+→ 新会話でCurrent Repo + Requirements + Draftを読む
 ```
 
-Draft保存の標準タイミングは**会話移行時のみ**です。同じ会話を続けている間、各TurnごとにDraftをCommitしません。
+要件完了時は正式`REQUIREMENTS.md`へ統合・保存確認後に不要Draftを削除します。正式保存前にDraftを削除しません。
 
-Draftへ残す内容:
+## REQUIREMENTSとCurrent Runtimeが食い違う場合
 
-- ここまでで確定した新しい決定
-- まだ未確定のCore Decision / High-cost Decision
-- 既存正式要件から変更しようとしている項目
-- 重要な変更理由 / 衝突
-- 次の会話で最初に確認すべき項目
+- 未実装なだけ → Current Requirementへ実装
+- 軽微なDocument drift → Current Contractへ同期
+- Existing Save / major feature / URL等へ重大影響 → compatibility / rollbackを確認
+- それでも一意に決められないProduct preference / destructive conflict → User Decision
 
-会話ログ全文や長い議論は保存しません。
+Current Runtimeが違うだけで正式Requirementを無視せず、Requirementが新しいだけでExisting Dataを壊しません。
 
-既存`REQUIREMENTS_DRAFT.md`がある場合は、今回の途中状態を統合更新し、古いDraftを無条件で上書き・消去しません。
+## 小規模修正
 
-### MUST: Draftを実装開始に使わない
+毎回Full Requirementsをやり直しません。
 
-- Draftを`Ready for implementation`にしない
-- Draftを正式な実装開始Source of Truthとして扱わない
-- 新しい要件定義会話では正式`REQUIREMENTS.md`を基準にし、Draftは未確定差分として読む
-- Draftだけ残っている状態では実装開始を案内しない
-
-### MUST: 要件定義完了時にDraftを解消する
-
-Userが`要件定義終わり`等で完了を明示した場合、Draftが存在するなら次を行います。
-
-1. 正式`REQUIREMENTS.md`とDraftを確認
-2. 今回確定した内容を正式要件へ統合
-3. README / SPEC等の重大な矛盾を確認
-4. 正式`REQUIREMENTS.md`をGitHubへ保存
-5. 正式保存成功を確認
-6. Implementation Handoffを`Ready for implementation`へ更新可能か確認
-7. 不要になった`REQUIREMENTS_DRAFT.md`を削除
-8. 実装会話用Promptを生成
-
-正式`REQUIREMENTS.md`の保存成功前にDraftを削除しません。正式保存またはDraft削除に失敗した場合は、その状態を明示し、完全なHandoff完了として扱いません。
-
-Userが`新しい相談・調査会話へ移りたい`等と明示した場合、重大な矛盾やGitHub書き込み失敗がなければ、追加の保存確認質問を増やさず、Draft保存 → 保存確認 → 再開Prompt生成まで進めて構いません。
-
-### 実装中に大きな仕様変更が必要になった場合
-
-実装中にCore Decision / High-cost Decision相当の大きな仕様変更が必要になった場合は、原則として`Repository名（相談・調査）`側で要件を再整理します。
-
-```text
-Repository名（実装）
-→ 大きな仕様変更が必要
-→ Repository名（相談・調査）
-→ 要件更新
-→ 正式REQUIREMENTS.mdをGitHubへ保存
-→ Ready for implementationを再確認
-→ Repository名（実装）へ戻る
-```
-
-細かなUI配置、Naming、File分割、一般的なError Handling等のDefault Decisionまで毎回要件定義へ戻しません。
-
-## 小規模な修正
-
-小さな修正で毎回フルの要件定義をやり直す必要はありません。
-
-最低限、以下だけ確認します。
+最低限:
 
 - 何を直すか
-- どこまで影響するか
-- 保存データや互換性へ影響するか
-- 既存仕様を壊さないか
-- 完了条件は何か
+- Scope / impact
+- Data / compatibility影響
+- Non-breakable contract
+- Completion condition
 
-## 先に決めるべき高コスト項目
+## Visual Requirement
 
-後から変えると修正コストが高い項目は、見た目より先に決めます。
+CONDITIONAL: Visual Directionが完成度へ大きく影響する場合、Requirementsでは最低限次を決めます。
 
-1. 保存データSchema
-2. ID体系
-3. 座標・時間・単位などの内部表現
-4. GitHub Pages対応有無
-5. 外部API依存
-6. 大容量メディアの保存先
-7. 主要画面のレイアウト原則
-8. 既存データ互換性
-9. 自動処理の評価方法
-10. Webだけで完結するか、Electron等が必要か
-
-## Visual Design Direction
-
-### CONDITIONAL: Visual Directionが完成度へ大きく影響するProject
-
-要件定義では、Visualの完成形を細かく決めるのではなく、最低限次だけ記録します。
-
-- Visual Quality Baseline: Required / Not applicable
-- Visual Ambition: baseline / high / flagship
+- Visual Baseline: required / not applicable
+- Ambition: baseline / high / flagship
 - Primary Task / Content Model / Audience
-- 現在UIがある場合の大きな制約・残したい要素
-- Visual Researchが必要な変更か
+- Existing UIの大きなconstraint / keep item
+- Meaningful Visual Researchが必要か
 
-意味のある新規Design / 大規模Redesignでは、実装前の調査Workflowを [Domain-first Visual Research](18-domain-first-visual-research.md)、Design原則を [UI / UX / Accessibility](04-ui-ux-accessibility.md) の正本で確認します。
-
-要件定義へReference候補、2〜3案比較、Effect方針等の詳細手順を重複記載しません。
+詳細は [Visual Requirement Pack](../templates/requirements/VISUAL.md)、Visual Researchは [18](18-domain-first-visual-research.md) を使います。
 
 ## Learning / Explanation Content
 
-### CONDITIONAL: `LEARNING` Profile
+CONDITIONAL: `LEARNING` Profileでは教材件数だけで完成を決めません。
 
-学習・解説・知識集サイトでは、**教材件数や画面数だけで完成条件を決めません。** 実装前に最低限次を決めます。
+最低限:
 
-- **Starting Knowledge:** 利用者が最初から知っている前提 / 知らない前提
-- **Prerequisite Path:** 固有用語を教える前に必要な一般概念と学習順
-- **Primary Learning Surface:** Dashboard / 一覧ではなく、実際に読む・考える・解く中心画面
-- **Language / Terminology Policy:** 学習者へ見せる言語、英語・略語・内部Labelをそのまま露出してよい条件
-- **Content Depth Contract:** 主要Lessonをどの深さまで説明すれば「教えた」と扱うか
-- **Understanding Signal:** 読了、確認問題、自己理解度等のどれを「進捗」として扱うか
-- **Next Step / Review Path:** Lesson後に何をするか、誤答や低理解度をどう復習へ戻すか
+- Starting Knowledge
+- Prerequisite Path
+- Primary Learning Surface
+- Language / Terminology Policy
+- Content Depth Contract
+- Understanding Signal
+- Next Step / Review Path
 
-### Content Depth Contract
+### Content Depth
 
-主要Lessonが用語の1行定義だけで終わると、Dataとして存在していても学習教材としては不足しやすくなります。
+主要Lessonは内容に応じて:
 
-原則として主要Lessonでは、内容に応じて次を組み合わせます。
+1. What
+2. Why
+3. How / mechanism
+4. Example
+5. Comparison / misconception
+6. Understanding check
 
-1. **何か** — まず短く定義する
-2. **なぜ必要か** — 何の問題を解決するか
-3. **どう動くか / どう考えるか** — 手順・関係・仕組み
-4. **具体例** — 実際の場面へ対応付ける
-5. **比較 / よくある勘違い** — 似た概念との差を必要に応じて示す
-6. **理解確認** — 1問、説明し直す、判断する等で理解を確認する
-
-すべてのGlossary項目へ同じ長さを強制しません。短い用語辞典と、理解させるためのLessonは役割を分けます。
+を組み合わせます。GlossaryとLessonを同じ深さへ強制しません。
 
 ### Beginner-first Ordering
 
-初心者向けSiteでは、製品名・専門サービス名・試験用語から始める前に、その理解へ必要な一般概念を確認します。
-
-例:
-
-```text
-Webの基本
-→ Server / Network / DNS / Database / API
-→ 製品固有Service
-→ 構成例
-→ 判断問題
-```
-
-前提知識が不足している利用者へ固有名詞だけを増やさないことを重視します。
+初心者向けでは製品固有名詞の前に必要な一般概念を置きます。
 
 ### Learner-facing Copy
 
-学習者向け画面では、開発者向け状態名・英語Content Type・内部監査用Copy等を通常表示へそのまま出しません。
+内部Label / developer terminologyを通常学習UIへそのまま露出しません。学ぶ必要がある英語・略語は意味 /利用場面を添えます。
 
-英語や略語自体を学ぶ必要がある場合は、隠すのではなく日本語説明・読み方・意味・利用場面を添えます。
+詳細Inputは [Learning Requirement Pack](../templates/requirements/LEARNING.md) を使います。
 
 ## Game Requirements
 
-### CONDITIONAL: `GAME` Profile
+CONDITIONAL: `GAME`ではFeature数でなく、開始からPrimary Completion Conditionまでの体験Contractを定義します。
 
-GameではFeature数やMap数だけで完成条件を決めず、**開始からPrimary Completion Conditionまで中心体験が成立するGame Contract**をRequirementsで整理します。
+最低限、規模に応じて:
 
-最低限、Game規模に応じて次を決めます。
+- Core Experience / Intended Player Demand
+- Supporting Systems / Non-goals
+- Playable MVP
+- Primary Completion Condition
+- Core / Progression Loop
+- Game State / Failure / Recovery
+- Save / Compatibility（該当時）
+- Difficulty / Balance Direction
+- Runtime / Scale
+- Development Phase / Gate
 
-- **Core Experience:** Playerに最も楽しませたい中心体験
-- **Supporting Systems / Non-goals:** Core Experienceを支えるもの / Gameを何にしないか
-- **Playable MVP:** 最初にEnd-to-Endで成立させる中心Gameplay Flow
-- **Primary Completion Condition:** Main Game Completeを判定する主要Goal
-- **Core Loops / Progression:** Moment-to-Moment / Core Gameplay / Progressionを必要な範囲で整理
-- **Game State / Failure:** Persistent / Session / Derivedの意味、Failure時のLoss / Retry / Recovery
-- **Save / Compatibility:** 永続Saveがある場合のSave / Reload / Existing Save要件
-- **Difficulty / Balance Direction:** 何を難しさとして使うか、Adjustable Parameterの扱い
-- **Runtime / Scale:** Entity / Physics / VFX / Scene等、規模に応じた主要Performance条件
-- **Development Phases:** Phaseごとの完成Gameplay FlowとPhase Gate
+Prototype / Playable MVP / Main Game Completeを混同しません。詳細は [19 Game Development](19-game-development.md)、Inputは [Game Requirement Pack](../templates/requirements/GAME.md) を使います。
 
-Prototype / Playable MVP / Main Game Completeを混同しません。小規模GameへLong-running Save、LOD、Stress Test等を機械的に追加しません。
+## Non-functional Requirements
 
-Game-specificなProgression、Simulation、Gameplay Readability、Actual Playtest、Phase Gate等の詳細は [19 Game Development](19-game-development.md) を唯一の正本とし、この章へ重複記載しません。
+必要に応じて:
 
-## MVP
+- Browser / Runtime / Device
+- Offline
+- Data / Media scale
+- Load / Runtime performance
+- Keyboard / Accessibility
+- Backup / Restore
+- External provider failure
+- Deployment
+- Security / privacy
+- Visual ambition
+- Real-device requirement
 
-初期版では「主要な1本の利用フロー」が最後まで通ることを優先します。
+## Completion Conditionの書き方
 
-例:
+観測可能にします。
 
-```text
-登録 → 保存 → 一覧 → 編集 → 削除 → バックアップ
-```
+悪い:
 
-未実装画面を先に大量に作らず、使える導線を完成させます。
-
-## 非機能要件
-
-必要に応じて以下も決めます。
-
-- 対応ブラウザ
-- PC / スマホ / ペンタブ
-- オフライン可否
-- データ量の想定
-- 画像/動画最大サイズ
-- 初期表示速度
-- キーボード操作
-- バックアップ
-- 外部サービス停止時の挙動
-- GitHub Pages公開可否
-- 秘密情報の有無
-- Visual Qualityの重要度
-- Design Direction比較が必要か
-
-## 完成条件の書き方
-
-「見た目が整った」ではなく、観測可能な条件にします。
-
-悪い例:
 - 使いやすい
-- モダンで高品質に見える
+- モダン
 
-良い例:
-- 主要ボタンがすべて反応する
-- 320px幅でページ全体の横スクロールが発生しない
-- 保存後に再読み込みしてもデータが残る
-- GitHub ActionsのStatic Validationが成功する
-- 未確認項目が作業報告書へ記録されている
-- Visual重視Projectでは採用Directionの理由と、調査した同種Referenceを説明できる
-- Accent Colorを外しても、Typography / Spacing / Layoutで主要Hierarchyが読み取れる
-- Learning Projectでは、主要LessonがStarting Knowledge / Content Depth Contractを満たす
-- Learning Projectでは、学習者が次に何を学ぶか・理解確認をどこでするか説明できる
-- Game Projectでは、Playable MVPのCore LoopをRuntimeでEnd-to-End確認できる
-- Main Game Completeでは、Fresh StartからPrimary Completion Conditionまで主要Game Experienceを確認できる
+良い:
+
+- 主要FlowがEnd-to-Endで通る
+- Narrow viewportで重大overflowがない
+- Save→Reloadが成立
+- Required CI / browser / visual / playtest / real-device checkが成功、または未確認明記
+- LearningならContent Depth / Next Stepを確認できる
+- GameならPlayable MVP / Primary Completion ConditionをRuntimeで確認できる
