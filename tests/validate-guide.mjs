@@ -30,6 +30,7 @@ const requiredFiles = [
   'docs/17-visual-quality-baseline.md',
   'docs/18-domain-first-visual-research.md',
   'docs/19-game-development.md',
+  'docs/20-evidence-first-research.md',
   'maintenance/review-policy.json',
   'catalog/failures.md',
   'catalog/success-patterns.md',
@@ -199,6 +200,9 @@ if (!startHere.includes('docs/05-performance-reliability.md')) {
 if (!startHere.includes('docs/19-game-development.md') || !/ゲームを作る \/ 直す/.test(startHere)) {
   errors.push('START_HERE.md must route game work to docs/19-game-development.md');
 }
+if (!startHere.includes('docs/20-evidence-first-research.md') || !/調査してから方針を決める \/ 正解が分からない重要問題/.test(startHere)) {
+  errors.push('START_HERE.md must route important researchable questions to docs/20 without making it an all-work requirement');
+}
 
 if (!readme.includes('[Project Learnings](templates/PROJECT_LEARNINGS_TEMPLATE.md)')) {
   errors.push('README.md must link to templates/PROJECT_LEARNINGS_TEMPLATE.md');
@@ -222,6 +226,9 @@ if (!/Page Load Performance \/ Runtime responsiveness \/ Reliability/.test(gover
 }
 if (!/Game-specific development \/ completion \/ playtest/.test(governance) || !/docs\/19-game-development\.md/.test(governance)) {
   errors.push('docs/00-governance.md must register docs/19 as the Game Development normative owner');
+}
+if (!/Evidence-first Research \/ general research workflow/.test(governance) || !/docs\/20-evidence-first-research\.md/.test(governance)) {
+  errors.push('docs/00-governance.md must register docs/20 as the general research normative owner');
 }
 
 const performanceGuide = fs.readFileSync(path.join(root, 'docs/05-performance-reliability.md'), 'utf8');
@@ -269,7 +276,57 @@ if (!visualBaseline.includes('18-domain-first-visual-research.md')) {
 
 const domainResearch = fs.readFileSync(path.join(root, 'docs/18-domain-first-visual-research.md'), 'utf8');
 if (!/Meaningful Visual Change/.test(domainResearch) || !/Visual Foundation Reset/.test(domainResearch) || !/KEEP \/ FIX \/ REMOVE/.test(domainResearch)) {
-  errors.push('docs/18 must own domain research, KEEP/FIX/REMOVE, and Visual Foundation Reset');
+  errors.push('docs/18 must own visual domain framing, KEEP/FIX/REMOVE, and Visual Foundation Reset');
+}
+if (!domainResearch.includes('20-evidence-first-research.md') || !/Representative Visual References/.test(domainResearch) || !/Research全体の母数ではありません/.test(domainResearch)) {
+  errors.push('docs/18 must delegate general research to docs/20 and keep 2–5 as representative visual comparison rather than total research population');
+}
+
+const evidenceResearch = fs.readFileSync(path.join(root, 'docs/20-evidence-first-research.md'), 'utf8');
+for (const required of [
+  'Single Normative Owner',
+  'Question',
+  'Prior Research / Existing Knowledge',
+  'Quick Research',
+  'Standard Research',
+  'Deep Research',
+  '100件はQuotaではありません',
+  'Research Saturation',
+  'Discovered',
+  'Reviewed',
+  'Deep-read',
+  'Core Evidence',
+  'Opposing Evidence',
+  'Failure',
+  'Limitation',
+  'Bias',
+  'Applicability',
+  'Evidence Map',
+  'Discussion Gate',
+  'Project Preference',
+  'Research Status',
+  'Research Review Gate',
+  'Delta Research / Gap Research',
+  'docs/research/'
+]) {
+  if (!evidenceResearch.includes(required)) {
+    errors.push(`docs/20-evidence-first-research.md: missing evidence-first research contract -> ${required}`);
+  }
+}
+if (!/全作業の必読Docにはしません/.test(evidenceResearch)) {
+  errors.push('docs/20 must not become mandatory reading for all work');
+}
+for (const owner of [
+  '01-requirements.md',
+  '04-ui-ux-accessibility.md',
+  '05-performance-reliability.md',
+  '14-continuous-improvement.md',
+  '18-domain-first-visual-research.md',
+  '19-game-development.md'
+]) {
+  if (!evidenceResearch.includes(owner)) {
+    errors.push(`docs/20 must preserve specialist owner boundary -> ${owner}`);
+  }
 }
 
 const gameGuide = fs.readFileSync(path.join(root, 'docs/19-game-development.md'), 'utf8');
@@ -283,7 +340,8 @@ for (const required of [
   'Core Before Variety',
   'Actual Playtest',
   'Simulation Entity数 = Render Object数ではありません',
-  'Small Gameへ大規模Ruleを機械的に適用しない'
+  'Small Gameへ大規模Ruleを機械的に適用しない',
+  'Game Researchable Question'
 ]) {
   if (!gameGuide.includes(required)) {
     errors.push(`docs/19-game-development.md: missing game contract -> ${required}`);
@@ -297,7 +355,8 @@ for (const owner of [
   '12-project-profiles.md',
   '13-dependencies-assets.md',
   '17-visual-quality-baseline.md',
-  '18-domain-first-visual-research.md'
+  '18-domain-first-visual-research.md',
+  '20-evidence-first-research.md'
 ]) {
   if (!gameGuide.includes(owner)) {
     errors.push(`docs/19 must preserve specialist owner boundary -> ${owner}`);
@@ -320,6 +379,14 @@ if (!/^## GAME$/m.test(projectProfiles) || !projectProfiles.includes('19-game-de
 const requirementsGuide = fs.readFileSync(path.join(root, 'docs/01-requirements.md'), 'utf8');
 if (!/^## Game Requirements$/m.test(requirementsGuide) || !requirementsGuide.includes('19-game-development.md') || !/Primary Completion Condition/.test(requirementsGuide)) {
   errors.push('docs/01 must keep a minimal GAME requirements entry that routes to docs/19');
+}
+if (!requirementsGuide.includes('20-evidence-first-research.md') || !/Researchable Question/.test(requirementsGuide) || !/User Preference/.test(requirementsGuide) || !/Project-specific Decision/.test(requirementsGuide)) {
+  errors.push('docs/01 must classify researchable requirements and route general research method to docs/20');
+}
+
+const continuousImprovement = fs.readFileSync(path.join(root, 'docs/14-continuous-improvement.md'), 'utf8');
+if (!continuousImprovement.includes('20-evidence-first-research.md') || !/External Research Method/.test(continuousImprovement) || !/Rule Hygiene/.test(continuousImprovement) || !/Common Rule Promotion/.test(continuousImprovement)) {
+  errors.push('docs/14 must delegate external research method to docs/20 while retaining rule hygiene and common-rule promotion operation');
 }
 
 const requirementsTemplate = fs.readFileSync(path.join(root, 'templates/REQUIREMENTS_TEMPLATE.md'), 'utf8');
