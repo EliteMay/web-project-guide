@@ -4,7 +4,7 @@
 
 このTemplate自体はProject固有要件のSource of Truthではありません。対象Repositoryの現在状態と正式な`REQUIREMENTS.md`を基準にし、`REQUIREMENTS_DRAFT.md`がある場合は未確定差分として確認します。既に確定した内容を聞き直さず、未確定事項から要件定義を再開するためのRouterとして使います。
 
-Conversation Handoff / PromptなしRecoveryのBehavioral Ownerは [22 Conversation Handoff / Recovery](../docs/22-conversation-handoff-recovery.md) です。Promptを貼り忘れても、Project設定やUserが明示した情報から対象Repositoryを一意に特定できる場合はGitHubから正式要件とDraftを復旧できます。
+Conversation Handoff / PromptなしRecoveryのBehavioral Ownerは [23 Conversation Handoff / Recovery](../docs/23-conversation-handoff-recovery.md) です。Promptを貼り忘れても、Project設定やUserが明示した情報から対象Repositoryを一意に特定できる場合はGitHubから正式要件とDraftを復旧できます。
 
 ## 使用方法
 
