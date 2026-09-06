@@ -1,14 +1,17 @@
 # 18 Domain-first Visual Research
 
-この章は、既存サイトの見た目を大きく修正するときに、**過去の成功例やAIの好みを先に当てはめず、そのサイトと同じ用途・ジャンルのVisual Designを調査してから方向を決めるためのWorkflow**です。
+この章は、既存サイトの見た目を大きく修正するときに、**過去の成功例やAIの好みを先に当てはめず、そのサイトと同じ用途・ジャンルのVisual Designを調査してから方向を決めるためのVisual固有Workflow**です。
 
 この章が次の正本です。
 
-- Domain / Genre Research
+- Visual向けTarget Type / Domain framing
+- Representative Visual Referenceの重点比較
 - 既存UIの`KEEP / FIX / REMOVE`
-- Reference選定
+- Reference Transfer Rule
 - Candidate比較
 - Visual Foundation Reset
+
+一般的なResearch Depth、Broad Discovery、Source Quality、Opposing Evidence、Bias、Applicability、Research Saturation、Evidence Mapは [20 Evidence-first Research](20-evidence-first-research.md) を正本とします。
 
 Visual Design原則は [04 UI / UX / Accessibility](04-ui-ux-accessibility.md)、最低品質は [17 Visual Quality Baseline](17-visual-quality-baseline.md) を正本とします。
 
@@ -27,7 +30,7 @@ Visual Design原則は [04 UI / UX / Accessibility](04-ui-ux-accessibility.md)�
 
 ## MUST: Meaningful Visual Changeの前にDomain / Genre Researchを行う
 
-次のような変更では、CSSを本格修正する前に、そのサイトと同じ用途・ジャンル・Taskに近い現行Site / AppをWebで調査します。
+次のような変更では、CSSを本格修正する前に、そのサイトと同じ用途・ジャンル・Taskに近い現行Site / Appを調査します。
 
 - Page Compositionを大きく変える
 - Navigationを変更する
@@ -36,6 +39,8 @@ Visual Design原則は [04 UI / UX / Accessibility](04-ui-ux-accessibility.md)�
 - 「もっと良い見た目にして」のように方向自体が未確定
 - 既存Visualの評価が低く、Foundationから直す
 - 新規PageでVisual Directionが完成度へ大きく影響する
+
+重要かつ不確実なVisual Directionでは、まず [Evidence-first Research](20-evidence-first-research.md) の必要なResearch DepthでBroad Researchを行い、その後この章でVisual固有の重点比較と設計判断を行います。
 
 ### 例外
 
@@ -84,6 +89,8 @@ Visual Referenceは原則として次の順で探します。
 
 過去の成功例は最初ではなく**補助資料**です。
 
+Broad Research自体のSource diversity / Core Sample / Contrast Sample等は [Evidence-first Research](20-evidence-first-research.md) に従います。この優先順位は、Visual固有のRepresentative候補を選ぶときの適合順です。
+
 ### 過去成功例を使ってよい条件
 
 [Validated Visual Direction Catalog](../catalog/validated-visual-directions.md) を使う場合は、最低限次を説明できることを条件にします。
@@ -97,19 +104,21 @@ Visual Referenceは原則として次の順で探します。
 
 「以前高評価だったから」は採用理由にしません。
 
-## Web Researchのやり方
+## Visual Referenceの重点比較
 
-### 1. 同種Referenceを2〜5件見る
+### 1. Broad Research後にRepresentative Visual Referencesを2〜5件重点比較する
 
-可能なら2〜5件程度を比較します。
+可能なら、Broad Researchで得た候補から今回のProjectに特に近い **Representative Visual Referencesを2〜5件程度**選び、構造を重点比較します。
 
-1件だけを見ると、そのSite固有のBrand表現をCategory標準だと誤認しやすいためです。
+**この2〜5件はResearch全体の母数ではありません。** 一般Research全体を2〜5件だけで終える上限でも、Deep ResearchのSource Countでもありません。
 
-ニッチな分野では、1件の強いReference + 隣接Task + Design System等でも構いません。
+1件だけを重点比較すると、そのSite固有のBrand表現をCategory標準だと誤認しやすいため、複数Referenceを比較します。
+
+ニッチな分野では、1件の強いRepresentative Reference + 隣接Task + Design System等でも構いません。件数を満たすために適合しないReferenceを水増ししません。
 
 ### 2. 見る項目を固定する
 
-各Referenceで最低限次を観察します。
+各Representative Referenceで最低限次を観察します。
 
 - First Viewで何を見せているか
 - Navigation Type
@@ -147,7 +156,7 @@ Target Type:
 - Density:
 - Device:
 
-References:
+Representative References:
 1. ...
 2. ...
 3. ...
@@ -171,7 +180,7 @@ Open axes:
 - Visual emphasis:
 ```
 
-長い調査レポートを毎回作る必要はありません。
+一般ResearchのEvidence Map / Source Count / Bias / Saturationをここへ複製しません。必要な場合は`docs/20`のResearch OutputへLinkします。
 
 重要なのは、**調査結果がDesign Directionへどう影響したかを説明できること**です。
 
@@ -221,7 +230,8 @@ Visual uncertaintyが高いRedesignでは、最初の1案を完成扱いしま�
 
 ```text
 Current baseline
-→ Domain Research
+→ Evidence-first Research（必要強度）
+→ Representative Visual Reference比較
 → KEEP / FIX / REMOVE
 → 2〜3 structural directions（必要時）
 → Candidate
@@ -305,14 +315,15 @@ AIへ「見た目を良くして」と依頼された場合、いきなりCSSを
 ```text
 1. Current Repo / Screenshot / Requirementsを確認
 2. Target Typeを定義
-3. Webで同種Site / Appを調査
-4. Domain Research Brief
-5. KEEP / FIX / REMOVE
-6. 必要なら2〜3 Directionを比較
-7. Candidateを実装
-8. Current vs Candidateを確認
-9. Visual Review
-10. User feedbackをEvidenceへ残す
+3. 必要な強度でEvidence-first Researchを行う
+4. Representative Visual Referencesを重点比較
+5. Domain Research Brief
+6. KEEP / FIX / REMOVE
+7. 必要なら2〜3 Directionを比較
+8. Candidateを実装
+9. Current vs Candidateを確認
+10. Visual Review
+11. User feedbackをEvidenceへ残す
 ```
 
 AI自身が過去に作った成功例を最初の答えとして使わないことを基本とします。
@@ -322,7 +333,8 @@ AI自身が過去に作った成功例を最初の答えとして使わないこ
 大きなVisual変更で次を説明できない場合、Design Directionの検討不足と扱います。
 
 - このProjectは何種類のSite / Appか
-- どんな同種Referenceを調べたか
+- 必要なResearch DepthでどんなEvidence / Candidateを調べたか
+- どのRepresentative Visual Referencesを重点比較したか
 - そのCategoryで共通していた構造は何か
 - Reference間で違っていた部分は何か
 - Current UIの何をKEEP / FIX / REMOVEしたか

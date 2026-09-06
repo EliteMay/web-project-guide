@@ -2,6 +2,70 @@
 
 Guide Versionの正本は [`guide-version.json`](guide-version.json) です。
 
+## 1.18.0 - 2026-09-06
+
+### Added
+
+- `docs/20-evidence-first-research.md`を **一般Research WorkflowのSingle Normative Owner** として追加
+  - `Question → Prior Research / Existing Knowledge → Evidence Map → Discussion → Decision → Validation` を基本Flowとして定義
+  - Quick / Standard / Deep Researchの強度差を追加
+  - Deep Researchでは100件規模のBroad Discoveryを**Quotaではなく探索目安**として扱い、Research Saturationを実際の終了条件に設定
+  - Discovered / Reviewed / Deep-read / Core Evidenceを分離
+  - Original Source / Claim Verification、Supporting / Opposing Evidence、Failure / Limitation / Bias / Applicabilityを整理
+  - Causal / Correlational / Suggestive / Hypothesis / AI Synthesis、Statistical / Practical Significance、Subgroup、Replication / Consensus / Emerging Evidenceを分離
+  - Evidence Map、Discussion Gate、Research Status、Research Review Gate、Research Log、Freshness、Delta / Gap Researchを追加
+  - Evidence / Interpretation / Project Preference / Decisionを分離し、Researchで解決しない問題をPrototype / Test / Playtest / Measurementへ渡すFlowを定義
+  - Project固有Research Resultは対象Projectの`docs/research/`等へ保存し、Common GuideをResearch Result倉庫にしない方針を追加
+
+### Consolidated
+
+- `docs/00-governance.md`
+  - Evidence-first ResearchのSingle Normative Ownerとして`docs/20`をOwner表へ登録
+- `docs/01-requirements.md`
+  - User Preference / Researchable Question / Project-specific Decision / Confirmed Requirementを分離
+  - 一般Research Methodは`docs/20`へRoutingし、RequirementsはUser Decision /正式要件化の責務を維持
+- `docs/14-continuous-improvement.md`
+  - External Research Methodを`docs/20`へ委譲
+  - Project Feedback Loop / Rule Hygiene / Common Rule Promotion operationを維持
+- `docs/18-domain-first-visual-research.md`
+  - Visual固有のTarget Type、KEEP / FIX / REMOVE、Reference Transfer、Candidate比較、Visual Foundation Resetを維持
+  - 「2〜5件」をResearch全体の母数ではなく、Broad Research後のRepresentative Visual References重点比較数として整理
+- `docs/19-game-development.md`
+  - Game固有設計 / Balance / Runtime Validation / Actual Playtest責務を維持
+  - 重要なGame Researchable Questionだけ`docs/20`へRouting
+- `README.md` / `START_HERE.md`
+  - 詳細Ruleを複製せずOwner / 作業Routeだけ追加
+  - `docs/20`を全作業の必読にはせず、重要かつ不確実なResearchable Question用Routeとして追加
+
+### Validator
+
+- `docs/20-evidence-first-research.md`をrequired fileへ追加
+- READMEの番号付きDoc RouterとSTART_HEREのResearch Routeを検証
+- Governanceが`docs/20`を一般Research Ownerとして登録していることを検証
+- `docs/01`がResearchable Questionを`docs/20`へRoutingすることを検証
+- `docs/14`がExternal Research Methodを委譲しつつRule Hygiene / Common Rule Promotionを保持することを検証
+- `docs/18`が一般Researchを`docs/20`へ委譲し、「2〜5件」をRepresentative Visual comparisonとして扱うことを検証
+- `docs/19`がGame固有責務を維持しつつ重要Researchable Questionを`docs/20`へRoutingすることを検証
+- `docs/20`のResearch Depth、Saturation、Source Count透明性、Opposing Evidence、Applicability、Evidence Map、Research Review Gate、Delta Research、Project固有Research保存境界をRegression Guard化
+
+### Rule Hygiene
+
+- 新しい番号付きOwner `docs/20`は、既存章へ自然に収まらなかった**一般Research Methodだけ**を所有
+- `README.md` / `START_HERE.md`はRouterのまま維持し、Research詳細Ruleを再掲しない
+- `docs/18`はVisual Researchの専門Ownerとして残し、一般Research母数 / Bias / Evidence Qualityの正本にはしない
+- `docs/19`はGame Design / Playtestの専門Ownerとして残し、一般Research Methodを複製しない
+- `docs/04-ui-ux-accessibility.md`、`docs/05-performance-reliability.md`、`templates/QUALITY_CHECKLIST.md`はRouting Gapが確認されなかったため変更しない
+- Project固有Research Resultや大量Source ListをCommon Guideへ保存しない
+
+### Compatibility
+
+- すべての作業へDeep Researchを強制しない
+- 100件を最低件数 / Quota / 完了条件にしない
+- Research ConsensusをUser PreferenceやProject固有Decisionへ自動変換しない
+- VisualのKEEP / FIX / REMOVE、Candidate比較、Foundation Resetを削除しない
+- GameのActual Playtest / Phase Gate / Completion ContractをResearchへ置き換えない
+- Product RepositoryのRuntime / Storage / Schema / Deployment Defaultを変更しない
+
 ## 1.17.1 - 2026-09-06
 
 ### Added

@@ -6,12 +6,14 @@
 
 Rule追加・正本管理の判断は [Guide Governance](00-governance.md) のRule Budget / Single Normative Ownerを正本とします。
 
+External Research Method、Source Quality、Opposing Evidence、Bias、Applicability、Research Saturation、Evidence Map等の一般Research Workflowは [Evidence-first Research](20-evidence-first-research.md) を正本とします。この章は **Project Feedback Loop / Rule Hygiene / Common Rule Promotion operation** を担当します。
+
 ## 目的
 
 定期Reviewでは次の3つを行います。
 
 1. **Project Feedback Loop** — 実Projectから失敗・高コスト修正・再利用価値のある設計を抽出
-2. **Web Standards / Design Systems Loop** — 一次・公式資料から不足・陳腐化を確認
+2. **External Evidence / Standards Loop** — 一次・公式資料や必要な外部Evidenceから不足・陳腐化を確認
 3. **Rule Hygiene Loop** — 重複・Orphan Rule・過剰なChecklist化・Project固有Rule混入を整理
 
 新しいRuleを増やすこと自体を成果にしません。
@@ -60,23 +62,24 @@ Evidence Level、登録条件、Rejected retentionの正本は [Validated Visual
 - User-facing EvidenceがないCandidateを成功扱いしていないか
 - 他Projectへ再利用可能な構造原理があるか
 
-Domain固有の成功例を他Projectへ横展開する前には [Domain-first Visual Research](18-domain-first-visual-research.md) を優先します。
+Domain固有の成功例を他Projectへ横展開する前には [Domain-first Visual Research](18-domain-first-visual-research.md) を優先します。重要で不確実なResearchable Questionがある場合の一般Research Methodは [Evidence-first Research](20-evidence-first-research.md) を併用します。
 
-## Web Standards / Design Systems Review
-
-一般Ruleへ追加する場合は、可能な限り一次資料または公式Documentationを優先します。
+## External Evidence / Web Standards Review
 
 主なSource設定は [`maintenance/review-policy.json`](../maintenance/review-policy.json) に置き、この章へURL一覧を重複させません。
 
-一般化するときは次を確認します。
+一般Ruleの追加・変更に外部Evidenceが必要な場合は、Research強度を判断して [Evidence-first Research](20-evidence-first-research.md) を使います。Quick / Standard / Deep、Original Source確認、Supporting / Opposing Evidence、Bias、Saturation等の方法はこの章へ複製しません。
 
-- 現行Guideと公式推奨が矛盾していないか
+Guide改善としては、Research結果を受けて次を確認します。
+
+- 現行Guideと公式仕様 / 強いEvidenceが矛盾していないか
 - Browser / Platform変更で従来Ruleが不要・危険になっていないか
 - Security / Accessibility / Performanceの重要変更
 - GitHub Pages / Electron等、利用中Platformの仕様変更
-- Visual Design Systemから一般化可能なLayout / Typography / Navigation等の知見
+- Visual Design System等から一般化可能な知見があるか
+- EvidenceがProject固有か、Common Ruleへ一般化できるか
 
-個人BlogやSNSの流行だけでMUSTへ昇格させません。
+Research結果そのものを自動的にMUSTへ変換しません。Rule Strength / 配置判断はGovernanceとこの章のPromotion / Hygieneを通します。
 
 ## Rule Hygiene Review
 
@@ -119,7 +122,7 @@ Ruleを消すことも改善です。
 
 新規Common Ruleは最後の選択肢です。
 
-## 変更を採用する条件
+## Common Rule Promotion
 
 Project由来では、次のような場合にGuide化を検討します。
 
@@ -130,7 +133,9 @@ Project由来では、次のような場合にGuide化を検討します。
 - 今のGuideを守っても防げなかったGap
 - User feedbackから共通原因へ一般化できた
 
-一般Web Ruleでは公式Source、Project由来Ruleでは具体的Evidenceを要求します。
+External EvidenceやProject ResearchからCommon Rule Candidateを評価する一般的なEvidence Strength / Applicability / Counter-evidence / Project Validationの考え方は [Evidence-first Research](20-evidence-first-research.md#common-rule-promotion--rule-strength) を参照します。
+
+この章ではそのEvidenceを受けて、Rule Budget、既存Owner、Catalog / Checklist / Project側のどこへ配置するか、重複削減、Compatibilityを確認します。
 
 Rule Strengthは [Guide Governance](00-governance.md#ルールの強さ) を正本とし、この章へ定義を複製しません。
 

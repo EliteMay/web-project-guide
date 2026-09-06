@@ -99,6 +99,17 @@ A / Bがありますが、今回はBの方が安全なのでBを採用します�
 
 「どれがいい？」を細部ごとに繰り返しません。
 
+### Evidence-first Decision Classification
+
+Decision Classとは別に、**その判断をResearchで先に絞るべきか**を次の観点で分類します。
+
+- **User Preference** — Userが決める。ResearchはPreferenceそのものを上書きしない
+- **Researchable Question** — 既存Evidenceがあり得るため [20 Evidence-first Research](20-evidence-first-research.md) を先に使う
+- **Project-specific Decision** — Research結果とProject固有条件を見てUser + AIでDiscussionする
+- **Confirmed Requirement** — 決定した内容を正式な`REQUIREMENTS.md`へ反映する
+
+Core DecisionでもResearchableな部分はResearchできますが、Research結果だけでUser Intentを自動確定しません。
+
 ## Recommendation-by-default Mode
 
 Userが`おすすめで`、`基本おすすめで`等を指定した場合、その要件定義中は**Recommendation-by-default Mode**として扱います。
@@ -197,32 +208,33 @@ Projectに合わない項目は省略できますが、原則として後から�
 
 過去会話や古いZIPだけを現在仕様として扱いません。
 
-### Current / External Information
+### Researchable Question
 
-次のように外部情報で答えが変わる場合は、必要に応じて最新の公式情報を確認します。
+外部情報、既存研究、実Product / Game、User Evidence等によって答えが変わり得る重要Questionは、最初からSolution案だけを比較せず [20 Evidence-first Research](20-evidence-first-research.md) へRoutingします。
 
-- Browser / Platform対応
-- GitHub Pages / Electron等の現在仕様
-- API / Provider仕様
-- 無料枠 / 料金
-- Security
-- License / 法令
+一般Research Methodの正本は`docs/20`です。この章ではQuick / Standard / Deepの探索方法、Source Quality、Opposing Evidence、Bias、Saturation、Evidence Map等を重複定義しません。
 
-### Domain Research
+例:
 
-Site / App / Gameの分野自体を理解しないと良い要件を作れない場合は、同種ProductやDomainを必要範囲で調査します。
+- Browser / Platform / API / Providerの現在仕様
+- Security / License / 法令
+- Architecture / 技術選定
+- UI / UX / Tutorial / Onboarding
+- Game Design / Progression / Difficulty
+- 学習方法・教材構成
+- 正解が明確でない重要な改善判断
 
-ただし、調査結果を理由にCore Decisionを勝手に確定しません。
+Visual固有のReference framing / KEEP・FIX・REMOVE / Candidate比較は [18 Domain-first Visual Research](18-domain-first-visual-research.md)、Game固有設計 / Actual Playtestは [19 Game Development](19-game-development.md) の責務を維持します。
 
 ```text
-Existing Repository
-→ web-project-guide
-→ 必要なら公式情報
-→ 必要ならDomain Research
-→ Decision Classに従って判断
+Current Repository / Project Context
+→ User PreferenceかResearchable Questionか分類
+→ Researchable QuestionならEvidence-first Research
+→ Project固有条件を含めDiscussion
+→ Confirmed RequirementをREQUIREMENTS.mdへ反映
 ```
 
-細かなDefault Decisionのために毎回Web調査して進行を重くしません。
+細かなDefault Decisionや原因と正解が明確な局所修正のために、Researchを機械的に重くしません。
 
 ## 要件定義の完了ライン
 
