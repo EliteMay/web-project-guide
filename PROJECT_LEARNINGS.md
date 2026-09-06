@@ -89,6 +89,17 @@ Common Rule本文は`docs/`、一般化済みのFailure / Success / Anti-Pattern
 - Prevention: Project-specific / time-specific EvidenceはReference / Catalog / Project Learningsへ置き、適用時はCurrent GitHubを再確認する。
 - Guide candidate: yes — Governance / Continuous Improvement境界へ反映済み。
 
+### PL-F-008 完了報告だけではUserが現在地と次Actionを判断できなかった
+
+- Date: 2026-09-07
+- Status: resolved
+- Severity: high
+- Symptom: 要件定義等の区切りで`完了`、`OK`、`次へ進める`とだけ返し、何が終わったか・次にUserが何をすべきかを明示しなかった。同種の指摘が繰り返された。
+- Root Cause: Repository上のCompletion / Handoff状態は管理していたが、User-facing Completion StatusをProject管理Ruleとして定義していなかった。
+- Final Fix: `docs/10-project-management.md`へ、意味のある作業区切りでは`今回終わったこと`と`次にUserがすること`を必ず明示し、User Action不要ならその旨を伝えるRuleを追加。
+- Prevention: User側に作業がない場合、継続のためだけに`ok` / `進めて`を要求せず、次のAgent側処理を明示する。
+- Guide candidate: yes — Project Management Ownerへ反映。
+
 ## Success
 
 ### PL-S-001 Ruleを消さず責務を戻す整理
