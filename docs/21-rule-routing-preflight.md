@@ -44,7 +44,45 @@ UserがGuideの章番号、Profile、Gate名を覚えていることを前提に
 - Save / Migration / Security等の高Risk条件があるか
 - GAME / LEARNING / ELECTRON等の専門Domainが関係するか
 
-Userへ確認するのは、Product Intent、Core Decision、破壊的変更、保存互換性を壊すか等、Userにしか決められない事項を中心とします。
+Userへ最初から判断を投げ返しません。Product Intent、Core / High-cost Decision、破壊的変更、保存互換性等の重要事項でも、Current Repository / Current Requirements / Existing User Intent / Research / Evidenceから合理的に決められるかを先に確認します。
+
+## Best Reasonable Decision / Confirmation Boundary
+
+### MUST: User確認を標準停止条件にしない
+
+PreflightやDecision Classificationの結果が重要・高Riskであることだけを理由に、User回答待ちで作業を止めません。
+
+原則Flow:
+
+```text
+Current Repository
++ Current Requirements
++ Existing User Intent
++ Research / Evidence
++ Compatibility / Risk
+↓
+Best Reasonable Decisionを選べる？
+├─ YES → 必要なAssumption / Riskを短く記録して継続
+└─ NO → Userにしか決められないMaterial Questionだけ確認
+```
+
+User確認を優先するのは、原則として次のような場合です。
+
+- 複数の意味ある選択肢が残り、既存User IntentからPreferenceを合理的に推定できず、結果がProductの主要体験を大きく変える
+- 外部System、Account、公開範囲、課金、破壊的・不可逆Operation等で明示的Approvalが必要
+- 必要なCredential / Secret / Permission /物理操作等をUserだけが提供できる
+- Current User Requestと正式Requirements等が重大に衝突し、既存の優先順位やEvidenceでも安全に解決できない
+- Safety / Legal / Security上、明示確認なしで進めるべきでない
+
+逆に、次は**質問する理由になりません**。
+
+- `Core Decision` / `High-cost Decision`という分類名だけ
+- Repository確認やResearchで答えを絞れる
+- ReversibleなDefaultを選んで後から修正できる
+- Best Reasonable Decisionが1つあり、Assumption / Riskを明示して継続できる
+- Userが既に同じPreference / Directionを明示している
+
+Requirements固有のDecision Ruleは [01 Requirements](01-requirements.md) を正本とします。
 
 ## Classification
 
