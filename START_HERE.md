@@ -47,6 +47,16 @@
 
 Mini GameへSave / LOD / Stress Test等を機械的に要求しません。詳細な適用条件はGame Development章を正本とします。
 
+## 調査してから方針を決める / 正解が分からない重要問題
+
+1. Current Repository / Requirements / User Intentを確認し、Researchable Questionを明確にする
+2. 一般Research Methodは [Evidence-first Research](docs/20-evidence-first-research.md) を使う
+3. Visualなら [Domain-first Visual Research](docs/18-domain-first-visual-research.md)、Gameなら [Game Development](docs/19-game-development.md) 等のTopic固有Ownerも必要範囲で確認
+4. Evidence Mapを前提にDiscussionし、Project固有Decisionを決める
+5. Researchだけで決まらない部分はPrototype / Test / Playtest / Measurement等へ渡す
+
+このRouteは重要なResearchable Question用です。単純な事実確認、原因と正解が明確な局所Bug、小さな文言修正へDeep Researchを機械的に要求しません。
+
 ## 既存サイトのバグを直す
 
 1. 現在のGitHub Repositoryを確認
@@ -165,11 +175,14 @@ Setup.exe / Auto Update / Release Contractの詳細はElectron章を正本とし
 
 1. [Guide Governance](docs/00-governance.md) のRule Budget / Single Normative Ownerを確認
 2. [Continuous Improvement](docs/14-continuous-improvement.md)
-3. [`maintenance/review-policy.json`](maintenance/review-policy.json)
-4. 新しいRuleを追加する前に、既存Rule・Catalog・Checklist・Project側へ統合できないか確認
-5. Owner Docを決め、README / START HEREから辿れることを確認
-6. 高影響変更はBranch / Pull Request
-7. 最終CommitでGuide Validatorを確認
+3. External Evidenceが必要なResearchable Questionでは [Evidence-first Research](docs/20-evidence-first-research.md)
+4. [`maintenance/review-policy.json`](maintenance/review-policy.json)
+5. 新しいRuleを追加する前に、既存Rule・Catalog・Checklist・Project側へ統合できないか確認
+6. Owner Docを決め、README / START HEREから辿れることを確認
+7. 高影響変更はBranch / Pull Request
+8. 最終CommitでGuide Validatorを確認
+
+Evidence-first ResearchをGuide改善の全作業へ機械的に必須化しません。外部Evidenceや不確実なResearchable Questionがある場合に利用し、Rule Promotion / Rule HygieneはContinuous ImprovementとGovernanceの責務を維持します。
 
 ## ルールの読み方
 
