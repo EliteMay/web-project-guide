@@ -210,12 +210,15 @@ Version単位の変更概要を持ちます。
 ## 10. Templates / Checklist Contract
 
 - TemplateはRule本文の正本にしない
-- Requirements TemplateはProject固有入力欄を中心にする
-- Quality Checklistは実行確認を中心にし、Owner Docの説明を複製しない
-- Profile固有項目は必要なProjectだけ利用する
-- README / AGENTSはRouterとして使い、Spec / Requirementsを丸ごと複製しない
+- RequirementsはCore Template + Conditional Requirement Packで構成し、Projectに該当するPackだけ利用する
+- Requirements PackはProject固有Decision / Inputを中心にし、Owner Rule本文を再掲しない
+- Quality ChecklistはCore + Conditional Routing +短いPass / Fail確認を中心にし、Owner Docの説明を複製しない
+- READMEはProject入口 / Source of Truth Routerを中心にする
+- SpecはCurrent Technical Contractを中心にし、Requirement Decisionを複製しない
+- Project RulesはProject固有Override / Exceptionだけを持つ
+- AGENTSはAgent Routerとして使い、Spec / Requirements / Common Rule本文を丸ごと複製しない
 
-Template肥大化が実運用を妨げる場合、Core + conditional sectionへの分割を検討します。
+新しいProfile固有Sectionが増える場合、Core Templateへ直接積む前にConditional Packへ収められるか確認します。
 
 ## 11. Catalog / Reference Contract
 
@@ -244,6 +247,7 @@ ValidatorはGuide品質の完全な代替ではありません。
 - Guide Version / CHANGELOG整合
 - Catalog ID整合
 - 代表Golden Routing Case
+- Conditional Template / ChecklistのRouting整合
 
 文章の特定フレーズを大量に固定し、自然な書き換えを壊すTestへ寄せすぎません。
 
@@ -256,6 +260,7 @@ ValidatorはGuide品質の完全な代替ではありません。
 - [ ] 同じ判断のNormative Ownerが原則1つ
 - [ ] Current RequirementsとHistoryが分離されている
 - [ ] Templates / ChecklistがRule本文の第二正本になっていない
+- [ ] Conditional Templateは必要なProjectだけ読める
 - [ ] Guide Versionが一元管理されている
 - [ ] Validatorが構造上の重大driftを検出できる
 - [ ] 既存Ruleを整理しても意味が失われていない
@@ -274,7 +279,8 @@ ValidatorはGuide品質の完全な代替ではありません。
 ## 15. Implementation Handoff
 
 - Requirements Status: Ready for implementation
-- Current structural cleanup: `refactor/guide-information-architecture`
+- Information Architecture cleanup: Implemented
+- Template / Checklist responsibility split: Implemented
 - Unresolved Core Decisions: None
 - Unresolved High-cost Decisions: None
 
