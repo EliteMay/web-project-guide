@@ -105,6 +105,7 @@ Cross-cutting Topicでは各専門章にその分野固有の制約だけを置�
 | Game-specific development / completion / playtest | `docs/19-game-development.md` | 一般Ruleは既存Ownerを維持 |
 | Evidence-first Research | `docs/20-evidence-first-research.md` | Topic固有判断は各Owner |
 | Rule Routing / Preflight Behavior | `docs/21-rule-routing-preflight.md` | `rule-router.json`はMachine Route、START_HEREはHuman Summary |
+| Task-first Structure / Flow Research | `docs/22-task-first-structure-flow-research.md` | 04は一般UX原則、Project固有IA / Flowは対象Project |
 
 新Topicが既存Ownerへ自然に収まらない場合だけ新規Docを検討します。
 
