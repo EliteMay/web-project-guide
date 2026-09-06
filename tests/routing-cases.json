@@ -1,0 +1,124 @@
+[
+  {
+    "id": "game-ui-requirements-research",
+    "input": {
+      "projectProfiles": ["GAME"],
+      "workType": "REQUIREMENTS",
+      "domains": ["UI_UX", "VISUAL", "GAME_DESIGN"],
+      "changeScope": "MEANINGFUL",
+      "risk": "MEDIUM",
+      "researchability": "REQUIRED",
+      "specialConditions": []
+    },
+    "mustInclude": [
+      "docs/01-requirements.md",
+      "docs/04-ui-ux-accessibility.md",
+      "docs/17-visual-quality-baseline.md",
+      "docs/18-domain-first-visual-research.md",
+      "docs/19-game-development.md",
+      "docs/20-evidence-first-research.md",
+      "docs/21-rule-routing-preflight.md"
+    ],
+    "mustIncludeGates": ["VISUAL-RESEARCH-GATE", "RESEARCHABLE-QUESTION-GATE"]
+  },
+  {
+    "id": "local-ui-bug-no-deep-research",
+    "input": {
+      "projectProfiles": ["STATIC"],
+      "workType": "BUG_FIX",
+      "domains": ["UI_UX", "VISUAL"],
+      "changeScope": "LOCAL",
+      "risk": "LOW",
+      "researchability": "NOT_REQUIRED",
+      "specialConditions": []
+    },
+    "mustInclude": [
+      "docs/04-ui-ux-accessibility.md",
+      "docs/07-testing-quality.md",
+      "docs/17-visual-quality-baseline.md",
+      "docs/21-rule-routing-preflight.md"
+    ],
+    "mustNotRequire": [
+      "docs/18-domain-first-visual-research.md",
+      "docs/20-evidence-first-research.md",
+      "docs/19-game-development.md"
+    ],
+    "mustNotIncludeGates": ["VISUAL-RESEARCH-GATE", "RESEARCHABLE-QUESTION-GATE"]
+  },
+  {
+    "id": "existing-save-schema-migration",
+    "input": {
+      "projectProfiles": ["DATA", "TOOL"],
+      "workType": "IMPLEMENTATION",
+      "domains": ["DATA_STORAGE"],
+      "changeScope": "MEANINGFUL",
+      "risk": "HIGH",
+      "researchability": "NOT_REQUIRED",
+      "specialConditions": ["EXISTING_SAVE", "SCHEMA_CHANGE", "MIGRATION"]
+    },
+    "mustInclude": [
+      "docs/03-data-storage.md",
+      "docs/07-testing-quality.md",
+      "docs/21-rule-routing-preflight.md"
+    ],
+    "mustIncludeGates": ["STORAGE-MIGRATION-GATE"]
+  },
+  {
+    "id": "electron-public-release",
+    "input": {
+      "projectProfiles": ["ELECTRON"],
+      "workType": "DEPLOYMENT",
+      "domains": ["ELECTRON", "DISTRIBUTION", "SECURITY"],
+      "changeScope": "MEANINGFUL",
+      "risk": "HIGH",
+      "researchability": "POSSIBLE",
+      "specialConditions": ["PUBLIC_RELEASE", "REAL_DEVICE_REQUIRED"]
+    },
+    "mustInclude": [
+      "docs/06-security.md",
+      "docs/07-testing-quality.md",
+      "docs/11-electron-distribution.md",
+      "docs/21-rule-routing-preflight.md"
+    ],
+    "mustIncludeGates": ["SECURITY-EXTERNAL-GATE"]
+  },
+  {
+    "id": "learning-requirements",
+    "input": {
+      "projectProfiles": ["LEARNING", "DATA"],
+      "workType": "REQUIREMENTS",
+      "domains": ["LEARNING_CONTENT", "UI_UX"],
+      "changeScope": "MODERATE",
+      "risk": "MEDIUM",
+      "researchability": "POSSIBLE",
+      "specialConditions": []
+    },
+    "mustInclude": [
+      "docs/01-requirements.md",
+      "docs/03-data-storage.md",
+      "docs/04-ui-ux-accessibility.md",
+      "docs/12-project-profiles.md",
+      "docs/17-visual-quality-baseline.md",
+      "docs/21-rule-routing-preflight.md"
+    ],
+    "mustNotRequire": ["docs/20-evidence-first-research.md"]
+  },
+  {
+    "id": "guide-maintenance-routing",
+    "input": {
+      "projectProfiles": ["TOOL"],
+      "workType": "MAINTENANCE",
+      "domains": ["GOVERNANCE_ROUTING"],
+      "changeScope": "SYSTEMIC",
+      "risk": "HIGH",
+      "researchability": "NOT_REQUIRED",
+      "specialConditions": []
+    },
+    "mustInclude": [
+      "docs/00-governance.md",
+      "docs/07-testing-quality.md",
+      "docs/14-continuous-improvement.md",
+      "docs/21-rule-routing-preflight.md"
+    ]
+  }
+]
