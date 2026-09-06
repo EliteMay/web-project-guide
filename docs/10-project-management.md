@@ -99,6 +99,39 @@ GitHub Actionsは**継続的な自動化そのもの**が目的の場合に使�
 
 詳細なFinal-state Validationは [07 Testing / Quality](07-testing-quality.md#final-state-validation) を正本とします。
 
+## User-facing Completion Status
+
+### MUST: 作業の区切りで「何が終わったか」と「Userが次に何をするか」を明示する
+
+ChatGPT / Coding Agentが要件定義、Research、実装、修正、Validation、Handoff等の**意味のある作業区切り**へ到達したとき、Userへの最終報告を`完了`、`OK`、`次へ進められる`等だけで終えません。
+
+最低限、次を短く明示します。
+
+- **今回終わったこと** — 何が確定・保存・実装・Validation済みになったか
+- **残っていること** — 未実装 / 未確認 / 次Phase等がある場合のみ
+- **次にUserがすること** — 具体的な次Action。User側の作業が不要なら`今は何もしなくてよい`と明示する
+- **次にAgentがすること** — 同じ作業をそのまま継続できる場合は、次の処理を明示する
+
+例:
+
+```text
+今回終わったこと
+- Phase 3の要件定義を保存済み
+
+次にあなたがすること
+- なし。次はArchitecture Researchへ進む
+```
+
+User側に操作・判断が不要なのに、`ok`、`進めて`、`続けて`等の追加返答を**作業継続のためだけに要求しません**。Current Repository / Requirements / User Intentから次の処理が一意で、安全に継続できる場合は、Agent Autonomyの方針に従って次工程へ進めます。
+
+ただし、作業区分の変更で新しい固定会話へ移る必要がある、User Preferenceだけが主要Decisionを左右する、不可逆・破壊的変更に明示確認が必要等の場合は、必要なUser Actionを具体的に案内します。
+
+### SHOULD: 完了報告を長い作業履歴にしない
+
+毎回過去の全経緯を再掲しません。Userが**現在地と次の行動を数秒で判断できる長さ**を優先します。
+
+`今回終わったこと` / `次にあなたがすること`等の見出しは固定文言でなくても構いませんが、意味として両方が分かることを要求します。
+
 ## Active TODO / やることリスト
 
 ### MUST: 実装完了後は完了項目をActive TODOから削除する
