@@ -53,6 +53,42 @@ Common Rule本文は`docs/`、一般化済みのFailure / Success / Anti-Pattern
 - Prevention: Rule追加時はOwnerへ本文、Templateには入力、ChecklistにはPass / Failできる実行確認だけ置く。
 - Guide candidate: yes — Governance / Requirements Template Contractへ反映済み。
 
+### PL-F-005 Human RouterとMachine RouterがDriftした
+
+- Date: 2026-09-06
+- Status: resolved
+- Severity: high
+- Symptom: `START_HERE.md`ではGuide自身の改善時に`docs/14`を読むRouteだった一方、Machine Routerの`MAINTENANCE`だけでは`docs/14`へ到達できなかった。
+- Root Cause: Human RouterとMachine Routerを別々に確認し、同じ代表Taskを両方へ通すParity Testがなかった。
+- Final Fix: `CONTINUOUS_IMPROVEMENT` / `CROSS_REPOSITORY_GITHUB`等のDomain RouteとGuide Deep Review Golden Caseを追加。
+- Regression Guard: ValidatorでRegistered Ownerの到達性、未知Domain / Signal / Gate、Guide Deep Review Caseを確認。
+- Prevention: 重要Route変更時はHuman / Machine Routerを同じTaskで比較する。
+- Guide candidate: yes — `docs/14` / `docs/21`へ反映済み。
+
+### PL-F-006 Rule移動後に旧Ownerの詳細Copyが残った
+
+- Date: 2026-09-06
+- Status: resolved
+- Severity: high
+- Symptom: 公開SiteのRepository discoverability Ruleを`docs/08`へ移した後も`docs/10`に詳細版が残り、Single Normative Ownerが再び崩れた。
+- Root Cause: 「新OwnerへRuleが存在すること」は確認したが、「旧Ownerから詳細Copyが消えたこと」まで横断確認しなかった。
+- Final Fix: Hosting方式を問わないdiscoverabilityは`docs/10`へ正本を戻し、`docs/08`はPages固有の公開確認とOwner Linkへ限定。
+- Regression Guard: Validatorで`docs/08 → docs/10`のBoundaryを確認。
+- Prevention: Rule移動時はDestination + Source cleanupを1つのCompletion Conditionとして扱う。
+- Guide candidate: yes — Deep System Auditへ反映済み。
+
+### PL-F-007 Project固有PilotがCommon Ownerへ残った
+
+- Date: 2026-09-06
+- Status: resolved
+- Severity: medium
+- Symptom: Cross-Repository GitHubのCommon OwnerへNamed Project、当時の`.github` File一覧、Pilot成功状況等の時点依存情報が混在していた。
+- Root Cause: Common Ruleを導いたEvidenceと、恒久Behavioral Ruleの保存場所を分けなかった。
+- Final Fix: 一般化したRuleだけ`docs/16`へ残し、具体Pilotは非Normative Referenceへ移動。
+- Regression Guard: ValidatorでCommon Ownerへの代表Named Project再混入を検出。
+- Prevention: Project-specific / time-specific EvidenceはReference / Catalog / Project Learningsへ置き、適用時はCurrent GitHubを再確認する。
+- Guide candidate: yes — Governance / Continuous Improvement境界へ反映済み。
+
 ## Success
 
 ### PL-S-001 Ruleを消さず責務を戻す整理
@@ -76,3 +112,14 @@ Common Rule本文は`docs/`、一般化済みのFailure / Success / Anti-Pattern
 - Reuse when: 1つのTemplateにProfile固有Sectionが増え続けたとき。
 - Avoid when: Packが1〜2項目しかなく、分割のNavigation Costの方が高い場合。
 - Guide candidate: yes — Current RequirementsのTemplate Contractへ反映済み。
+
+### PL-S-003 File ReviewをSystem Parity Auditへ広げる
+
+- Date: 2026-09-06
+- Goal: 単体Fileでは正しく見えるが、組み合わせると壊れるGuide Driftを見つける。
+- Adopted Pattern: 低Score仮説から始め、Owner topology / Human-Machine Routing / Template drift / Semantic duplication / Validator / Repository surfaceを横断照合する。
+- Why it worked: 「移動済み」「Routerあり」「Validator成功」の個別事実だけでは見えなかったOwner重複と到達不能Routeを発見できた。
+- Trade-off: 通常の小修正には重いため、Guide自身のDeep Reviewや大きなRule変更時だけ使う。
+- Reuse when: Documentation SystemやAgent Rule Systemを大きく整理した後の再監査。
+- Avoid when: Typoや単一Link修正だけの局所作業。
+- Guide candidate: yes — `docs/14` + `maintenance/DEEP_SYSTEM_AUDIT.md`へ反映済み。
