@@ -172,7 +172,7 @@ Source内で修正できるWorkflow pinning / Branch lifecycle Ruleは修正済�
 
 - `docs/22` Task-first Ownerと`docs/23` Conversation Ownerの共存
 - Human / Machine RouterのConversation Recovery route
-- old `docs/22-conversation-handoff-recovery.md`参照消失
+- 旧Conversation Handoff owner path参照の消失
 - Root RequirementsへPhase 0 / Phase 1 procedureが再流入していない
 - WCAG 2.2 interaction coverage
 - Research fixed-count heuristicの再導入防止
