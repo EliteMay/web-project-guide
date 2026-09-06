@@ -167,6 +167,19 @@ Common Rule本文は`docs/`、一般化済みのFailure / Success / Anti-Pattern
 - Prevention: 新しい番号付きOwnerを追加するときとFinal PR Validation直前にCurrent Owner Registryを再確認する。並行mainで同じ番号が正式利用された場合は、未Merge側を移番しCurrent mainを上書きしない。
 - Guide candidate: yes — Project Management / Deep Audit final-base確認へ反映候補。
 
+### PL-F-014 完了報告だけではUserが現在地と次Actionを判断できなかった
+
+- Date: 2026-09-07
+- Status: resolved
+- Severity: high
+- Symptom: 作業区切りで`完了`や`次へ進める`だけを返すと、何が終わったか・User側に次の操作が必要かが判別しにくかった。
+- Root Cause: Repository上のCompletionは管理していたが、User-facing Completion StatusをProject管理Ruleとして十分定義していなかった。
+- Final Fix: `docs/10-project-management.md`へ、意味のある区切りでは今回終わったこと・残件・Userの次Action・必要ならAgentの次Actionを短く明示するRuleを統合した。
+- Detection method: 最終報告とWork Report / Completion stateを照合する。
+- Regression Guard: 完了状態を曖昧な一語だけで返さず、User側のActionが不要ならその旨を明示する。
+- Prevention: 継続のためだけに`ok` / `進めて`を要求しない。未完了なら未完了、完了なら完了を最初に明示する。
+- Guide candidate: yes — `docs/10`へ反映済み。
+
 ## Success
 
 ### PL-S-001 Ruleを消さず責務を戻す整理
