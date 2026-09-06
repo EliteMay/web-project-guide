@@ -1,26 +1,24 @@
 # 04 UI / UX / Accessibility
 
-この章は一般的なUI / UX / Accessibility / Visual Design principleの正本です。Meaningful Visual ChangeのResearch / Candidate比較 / Foundation Resetは [18 Domain-first Visual Research](18-domain-first-visual-research.md)、最低完成Gateは [17 Visual Quality Baseline](17-visual-quality-baseline.md) を正本とします。
-
 ## UIの基本
 
 - 主要操作を最短で見つけられる構成にする。
 - 情報を増やすことと常時表示することを分ける。
 - 未実装機能は通常導線から外すか、開発中と明示する。
-- Loading / Empty / Error / Success等、実際に必要なStateを考える。
+- Loading / Empty / Error / Success の4状態を考える。
 - 0件画面には復帰操作を置く。
 
 ## Visual Design Quality
 
-Visual Designの目的は装飾量を増やすことではなく、**情報の関係・優先度・操作方法を視覚的に理解しやすくし、そのProjectらしい構造を作ること**です。
+Visual Designの目的は、装飾量を増やすことではなく、**情報の関係・優先度・操作方法を視覚的に理解しやすくし、そのProjectらしい構造を作ること**です。
 
-公式Design System等のLayout、Hierarchy、Typography、Spacing、Navigation、Purposeを判断材料として使えますが、特定企業の見た目をTemplateとしてコピーしません。
+GitHub Primer / Microsoft Fluent / Apple Human Interface Guidelines等の公式Design Systemでも、Layout、Hierarchy、Typography、Spacing、Navigation、Purposeを基盤として扱っています。特定企業の見た目をコピーするのではなく、これらの考え方を判断材料として利用します。
 
 ### SHOULD: 色より構造で差別化する
 
-複数ProjectのVisual差分をAccent Color / Gradient / Background変更だけで済ませません。
+複数ProjectのVisual差分を、Accent Color / Gradient / Backgroundの変更だけで済ませません。
 
-Projectの目的に応じて次を設計対象として扱います。
+Projectの目的に応じて、少なくとも次を設計対象として扱います。
 
 - Header / Navigation
 - Sidebar / Railの有無
@@ -35,9 +33,11 @@ Projectの目的に応じて次を設計対象として扱います。
 - Primary Actionの位置
 - Secondary Informationの見せ方
 
-似た機能でShellを再利用しても構いませんが、**再利用ComponentとProject固有Page Compositionを分けます。**
+似た機能のProjectでShellを再利用すること自体は問題ありません。ただし、**再利用できるComponentと、Project固有のPage Compositionを分けます。**
 
 ### Visual Qualityの優先順
+
+Visual Qualityを高めるときは、原則として次の順で考えます。
 
 1. Information Architecture
 2. Workflow / Page Structure
@@ -50,91 +50,101 @@ Projectの目的に応じて次を設計対象として扱います。
 9. Color
 10. Decorative Effects
 
-Gradient / Glass / Glow / Shadow / Rounded Corner等を追加しただけで高品質と扱いません。
+`Gradient`, `Glassmorphism`, `Glow`, `Shadow`, `Rounded Corner`等を追加しただけで「高品質」と扱いません。
 
-余白、Type、境界、背景差、密度、Alignmentだけで十分なHierarchyが作れるならEffectを足さない選択も正解です。
+余白、文字サイズ・Weight、境界線、背景差、密度、Alignmentだけで十分な階層が作れるなら、Effectを追加しない選択も正解です。
 
 ## Design Direction
 
 ### CONDITIONAL: Visual Designが重要なProjectではCSSより先に方向を決める
 
-Landing Page、Portfolio / Showcase、Media、一般公開Product、Visual Qualityを重視するTool等では実装前に最低限次を整理します。
+Landing Page、Portfolio / Showcase、Media、一般公開Product、Visual Qualityを重視するTool等では、実装前に最低限次を整理します。
 
-- Design Concept
-- Reference Direction
-- Layout Type
-- Navigation Type
-- Content Density
-- Typography Direction
-- Color Rule
-- Component Rule
-- Decorative Effect Policy
+- **Design Concept:** 何を感じてほしいか / 何を最優先で見せるか
+- **Reference Direction:** 実在SiteやDesign Systemから何を参考にするか。ただしコピー元にはしない
+- **Layout Type:** single-column / split / sidebar / master-detail / editorial / dashboard等
+- **Navigation Type:** top nav / sidebar / tabs / command bar等
+- **Content Density:** low / medium / high
+- **Typography Direction:** compact / editorial / product UI / display-heavy等
+- **Color Rule:** neutral中心 / brand accent / semantic color等
+- **Component Rule:** card中心にするのか、list / table / border / sectionを使い分けるのか
+- **Decorative Effect Policy:** shadow / blur / gradient / motionを何のために使うか
 
-結果へ大きく影響する場合は、**2〜3種類の構造的に異なるDesign Directionを比較**してから選びます。
+結果へ大きく影響する場合は、**2〜3種類の構造的に異なるDesign Directionを比較してから1つを選びます。**
 
-色違いだけを別Directionと数えません。Navigation、Density、Content Width、Grid、Typography、Primary Action等が実際に異なる案にします。
+比較案は「青版 / 緑版 / 紫版」のような色違いではなく、Navigation、Density、Content Width、Grid、Typography、Primary Action等が実際に異なる案にします。
 
-実在Serviceは方向を説明する語彙として参照できますが、そのLayoutをコピーする意味ではありません。
-
-### SHOULD: 題材からDesignを導く
-
-`modern` / `premium` / `clean`等の抽象語だけでVisualを決めません。
-
-先に見る材料:
-
-- Userが普段使う語彙
-- Content / Data / Mediaの形
-- 一番繰り返すTask
-- 題材固有のDiagram / Screenshot / Artwork / Map / Timeline等
-- 比較・探索・編集・閲覧等のTask性質
-- 利用頻度と情報密度
-
-Referenceからは色・角丸・Heroではなく、Audience / Job / Content Model / Navigation / Density / Proof / Component choice / Effectの理由を抽象化します。
-
-### SHOULD: Signatureは1つを明確にする
-
-Visualが重要なProjectでは必要に応じて「このProjectらしさを一番表す要素」を1つ決めます。
+実在サービスは方向性を説明する語彙として参照できます。
 
 例:
 
-- 実Dataを主役にしたVisualization
-- 題材に合うNavigation / Timeline
-- 固有Artwork / Screenshot treatment
-- 読みやすい特徴的Typography
+- GitHub / dense product UI方向: 高密度、明確なNavigation、List / Table / Panel中心
+- Apple / visual showcase方向: 広い余白、強いVisual hierarchy、少ない同時情報
+- Discord / Spotify等のservice UI方向: Product / Media / actual UIを前面に出す
+
+これは「その企業のLayoutをコピーする」という意味ではありません。
+
+### SHOULD: 題材からDesignを導く
+
+「modern」「premium」「clean」等の抽象語だけからVisualを決めません。
+
+Design Directionを考えるときは、Project固有の次の材料を先に見ます。
+
+- 利用者が普段使う語彙
+- 扱うContent / Data / Mediaの形
+- 一番繰り返すTask
+- 題材に固有のVisual material、図、Screenshot、Artwork、Map、Timeline等
+- 情報の比較・探索・編集・閲覧などの性質
+- 利用頻度と必要な情報密度
+
+実在企業を参考にする場合も、色・角丸・Heroを真似るのではなく、**Audience / Job / Content Model / Navigation / Density / Proof / Component choice / Effectの理由**を抽象化します。
+
+### SHOULD: Signatureは1つを明確にする
+
+Visualが重要なProjectでは、必要に応じて「このProjectらしさを一番表す要素」を1つ決めます。
+
+例:
+
+- 実データを主役にした独自Visualization
+- 題材に合ったNavigationやTimeline
+- Project固有のArtwork / Screenshot treatment
+- 特徴的だが読みやすいTypography pairing
 - Taskに直結したWorkspace composition
 
-複数箇所を同時に奇抜にせず、1つのSignatureを規律あるDesign Systemで支える方針を基本とします。
+複数箇所を同時に奇抜にする必要はありません。**1つのSignatureへ大胆さを使い、残りを規律あるDesign Systemで支える**方針を基本とします。
 
-### AI Promptでは固定するものと探索させるものを分ける
+### AI Promptでは「固定するもの」と「探索させるもの」を分ける
 
-先に固定しやすいもの:
+Promptが長いほど品質が上がるとは限りません。
+
+AIへ先に固定しやすいもの:
 
 - Purpose / User / Required Content
 - 必須機能 / Workflow
 - Technology / Deployment制約
 - Accessibility / Performance / Security
 - 崩してはいけない仕様
-- 既存Design SystemのToken / Component契約
+- 既存Design Systemがある場合のToken / Component契約
 
-Visual決定前に固定しすぎないもの:
+Visual Design決定前に固定しすぎないもの:
 
-- Heroの有無 / 高さ
-- Card Grid列数
-- Alignment
+- Heroの有無と高さ
+- Card Gridの列数
+- Center / Left Alignment
 - Navigation Type
-- Density
+- Content Density
 - Typography personality
-- Image emphasis
+- Image / Screenshot emphasis
 - Gradient / Glass / Glow / Shadow
-- CTA数と配置
+- CTA Sectionの数と配置
 
-完成形をPromptで固定してから「独自Design」にする矛盾を避けます。
+「full-height centered hero + 3 cards + glass nav + cursor glow」のように完成形をPromptへ固定してから「独自Designにして」と要求すると、AI自身の探索余地を消します。
 
 ## Wireframe Before Visual Polish
 
 ### SHOULD: 色とEffectを外しても成立する構造を先に作る
 
-最低限:
+Visual Design前に、少なくとも次の配置関係を決めます。
 
 - Header
 - Navigation
@@ -159,23 +169,25 @@ Purpose / Workflow
 → Visual Design Review
 ```
 
-[AP-020 Design Before Workflow](../catalog/anti-patterns.md) と同じく、Visual重視でもWorkflow / Data / Structureを飛ばしません。
+これは [AP-020 Design Before Workflow](../catalog/anti-patterns.md) と同じ考え方です。Visualを重視する場合でも、Workflow / Data / UI Structureを飛ばして見た目から完成させません。
 
 ### Design Plan Critique
 
-CSS本格実装前に必要に応じて確認します。
+Visual Designが重要なProjectでは、CSSを本格実装する前に一度Directionを自己Reviewします。
 
-- 別の無関係Projectへほぼそのまま使えるPlanになっていないか
-- Content / Task / Audience固有の理由がLayoutに出ているか
+確認例:
+
+- このPlanは別の無関係なProjectにもほぼそのまま使えてしまわないか
+- Content / Task / Audience固有の理由がLayoutに現れているか
 - Primary Actionと重要情報が装飾なしでも分かるか
-- 抽象語をEffectで埋めていないか
-- Companion tool / ReferenceのSkeletonを完成Templateとしてコピーしていないか
+- 「modern」「premium」等の抽象語をEffectで埋めていないか
+- ReferenceのSkeletonをそのまま完成形にしていないか
 
-Genericなら実装量を増やす前にDirectionを修正します。
+Genericに見える場合は、実装量を増やす前にDirectionを修正します。
 
 ## AI Template Lookを避ける
 
-次を**理由なく束で使わない**ようにします。
+AIへ自由に「モダンで高品質なサイト」と指示すると、似た構成へ収束しやすいため、次を**理由なくセットで使わない**ようにします。
 
 - Gradient背景
 - Glassmorphism
@@ -185,69 +197,87 @@ Genericなら実装量を増やす前にDirectionを修正します。
 - ほぼすべてをCard化
 - 不必要に巨大なHero
 - Hero直下の等幅3 Feature Cards
-- 全文Center alignment
+- 全文を中央揃え
 - 不必要に巨大なHeading
 - EmojiをUI Iconとして大量利用
-- Sectionごとの同一Card Grid反復
-- 最後に必ず巨大CTA
+- Sectionごとに同じ「見出し + Card Grid」を反復
+- 最後に必ず巨大CTAを置く
 
-AI DefaultはModel / 時期で変わります。特定Effectを永久禁止するのではなく、Project理由が薄い流行Patternの束をReviewします。
+AIのDefaultは時期やModelによって変わります。特定の色・Font・Effectだけを「AIっぽい」と固定せず、**Projectとの理由が薄いのに流行Patternが束で出現していないか**をReviewします。
 
 ### 禁止ではない
 
-使う場合は役割を説明できることを目安にします。
+これらの技術・Pattern自体は使用できます。
 
-- Card: 独立して比較 / 選択 / 移動できる情報単位
-- Shadow: Elevation / temporary overlay
-- Rounded Corner: 一貫したshape language
-- Gradient: Brand / Data / focal point
-- Hero: First viewを1 Message / Product visualへ集中
+使う場合は「何のためか」が説明できることを目安にします。
 
-Section / List / Table / Divider / Background differenceの方が関係を正しく表すならそちらを優先します。
+例:
+
+- Card: 独立して比較・選択・移動できる情報単位だから使う
+- Shadow: SurfaceのElevationや一時Overlayを区別するために使う
+- Rounded Corner: Design System上の一貫したShape languageとして使う
+- Gradient: Brand / Data / Visual focal pointとして意味があるから使う
+- Hero: First viewで1つのMessage / Product visualへ集中させる必要があるから使う
+
+CardでなくSection / List / Table / Divider / Background differenceの方が情報関係を正しく表せるなら、そちらを優先します。
 
 ## Typography / Spacing / Hierarchy
 
 ### Typography
 
 - Headingを大きくするだけで階層を作らない。
-- Size / Weight / Line-height / Color / Spacingを組み合わせる。
-- Type scaleをむやみに増やさない。
-- 長文は読みやすいAlignment / Line lengthを優先する。
-- Center alignmentを長文・高密度UIへ機械適用しない。
-- HTML heading hierarchyをVisual都合だけで壊さない。
-- Display Fontで長文 / 高密度UIの可読性を犠牲にしない。
+- Size / Weight / Line-height / Color / Spacingを組み合わせて役割を分ける。
+- 同一Project内でType scaleをむやみに増やさない。
+- 長い本文は原則として読みやすいAlignmentとLine lengthを優先する。
+- Center alignmentは短い導入や局所的なFocusには使えるが、長文・高密度UIへ機械的に適用しない。
+- HTMLのHeading hierarchyをVisual都合だけで壊さない。
+- Display Fontや個性的なTypefaceはIdentityへ使えても、長文や高密度UIの可読性を犠牲にしない。
 
 ### Spacing
 
-- 余白をGrouping / Hierarchyの手段として扱う。
-- 同じ関係は近く、別Groupはより離す。
-- Spacing scale / CSS variables等を使い、ランダム値を増やさない。
-- Sectionへ同じ上下余白を機械適用せずRhythmを見る。
+- 余白は装飾ではなく、情報のGroupingとHierarchyを作る手段として扱う。
+- 同じ関係の要素は近く、別Groupはより大きく離す。
+- Spacing scale / CSS variables等を使い、毎回ランダムなmargin値にしない。
+- すべてのSectionへ同じ上下余白を機械的に当てず、情報関係とRhythmを見る。
 
 ### Visual Hierarchy
 
-Heading size / Accent / Bold / Shadow / Border / Glow / Animationを同時に全部強調しません。最重要要素を決め、他を意図的に弱めます。
+次を同時に全部強調しません。
+
+- Heading size
+- Accent color
+- Bold
+- Shadow
+- Border
+- Glow
+- Animation
+
+最重要要素を決め、他は意図的に弱めます。
 
 ## Copy / ContentもDesign Materialとして扱う
 
+AIがVisualだけ整えても、GenericなMarketing Copyが大量に入るとTemplate感が残ります。
+
 - Userが認識する語彙を優先する。
-- Action labelは具体的な動詞を優先する。
-- 同じActionを画面ごとに別名で呼ばない。
-- Empty / Errorで次Actionを示す。
-- PlaceholderだけでResponsiveを判断せず、短文・長文・実言語で確認する。
-- Contentを埋めるためだけのMarketing Sectionを捏造しない。
+- Action labelは可能な限り具体的な動詞にする。
+- 同じActionを画面ごとに別の言葉で呼ばない。
+- Empty / Error Stateでは状態説明だけでなく次に取れるActionを示す。
+- Placeholder / Lorem IpsumだけでResponsiveを判断せず、短い文・長い文・実際の言語でも確認する。
+- Contentが少ないProjectへ、Visualを埋めるためだけのFeature説明やMarketing Sectionを捏造しない。
 
 ## Component Design
 
-- Button / Input / Dialog / Tabs等、同じ役割は一貫させる。
-- 全Contentを同じCardへ押し込まない。
-- Card / List / Table / Tabs / Detail Pane / Inline sectionを情報性質で選ぶ。
-- Component再利用とPage Composition再利用を同一視しない。
-- Decorative VariantよりSemantic Variantを先に整理する。
+Componentの一貫性とPage構造の多様性を両立します。
 
-### Interactive State
+- Button、Input、Dialog、Tabs等の同じ役割はProject内で一貫させる。
+- すべてのContentを同じCard Componentへ押し込まない。
+- Card / List / Table / Tabs / Detail Pane / Inline section等を情報の性質で選ぶ。
+- 同じComponentを再利用しても、ページ全体のCompositionまで全Projectで同じにする必要はない。
+- Decorative Variantを増やす前に、必要なSemantic Variantを整理する。
 
-実際に取り得るStateだけ明示します。
+### Interactive Stateを忘れない
+
+該当するComponentでは、完成Screenshotだけでなく状態差を設計します。
 
 - default
 - hover（pointerがある場合）
@@ -257,6 +287,8 @@ Heading size / Accent / Bold / Shadow / Border / Glow / Animationを同時に全
 - loading
 - error / invalid
 - empty / no result
+
+実際に取り得るStateだけ明示します。
 
 ## ProjectごとにVisual Structureを変える
 
@@ -320,7 +352,7 @@ Finding:
 ## fixed / sticky
 
 - 小画面で主要Buttonを隠さない。
-- Keyboard focus中の要素を覆わない。WCAG 2.2のFocus Not Obscuredも意識する。
+- Keyboard focus中の要素を覆わない。WCAG 2.2の**Focus Not Obscured**も確認する。
 - Modalと競合しない。
 - Bottom fixed UIがContentへ重ならない。
 - Scroll areaを不必要に増やさない。
@@ -345,17 +377,17 @@ WCAG 2.2 AAを参考に、Projectへ該当する実用上重要項目を標準�
 - 主要操作ではより大きいTargetも検討する。
 - `aria-pressed`, `aria-expanded`, `aria-live`等は必要な場所だけ正しく使う。
 
-### Motion / Drag / Alternative
+### Motion / Dragging / Alternative
 
 - `prefers-reduced-motion`を尊重する。
-- Draggingが主要操作の場合、Pointerでのdrag以外にClick / Button / Keyboard等の代替を用意できるか確認する。ただしfreehand drawing等、dragging自体が本質の操作はContextで判断する。
+- **Dragging Movements**が主要操作の場合、Pointerでのdrag以外にClick / Button / Keyboard等の代替を用意できるか確認する。ただしfreehand drawing等、dragging自体が本質の操作はContextで判断する。
 
-### Form / Repeated Entry / Authentication
+### Form / Redundant Entry / Accessible Authentication
 
 CONDITIONAL:
 
-- 同じProcessで既に入力した情報を理由なく再入力させない。再利用 / selection / autofill等を検討する。
-- Authenticationがある場合、Password manager / pasteを理由なく禁止しない。
+- **Redundant Entry:** 同じProcessで既に入力した情報を理由なく再入力させない。再利用 / selection / autofill等を検討する。
+- **Accessible Authentication:** Authenticationがある場合、Password manager / pasteを理由なく禁止しない。
 - CAPTCHAや認知Taskだけに依存せず、利用者が認証を完了できるAlternativeを検討する。
 
 ## Button / Input
