@@ -2,7 +2,7 @@
 
 この章は、**既存ProjectをGitHub中心で安全に変更するWorkflow**の正本です。
 
-Conversation Handoff / stale conversation / duplicate active conversation / Current work ref recoveryは [22 Conversation Handoff / Recovery](22-conversation-handoff-recovery.md)、Testingは [07](07-testing-quality.md)、Runtime Diagnostics / Project Memoryは [15](15-development-observability.md) を正本とします。
+Conversation Handoff / stale conversation / duplicate active conversation / Current work ref recoveryは [23 Conversation Handoff / Recovery](23-conversation-handoff-recovery.md)、Testingは [07](07-testing-quality.md)、Runtime Diagnostics / Project Memoryは [15](15-development-observability.md) を正本とします。
 
 ## 基本方針
 
@@ -153,11 +153,11 @@ Branch削除機能やRepository settingへ現在のToolからアクセスでき�
 
 別の作業区分でもScopeが重なる場合はBranch / PRを分離し、Merge前に相互Diffとlatest baseを確認します。
 
-詳細なConversation conflict / stale checkpoint recoveryは [22](22-conversation-handoff-recovery.md) を正本とします。
+詳細なConversation conflict / stale checkpoint recoveryは [23](23-conversation-handoff-recovery.md) を正本とします。
 
 ## Implementation / Requirements Conversation Handoff
 
-会話移行自体の詳細Ruleは [22](22-conversation-handoff-recovery.md) へ分離します。
+会話移行自体の詳細Ruleは [23](23-conversation-handoff-recovery.md) へ分離します。
 
 Requirements Persistence / Draftは [01](01-requirements.md)、実装Handoff Promptは [Implementation Conversation Template](../templates/IMPLEMENTATION_CONVERSATION_TEMPLATE.md) を使います。
 
