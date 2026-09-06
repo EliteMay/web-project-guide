@@ -14,7 +14,8 @@ Gameを単なるFeatureの集合ではなく、**Playerが開始からMain Goal 
 - Project Profile → [12 Project Profiles](12-project-profiles.md)
 - Asset / Dependency / License → [13 Dependencies / Assets](13-dependencies-assets.md)
 - User-facing UIの最低Visual品質 → [17 Visual Quality Baseline](17-visual-quality-baseline.md)
-- 大規模Visual Direction変更前のResearch → [18 Domain-first Visual Research](18-domain-first-visual-research.md)
+- 大規模Visual Direction変更前のVisual固有Research → [18 Domain-first Visual Research](18-domain-first-visual-research.md)
+- 重要なGame Researchable Questionの一般Research Method → [20 Evidence-first Research](20-evidence-first-research.md)
 
 この章へ上記の一般Ruleを全文複製しません。
 
@@ -70,6 +71,18 @@ Gameの規模・継続時間・World Scale・State量・Platformに応じて、M
 ECS、Event Bus、Object Pooling、Procedural Generation、Difficulty Modes、New Game+、Achievement、Modding、Replay、Developer Console、Cloud Save、Multiplayer等は必要なGameだけ採用します。
 
 Genre固有Mechanicを共通MUSTにしません。
+
+## Game Researchable Question
+
+Game Designでも、Tutorial / Onboarding、Progression、Difficulty、Economy、Controls、Retention、Feedback等の重要判断に既存研究・実験・実Product / Game・User Evidenceがある場合があります。
+
+重要かつ不確実な **Researchable Question** では、Game内だけの思いつきからSolutionを決める前に [20 Evidence-first Research](20-evidence-first-research.md) を使います。
+
+`docs/20`はPrior Research、Evidence Quality、Opposing Evidence、Bias、Applicability、Evidence Map、Discussion Gate等の一般Research Methodを担当します。この章はその結果を受けて **Game固有のDesign Contract、Prototype、Balance調整、Runtime Validation、Actual Playtest** を担当します。
+
+Core ExperienceやUserが求めるGameの方向そのものをResearch Consensusだけで上書きしません。ResearchでProject固有の正解が確定しない場合は、Prototype / Actual Playtest / Measurementへ渡します。
+
+小さなBalance値調整や、原因が明確なGame Bugへ毎回Deep Researchを要求しません。
 
 ## Game完成の基本モデル
 
@@ -433,7 +446,7 @@ Main Game Complete後のEndgame、Extra Challenge、Achievement、Cosmetic、New
 
 Mini GameへLong-running Save Game用の巨大Requirementsを強制しません。
 
-Requirements全体のWorkflow / Decision Classは [01 要件定義](01-requirements.md) を正本とします。
+Requirements全体のWorkflow / Decision Classは [01 要件定義](01-requirements.md) を正本とします。Researchable Questionの一般Research Methodは [20 Evidence-first Research](20-evidence-first-research.md) を正本とします。
 
 ## Change Classification / Project Learnings
 
