@@ -1,5 +1,9 @@
 # 要件定義
 
+このTemplateはProject固有の**現在のRequirement Contract**を書くためのCore Templateです。Common Rule本文や実装履歴を複製しません。
+
+Domain固有項目は [Conditional Packs](requirements/README.md) から該当するものだけ使います。
+
 ## 0. Guide / Project Profile
 
 - Adopted Guide Version:
@@ -7,31 +11,38 @@
 
 ## 0A. 要件定義の決定モード
 
-会話での進め方は [Interactive Requirements Workflow](../docs/01-requirements.md#対話型要件定義-workflow) を正本とします。
+会話での進め方は [01 Requirements](../docs/01-requirements.md) を正本とします。
 
 - Recommendation-by-default: Yes / No
 - Userが決めるCore Decisions:
 - User確認が必要なHigh-cost / Risk Decisions:
-- Userが`ここは考えたい`等で自動決定を止めた項目:
+- Userが自動決定を止めた項目:
 
-## 1. 目的
+## 1. 目的 / 成功条件
 
-- 
+- Project purpose:
+- Userが最終的にできるようになること:
+- Success signal:
 
-## 2. 使用者・公開範囲
+## 2. 使用者 / 利用環境
 
-- 自分のみ / 友人共有 / 一般公開:
+- Primary user:
+- 公開範囲: 自分のみ / 友人共有 / 一般公開
 - 主な端末:
-- 主なブラウザ:
+- 主なブラウザ / Runtime:
 - Offline利用:
 
-## 3. 必要機能
+## 3. Scope
 
-### MVP
+### MVP / 今回必須
 
 - 
 
-### 後回し
+### Non-goals / 今回やらない
+
+- 
+
+### Later / 後回し
 
 - 
 
@@ -45,210 +56,109 @@
 完了
 ```
 
-## 5. 画面構成
+## 5. 画面 / Surface
 
-| 画面 | 目的 | 主操作 | 重要状態 |
+| 画面・Surface | 目的 | 主操作 | 重要状態 |
 |---|---|---|---|
 | | | | Loading / Empty / Error / Success |
 
-## 5A. Visual Quality / Design Direction
+## 6. Conditional Requirement Packs
 
-User-facing UIがある場合、[Visual Quality Baseline](../docs/17-visual-quality-baseline.md)は必須です。
+該当するものだけ追加・Linkします。
 
-- User-facing UI: Yes / No
-- Visual Quality Baseline: Required / Not applicable
-- Visual Ambition: baseline / high / flagship
-- Design Concept:
-- Reference Direction:
-- Layout Type:
-- Navigation Type:
-- Content Density: low / medium / high
-- Typography Direction:
-- Color Rule:
-- Component Rule:
-- Decorative Effect Policy:
-- Wireframeを先に作る: Yes / No
-- 構造的に異なるDesign Directionを比較する: Yes / No / Not needed
-- 比較案A:
-- 比較案B:
-- 比較案C:
-- 採用Directionと理由:
-- DesignShelfを構造探索に使う: Yes / No
-- 避けたいAI Template Pattern:
-- 最終Visual確認方法: Browser / Screenshot / Real device / Other
+- [ ] [Visual / UI](requirements/VISUAL.md)
+- [ ] [Learning](requirements/LEARNING.md)
+- [ ] [Game](requirements/GAME.md)
+- [ ] [Diagnostics](requirements/DIAGNOSTICS.md)
 
-`baseline`は「見た目を省略する」という意味ではなく、全User-facing UIに必要な最低品質です。`high / flagship`ではより強いDirection比較・Signature・Visual Reviewを追加します。
+Project固有の追加Packが必要なら、Common Guideを増やす前に対象Project側へ置くことを優先します。
 
-## 5B. Learning Content — `LEARNING` Profileのみ
+## 7. Data / Storage
 
-詳細基準は [要件定義 Learning / Explanation Content](../docs/01-requirements.md#learning--explanation-content) を正本とします。
+詳細Ruleは [03 Data / Storage](../docs/03-data-storage.md) を正本とします。
 
-- Target learner:
-- Starting Knowledge:
-- 最初に説明が必要な前提概念:
-- Primary Learning Surface:
-- Learning order:
-- Learner-facing language:
-- 英語 / 略語の扱い:
-- 主要LessonのContent Depth Contract:
-  - What / 定義:
-  - Why / 必要性:
-  - How / 仕組み・考え方:
-  - Example:
-  - Comparison / Common mistake:
-  - Understanding check:
-- CompletionとUnderstandingを分ける: Yes / No / Not needed
-- Review queue / 復習導線:
-- Lesson後のNext Step:
-- 教材Coverageの確認方法:
-- 学習導線Coverageの確認方法:
+| Data | Source of Truth | Schema / ID | 保存先 | 想定量 |
+|---|---|---|---|---|
+| | | | | |
 
-## 5C. Game Development — `GAME` Profileのみ
+- Existing data / save compatibility:
+- Backup / Restore requirement:
+- Migration requirement:
+- 未保存状態 / 複数Tab競合（該当時）:
 
-詳細基準は [Game Development](../docs/19-game-development.md) を正本とします。Game規模に不要な項目は省略できます。
+## 8. External Dependencies / Deployment
 
-- Game Overview:
-- Core Experience:
-- Intended Player Demand:
-- Supporting Systems:
-- Non-goals:
-- Relevant Game Context / Domain Lens（該当時）:
-- State → Task → Surface（重要な場合）:
-- Experience Contract / Intentional Constraint・Uncertainty（重要な場合）:
-- Primary Completion Condition:
-- Moment-to-Moment Loop:
-- Core Gameplay Loop:
-- Progression Loop（該当時）:
-- Playable MVP:
-- Major Progression（該当時）:
-- Failure / Retry Contract（該当時）:
-- Save / Reload Contract（該当時）:
-- Difficulty / Balance Direction:
-- Controls / Tutorial Direction:
-- Gameplay Visual / Audio Readability:
-- Runtime Performance / Scale:
-- Development Phases / Phase Gate:
-- Adjustable Parameters:
-
-Prototype / Playable MVP / Main Game Completeを区別し、起動・移動だけをPlayable完成条件にしません。`State → Task → Surface`やDomain Lens等はCore Experienceへ実質的に影響する場合だけ使い、小規模Gameへ機械的に要求しません。
-
-## 6. データ構成
-
-| データ | 正本 | Schema/ID | 想定最大量 |
-|---|---|---|---|
-| | | | |
-
-## 7. 保存方法
-
-| データ | 保存先 | Backup | 失敗時 |
-|---|---|---|---|
-| | | | |
-
-- 未保存変更を持つか:
-- 複数タブ競合が問題になるか:
-
-## 8. Development Diagnostics / Project Memory
-
-- `PROJECT_LEARNINGS.md`: Yes / No
-- Runtime Diagnosticsが必要か: Yes / No
-- Breadcrumbで残す主要操作:
-- 捕捉するError / Failure:
-- Diagnostic保存先: memory / localStorage / IndexedDB / Electron userData / other
-- Log保持上限:
-- One-click Diagnostic Export: Yes / No
-- Error ID表示: Yes / No
-- Health / Diagnostics View: Yes / No
-- Productionでも残す診断機能:
-- Development onlyにする診断機能:
-- Logへ記録禁止するデータ:
-
-## 9. 外部依存
-
-- API:
-- CDN:
+- API / Provider:
+- CDN / Assets:
 - DB / Auth:
-- YouTube / Supabase等:
-- 無料枠 / 維持費:
-- 失敗時Fallback:
-- サービス停止時に残す基本機能:
+- GitHub Pages / Electron / Other:
+- 無料枠 / 維持費の制約:
+- Provider failure時のFallback:
+- Service停止時にも残すCore機能:
 
-## 10. 崩してはいけない仕様
+## 9. 崩してはいけない仕様
 
 1. 
 2. 
 3. 
 
-## 11. 高コスト設計判断
+## 10. High-cost / Hard-to-change Decisions
 
-- 保存Schema:
-- ID:
-- 座標 / 時間 / 単位:
-- GitHub Pages:
-- 大容量Media:
-- Migration:
-- 外部Provider:
-- Player / Controller等の共通契約:
-- Diagnostic Schema / Error ID体系:
-- Page Structure / Navigation:
-- Design Direction:
-- Learning order / Content Depth Contract:
-- Game Core Experience / Primary Completion Condition:
-- Game Save / Failure Contract:
+Projectに該当するものだけ記録します。
 
-## 12. 変更可能範囲
+- Storage / Schema / ID:
+- URL / Deployment / Release:
+- Navigation / Information Architecture:
+- External Provider / Auth:
+- Units / Coordinates / Time:
+- Cross-module contract:
+- その他:
+
+## 11. 変更可能範囲
 
 ### 原則として改善してよい
 
 - 
 
-### 確認が必要
+### User確認が必要
 
 - 
 
-## 13. 性能・規模
+## 12. Performance / Scale Constraints
 
-- 想定Item数:
-- 想定画像数 / サイズ:
-- 想定動画 / 音声サイズ:
-- 初期読込で許容する範囲:
-- 長い処理のProgress / Cancel:
-- Diagnostic Logの最大量:
-- GAMEの場合の想定Entity / Scene / Physics / VFX規模:
+詳細Ruleは [05 Performance / Reliability](../docs/05-performance-reliability.md) を正本とします。
 
-## 14. 完成条件
+- 想定Data / Item量:
+- 想定Media量:
+- 初期表示で重要なResource:
+- 長時間処理 / Cancel requirement:
+- Runtimeで重くなりやすい代表状態:
 
-- [ ] 主要利用フローが最後まで通る
-- [ ] 保存 / 再読込が正常（該当時）
-- [ ] 主要ボタンが反応
-- [ ] Error / Empty Stateあり（該当時）
-- [ ] 重大な横overflowなし
-- [ ] 必要な自動検証成功
-- [ ] README / 仕様 / 作業報告更新
-- [ ] `PROJECT_LEARNINGS.md`を用意
-- [ ] Interactive Projectでは必要なDiagnostics / Exportを確認
-- [ ] User-facing UIではVisual Quality Baselineを満たす
-- [ ] User-facing UIを変更した場合、最終状態をBrowser / Screenshot等で確認、またはVisual未確認と明記
-- [ ] Visual Ambitionがhigh / flagshipでは採用Design Directionと理由を記録
-- [ ] Visual Ambitionがhigh / flagshipでは色 / Effectを外しても主要Hierarchyが成立
-- [ ] Visual Ambitionがhigh / flagshipではVisual Design Review結果を記録
-- [ ] `LEARNING` ProfileではStarting Knowledge / 学習順 / Content Depth Contractを定義
-- [ ] `LEARNING` Profileでは主要Lessonが用語紹介だけで終わらず、必要な説明・具体例・理解確認を持つ
-- [ ] `LEARNING` Profileでは次の学習 / 復習への導線を確認
-- [ ] `GAME` ProfileではCore Experience / Intended Player Demand / Playable MVP / Primary Completion Conditionを定義
-- [ ] `GAME` Profileでは現在Phaseの主要Gameplay FlowをRuntimeでEnd-to-End確認
-- [ ] `GAME` ProfileではActual Playtestを実施し、Static Testだけで完成扱いしていない
-- [ ] `GAME` Profileで永続Saveがある場合、Save / Reload / Existing Saveを必要範囲で確認
-- [ ] 未解決のCore Decision / High-cost Decisionが残っていない、または未確定として明示されている
-- [ ] 未確認事項が明示されている
-- [ ] 要件定義完了時はGitHubへの正式保存成功を確認し、Implementation Handoff Statusを更新
+## 13. Completion Contract
 
-## 15. 未確認予定
+詳細な実行確認は [Quality Checklist](QUALITY_CHECKLIST.md) と、今回RoutingされたOwner Docを使います。Domain-specific Checklistをここへ複製しません。
+
+Project固有の完成条件:
+
+- [ ] 主要利用フローがEnd-to-Endで成立
+- [ ] 崩してはいけない仕様を維持
+- [ ] 該当する保存 / Migration / External dependency contractを満たす
+- [ ] 必要なStatic / Runtime / Browser / Visual / Playtest / Real-device Validationを実施、または未確認を明記
+- [ ] 必要なDocumentationがCurrent Stateと一致
+- [ ] 重大Known Issueが残っていない、または完成不可として明示
+- [ ] 未解決Core / High-cost Decisionがない、または未確定として明示
+
+追加Project-specific completion:
+
+- [ ] 
+
+## 14. 未確認 / Known Limitations
 
 - 
 
-## 16. Implementation Handoff
+## 15. Implementation Handoff
 
-詳細Workflowは [要件定義完了 → GitHub保存 → 実装会話 Handoff](../docs/01-requirements.md#要件定義完了--github保存--実装会話-handoff) を正本とします。
+詳細Workflowは [01 Requirements](../docs/01-requirements.md) を正本とします。
 
 - Status: Ready for implementation / Not ready
 - Requirements updated:

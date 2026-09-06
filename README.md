@@ -94,7 +94,8 @@ Research / Standards / Working Hypothesisは `references/` に置きます。Pro
 
 Project開始時に全部使う必要はありません。必要なものだけ利用します。
 
-- [Requirements](templates/REQUIREMENTS_TEMPLATE.md)
+- [Requirements Core](templates/REQUIREMENTS_TEMPLATE.md)
+  - [Conditional Requirement Packs](templates/requirements/README.md)
 - [Requirements Conversation Resume](templates/REQUIREMENTS_CONVERSATION_TEMPLATE.md)
 - [Implementation Conversation Handoff](templates/IMPLEMENTATION_CONVERSATION_TEMPLATE.md)
 - [README](templates/README_TEMPLATE.md)

@@ -1,54 +1,54 @@
 # Project Rules
 
-このファイルは、共通Guideより優先される**プロジェクト固有ルール**を短く記録するためのテンプレートです。
+このファイルは、Common GuideやRequirementsへ重複させず、**このProjectだけに必要な例外・制約・優先ルール**を短く記録するためのTemplateです。
 
-`AGENTS.md`を利用する場合も、このProject Rulesや仕様書の内容を丸ごと複製せず、Agent向け入口から本ファイルへ案内します。
+通常のArchitecture / UI / Storage / Testing Ruleは`web-project-guide`を正本とします。Current Product Requirementは`REQUIREMENTS.md`、Technical Contractは`SPEC.md`等を正本とします。
 
 ## Guide
 
 - Adopted Guide Version:
 - Profiles:
 
-## 崩してはいけない仕様
+## Project-specific Priority / Override
+
+Common Guideと異なる判断が必要なものだけ記録します。
+
+- 
+
+## 崩してはいけないProject-specific Contract
 
 1. 
 2. 
 3. 
 
-## 保存互換性
+## Compatibility Exceptions
 
-- 既存Storage Key:
-- Schema Version:
-- Migration必須条件:
+該当するものだけ記録します。
 
-## 公開方式
+- Existing Storage / Schema:
+- Existing URL / Route:
+- Existing Save / User Data:
+- Release / Installer compatibility:
 
-- GitHub Pages / Electron / Other:
-- 既存URLを維持するか:
-
-## 変更時に確認が必要なもの
+## User確認が必要な変更
 
 - 
-
-## 原則として改善してよいもの
-
-- 明確なバグ修正
-- 軽微なUI改善
-- 重複削減
-- 文言改善
-- Accessibility改善
 
 ## 固有の禁止事項
 
 - 
 
-## AI / Coding Agent
+## Agent / Automation Boundary
 
 - `AGENTS.md`: Yes / No
-- Agentが最初に読む正本:
+- Agentが最初に読むProject側Source of Truth:
 - 必須Validation Command:
-- AIへ勝手に変更させない高リスク領域:
+- Agentだけで確定しないHigh-risk領域:
 
-## 未確認のまま完成扱いにしない項目
+## Exception Record
 
-- 
+Common Ruleを意図的に外す場合だけ記録します。
+
+| Rule / Owner | Reason | Impact | Alternative / Rollback |
+|---|---|---|---|
+| | | | |

@@ -2,82 +2,70 @@
 
 > Live Site: <https://example.com/>
 
-公開WebサイトがないProjectではこの行を削除します。公開Siteがある場合は、GitHub RepositoryのAbout欄 `Website` にも同じ代表URLを設定します。
+公開Web SiteがないProjectではこの行を削除します。公開Siteがある場合のRepository導線は`web-project-guide`のGitHub Pages Ruleに従います。
 
 ## 目的
 
-- 
-
-## Guide / Profile
-
-- web-project-guide Version:
-- Profiles:
+このProjectが何をするものかを1〜3文で説明します。
 
 ## 主な機能
 
 - 
 
-## 崩してはいけない仕様
+## 使い方
 
 1. 
 2. 
 
-## 利用方法
+## 開発 / 起動
 
-- 
+```text
+必要なCommandまたは利用方法
+```
 
-## GitHub Pages
+## Source of Truth
 
-- 対応: Yes / No
-- URL:
-- 注意:
+Projectに存在するものだけ残します。READMEへ詳細仕様を複製しません。
 
-## ファイル構成
+| 内容 | 正本 |
+|---|---|
+| Current Requirements | `REQUIREMENTS.md` |
+| Technical Specification | `SPEC.md` / `docs/` |
+| Project-specific Rules | `PROJECT_RULES.md` |
+| Agent Router | `AGENTS.md` |
+| Long-term Learnings | `PROJECT_LEARNINGS.md` |
+| Recent Work / Unverified | `作業報告書.md` |
+| Change History | `CHANGELOG.md` / Git history |
+
+## Guide / Profile
+
+- Adopted web-project-guide Version:
+- Profiles:
+
+## Repository Structure
+
+主要Folderだけを説明します。
 
 ```text
 /
 ```
 
-## データ保存
+## Validation
 
-| データ | 保存先 | Schema/Key | Backup |
-|---|---|---|---|
-| | | | |
+- Main test / validation command:
+- Browser / Runtime validation:
+- Release / Pages validation:
 
-## 設定保存
+## Deployment / Distribution
 
-- 
+- Method: GitHub Pages / Electron / Other
+- Primary URL / Release:
+- Important deployment note:
 
-## Development Diagnostics
-
-- Runtime Diagnostics: Yes / No
-- Diagnostic保存先:
-- Diagnostic Export:
-- Error ID:
-- Log保持上限:
-- Productionで残す診断機能:
-- 記録禁止データ:
-
-## Project Memory
-
-- Long-term learning: `PROJECT_LEARNINGS.md`
-- Work history: `作業報告書.md`
-- Major decisions: `ADR`（必要時）
-
-## 外部サービス / Dependencies
+## Known Issues / Limitations
 
 - 
 
-## 開発・更新時の注意
-
-- 高コストBug / 再利用価値の高い成功は `PROJECT_LEARNINGS.md` へ記録
-- Interactive ProjectではDiagnostics / Breadcrumb / Error捕捉を壊さない
-- Diagnostic LogへToken / Password / Secret / User入力全文を残さない
-
-## 既知の問題
-
-- 
-
-## 未確認
+## Unverified
 
 - 

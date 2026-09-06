@@ -24,20 +24,32 @@ GitHub Pagesは通常リポジトリ名を含むサブパスで公開されま�
 https://<user>.github.io/<repo>/
 ```
 
-そのため、root固定の`/assets/...`より、プロジェクト構成に合った相対Pathを優先します。
+そのため、root固定の`/assets/...`より、Project構成に合った相対Pathを優先します。
 
 ## 確認項目
 
 - HTMLからCSS/JSが読める
 - JSからJSONが読める
-- ページ間リンクがサブパスで壊れない
+- Page間Linkがサブパスで壊れない
 - `fetch()`先がPages上でも正しい
-- ファイル名の大文字小文字が一致する
+- File名の大文字小文字が一致する
 - Service Worker scopeが意図した範囲になる
-- Asset URLを固定ドメインへhardcodeしすぎない
-- `localhost`前提コードが残っていない
+- Asset URLを固定Domainへhardcodeしすぎない
+- `localhost`前提Codeが残っていない
 - PC固有絶対Pathが残っていない
-- GitHub Pages公開対象に不要なDesktop/Electronファイルを含めない
+- GitHub Pages公開対象に不要なDesktop / Electron Fileを含めない
+
+## 公開URL / Repository導線
+
+公開して実際に使える代表Site URLがある場合は、Projectを開いた人が迷わず到達できるようにします。
+
+原則として:
+
+- README上部付近から代表Site URLへ到達できる
+- GitHub RepositoryのAbout欄 `Website` に代表URLを設定する
+- 複数URLがある場合も、About欄にはPrimary URLを1つ置き、他はREADMEへ整理する
+
+公開URLを確認できていない場合は推測で「公開済み」と書きません。
 
 ## 404 / Recovery
 
@@ -73,7 +85,7 @@ GitHub Pagesへ公開されるHTML/JS/JSONに秘密情報を置きません。
 - 認証情報
 - 不要な個人情報
 
-必要な場合はGitHub Secrets、環境変数、Backend、ローカル設定等を検討します。
+必要な場合はGitHub Secrets、環境変数、Backend、Local設定等を検討します。
 
 ## Cache / Update
 
@@ -85,13 +97,13 @@ GitHub Pagesへ公開されるHTML/JS/JSONに秘密情報を置きません。
 - 必要時のみCache Busting
 - Service Worker採用時の更新戦略
 
-クエリ文字列Versionを使う場合、HTML側とVersion情報を不整合にしないようにします。
+Query String Versionを使う場合、HTML側とVersion情報を不整合にしないようにします。
 
 Service WorkerはPagesだからという理由だけで導入せず、Offline / PWA等のProject要件がある場合に検討します。
 
 ## Pages専用Workflow
 
-WebとElectronが同居するRepoでは、Pages ArtifactをWebファイルだけに限定する方式を推奨します。
+WebとElectronが同居するRepoでは、Pages ArtifactをWeb Fileだけに限定する方式を推奨します。
 
 例:
 
@@ -109,3 +121,5 @@ assets/
 CI成功だけで完成扱いにせず、可能なら公開URLで主要導線を確認します。
 
 確認できない場合は「GitHub Pages実公開は未確認」と明記します。
+
+確認した公開URLは、ユーザーへ渡す最終Commit / Merge Commitと対応していることを確認します。
