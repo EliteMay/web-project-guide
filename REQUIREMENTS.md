@@ -27,6 +27,7 @@ Common Rule本文は `docs/` の各Owner Docを正本とし、この文書へ詳
 - 同じ判断のSource of Truthを複数作らない
 - Rule / Template / Checklist / Catalogを増やしすぎない
 - 過去の失敗・成功・ResearchをEvidenceとして再利用する
+- Human Router / Machine Router / Owner Doc / Template / Validatorを1つのSystemとして整合させる
 - 「実装した」だけでなく必要なValidationまで含めて完成を判断する
 
 ## 2. 使用者・公開範囲
@@ -58,6 +59,7 @@ Common Rule本文は `docs/` の各Owner Docを正本とし、この文書へ詳
 - Templates / Checklist
 - Failure / Success / Anti-Pattern / Visual Evidence Catalog
 - Evidence-first Researchの共通Method
+- Guide自身のDeep System Audit / Rule Hygiene
 - Validator
 - Guide Version / CHANGELOG /直近作業報告
 - Coding AgentがCurrent Repositoryを基準に安全に作業するための入口
@@ -85,14 +87,18 @@ Project固有情報は対象RepositoryをSource of Truthとします。
 | `START_HERE.md` | 人間向け作業Router | START_HERE |
 | `docs/00-21` | Common Rule / Behavioral Owner | 各Owner Doc |
 | `maintenance/rule-router.json` | Machine-readable Routing | Router JSON |
+| `maintenance/review-policy.json` | Review / Deep Audit機械設定 | Review metadata |
+| `maintenance/DEEP_SYSTEM_AUDIT.md` | Deep Audit実行Checklist | `docs/14`の実行補助 |
 | `templates/` | Projectで使う雛形 / 実行Checklist | 各Template |
 | `catalog/` | Failure / Success / Anti-Pattern等のEvidence | 各Catalog |
-| `references/` | Research / Standards /非Normative Evidence | 各Reference |
+| `references/` | Research / Pilot / Standards /非Normative Evidence | 各Reference |
 | `tests/` | Guide Validator | Test implementation |
 | `guide-version.json` | Guide Version | Version metadata |
 | `CHANGELOG.md` | Release単位の長期変更履歴 | CHANGELOG |
 | `作業報告書.md` | 直近作業・未確認事項 | Work Report |
 | Git history | 詳細な変更履歴 | Git |
+
+`maintenance/DEEP_SYSTEM_AUDIT.md`はNormative Ownerではありません。Deep AuditのBehavioral Ruleは`docs/14-continuous-improvement.md`を正本とします。
 
 ## 5. 主要利用フロー
 
@@ -123,7 +129,9 @@ RoutingのBehavioral Contractは `docs/21-rule-routing-preflight.md`、機械Rou
 ### Guide改善
 
 ```text
-新しい知見 / 問題
+Current main / User Intent確認
+↓
+Guide改善としてPreflight
 ↓
 既存Ownerで表現できるか
 ↓
@@ -131,10 +139,16 @@ Project固有 / Catalog / Checklist / Referenceで扱うべきか
 ↓
 本当にCommon Ruleが必要な場合だけOwnerへ統合
 ↓
-重複 / Orphan / 古いRuleを同時に整理
+重複 / Orphan / 古いRule /旧Copyを同時に整理
 ↓
-Router / Validator / Documentation整合確認
+Human Router / Machine Routerを代表Caseで比較
+↓
+Validatorへ機械化可能なRegression Guardを追加
+↓
+最終Diff / PR Head / Merge後mainを確認
 ```
+
+大規模なGuide見直しでは `docs/14-continuous-improvement.md` と `maintenance/DEEP_SYSTEM_AUDIT.md` を使い、File単位ではなくSystem単位で点検します。
 
 ## 6. Source of Truth
 
@@ -164,6 +178,8 @@ Current State確認の詳細は `docs/21-rule-routing-preflight.md` を参照し
 
 Ruleを短くすること自体を目的にしません。ChatGPT / Coding Agentが作業時に必要なRuleへ確実に到達できることを優先します。
 
+Rule移動時は**新Ownerへ存在することだけでなく、旧Ownerの詳細Copyが残っていないこと**まで確認します。
+
 ### SHOULD: 大きい文書は責務で分ける
 
 単純な文字数だけで分割しません。次の場合は分割を検討します。
@@ -184,6 +200,10 @@ Ruleを短くすること自体を目的にしません。ChatGPT / Coding Agent
 - Meaningful Visual Change / Researchable Question / Storage Migration / Game Completion等のStable Gateを必要時に発火する
 - 小さなBugや文言修正へFull Guide / Deep Researchを機械的に要求しない
 - 作業途中でScope / Riskが変われば追加OwnerへRe-routeする
+- 重要なHuman RouteとMachine Routeは同じ代表TaskでParity確認する
+- Owner Registryへ登録した重要Docを実質到達不能にしない
+
+Guide自身のDeep Review、Storage Migration、Meaningful Visual Change、Game主要Flow、Cross-Repository GitHub Infrastructure等、見落としCostが高いCaseはGolden Routing Caseで守ることを優先します。
 
 初期Routing実装は意図的に小さく保ちます。専用Session DB、永続Receipt、複雑なRisk Score、巨大なResolver Frameworkは実運用で必要性が確認されるまで必須にしません。
 
@@ -230,9 +250,12 @@ Normative Rule本文はOwner Docへ置き、CatalogではRuleを再定義しす�
 
 ### References
 
-外部Researchや非NormativeなWorking Hypothesisを保存できます。
+外部Research、Working Hypothesis、Named Project Pilot、時点依存Snapshot等の非Normative Evidenceを保存できます。
 
-個別Project固有の最終RequirementはCommon Referenceだけに残さず対象Projectへ保存します。
+- 個別Project固有の最終RequirementはCommon Referenceだけに残さず対象Projectへ保存する
+- Named ProjectのPilot結果や当時のFile一覧をCommon Ownerの恒久Ruleとして固定しない
+- 古いReferenceをCurrent Stateの代用にせず、適用時はCurrent Repository /公式Sourceを再確認する
+- Common Ownerへ移すのはEvidenceから一般化できたBehaviorだけにする
 
 ## 12. Validator Contract
 
@@ -243,45 +266,76 @@ ValidatorはGuide品質の完全な代替ではありません。
 - 必須File / JSON構文
 - Markdown相対Link
 - Owner Doc / Router参照整合
+- Owner Registryの実質到達性
+- Work Type / Domain / Signal / Gate参照整合
 - Gate ID一意性
 - Guide Version / CHANGELOG整合
 - Catalog ID整合
 - 代表Golden Routing Case
 - Conditional Template / ChecklistのRouting整合
+- Deep System Audit Procedureの到達性
+- 明確なProject-specific Evidence leakage Regression Guard
 
 文章の特定フレーズを大量に固定し、自然な書き換えを壊すTestへ寄せすぎません。
 
-## 13. 完成条件
+Semantic duplicationの完全自動判定を目指して巨大なRule Engineを作らず、機械化できない意味重複はDeep System Auditで確認します。
+
+## 13. Deep System Audit Contract
+
+Guide自身を大きく点検する場合は、Current Repositoryを「まだ低品質かもしれない」という仮説から確認し、過去の修正報告を品質Evidenceの代用にしません。
+
+最低限次を横断照合します。
+
+- Entry / Source of Truth
+- Normative Owner topology
+- Human / Machine Router parity
+- Template / Checklist drift
+- Semantic duplication
+- Machine-readable Schema / Validator coverage
+- History / Project-specific Evidence leakage
+- Repository metadata / Workflow / Final-state operations
+
+実行Checklistは `maintenance/DEEP_SYSTEM_AUDIT.md`、Behavioral Ownerは `docs/14-continuous-improvement.md` とします。
+
+## 14. 完成条件
 
 このGuideは少なくとも次を満たす状態を目標とします。
 
 - [ ] README / START_HEREから必要なOwnerへ短く辿れる
 - [ ] Meaningful作業ではRule Routing / Preflightが使える
+- [ ] Human / Machine Routerの重要Routeが代表Caseで一致する
+- [ ] Owner Registryの重要DocがRouting上Orphanになっていない
 - [ ] 同じ判断のNormative Ownerが原則1つ
+- [ ] Rule移動後に旧Ownerの詳細Copyが残っていない
 - [ ] Current RequirementsとHistoryが分離されている
+- [ ] Project-specific / time-specific EvidenceがCommon Ownerへ恒久Ruleとして混在していない
 - [ ] Templates / ChecklistがRule本文の第二正本になっていない
 - [ ] Conditional Templateは必要なProjectだけ読める
 - [ ] Guide Versionが一元管理されている
 - [ ] Validatorが構造上の重大driftを検出できる
+- [ ] Deep System AuditをCurrent Revisionから再実行できる
 - [ ] 既存Ruleを整理しても意味が失われていない
 - [ ] 重大な既知矛盾がない
 - [ ] 未確認事項が作業報告に明示されている
 
-## 14. 非目標
+## 15. 非目標
 
 - Guideを短くするためだけに有用Ruleを削除する
 - 全作業へ全章を適用する
 - 全Projectを同じArchitecture / Visual / Storageへ揃える
 - Rule EngineそのものをProduct化する
+- Semantic duplicationを完全自動判定する巨大Analyzerを作る
 - Common Guideへ各Projectの詳細仕様・作業履歴を集積する
 - CI成功だけでGuide品質・Project完成を保証したとみなす
 
-## 15. Implementation Handoff
+## 16. Implementation Handoff
 
 - Requirements Status: Ready for implementation
 - Information Architecture cleanup: Implemented
 - Template / Checklist responsibility split: Implemented
+- Deep System Audit workflow: Implemented
+- Human / Machine routing parity guard: Implemented
 - Unresolved Core Decisions: None
 - Unresolved High-cost Decisions: None
 
-今後新しい大規模Guide改善要件が生じた場合、Current Contractへ混ぜ込まず、必要ならIssue / ADR /一時Draftで検討し、確定・実装後にCurrent Contractへ必要な恒久Ruleだけ反映します。
+今後新しい大規模Guide改善要件が生じた場合、Current Contractへ履歴として混ぜ込まず、必要ならIssue / ADR /一時Draftで検討し、確定・実装後にCurrent Contractへ必要な恒久Ruleだけ反映します。

@@ -4,17 +4,20 @@
 
 機械可読なReview設定の正本は [`maintenance/review-policy.json`](../maintenance/review-policy.json) とします。
 
+Deep System Auditの実行Checklistは [`maintenance/DEEP_SYSTEM_AUDIT.md`](../maintenance/DEEP_SYSTEM_AUDIT.md) を使います。Checklistはこの章の実行補助であり、Normative Rule本文の第二正本ではありません。
+
 Rule追加・正本管理の判断は [Guide Governance](00-governance.md) のRule Budget / Single Normative Ownerを正本とします。
 
-External Research Method、Source Quality、Opposing Evidence、Bias、Applicability、Research Saturation、Evidence Map等の一般Research Workflowは [Evidence-first Research](20-evidence-first-research.md) を正本とします。この章は **Project Feedback Loop / Rule Hygiene / Common Rule Promotion operation** を担当します。
+External Research Method、Source Quality、Opposing Evidence、Bias、Applicability、Research Saturation、Evidence Map等の一般Research Workflowは [Evidence-first Research](20-evidence-first-research.md) を正本とします。この章は **Project Feedback Loop / Rule Hygiene / Common Rule Promotion operation / Guide自身のSystem Audit** を担当します。
 
 ## 目的
 
-定期Reviewでは次の3つを行います。
+定期Reviewでは次の4つを行います。
 
 1. **Project Feedback Loop** — 実Projectから失敗・高コスト修正・再利用価値のある設計を抽出
 2. **External Evidence / Standards Loop** — 一次・公式資料や必要な外部Evidenceから不足・陳腐化を確認
 3. **Rule Hygiene Loop** — 重複・Orphan Rule・過剰なChecklist化・Project固有Rule混入を整理
+4. **System Integrity Loop** — Owner / Human Router / Machine Router / Template / Validator / History / Repository運用が一体として矛盾していないか確認
 
 新しいRuleを増やすこと自体を成果にしません。
 
@@ -108,6 +111,48 @@ Research結果そのものを自動的にMUSTへ変換しません。Rule Streng
 
 Ruleを消すことも改善です。
 
+## Deep System Audit
+
+### MUST: GuideをFile集合ではなくSystemとして照合する
+
+Guide自身を大きく点検するときは、各Fileを個別に「問題なし」と判断するだけで終えません。少なくとも次の横断面を相互照合します。
+
+1. Entry / Source of Truth
+2. Normative Owner topology
+3. Human Router / Machine Router parity
+4. Template / Checklist responsibility
+5. Semantic duplication
+6. Machine-readable Schema / Validator coverage
+7. History / Project-specific Evidence leakage
+8. Repository metadata / Workflow / Final-state operations
+
+実行順・代表Case・Finding分類・Completion Gateは [`maintenance/DEEP_SYSTEM_AUDIT.md`](../maintenance/DEEP_SYSTEM_AUDIT.md) を使います。
+
+### MUST: 「前回直した」をEvidenceにしない
+
+前回のPRやWork Reportで「移動済み」「整理済み」と書かれていても、Current `main` に旧Copy・古いRoute・Project固有Exampleが残っていないか再確認します。
+
+特にRule移動後は、**新Ownerに存在すること**だけでなく**旧Ownerから詳細Copyが消えていること**まで確認します。
+
+### MUST: Human / Machine Routerを同じTaskで比較する
+
+`START_HERE.md`のHuman Routeと`maintenance/rule-router.json`を別々に読むだけでなく、同じ代表Taskを両方へ通し、必要Ownerの差を確認します。
+
+Guide自身のDeep Review、Storage Migration、Meaningful Visual Change、Game主要Flow、Cross-Repository GitHub Infrastructure等、見落としCostが高いCaseはGolden Caseで守ることを優先します。
+
+### SHOULD: Validatorは今回見つかった構造Failureを再発防止する
+
+Validatorへ追加するのは、文章の言い回しではなく次のような構造Contractを優先します。
+
+- Required File / Link
+- Router key /参照整合
+- Unknown Work Type / Domain / Signal / Gate参照
+- Golden Routing Case
+- Audit Procedure到達性
+- Project-specific Evidence separationの明確な構造Marker
+
+Semantic duplicationそのものを完全自動判定しようとして巨大なRule Engineを作りません。機械検査できない意味重複はDeep Auditで人間 / AI Reviewします。
+
 ## 新しい知見の配置先
 
 配置判断は [Guide Governance](00-governance.md#rule-budget--共通ルールを増やしすぎない) を正本とします。
@@ -176,6 +221,7 @@ Rule Strengthは [Guide Governance](00-governance.md#ルールの強さ) を正�
 - README / START HEREのRouter
 - Catalog / Checklist / References
 - `maintenance/review-policy.json`
+- `maintenance/DEEP_SYSTEM_AUDIT.md`
 - Validator
 
 Versionを上げる必要がない軽微な誤字修正等は例外です。
@@ -184,7 +230,7 @@ Versionを上げる必要がない軽微な誤字修正等は例外です。
 
 変更後はGuide Validatorを**最終Commit**で通します。
 
-Validatorだけで重複内容の意味までは完全に判定できないため、Rule Hygieneは人間 / AI Reviewも併用します。
+Validatorだけで重複内容の意味までは完全に判定できないため、Rule Hygiene / Deep System Auditは人間 / AI Reviewも併用します。
 
 ## No Change / No Commit
 
@@ -204,6 +250,9 @@ Validatorだけで重複内容の意味までは完全に判定できないた�
 - Owner Docをどこにしたか
 - なぜCommon Rule化したか
 - Compatibilityへの影響
+- Human / Machine Router parityで確認した代表Case
+- Validatorへ追加したRegression Guard
+- Repository metadata /設定で未修正のもの
 - Validation結果
 
 何も変更しなかった場合、空の報告Commitを作る必要はありません。

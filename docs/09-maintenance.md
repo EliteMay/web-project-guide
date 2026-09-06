@@ -81,18 +81,17 @@ Versionは`meta.js` / `version.js` / manifest等の**Metadata**で表し、実�
 
 ## 変更前に確認
 
-既存プロジェクトを変更する場合:
+既存Projectを変更するときの**何を読むか /どこまで読むか**は [21 Rule Routing / Preflight](21-rule-routing-preflight.md) と [10 Project Management](10-project-management.md) を正本とします。
 
-1. README
-2. 仕様書
-3. 作業報告書 / CHANGELOG
-4. File Structure
-5. Existing Runtime
-6. Data Schema
-7. Storage Keys
-8. GitHub Actions / Tests
+この章では一覧を第二正本として固定せず、Version / Runtime Path / Legacy / Patchに関係する変更で特に次のMaintenance-specific Evidenceを追加確認します。
 
-を確認します。
+- Current RuntimeがどのPath / Entry Pointか
+- App / Build / Schema Versionの正本がどこか
+- Cache Busting / Service Worker / Release MetadataとのVersion整合
+- 旧Runtime / Legacy / Migrationが意図的に残っているか
+- Version付きCopy / Patch ScriptがCurrent Runtimeへ重複していないか
+
+Storage Schema / Migration自体の安全Contractは [03 Data / Storage](03-data-storage.md)、最終Validationは [07 Testing / Quality](07-testing-quality.md) を正本とします。
 
 ## 大きな変更
 
