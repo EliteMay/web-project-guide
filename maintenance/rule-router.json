@@ -1,0 +1,144 @@
+{
+  "schemaVersion": 1,
+  "routerId": "web-project-guide-rule-router",
+  "behavioralOwner": "docs/21-rule-routing-preflight.md",
+  "humanRouter": "START_HERE.md",
+  "classification": {
+    "projectProfiles": ["STATIC", "DATA", "LEARNING", "GAME", "MEDIA", "AI-HANDOFF", "CLOUD", "ELECTRON", "TOOL", "PUBLIC-CONTENT"],
+    "workTypes": ["REQUIREMENTS", "RESEARCH", "IMPLEMENTATION", "BUG_FIX", "REVIEW", "DATA_CONTENT", "DEPLOYMENT", "MAINTENANCE"],
+    "domains": ["ARCHITECTURE", "DATA_STORAGE", "UI_UX", "VISUAL", "PERFORMANCE_RELIABILITY", "SECURITY", "TESTING_QUALITY", "GITHUB_PAGES", "PROJECT_MANAGEMENT", "ELECTRON", "DISTRIBUTION", "DEPENDENCIES_ASSETS", "OBSERVABILITY", "GAME_DESIGN", "LEARNING_CONTENT", "CLOUD", "MEDIA", "RESEARCH", "GOVERNANCE_ROUTING"],
+    "changeScopes": ["LOCAL", "MODERATE", "MEANINGFUL", "SYSTEMIC"],
+    "risks": ["LOW", "MEDIUM", "HIGH", "CRITICAL"],
+    "researchability": ["NOT_REQUIRED", "POSSIBLE", "REQUIRED"],
+    "specialConditions": ["EXISTING_SAVE", "SCHEMA_CHANGE", "MIGRATION", "AUTH_REQUIRED", "EXTERNAL_API", "PUBLIC_RELEASE", "REAL_DEVICE_REQUIRED", "LEGACY_PROJECT", "MANAGED_ROUTING"]
+  },
+  "ownerDocs": {
+    "GOVERNANCE": "docs/00-governance.md",
+    "REQUIREMENTS": "docs/01-requirements.md",
+    "ARCHITECTURE": "docs/02-architecture.md",
+    "DATA_STORAGE": "docs/03-data-storage.md",
+    "UI_UX": "docs/04-ui-ux-accessibility.md",
+    "PERFORMANCE_RELIABILITY": "docs/05-performance-reliability.md",
+    "SECURITY": "docs/06-security.md",
+    "TESTING_QUALITY": "docs/07-testing-quality.md",
+    "GITHUB_PAGES": "docs/08-github-pages.md",
+    "MAINTENANCE_VERSION": "docs/09-maintenance.md",
+    "PROJECT_MANAGEMENT": "docs/10-project-management.md",
+    "ELECTRON_DISTRIBUTION": "docs/11-electron-distribution.md",
+    "PROJECT_PROFILES": "docs/12-project-profiles.md",
+    "DEPENDENCIES_ASSETS": "docs/13-dependencies-assets.md",
+    "CONTINUOUS_IMPROVEMENT": "docs/14-continuous-improvement.md",
+    "OBSERVABILITY": "docs/15-development-observability.md",
+    "CROSS_REPOSITORY_GITHUB": "docs/16-cross-repository-github-infrastructure.md",
+    "VISUAL_BASELINE": "docs/17-visual-quality-baseline.md",
+    "VISUAL_RESEARCH": "docs/18-domain-first-visual-research.md",
+    "GAME_DESIGN": "docs/19-game-development.md",
+    "RESEARCH": "docs/20-evidence-first-research.md",
+    "RULE_ROUTING": "docs/21-rule-routing-preflight.md"
+  },
+  "baseByWorkType": {
+    "REQUIREMENTS": ["GOVERNANCE", "REQUIREMENTS", "PROJECT_PROFILES", "RULE_ROUTING"],
+    "RESEARCH": ["GOVERNANCE", "RESEARCH", "RULE_ROUTING"],
+    "IMPLEMENTATION": ["PROJECT_MANAGEMENT", "TESTING_QUALITY", "RULE_ROUTING"],
+    "BUG_FIX": ["PROJECT_MANAGEMENT", "TESTING_QUALITY", "RULE_ROUTING"],
+    "REVIEW": ["TESTING_QUALITY", "RULE_ROUTING"],
+    "DATA_CONTENT": ["PROJECT_MANAGEMENT", "TESTING_QUALITY", "RULE_ROUTING"],
+    "DEPLOYMENT": ["PROJECT_MANAGEMENT", "TESTING_QUALITY", "RULE_ROUTING"],
+    "MAINTENANCE": ["GOVERNANCE", "CONTINUOUS_IMPROVEMENT", "TESTING_QUALITY", "RULE_ROUTING"]
+  },
+  "byDomain": {
+    "ARCHITECTURE": ["ARCHITECTURE"],
+    "DATA_STORAGE": ["DATA_STORAGE"],
+    "UI_UX": ["UI_UX", "VISUAL_BASELINE"],
+    "VISUAL": ["UI_UX", "VISUAL_BASELINE"],
+    "PERFORMANCE_RELIABILITY": ["PERFORMANCE_RELIABILITY"],
+    "SECURITY": ["SECURITY"],
+    "TESTING_QUALITY": ["TESTING_QUALITY"],
+    "GITHUB_PAGES": ["GITHUB_PAGES"],
+    "PROJECT_MANAGEMENT": ["PROJECT_MANAGEMENT"],
+    "ELECTRON": ["ELECTRON_DISTRIBUTION"],
+    "DISTRIBUTION": ["ELECTRON_DISTRIBUTION"],
+    "DEPENDENCIES_ASSETS": ["DEPENDENCIES_ASSETS"],
+    "OBSERVABILITY": ["OBSERVABILITY"],
+    "GAME_DESIGN": ["GAME_DESIGN"],
+    "LEARNING_CONTENT": ["REQUIREMENTS"],
+    "CLOUD": ["DATA_STORAGE", "SECURITY", "PERFORMANCE_RELIABILITY", "DEPENDENCIES_ASSETS"],
+    "MEDIA": ["DATA_STORAGE", "PERFORMANCE_RELIABILITY", "DEPENDENCIES_ASSETS"],
+    "RESEARCH": ["RESEARCH"],
+    "GOVERNANCE_ROUTING": ["GOVERNANCE", "CONTINUOUS_IMPROVEMENT", "RULE_ROUTING"]
+  },
+  "byProfile": {
+    "STATIC": ["GITHUB_PAGES"],
+    "DATA": ["DATA_STORAGE"],
+    "LEARNING": ["REQUIREMENTS"],
+    "GAME": ["GAME_DESIGN"],
+    "MEDIA": ["DATA_STORAGE", "PERFORMANCE_RELIABILITY", "DEPENDENCIES_ASSETS"],
+    "AI-HANDOFF": ["OBSERVABILITY", "SECURITY"],
+    "CLOUD": ["DATA_STORAGE", "SECURITY", "PERFORMANCE_RELIABILITY"],
+    "ELECTRON": ["ELECTRON_DISTRIBUTION", "SECURITY"],
+    "TOOL": [],
+    "PUBLIC-CONTENT": ["SECURITY", "DEPENDENCIES_ASSETS"]
+  },
+  "gates": [
+    {
+      "id": "RULE-PREFLIGHT-GATE",
+      "owner": "RULE_ROUTING",
+      "when": {"alwaysForManagedTask": true},
+      "requireOwners": ["RULE_ROUTING"]
+    },
+    {
+      "id": "VISUAL-RESEARCH-GATE",
+      "owner": "VISUAL_RESEARCH",
+      "when": {"domainsAny": ["VISUAL"], "changeScopesAny": ["MEANINGFUL", "SYSTEMIC"]},
+      "requireOwners": ["VISUAL_RESEARCH", "UI_UX", "VISUAL_BASELINE"]
+    },
+    {
+      "id": "RESEARCHABLE-QUESTION-GATE",
+      "owner": "RESEARCH",
+      "when": {"researchabilityAny": ["REQUIRED"]},
+      "requireOwners": ["RESEARCH"]
+    },
+    {
+      "id": "STORAGE-MIGRATION-GATE",
+      "owner": "DATA_STORAGE",
+      "when": {"specialConditionsAny": ["EXISTING_SAVE", "SCHEMA_CHANGE", "MIGRATION"]},
+      "requireOwners": ["DATA_STORAGE", "TESTING_QUALITY"]
+    },
+    {
+      "id": "GAME-PLAYTEST-GATE",
+      "owner": "GAME_DESIGN",
+      "when": {"projectProfilesAny": ["GAME"], "workTypesAny": ["IMPLEMENTATION", "REVIEW"]},
+      "requireOwners": ["GAME_DESIGN", "TESTING_QUALITY"]
+    },
+    {
+      "id": "SECURITY-EXTERNAL-GATE",
+      "owner": "SECURITY",
+      "when": {"specialConditionsAny": ["AUTH_REQUIRED", "EXTERNAL_API", "PUBLIC_RELEASE"]},
+      "requireOwners": ["SECURITY"]
+    }
+  ],
+  "reRoutingTriggers": [
+    "domain-added",
+    "scope-increased",
+    "risk-increased",
+    "researchability-changed",
+    "storage-or-migration-added",
+    "auth-or-external-api-added",
+    "project-profile-added",
+    "user-requirement-changed",
+    "unexpected-impact-discovered"
+  ],
+  "taskSessionResetTriggers": [
+    "repository-changed",
+    "work-type-changed",
+    "primary-purpose-changed",
+    "guide-revision-changed",
+    "independent-phase-started",
+    "repository-materially-updated-externally"
+  ],
+  "compatibility": {
+    "unknownSchema": "fail-closed-for-router-dependent-scope",
+    "legacyProject": "repository-evidence-fallback",
+    "managedProject": "router-contract-required"
+  }
+}
