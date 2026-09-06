@@ -4,6 +4,8 @@
 
 この章の目的は、すべてを中央化することではありません。**Account共通の部分だけを中央化し、Project固有の仕様・Test・Releaseは各Repositoryへ残す**ことです。
 
+過去にRule形成へ使ったNamed Project / Pilotの具体例は [Cross-Repository GitHub Pilot Evidence](../references/cross-repository-github-pilot-evidence.md) に非Normative Referenceとして分離します。この章ではCurrent Repository名や一時的な導入状態をCommon Ruleとして固定しません。
+
 ## 役割分担
 
 原則として次の責務へ分けます。
@@ -12,8 +14,8 @@
 web-project-guide
 = 何を共通化するか / 品質基準 / 判断ルール
 
-EliteMay/.github
-= Account共通のIssue / PR / Community Health / Reusable Workflow
+Account / Organization共通 .github Repository
+= 共通Issue / PR / Community Health / Reusable Workflow
 
 各Project Repository
 = Project固有仕様 / Runtime / Test / Release / Storage / Project Rules
@@ -28,17 +30,13 @@ GitHub Projectsへ仕様本文を移して新しいSource of Truthを作りま�
 
 SHOULD: 複数Repositoryで同じGitHub運用を繰り返す場合、Personal AccountまたはOrganizationのPublic `.github` Repositoryを共通入口として利用できます。
 
-現在の`EliteMay/.github`では次をAccount共通Defaultとして管理します。
+共通化候補:
 
-- `.github/ISSUE_TEMPLATE/bug.yml`
-- `.github/ISSUE_TEMPLATE/feature.yml`
-- `.github/ISSUE_TEMPLATE/config.yml`
-- `PULL_REQUEST_TEMPLATE.md`
-- `SECURITY.md`
-- `SUPPORT.md`
-- `CONTRIBUTING.md`
-- `.github/workflows/reusable-web-baseline.yml`
-- `.github/workflows/validate-defaults.yml`
+- Issue Form / Issue Template
+- Pull Request Template
+- SECURITY / SUPPORT / CONTRIBUTING等のCommunity Health File
+- Reusable Workflow
+- 共通Workflow自体のValidation
 
 各Repositoryに同名の有効なTemplate / Community Health Fileがある場合はProject固有側を優先します。
 
@@ -46,7 +44,7 @@ SHOULD: 複数Repositoryで同じGitHub運用を繰り返す場合、Personal Ac
 
 `.github`へ各Site固有の崩してはいけない仕様、Storage Schema、機能仕様等を集約しません。
 
-共通RepositoryはGitHub運用のDefaultです。Project固有の正本は各RepositoryのREADME / Spec / PROJECT_RULES / Tests等へ残します。
+共通RepositoryはGitHub運用のDefaultです。Project固有の正本は各RepositoryのRequirements / Spec / Project Rules / Tests等へ残します。
 
 ## Reusable Workflow
 
@@ -61,12 +59,12 @@ SHOULD: 複数Projectで繰り返すGitHub Actions処理は、共通部分だけ
 - 共通Secret / Public artifactチェック
 - 共通の軽量Static Baseline
 
-各Repositoryへ残す例:
+Project側へ残す例:
 
-- AP Study Notes固有のCurriculum / 過去問Validation
-- English固有のWorkbook / Firefox E2E
-- LyricTube固有のPlayer / Library Schema Test
-- osu-hub固有のWindows Installer / Auto Update / Release Artifact検証
+- Curriculum /教材Data等のDomain Validation
+- Project固有E2E / Browser Matrix
+- Player / Editor / Library等のProduct固有Schema Test
+- Windows Installer / Auto Update / Release Artifact等のDistribution Contract
 
 ### MUST: Project固有Validatorを中央Workflowへ吸収しすぎない
 
@@ -81,39 +79,30 @@ Reusable Workflowは**Common Baseline**、各RepositoryのWorkflowは**Project C
 ```yaml
 jobs:
   baseline:
-    uses: EliteMay/.github/.github/workflows/reusable-web-baseline.yml@<commit-sha>
+    uses: <owner>/.github/.github/workflows/<workflow>.yml@<commit-sha>
 ```
 
 `@main`を恒久利用して中央変更を即時全Projectへ伝播させません。
 
 運用上Tagを使う場合は、`v1`等の互換範囲とBreaking Change方針を明確にします。
 
-### 現在のPilot
+### Pilot / Rollout
 
-`DesignShelf`と`ASMRTube`で、`EliteMay/.github`のReusable Web Baselineを確定Commit SHAへ固定して利用し、次を確認済みです。
-
-- Common Baseline成功
-- Project固有Validator成功
-- Pull Request確認後にmainへMerge
-- mainの最終Commitでも両方成功
-
-この結果は「全Projectへ一括展開してよい」という意味ではありません。各Repositoryの既存WorkflowとProject Contractを確認しながら段階的に導入します。
-
-### Upgrade方針
-
-中央Workflow更新時は次の順を推奨します。
+Reusable Workflow等の中央基盤は、いきなり全Repositoryへ展開せず代表Projectで確認してから段階展開します。
 
 ```text
 Reusable Workflow更新
 → Host側Validation
-→ Pilot Project 1〜2件で新SHAへ更新
+→ Pilot Project 1〜2件で新参照へ更新
 → Project固有CI確認
 → 問題なしなら他Projectへ段階展開
 ```
 
 全Repositoryを同時に新Versionへ切り替える必要はありません。
 
-`.github` Repository自体も`validate-defaults.yml`で必須ファイル、Issue Form YAML、Reusable Workflowの`workflow_call`とread-only permission等を確認します。
+Pilot成功は、そのContextで中央化Patternが成立したEvidenceです。全Projectへそのまま適用できる証明とは扱いません。
+
+共通`.github` Repository自体にも、必須File、Issue Form YAML、Reusable Workflowの`workflow_call`、必要最小Permission等を確認するValidationを持つことを優先します。
 
 ## Rulesets / Branch Protection
 
@@ -141,11 +130,11 @@ CONDITIONAL: main破損時の影響が大きいRepositoryほど保護を強く�
 - 未Merge CommitからStable Releaseを作らない
 - Bypass対象を最小化
 
-`osu-hub`のようにmainからSetup.exe / Update Metadata / Stable Releaseへ繋がるProjectは、静的Siteより高い保護レベルを使います。
+mainからInstaller / Update Metadata / Stable Release等へ直接繋がるProjectは、通常の静的Siteより高い保護レベルを検討します。
 
 ### SHOULD: Protectionを全Repositoryへ同じ強さで適用しない
 
-小規模な文言修正まで必ずPR必須にすると、現在のSmallest Safe Change方針と衝突します。
+小規模な文言修正まで必ずPR必須にすると、Smallest Safe Change方針と衝突します。
 
 Project Profile / Release Risk / Data Loss Riskに合わせて設定します。
 
@@ -156,13 +145,12 @@ CONDITIONAL: npm等のPackage DependencyまたはGitHub Actionsを継続利用�
 特に優先度が高い例:
 
 - Electron
-- electron-builder
-- electron-updater
+- Packaging / Auto-update toolchain
 - Framework / Build Tool
 - Security-sensitive dependency
 - GitHub Actions
 
-### SHOULD: 更新PRを自動Mergeしない
+### SHOULD: 更新PRを無条件Auto Mergeしない
 
 Dependency Updateも通常の変更と同じ品質Gateへ通します。
 
@@ -177,7 +165,7 @@ Dependabot PR
 → Merge
 ```
 
-`osu-hub`ではnpmとGitHub ActionsのWeekly Version Updateを導入済みです。Electron toolchainのminor / patchはまとめ、major updateは個別にReviewできる形を使います。
+具体PackageのGroupingやScheduleはProject固有に決めます。
 
 ### SHOULD: PRノイズを抑える
 
@@ -189,7 +177,7 @@ Dependabot PR
 
 SHOULD: Bug / Feature Issueを継続利用するProjectでは、自由記述だけでなくIssue Formsで必要Evidenceを揃えることを検討します。
 
-`EliteMay/.github`の共通Bug Formは次を扱います。
+共通Bug Formの候補:
 
 - Version / Build
 - 発生画面
@@ -199,11 +187,11 @@ SHOULD: Bug / Feature Issueを継続利用するProjectでは、自由記述だ�
 - Error ID
 - Diagnostic Snapshot ID
 - Environment
-- Screenshot / 補足
+- Screenshot /補足
 
 Remote Diagnostic Handoff採用Projectでは、実Log全文をIssueへ貼るのではなく、Sanitize済みSnapshot IDを関連付ける方式を優先します。
 
-Secret / Token / Cookie / Password / 個人情報をIssue Formへ要求しません。
+Secret / Token / Cookie / Password /個人情報をIssue Formへ要求しません。
 
 ## GitHub Projects
 
@@ -268,9 +256,17 @@ AIが自動で判断してIssue / PR / Codeを変更する範囲は、決め打�
 1. `.github`共通RepositoryでIssue / PR Defaultを整える
 2. Release Riskが高いRepositoryからRulesetを導入
 3. Dependencyを持つRepositoryへDependabotを導入
-4. 軽量なStatic Project 1〜2件でReusable WorkflowをPilot
+4. 軽量な代表Project 1〜2件でReusable WorkflowをPilot
 5. 問題がなければ段階的に他Projectへ展開
 6. 必要になったらGitHub Projectsで全RepoのIssue / PRを横断管理
+
+## Project-specific Evidenceの扱い
+
+Named Repository、当時の導入File一覧、Pilot成功状況、Dependency設定等は時間とともに変化します。
+
+Common Rule本文へCurrent Snapshotとして埋め込まず、保存価値がある場合はReference / Catalog / Project Learningsへ分離します。
+
+この章のRuleを実Projectへ適用するときは、過去Evidenceではなく対象Repositoryと共通`.github` Repositoryの**現在状態**を再確認します。
 
 ## 確認Checklist
 
@@ -283,3 +279,4 @@ AIが自動で判断してIssue / PR / Codeを変更する範囲は、決め打�
 - [ ] Issue FormへSecret /個人情報を要求しない
 - [ ] GitHub Projectsを仕様のSource of Truthにしていない
 - [ ] 中央基盤が壊れた時のFallback /旧SHAを把握している
+- [ ] Named Projectの一時的状態をCommon Ruleとして固定していない
