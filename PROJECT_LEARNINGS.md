@@ -109,9 +109,9 @@ Common Rule本文は`docs/`、一般化済みのFailure / Success / Anti-Pattern
 - Severity: high
 - Symptom: `docs/01`ではBest Reasonable Decisionへ移行した一方、Requirements / AGENTS / Conversation Templatesには`Core / High-cost = User回答待ち`の旧Contractが残った。
 - Root Cause: Behavior変更をOwner単体の編集として扱い、同じBehaviorを参照するAdapter / Templateの横断検索を完了条件にしなかった。
-- Final Fix: `docs/01` / `docs/21` / `docs/22`とRequirements / AGENTS / Conversation Templatesを同じAutonomy Contractへ統一。
+- Final Fix: `docs/01` / `docs/21` / `docs/23`とRequirements / AGENTS / Conversation Templatesを同じAutonomy Contractへ統一。
 - Detection method: Template / Owner semantic sweep。
-- Regression Guard: Validatorで旧User-wait markerとdocs22 routeを確認。
+- Regression Guard: Focused Validatorで旧User-wait markerとdocs23 routeを確認。
 - Prevention: Cross-cutting behavior変更はOwner → Router → Templates → Validatorの順で同じ代表Caseを通す。
 - Guide candidate: yes — Routing / Template Contractへ反映。
 
@@ -137,7 +137,7 @@ Common Rule本文は`docs/`、一般化済みのFailure / Success / Anti-Pattern
 - Root Cause: Common Ruleの追加時に対象Product Repoだけを想定し、Guide自身へのSelf-application auditをしなかった。
 - Final Fix: Workflowをfull-length Commit SHAへ固定し、`docs/16`へAction dependency全般のSupply-chain Contractを追加。
 - Detection method: Repository surface audit。
-- Regression Guard: Validatorで`uses:`参照が40桁SHAであることを確認。
+- Regression Guard: Validatorでexternal `uses:`参照が40桁SHAであることを確認。
 - Prevention: Common Ruleを追加・強化したらGuide自身が該当するかSelf-application checkを行う。
 - Guide candidate: yes — Governance self-application / docs16へ反映。
 
@@ -148,11 +148,24 @@ Common Rule本文は`docs/`、一般化済みのFailure / Success / Anti-Pattern
 - Severity: medium
 - Symptom: `docs/10`がGitHub Project変更WorkflowとConversation Handoff / stale checkpoint recoveryを同時に所有していたが、以前は「長文だが専門Owner」として保留していた。
 - Root Cause: File lengthを分割しない原則を強く意識しすぎ、**責務が独立しているか**の判定を弱めた。
-- Final Fix: GitHub変更Workflowは`docs/10`、Conversation Handoff / Recoveryは新しい`docs/22`へ分離し、Machine Router / Human Router / Templatesを接続。
+- Final Fix: GitHub変更Workflowは`docs/10`、Conversation Handoff / Recoveryは`docs/23`へ分離し、Machine Router / Human Router / Templatesを接続。
 - Detection method: Owner responsibility matrix / task routing test。
-- Regression Guard: docs22 required + owner registration + conversation recovery golden case。
+- Regression Guard: docs23 required + owner registration + conversation recovery golden case。
 - Prevention: 「長いから分ける」は避けるが、「異なるTaskが別々にRoutingできる」は分割Evidenceとして扱う。
 - Guide candidate: yes — Governance / Deep Auditへ反映。
+
+### PL-F-013 長時間BranchでCurrent mainの新Owner番号と衝突した
+
+- Date: 2026-09-07
+- Status: resolved
+- Severity: high
+- Symptom: Exhaustive Audit branchでConversation Handoff用に`docs/22`を追加した後、並行作業のCurrent mainへTask-first Structure / Flow用の正式`docs/22`がv1.19.0としてMergeされた。古いBranchをそのままMergeするとCurrent mainの新Owner / Router / Validatorを覆い戻すRiskが生じた。
+- Root Cause: 長時間作業Branchで、新しい番号付きOwnerを割り当てた時点のmainを固定的に見ており、Final integration前のCurrent Owner Registry再取得を独立Gateにしていなかった。
+- Final Fix: 最新mainのREADME / START_HERE / Owner / Versionを再取得し、Current mainをAudit branchへ統合。Task-first Ownerを`docs/22`のまま保持し、未公開だったConversation Handoff Ownerを`docs/23`へ移番してHuman Router / Machine Router / Templates / Validatorを再同期した。
+- Detection method: `main...audit branch`比較で`behind_by > 0`とowner path collisionを検出。
+- Regression Guard: Final PR前に`behind_by = 0`を確認し、Focused Validatorで`STRUCTURE_FLOW = docs/22`と`CONVERSATION_HANDOFF = docs/23`の両方を確認する。
+- Prevention: 新しい番号付きOwnerを追加するときとFinal PR Validation直前にCurrent Owner Registryを再確認する。並行mainで同じ番号が正式利用された場合は、未Merge側を移番しCurrent mainを上書きしない。
+- Guide candidate: yes — Project Management / Deep Audit final-base確認へ反映候補。
 
 ## Success
 
