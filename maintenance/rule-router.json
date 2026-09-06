@@ -24,7 +24,8 @@
     "VISUAL_RESEARCH": "docs/18-domain-first-visual-research.md",
     "GAME_DESIGN": "docs/19-game-development.md",
     "RESEARCH": "docs/20-evidence-first-research.md",
-    "RULE_ROUTING": "docs/21-rule-routing-preflight.md"
+    "RULE_ROUTING": "docs/21-rule-routing-preflight.md",
+    "CONVERSATION_HANDOFF": "docs/22-conversation-handoff-recovery.md"
   },
   "gates": {
     "RULE-PREFLIGHT-GATE": {
@@ -75,6 +76,7 @@
     "CONTINUOUS_IMPROVEMENT": ["docs/14-continuous-improvement.md"],
     "OBSERVABILITY": ["docs/15-development-observability.md"],
     "CROSS_REPOSITORY_GITHUB": ["docs/16-cross-repository-github-infrastructure.md"],
+    "CONVERSATION_HANDOFF": ["docs/22-conversation-handoff-recovery.md"],
     "GAME_DESIGN": ["docs/19-game-development.md"],
     "LEARNING_CONTENT": ["docs/01-requirements.md", "docs/12-project-profiles.md"],
     "RESEARCH": ["docs/20-evidence-first-research.md"],
@@ -120,6 +122,9 @@
     "GAME_COMPLETION_CHANGE": {
       "docs": ["docs/19-game-development.md", "docs/07-testing-quality.md"],
       "gates": ["GAME-PLAYTEST-GATE"]
+    },
+    "CONVERSATION_STATE_RECOVERY": {
+      "docs": ["docs/22-conversation-handoff-recovery.md", "docs/10-project-management.md"]
     }
   },
   "goldenCases": [
@@ -189,6 +194,20 @@
         "docs/09-maintenance.md",
         "docs/10-project-management.md",
         "docs/16-cross-repository-github-infrastructure.md"
+      ]
+    },
+    {
+      "id": "conversation-handoff-recovery",
+      "workType": "MAINTENANCE",
+      "domains": ["CONVERSATION_HANDOFF"],
+      "signals": ["CONVERSATION_STATE_RECOVERY"],
+      "mustInclude": [
+        "docs/10-project-management.md",
+        "docs/22-conversation-handoff-recovery.md"
+      ],
+      "mustNotRequire": [
+        "docs/18-domain-first-visual-research.md",
+        "docs/19-game-development.md"
       ]
     }
   ]
