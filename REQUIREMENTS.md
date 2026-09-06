@@ -2141,3 +2141,865 @@ Validatorへ文章全文を固定しすぎず、重要ContractだけをRegressio
 - General Research Normative Owner: `docs/20-evidence-first-research.md` を第一候補とし、実装開始時に最新番号体系を再確認する
 - Guide Version candidate after implementation: `1.18.0`
 - Implementation conversation: `web-project-guide（実装）`
+
+## 22. 確定済みGuide改善要件 — Rule Routing / Preflight
+
+### 22.1 目的 / Root Cause
+
+Guideに正しいRuleが存在していても、AI / Coding Agentが今回の作業を誤分類し、適用条件を見落として必要Owner Docを読まずに作業開始する問題を防ぐ。
+
+今回確認された代表Incidentは、Game全体のHUD / Inventory / Building UI / Menu等のUI要件定義を「既存Visual Directionの具体化」程度に狭く分類し、Meaningful Visual Change / Researchable Questionとして必要だったDomain-first Visual Research / Evidence-first Researchを、A/B/C案や推奨案を出す前に実施しなかったことである。
+
+この失敗はUI固有ではなく、**条件付きRuleが存在していても、その条件判定自体をAgentが誤ればOwner Docへ到達できない**という全作業共通のRouting問題として扱う。
+
+最終目的は、UserがGuide全文や適用Ruleを覚えていなくても、今回必要なRuleをAgent側で機械的かつ安全側に解決し、Required Docを実際に確認してから作業を始められる状態にすることである。
+
+### 22.2 Core Contract — Rule Application Gate
+
+作業開始前に原則として次のPreflightを通す。
+
+```text
+Current Repository / User Intent確認
+↓
+Task Classification
+↓
+Rule Resolution
+↓
+Required Docs / Required Gates確定
+↓
+Required Docs実読込
+↓
+Preflight Validation
+↓
+PASS / canProceed = true
+↓
+Research / 要件確定 / 推奨案 / 実装
+```
+
+Required Doc / Required Gateが満たされていない状態で、そのRuleに依存するScopeについて次へ進まない。
+
+- A/B/C Solution案
+- 推奨案の確定
+- Research結果を前提にすべきDesign Decision
+- Requirements確定
+- 実装
+- High-risk変更
+
+「START_HEREを読んだ」「過去にOwner Docを読んだ」「Memoryに内容がある」をRequired Doc実読込の代用にしない。
+
+### 22.3 User Rule Knowledge Independence
+
+Userが `web-project-guide` のRule、Owner Doc、Gate、Profile、Routing条件を覚えていることを前提にしない。
+
+次は原則としてAgent / Routerが判断する。
+
+- Domain Researchが必要か
+- Evidence-first Researchが必要か
+- どのOwner Docを読むか
+- GAME / DATA / CLOUD等のProfileが今回関係するか
+- Migration / Security / Testing等のGateが発火するか
+
+Userへ「docs/18を読みますか」「Researchは必要ですか」「Migration Ruleを適用しますか」等をRule適用判断として質問しない。
+
+Userへ確認するのは、Product Intent / Core Decision / 破壊的変更 / 保存互換性を壊すか等、Userにしか決められない事項を中心とする。
+
+### 22.4 Single Normative Owner / Source of Truth
+
+Rule Routing / Preflight全体のBehavioral Contractは新しい専用Ownerへまとめる。
+
+実装時第一候補:
+
+- `docs/21-rule-routing-preflight.md`
+
+責務:
+
+- Task Classification
+- Rule Applicability
+- Preflight Contract
+- Read Set
+- Receipt
+- Fail Closed
+- Re-routing
+- Task Session
+- Override
+- Legacy Migration
+- Agent Adapter Contract
+
+機械可読Routingの正本は次を第一候補とする。
+
+- `maintenance/rule-router.json`
+
+Schema:
+
+- `maintenance/rule-router.schema.json`
+
+`START_HERE.md`、`AGENTS.md`、Copilot等のAgent Instruction、Validator、Golden TestはRouting Rule本文の第二のSource of Truthにしない。
+
+現行要件の「START_HERE = 作業種類別Routerの正本」という扱いは、この改善実装後は **人間向けRouter / Summary** へ役割を縮小し、機械可読Routing正本を `rule-router.json` に移す。これはSource of Truthに関する高影響変更として明示的に実施する。
+
+### 22.5 Router Data Model
+
+`rule-router.json` は少なくとも次を扱える構造とする。
+
+- `schemaVersion`
+- `routerId`
+- Classification Axis / Enum
+- Deterministic Classification Rules
+- Evidence Priority
+- Owner Doc Registry
+- Stable Gate Registry
+- Routing Rules
+- Conditional Candidates
+- Re-routing Triggers
+- Task Session Reset Triggers
+- Legacy → Managed Migration Triggers
+- Compatibility情報
+
+最初からDomain別に多数JSONへ分割せず、Routing正本は原則1つに保つ。大きくなった場合だけ責務を壊さない分割を再検討する。
+
+### 22.6 Classification Axes
+
+主要軸はStable Enumとし、表記揺れを避ける。
+
+#### Project Profiles — Multi
+
+既存Profileを利用する。
+
+- STATIC
+- DATA
+- LEARNING
+- GAME
+- MEDIA
+- AI-HANDOFF
+- CLOUD
+- ELECTRON
+- TOOL
+- PUBLIC-CONTENT
+
+#### Work Type — 原則Single
+
+第一候補:
+
+- REQUIREMENTS
+- RESEARCH
+- IMPLEMENTATION
+- BUG_FIX
+- REVIEW
+- DATA_CONTENT
+- DEPLOYMENT
+- MAINTENANCE
+
+Work Type自体が変わる場合は複数値を併記せずRe-routing / New Task Sessionで扱う。
+
+#### Domain — Multi
+
+第一候補:
+
+- ARCHITECTURE
+- DATA_STORAGE
+- UI_UX
+- VISUAL
+- PERFORMANCE_RELIABILITY
+- SECURITY
+- TESTING_QUALITY
+- GITHUB_PAGES
+- PROJECT_MANAGEMENT
+- ELECTRON
+- DISTRIBUTION
+- DEPENDENCIES_ASSETS
+- OBSERVABILITY
+- GAME_DESIGN
+- LEARNING_CONTENT
+- CLOUD
+- MEDIA
+- RESEARCH
+- GOVERNANCE_ROUTING
+
+#### Change Scope — Single
+
+- LOCAL
+- MODERATE
+- MEANINGFUL
+- SYSTEMIC
+
+#### Risk — Single
+
+- LOW
+- MEDIUM
+- HIGH
+- CRITICAL
+
+複数Risk Signalがある場合は最も高い値を採用する。
+
+#### Researchability — Single
+
+- NOT_REQUIRED
+- POSSIBLE
+- REQUIRED
+
+#### Special Conditions — Multi
+
+Registry方式で拡張する。
+
+例:
+
+- EXISTING_SAVE
+- SCHEMA_CHANGE
+- MIGRATION
+- AUTH_REQUIRED
+- EXTERNAL_API
+- PUBLIC_RELEASE
+- REAL_DEVICE_REQUIRED
+- LEGACY_PROJECT
+- MANAGED_ROUTING
+
+主要軸を自由文字列にしない。
+
+### 22.7 Hybrid Classifier
+
+Task ClassificationはAI自由判断だけにしない。
+
+#### Deterministic Layer
+
+機械的に判定可能なSignalを先に利用する。
+
+- Current Repository metadata
+- `project-meta.json`
+- REQUIREMENTS / Spec
+- package / Dependency
+- File / Directory構造
+- Runtime / Data
+- Userが明示した作業種類
+- 変更対象
+
+#### AI補完Layer
+
+自然言語やContext判断が必要な軸だけ補完する。
+
+例:
+
+- LOCALかMEANINGFULか
+- Researchable Questionか
+- User Requestの意味
+- 複数Domainへの波及
+
+AI補完がLow Confidenceの場合、その不確実性をRule削減の根拠にしない。
+
+```text
+LOCALかMEANINGFULか不明
+→ MEANINGFUL側の必要Ruleも候補に含める
+```
+
+安全側RoutingだけでProduct Intentを変えず解決できる場合、UserへRule適用確認を求めず進める。安全側へ倒すとProductそのものが変わる場合だけUserへ確認する。
+
+### 22.8 Evidence Priority / Repository Scan
+
+Current StateとDesired Stateを分ける。
+
+- Desired State / 何を作りたいか → Current User Requestを優先
+- Current State / 今何が存在するか → Current Runtime / Code / Dataを強く扱う
+- Safety Classification → 高Risk Signalを古いREADME / metadataで打ち消さない
+
+Current State Evidenceは概ね次を基本とする。
+
+```text
+Current Runtime / Code / Data
+↓
+正式Requirements / Spec
+↓
+project-meta.json
+↓
+README / Project Rules
+↓
+Work Report / 過去資料
+↓
+Conversation / Memory
+```
+
+Repository全体を毎回精読せず、固定Minimum Scan + Signal-based Deepeningとする。
+
+Minimum Scan候補:
+
+- Current Repository state
+- README
+- REQUIREMENTS / 現行Spec
+- `project-meta.json`（存在する場合）
+- Project Rules / AGENTS（存在する場合）
+- PROJECT_LEARNINGS（存在する場合）
+- package等Project metadata
+- 主要Directory構造
+
+Supabase / Auth / IndexedDB / Save / Canvas / WebGL / Electron /大量Data等のSignalを検出した場合、該当Domainだけ追加確認する。
+
+### 22.9 Canonical Resolver
+
+Guide側に共通Resolverを持つ。
+
+第一候補:
+
+- `scripts/resolve-rule-route.mjs`
+
+入力:
+
+- Classification
+- Project metadata
+- Special Conditions
+- Guide Revision Snapshot
+
+出力:
+
+- Required Docs
+- Required Gates
+- Conditional Candidates
+- Migration requirement
+- Preflight Receipt skeleton
+
+AgentがRequired Docsを自由な手作業で選ばない。
+
+Resolverを実行できない環境では、Current Revisionの `rule-router.json` を読み、同じ決定的合成規則による `deterministic-fallback` のみ許可する。MemoryからRoutingを再構成しない。
+
+可能な環境では後からCanonical ResolverでFallback結果を再計算し、不一致をValidation Errorにできる。
+
+### 22.10 Guide Revision Snapshot / Read Set
+
+Preflight開始時にGuide Revisionを固定する。
+
+最低限記録:
+
+- `guideRepository`
+- `guideVersion`
+- `guideCommit`
+
+Router / Schema / Owner Docs / Gate Registryは原則として同じ `guideCommit` から取得する。
+
+作業途中でGuide mainが更新されても自動的に混在させない。Security / Migration / Routing等の重大修正へ切り替える必要がある場合だけ明示的にRe-preflightする。
+
+Required DocはCurrent Snapshotから実際に取得するまでRead済みと扱わない。
+
+次はReadの代用不可:
+
+- Memory
+- 過去Conversation
+- 古いZIP
+- 古いRevision
+- 「以前読んだ」
+
+同じGuide Commit / 同じblob SHAであることを検証できる場合のみRevision-aware Cacheを利用できる。
+
+### 22.11 Preflight Receipt / State
+
+Preflight Receiptは原則として一時データとする。
+
+最低限候補:
+
+- Task Session ID
+- Guide Snapshot
+- Repository Snapshot
+- Classification
+- Classification Evidence
+- Resolver Mode
+- Required Docs
+- Required Gates
+- Conditional Candidates
+- Read Set + Revision / blob SHA
+- Conditional除外理由
+- Overrides
+- Unresolved
+- Validation Result
+- `canProceed`
+
+ReceiptはSanitized Metadata Onlyとし、Secret / Token / Cookie / `.env`値 / 個人情報 / Sensitive Payload / File本文の大量コピーを保存しない。
+
+Top-level Stateは第一候補として次を固定する。
+
+- PENDING
+- PASS
+- FAIL
+- REVALIDATE
+- BLOCKED
+- LEGACY_FALLBACK
+
+別Fieldとして必ず `canProceed: true / false` を持つ。
+
+Gate単位では少なくとも次を区別する。
+
+- APPLIED
+- NOT_APPLICABLE
+- OVERRIDDEN
+- BLOCKED
+
+`LEGACY_FALLBACK` や `OVERRIDDEN` を暗黙のPASS扱いにしない。
+
+### 22.12 Fail Closed / Verified Fallback / Override
+
+Required Doc / Gateが満たされなければ、そのRuleに依存するScopeは `canProceed = false` とする。
+
+全Project作業を無条件停止するのではなく、影響Scope単位でFail Closedできる。
+
+Required Doc取得失敗時は、同じCurrent Revisionであることを検証できる別経路だけFallbackとして認める。取得不能なら依存ScopeをBLOCKEDとする。
+
+`NOT_APPLICABLE` と `OVERRIDDEN` を分離する。
+
+- NOT_APPLICABLE — 適用条件そのものを満たさない
+- OVERRIDDEN — 本来適用対象だが明示的例外として外す
+
+MUST相当のOverrideでは原則として理由・影響・代替策・承認根拠を記録する。Agentの暗黙Overrideを禁止する。
+
+### 22.13 Stable Gate ID / Rule Registration Contract
+
+通常RoutingはOwner Doc単位とするが、読み飛ばすと重大事故になりやすいRuleだけStable Gate IDを持つ。
+
+第一候補例:
+
+- RULE-PREFLIGHT-GATE
+- VISUAL-RESEARCH-GATE
+- RESEARCHABLE-QUESTION-GATE
+- STORAGE-MIGRATION-GATE
+- GAME-PLAYTEST-GATE
+
+Gate IDは一意でSingle Normative Ownerを持つ。
+
+新しいNormative OwnerやRoutingへ影響する重要MUST / CONDITIONAL /作業開始Gateを追加・変更する場合、Routerへの登録要否を確認する。
+
+Validatorは少なくとも次を確認できるようにする。
+
+- Owner Doc → Router登録
+- Router参照Docが存在
+- Gate ID重複なし
+- Gate Ownerが一意
+- START_HEREの人間向け導線
+
+新Rule追加を最初の解決策とせず、既存RuleのClassifier / Router / Test不足なら該当箇所を修正する。
+
+### 22.14 Re-routing / Task Session / Cache
+
+初回Preflightを作業終了まで永久に有効とは扱わない。
+
+Re-routing Trigger候補:
+
+- Domain追加
+- Change Scope上昇
+- Risk上昇
+- Researchability変化
+- Storage / Migration追加
+- Auth / API / 外部依存追加
+- Project Profile追加
+- User Requirement変更
+- 実装中に想定外の影響範囲を発見
+
+追加Requiredが出た場合:
+
+```text
+一時停止
+→ 追加Doc実読込
+→ Receipt更新
+→ Re-validation
+→ 続行
+```
+
+Task SessionはClassification / Routing / Read Set / Cacheの単位とする。
+
+Full Re-preflight / New Session Trigger候補:
+
+- Work Type変更
+- 主要目的変更
+- Repository変更
+- Guide Revision切替
+- 主要User Requirement変更
+- MeaningfulなScope変化
+- Legacy → Managed移行
+- 独立Phaseへの移行
+- Repositoryが外部で大きく更新
+
+同じConversationであることを同じTask Sessionの根拠にしない。
+
+同一Task Session + 同一Guide Commit + 同一blob SHAならRead Cacheを再利用可能とする。
+
+新ConversationではHandoff情報を参考にできるが、Current Guide / Repository Revisionを再検証し、同一Revisionと確認できたRead Setだけ再利用する。
+
+### 22.15 Project metadata / Legacy Migration
+
+各Projectへ新しいRouting専用metadata Fileを増やすことをDefaultにしない。既存 `project-meta.json` をRouting metadataのProject側正本として拡張することを第一候補とする。
+
+保持候補:
+
+- adopted guideVersion
+- routing mode
+- Project Profiles
+- Project Rule Files
+- Special Conditions
+
+Common Rule本文をProject側へ複製しない。
+
+metadataより実装が高Riskを示す場合、実態を今回のRoutingへ追加し、同時にmetadata driftを検出する。古いmetadataにSafety Ruleを無効化する権限を持たせない。
+
+新規ProjectはManaged RoutingをDefault候補とする。
+
+既存Projectは段階移行とし、Legacy Fallbackを許可する。
+
+Legacyではmetadata欠落をWarningとして扱い、Repository Evidenceから安全側へ暫定Routingする。
+
+Managed移行Trigger候補:
+
+- REQUIREMENTS大幅変更
+- 主要機能追加
+- Meaningful Visual Change
+- Navigation大変更
+- Architecture変更
+- Storage / Schema / Migration変更
+- Auth / API / Cloud導入
+- Electron / Deployment変更
+- Game Core Loop / Progression変更
+- 大規模Refactor
+- High-risk / 分類不能
+
+一度Managedへ移行したProjectはLegacyへ戻さない。Managed Projectではmetadata欠落 / Schema不正をFail対象とする。
+
+### 22.16 Human Router / Agent Adapter同期
+
+`START_HERE.md` のRouting情報を手動の第二正本にしない。
+
+実装時はRouting領域だけ `rule-router.json` から自動生成する方式を第一候補とする。
+
+例:
+
+```text
+<!-- ROUTER:START -->
+generated routing summary
+<!-- ROUTER:END -->
+```
+
+人間向け説明・背景・補足は手書き可能とする。
+
+CIでRouterから再生成した結果と比較しDriftを検出する。
+
+AGENTS / Copilot等のAgent Adapterも詳細Ruleを複製せず、共通Preflight入口だけを自動生成することを第一候補とする。
+
+Project固有Purpose / Commands / High-risk Areas等は手書き領域に残す。
+
+### 22.17 Cross-repository CI責務
+
+共通責務は次のように分ける。
+
+#### `EliteMay/web-project-guide`
+
+- Rule / Owner Doc
+- Router
+- Schema
+- Resolver semantics
+- Preflight Contract
+- Golden Routing Cases
+- Guide側Validator
+
+#### `EliteMay/.github`
+
+- Reusable Workflow等のAccount共通GitHub実装
+
+#### 各Project
+
+- `project-meta.json`
+- Project固有Rule
+- 必要最小限のWorkflow呼出し
+
+共通Validator本体を各Projectへコピーしない。
+
+`EliteMay/.github` は別Repositoryであるため、本Guide実装だけを理由に無断で他Repositoryへ書き込まず、必要なCross-repository実装はGuide Core完成後の明示的な関連作業として扱う。
+
+### 22.18 Validation / Golden Routing Cases
+
+Validationは少なくとも次の三層を持つ。
+
+1. **Schema Test** — JSON構造
+2. **Unit Test** — Classification / ResolverのPure Logic
+3. **Golden Routing Case** — 実際の代表依頼に対するRouting結果
+
+Golden Caseは `mustInclude` だけでなく、過剰Routing防止の `mustNotRequire` も持てるようにする。
+
+今回のIncidentを恒久Regression Caseへ昇格する。
+
+#### 必須Case: GAME UI Requirements
+
+Classification例:
+
+```text
+GAME
++ REQUIREMENTS
++ UI_UX / VISUAL / GAME_DESIGN
++ MEANINGFUL
++ RESEARCHABLE
+```
+
+Must include:
+
+- `docs/01-requirements.md`
+- `docs/04-ui-ux-accessibility.md`
+- `docs/17-visual-quality-baseline.md`
+- `docs/18-domain-first-visual-research.md`
+- `docs/19-game-development.md`
+- `docs/20-evidence-first-research.md`
+- VISUAL-RESEARCH-GATE
+- RESEARCHABLE-QUESTION-GATE
+
+A/B/C案や推奨案を出す前にResearch Gateが発火することを確認する。
+
+#### 必須Case: 局所UI Bug
+
+Must include候補:
+
+- UI / UX
+- Visual Baseline
+- Testing
+
+Must not require候補:
+
+- Deep Domain Research
+- Game Progression
+- Storage Migration
+
+その他、Storage Schema変更、Supabase導入、Electron Release、Learning Content再設計、Guide Rule変更等を主要Golden Caseとして追加する。
+
+Router変更はGolden Case PASSをMerge条件へ含めることを第一候補とする。
+
+### 22.19 Routing Incident → Regression Promotion
+
+Rule漏れ / 誤Routingが再発した場合、その場の修正だけで終わらせない。
+
+```text
+Routing Incident
+↓
+Root Cause分類
+↓
+既存Guideで防げたか確認
+↓
+Classifier / Router / Read / Re-route / Adapter / metadata / Validatorの欠陥箇所を特定
+↓
+Golden Regression Case追加
+↓
+必要箇所を修正
+↓
+新Case PASS
+```
+
+実Project側には `PROJECT_LEARNINGS.md` へ実際のIncident・影響・Project固有原因を必要範囲で残す。
+
+Common Guide側には複数Projectへ一般化できるRegression Case / Rule改善だけを残す。
+
+Project固有事情をそのままCommon Ruleへコピーしない。
+
+### 22.20 Version / Compatibility
+
+Router構造とRule Revisionを分離する。
+
+- `schemaVersion` — Router JSON構造 / Resolver ContractのBreaking Change
+- `guideVersion` / `guideCommit` — Rule内容のRevision
+
+単なるRule条件補強やGolden Case追加だけで無意味にschemaVersionを上げない。
+
+Compatibility Matrixを持ち、次を区別する。
+
+- Compatible → 通常実行
+- Migration possible → Migration + Validation
+- Breaking / Unknown → Fail Closed
+
+未知Schemaを「たぶん同じ」と推測して処理しない。
+
+要件保存時点ではGuide Versionを変更しない。
+
+実装時に新しいCross-cutting Owner / Machine-readable Router / Source-of-Truth変更を正式導入する場合、現在のVersion体系を再確認したうえで **`1.19.0` を第一候補**とする。
+
+### 22.21 User-facing Preflight表示 / 永続化
+
+通常時はPreflight詳細をUserへ大量表示せず、短いSummaryだけにする。
+
+例:
+
+```text
+Preflight
+- GAME / REQUIREMENTS
+- UI / Visual
+- Research Gate: Required
+- Routing: PASS
+```
+
+次の場合は該当部分を明示する。
+
+- FAIL / BLOCKED
+- Override
+- Low ConfidenceがProduct判断に影響
+- metadata drift
+- Legacy Fallback
+- Guide Revision切替
+
+通常ReceiptはRepositoryへCommitしない。
+
+High-risk / 大規模変更 / PRでは必要に応じてRouting SummaryのみWork Report / PR等へ残す。
+
+Guide自身のRouting変更ではValidation Evidenceを残す。
+
+### 22.22 実装Phase / Exit Gate
+
+最終仕様を削らず、実装だけを段階化する。
+
+#### Phase 1 — Core Routing
+
+- `docs/21-rule-routing-preflight.md`
+- `rule-router.json`
+- Schema
+- Stable Gate Registry
+- Resolver
+- 基本Golden Cases
+
+Exit Gate:
+
+- Schema / Resolver / 基本Golden Case PASS
+
+#### Phase 2 — Preflight Runtime
+
+- Hybrid Classifier
+- Repository Evidence Scan
+- Guide Revision Snapshot
+- Read Set
+- Receipt
+- Fail Closed
+- Verified Fallback
+- Override
+- Re-routing
+- Task Session
+- Revision-aware Cache
+
+Exit Gate:
+
+- Required未読でPASSできない
+- Re-routingで追加Ruleが正しく発火する
+
+#### Phase 3 — Drift Prevention
+
+- START_HERE Routing自動同期
+- Agent Adapter共通部分同期
+- Rule Registration Contract
+- Guide Validator強化
+
+Exit Gate:
+
+- Router / Docs / Adapter Driftを検出可能
+
+#### Phase 4 — Project Integration
+
+- `project-meta.json`拡張
+- Legacy / Managed
+- metadata drift
+- Migration Contract
+- `EliteMay/.github` Reusable CIの設計・必要な別Repository作業
+
+Exit Gate:
+
+- Legacy / Managed双方のContractを検証
+
+#### Phase 5 — End-to-End Validation
+
+- GAME UI Requirements Incident
+- 局所UI Bug
+- Storage / Cloud / Electron / Learning等の代表Case
+- Fail / Fallback / Override Case
+
+Exit Gate:
+
+- 全Regression Case PASS
+
+主要Contractを満たさないまま次Phaseへ進まない。次Phaseに進まないと検証不能な項目だけ `deferred-to-phase-X` として明示的に持ち越せる。
+
+Phase 5終了まで今回の改善を完成扱いしない。
+
+### 22.23 非目標
+
+- 毎回Guide全文を読むことを要求しない
+- 小さなBug / TypoにもDeep Researchを強制しない
+- CIだけでAgentがRule本文を理解したことまで完全証明したと主張しない
+- RouterがUser Intent / Product Decisionを上書きしない
+- 全Projectへ同一Profile / 同一Ruleを機械的に強制しない
+- Test / Golden Caseを第二のRule Source of Truthにしない
+- 全Preflight ReceiptをGitHubへ保存しない
+- Legacy Repositoryを一斉Migrationしない
+- 各AgentへCommon Rule全文を複製しない
+- 各Projectへ共通Validator本体をコピーしない
+- この要件保存だけでRule Routing / Preflightを実装済み扱いしない
+
+### 22.24 実装完了条件
+
+このGuide改善は少なくとも次を満たして初めて実装完了とする。
+
+- [ ] Rule Routing / PreflightのSingle Normative Ownerが存在する
+- [ ] Machine-readable `rule-router.json` がRouting正本として存在する
+- [ ] Router Schemaが存在する
+- [ ] Stable Classification Axis / Enumが定義されている
+- [ ] Deterministic + AI補完のHybrid Classifierが成立する
+- [ ] Low ConfidenceがRule削減に使われない
+- [ ] Evidence Priority / Minimum Repository Scan / Signal-based Deepeningが定義されている
+- [ ] Canonical ResolverがRoutingを機械計算できる
+- [ ] Resolver不能環境のDeterministic Fallbackが定義されている
+- [ ] Guide Revision Snapshotを固定できる
+- [ ] Required DocをCurrent Revisionから実読込する
+- [ ] Required未読でPreflight PASSできない
+- [ ] Sanitized Preflight Receipt / Read Set / `canProceed` が定義されている
+- [ ] NOT_APPLICABLE / OVERRIDDEN / BLOCKEDを区別できる
+- [ ] Required不足で依存ScopeをFail Closedできる
+- [ ] Verified FallbackがCurrent Revision確認を要求する
+- [ ] Stable Gate ID / Rule Registration Contractが存在する
+- [ ] Re-routing Trigger / Task Session / Session Reset Triggerが定義されている
+- [ ] Revision-aware Cacheが同一Revisionでのみ再利用できる
+- [ ] New Conversation / HandoffでRevisionを再検証する
+- [ ] `project-meta.json`のManaged Routing metadata方針が定義されている
+- [ ] metadata driftを安全側へ検出できる
+- [ ] Legacy → Managedの段階Migrationが定義されている
+- [ ] Managed Projectでmetadata欠落 / Schema不正をFailできる
+- [ ] START_HEREのRouting部分がMachine Routerと同期する
+- [ ] Agent Adapter共通部分がPreflight Contractと同期する
+- [ ] Guide / `.github` / 各Projectの責務が分離されている
+- [ ] Schema / Unit / Golden Routing Testの3層がある
+- [ ] 今回のGAME UI要件定義CaseでVisual / Evidence Research Gateが必ず発火する
+- [ ] 局所UI Bugで不要なDeep Researchを強制しない
+- [ ] Routing IncidentをRegression Caseへ昇格するFeedback Loopがある
+- [ ] Router schemaVersion / Guide Revision / Compatibilityを区別できる
+- [ ] Breaking / Unknown SchemaでFail Closedする
+- [ ] Preflight通常表示は簡潔で、異常時だけ必要詳細を示す
+- [ ] Phase 1〜5のExit Gateが全て成立する
+- [ ] 既存Single Normative Owner / Rule Budgetと矛盾する重複Ruleが残っていない
+- [ ] 必要なREADME / Governance / Project Management / Requirements / Template / Validator等の関連文書が現行実装と一致する
+- [ ] 必要なGuide Version / CHANGELOG / Work Reportが更新されている
+- [ ] Cleanup後の最終CommitでGuide Validator / Routing Regressionが成功している
+- [ ] GitHub上の最終状態を確認している
+- [ ] 未確認事項 / Known Issueがあれば明示されている
+
+### 22.25 Conflict / Compatibility確認
+
+今回の要件は既存Guideの次のGapを補う。
+
+- `START_HERE.md` はどのOwner Docへ行くかを人間向けに案内できるが、Agentが最初のTask分類を誤ると必要Routeへ入らない
+- `AGENTS_TEMPLATE.md` は「関連章を読む」と案内しているが、何が関連章かを選定する工程自体が自由判断に残っている
+- ValidatorはOwner Doc / Router Link等の存在を検証できるが、「今回のTask条件 → Required Rule」の対応関係や実読込を検証していない
+- `maintenance/review-policy.json` はGuide定期Review用であり、日常Task Routingの正本ではない
+
+高影響な変更点:
+
+- 作業種類別RoutingのMachine-readable Source of Truthを新設する
+- `START_HERE.md` を詳細Routing正本からHuman-facing Router / Summaryへ役割変更する
+- 新しいCross-cutting Normative Ownerを追加する
+- Managed ProjectではRouting metadata / Preflight ContractをValidation対象にする
+
+このため実装時は `docs/00-governance.md` のSource of Truth / Single Normative Owner / Rule Budget、`docs/10-project-management.md`、`docs/01-requirements.md`、`templates/AGENTS_TEMPLATE.md`、`tests/validate-guide.mjs` 等との整合を必ず確認する。
+
+既存Projectへ一斉破壊的Migrationは行わず、Legacy Fallback + Meaningful Change時の段階MigrationでCompatibilityを保つ。
+
+### 22.26 未解決事項 / Implementation Handoff
+
+- Unresolved Core Decisions: None
+- Unresolved High-cost Decisions: None
+- Requirements Status: Ready for implementation
+- Behavioral Owner candidate: `docs/21-rule-routing-preflight.md`
+- Machine-readable Router candidate: `maintenance/rule-router.json`
+- Router Schema candidate: `maintenance/rule-router.schema.json`
+- Resolver candidate: `scripts/resolve-rule-route.mjs`
+- Guide Version candidate after full implementation: `1.19.0`
+- Required Regression: GAME + REQUIREMENTS + UI_UX / VISUAL + MEANINGFUL + RESEARCHABLE must route to `docs/18` and `docs/20` before solution recommendation
+- Implementation phases: Phase 1 Core Routing → Phase 2 Preflight Runtime → Phase 3 Drift Prevention → Phase 4 Project Integration → Phase 5 E2E Validation
+- Implementation conversation: `web-project-guide（実装）`
