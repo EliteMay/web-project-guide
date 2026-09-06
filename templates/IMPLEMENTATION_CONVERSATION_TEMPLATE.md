@@ -4,7 +4,7 @@
 
 このTemplate自体はProject固有要件や実装状態のSource of Truthではありません。要件の正本は対象Repositoryの`REQUIREMENTS.md`等、実装の現在状態はGitHub上のCurrent Repository / Branch / Pull Requestです。このPromptは新しい会話から正本へ安全に到達するためのRouterとして使います。
 
-このPromptを貼り忘れても、Project設定やUserが明示した情報から対象Repositoryを一意に特定できる場合は、[GitHub中心のプロジェクト管理](../docs/10-project-management.md) のPromptなし復旧Ruleに従ってGitHubから現在状態を復旧できます。Promptの存在自体は実装再開の必須条件ではありません。
+Conversation Handoff / PromptなしRecovery / stale checkpoint / duplicate active conversationのBehavioral Ownerは [22 Conversation Handoff / Recovery](../docs/22-conversation-handoff-recovery.md) です。Promptを貼り忘れても、Target RepositoryとCurrent work refをGitHub Evidenceから一意に復元できる場合は作業を再開できます。
 
 ## 使用方法
 
@@ -31,13 +31,13 @@ Current work ref: {{WORK_REF}}
 
 古い会話や記憶だけを基準にせず、現在のGitHub上の内容を優先してください。
 
-既存仕様と要件定義に矛盾がある場合は、破壊的な変更を勝手に行わず重要な矛盾を示してください。
+Current Repository / Requirements / Existing User Intent / Evidenceで合理的に解ける判断はBest Reasonable Decisionで進め、Core / High-costという分類だけを理由に承認待ちにしないでください。non-inferable preference、不可逆でsafe alternativeがない破壊的選択、外部Permission / Billing / Account操作、解消不能な重大Contract conflictだけUser Decisionとして扱ってください。
 
-`REQUIREMENTS.md`のImplementation Handoffが`Ready for implementation`でない、GitHubへの正式保存が確認できない、または未解決のCore Decision / High-cost Decisionが残っている場合は、そのまま実装を開始せず状態を示してください。
+`REQUIREMENTS.md`のImplementation Handoffが`Ready for implementation`でない、GitHubへの正式保存が確認できない、またはBlocking Decisionが残っている場合は、その理由を確認してください。BlockingでないAssumptionだけを理由に実装を止めないでください。
 
 実装途中の引き継ぎでは、未完成のCheckpointを完成済みとして扱わず、指定されたBranch / Pull Request / Commitと必要なWork Reportを確認して、その続きから進めてください。
 
-指定されたCurrent work refが見つからない場合は、Pull Request、Commit、Merge履歴、Work Report等のGitHub Evidenceから同じCheckpointを復元してください。復元できない場合は`main`から推測で続けず、Current work refを未確認として示し、実装を開始しないでください。
+指定されたCurrent work refが見つからない場合は、Pull Request、Commit、Merge履歴、Work Report等のGitHub Evidenceから同じCheckpointを復元してください。復元できない場合は`main`から推測で続けず、`Current work ref: unresolved`としてCode変更を開始しないでください。
 
 会話名：
 {{REPOSITORY_NAME}}（実装）
@@ -50,7 +50,8 @@ Current work ref: {{WORK_REF}}
 - 対象Repositoryへ正式な要件定義が保存済み
 - GitHubへの保存成功を確認済み
 - `REQUIREMENTS.md`のImplementation Handoffが`Ready for implementation`
-- 未解決のCore Decision / High-cost Decisionがある場合は明示済み
+- Blocking Decisionsがない
+- Important Assumptionsは必要に応じて明示済み
 - `REQUIREMENTS.md`等の正式要件とPrompt本文で異なる仕様を追加しない
 - Promptは会話履歴を複製せず、最新Repositoryと正式文書を読むよう案内する
 
@@ -62,9 +63,9 @@ Current work ref: {{WORK_REF}}
 - 完了済みの変更なら通常のValidationを行い、必要ならMergeまで完了している
 - 未完成の変更なら、無理にmainへ入れずBranch / Pull Request等へCheckpointを保存している
 - 次の会話が読むべきBranch / Pull Request / Commitを`{{WORK_REF}}`で特定できる
-- `{{WORK_REF}}`が消失している場合は、PR / Commit / Merge履歴等のEvidenceから復元し、復元できなければ実装を開始しない
+- `{{WORK_REF}}`が消失している場合は、PR / Commit / Merge履歴等のEvidenceから復元し、復元できなければCode変更を開始しない
 - 必要に応じてWork Reportへ「完了したこと / 未完了 / 未確認 / 次に行うこと」を残している
-- 再利用価値の高い失敗・成功だけ`PROJECT_LEARNINGS.md`へ反映している
+- 再発価値の高い失敗・成功は`PROJECT_LEARNINGS.md`へ継続蓄積している
 - GitHubへの保存成功を確認するまで、会話移行の保存完了を主張しない
 - 未完成のCheckpointをProject完成として扱わない
-- Promptを貼り忘れた場合でも、対象Repositoryを一意に特定できるならGitHub Evidenceから復旧し、Repositoryが曖昧ならURLまたは`owner/repository`を確認する
+- Promptを貼り忘れた場合でもTarget Repositoryを一意に特定できるならGitHub Evidenceから復旧する
