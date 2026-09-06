@@ -1,12 +1,12 @@
 # 20 Evidence-first Research
 
-この章は、重要なResearchable Questionについて **Question → Prior Research / Existing Knowledge → Evidence Map → Discussion → Decision → Validation** で進める一般Research WorkflowのSingle Normative Ownerです。
+この章は、重要なResearchable Questionについて **Question → Prior Research / Existing Knowledge → Evidence Map → Decision → Validation** で進める一般Research WorkflowのSingle Normative Ownerです。
 
 目的はSource件数を増やすことではありません。既に分かっていることを再発明せず、Evidenceで確定できる部分と、今回のProjectで考えるべきUnknown / Trade-offを分離します。
 
 Topic固有のRuleは各専門Ownerを維持します。
 
-- Requirements Workflow / User確認 → [01 要件定義](01-requirements.md)
+- Requirements Workflow / Decision → [01 要件定義](01-requirements.md)
 - UI / UX / Accessibility固有Rule → [04 UI / UX / Accessibility](04-ui-ux-accessibility.md)
 - Performance測定・改善 → [05 Performance / Reliability](05-performance-reliability.md)
 - GuideのRule Hygiene / Common Rule Promotion運用 → [14 Continuous Improvement](14-continuous-improvement.md)
@@ -30,11 +30,9 @@ Evidence Map
 ↓
 Known / Disputed / Context-dependent / Unknown
 ↓
-Discussion Questions
+Project Context / Existing User Intent
 ↓
-User + AI Discussion
-↓
-Decision
+Decision（必要ならUser Discussion）
 ↓
 Prototype / Implementation / Validation
 ↓
@@ -76,7 +74,7 @@ Research強度は重要度、不確実性、利用可能Evidenceに合わせて�
 - Supporting / Opposing Evidence
 - Failure / Limitation / Bias
 - Evidence Map
-- Discussion Gate
+- Decision Gate
 - Research Review Gate
 - 必要範囲のResearch Log
 
@@ -90,7 +88,7 @@ Deep Research前に最低限次を整理します。
 - **Project Context** — 何のProject / User / Taskか
 - **Constraints** — Platform、Budget、Compatibility、User Intent等
 - **Research Axes** — 比較すべき主要観点
-- **Out of Scope** — 今回決定を変えない隣接Topic
+- **Out of Scope** — 今回Decisionを変えない隣接Topic
 
 Research中に元QuestionがSolution-biasedと分かった場合はReframeできます。
 
@@ -106,7 +104,7 @@ Reframe時は元Questionと変更理由を追跡できるようにします。Sc
 
 ## Prior Research First / Source Type
 
-Researchable Questionでは、User + AIで新しい答えを考える前に、その問題について既に何が研究・検証・実装されているかを確認します。
+Researchable Questionでは、新しい答えを考える前に、その問題について既に何が研究・検証・実装されているかを確認します。
 
 Academic Evidenceが存在するTopicでは、可能な範囲で次を優先します。
 
@@ -130,11 +128,9 @@ Academic Evidenceが存在するTopicでは、可能な範囲で次を優先し�
 
 Source Typeの固定比率は設けません。Claimに合うEvidence Typeを選びます。
 
-## Broad Discovery / 100件規模 / Research Saturation
+## Broad Discovery / Research Saturation
 
-十分な情報が存在するDeep Researchでは、**100件規模以上のSource Candidate探索をBroad Discoveryの目安**として利用できます。
-
-100件はQuotaではありません。少数Sampleだけで判断するBiasを減らすための探索目安です。
+Deep Researchでは、最初の数件だけで結論を固定しないために必要な幅でBroad Discoveryを行います。**固定のSource件数をResearch品質・完了条件・努力量の代理指標にしません。**
 
 ```text
 Broad Discovery
@@ -148,26 +144,31 @@ Original Evidence
 Deep Review
 ```
 
-実際の終了条件は **Research Saturation** とします。
+探索量はTopicのEvidence量・Questionの重要度・立場の多様性・Source取得Costに合わせます。十分なEvidenceが数件の一次Sourceへ集約されるTopicもあれば、多数の実例・研究を比較しないと偏りが残るTopicもあります。
+
+実際の終了条件は **Decision Coverage + Research Saturation** とします。
 
 Saturationの目安:
 
 - 新規検索でも既知の主張が多くなる
-- 主要な立場を一通り確認した
+- 主要な立場 / Alternativeを一通り確認した
 - Supporting / Opposing Evidenceを確認した
-- 主要Original Sourceへ辿れた
-- Unknown部分が明確になった
+- Decision-critical Claimの主要Original Sourceへ辿れた
+- Project Applicabilityを判断できる
+- Unknown / residual uncertaintyが明確になった
 
-100件未満でSaturationへ達すれば終了できます。100件を超えて重要な新情報が出続ける場合は継続します。Relevant Sourceが少ない場合は弱いBlog、Duplicate、無関係Sourceで件数を水増ししません。
+新しい重要Evidenceが継続して出る場合は探索を続けます。Relevant Sourceが少ない場合は弱いBlog、Duplicate、無関係Sourceで件数を水増ししません。
 
 ## Research Count Transparency
 
-Research量は可能な範囲で次を分けます。
+Research量を記録する場合は、可能な範囲で次を分けます。
 
 - **Discovered** — Title / Snippet等から存在を確認
 - **Reviewed** — Abstract / Page /主要内容を確認
 - **Deep-read** — Method / Sample / Result / Limitation / Context等まで重点確認
 - **Core Evidence** — 最終Evidence Map / Decisionへ重要なSource
+
+Countは透明性のための記録であり、品質Scoreや最低Quotaではありません。
 
 Search EngineのResult総数を「調査した件数」としません。
 
@@ -353,23 +354,25 @@ ConfidenceとRecommendationは同じものではありません。
 
 Evidence Conflictがある場合は単純多数決せず、Sample、Method、User、Task、Outcome、Platform、Environment、Date等の条件差を比較します。必要ならConflict Mapを作ります。
 
-User-facing Outputは要点中心に保ち、**今回の問題への意味**と、次にUser + AIで話すべき2〜5個程度のDiscussion Questionを明確にします。Broad Researchで見たFull Source Listを毎回表示する必要はありません。
+User-facing Outputは要点中心に保ち、**今回の問題への意味**と、Decisionに残るUnknown / Trade-offを明確にします。User Decisionが本当に必要な場合だけ2〜5個程度のDiscussion Questionへ絞ります。Broad Researchで見たFull Source Listを毎回表示する必要はありません。
 
-## Discussion Gate / Requirement Classification
+## Decision Gate / Requirement Classification
 
-Deep Research後、主要Evidence・反対Evidence・Known / Disputed / Unknown・Applicability・Project差が整理されるまでは、重要問題について最初からA / B / C Solution Discussionへ飛びません。
-
-Userが明示的にResearchを止めてDiscussionへ進みたい場合は例外です。
+Deep Research後、主要Evidence・反対Evidence・Known / Disputed / Unknown・Applicability・Project差を整理する前に、最初から好みだけでSolutionを固定しません。
 
 要件定義では次を分離します。
 
-- **User Preference** — Userが決める。ResearchはPreferenceそのものを上書きしない
-- **Researchable Question** — 既存Evidenceがあり得るためResearchを先に行う
-- **Project-specific Decision** — Evidenceを参考にProject条件込みでUser + AIが決める
+- **User Preference** — User固有のPreference。既に明示済みなら再質問しない。
+- **Researchable Question** — 既存Evidenceがあり得るためResearchを先に行う。
+- **Project-specific Decision** — Evidence + Current Requirements + Existing User Intent + Constraintsで決める。
 
-EstablishedかつHigh Applicabilityの知識はDiscussionの前提へ置き、理由なく毎回ゼロから再討論しません。
+EstablishedかつHigh Applicabilityの知識はDecisionの前提へ置き、理由なく毎回ゼロから再討論しません。
 
-## Evidence → Interpretation → Project Preference → Decision
+Project-specific DecisionはResearch後に自動的にUser承認待ちへしません。[01 Requirements](01-requirements.md) のUser Decision条件に該当しない場合、AgentがBest Reasonable Decisionを選び、Assumption / Trade-offを必要範囲で記録して進めます。
+
+User Discussionが必要なのは、EvidenceとCurrent Contextを確認してもnon-inferable preference、同程度に妥当な異なるProduct方向、不可逆でsafe alternativeがない破壊的選択等が残る場合です。
+
+## Evidence → Interpretation → Project Context → Decision
 
 次を混同しません。
 
@@ -378,11 +381,11 @@ Evidence
 ↓
 Interpretation
 ↓
-Project Preference / Constraints
-↓
-Discussion
+Project Preference / Constraints / Existing Intent
 ↓
 Decision
+↓
+必要ならUser Discussion
 ```
 
 Evidence上Aが有力でもProject固有理由でBを選べます。その場合は「EvidenceはAを支持するが、Project理由XでBを選択した」のように判断根拠を追跡できるようにします。
@@ -395,6 +398,8 @@ Decision Statusは必要に応じて次を使います。
 - **Provisional** — 有力だがPrototype / Playtest / User Test等が必要
 - **Open** — Evidence不足または未決定
 
+`Open`でも実装を止めないsafe defaultがある場合はAssumption付きで進められます。実装停止が必要なものだけBlocking Decisionとして扱います。
+
 ## Research → Validation
 
 ResearchだけでProject固有の正解が確定しない場合はValidationへ切り替えます。
@@ -402,9 +407,7 @@ ResearchだけでProject固有の正解が確定しない場合はValidationへ�
 ```text
 Research
 ↓
-Discussion
-↓
-Decision
+Decision / Hypothesis
 ↓
 Prototype / Implementation
 ↓
@@ -420,7 +423,7 @@ Keep / Revise / Reject
 Deep Research自体の状態は必要に応じて次へ分けます。
 
 - **Complete** — Coverage / Saturationが十分
-- **Sufficient** — 理想的件数未満でもDecisionに十分
+- **Sufficient** — 理想的な網羅性ではなくてもDecisionに十分
 - **Limited** — Tool / Access / Evidence不足等で重要な穴が残る
 - **Inconclusive** — ResearchだけではDecision困難
 
@@ -442,14 +445,14 @@ Evidence不足自体を正しいResultとして認め、必要なら `Unknown �
 - Main Source Types / Databases
 - Inclusion Criteria
 - Exclusion Criteria
-- Discovered Count
-- Reviewed Count
-- Deep-read Count
-- Core Evidence Count
+- Discovered Count（記録できる場合）
+- Reviewed Count（記録できる場合）
+- Deep-read Count（記録できる場合）
+- Core Evidence Count（記録できる場合）
 - Major Limitations
 - Research Status
 
-すべてのQueryやSearch Resultを完全保存することは必須にしません。何を探し、何を残し、何を除外したかを後から追えることを重視します。
+Countは完了条件ではありません。すべてのQueryやSearch Resultを完全保存することも必須にしません。何を探し、何を残し、何を除外したかを後から追えることを重視します。
 
 ## Research Review Gate
 
@@ -469,9 +472,9 @@ Deep Researchを完了扱いする前に、必要範囲で次を確認します�
 - Conflict of Interestへ過度に依存していない
 - Project Applicabilityを確認した
 - Tool / Paywall / Access Limitationを隠していない
-- 100件という数字が目的化していない
-- Research Saturationへ達している
-- 次にDiscussionすべきQuestionが明確
+- Source Countを目的化していない
+- Decision Coverage / Research Saturationへ達している
+- 残るUnknown / Trade-offが明確
 
 Gate結果:
 
@@ -507,7 +510,7 @@ Gate結果:
 - Project Constraint
 - Implementation Detail
 
-近いResearch Assetがある場合は、最初から100件探索を繰り返すより **Delta Research / Gap Research** を優先できます。
+近いResearch Assetがある場合は、最初からBroad Discoveryを全面的に繰り返すより **Delta Research / Gap Research** を優先できます。
 
 ## 保存場所
 
@@ -560,7 +563,7 @@ Guideへの実際の配置・Rule Hygiene・Promotion operationは [14 Continuou
 
 Userが「Researchなしで意見だけ」「仮説だけ」等を明示した場合は、Evidence-backed ConclusionではなくTentative Hypothesisとして回答できます。
 
-Research後はEvidence Map / Discussionへ進み、User Intentに関わるDecisionをResearchだけで勝手に確定しません。
+Research後もCurrent Requirements / Existing User Intent / Evidenceから合理的に決められる内容はBest Reasonable Decisionで進めます。ResearchだけでUser Preferenceを上書きせず、User Decision条件は [01 Requirements](01-requirements.md) を正本とします。
 
 ## Completion Check
 
@@ -573,8 +576,8 @@ Evidence-first Researchを適用した重要判断では、必要強度に応じ
 - SupportingだけでなくOpposing Evidence / Failure / Limitationを確認したか
 - Original SourceとAI Interpretationを分けたか
 - Bias / Applicability / Evidence Conflictを必要範囲で確認したか
-- 100件規模をQuotaではなくBroad Discovery目安として扱ったか
-- Research Saturationまたは十分なDecision Evidenceへ達したか
+- Source CountをQuota /品質Scoreにしていないか
+- Decision Coverage / Research Saturationまたは十分なDecision Evidenceへ達したか
 - Evidence MapでKnown / Disputed / Context-dependent / Unknownを分けたか
 - Evidence / Interpretation / Project Preference / Decisionを分離したか
 - Researchで解決しない部分をPrototype / Test / Playtest等へ渡したか
