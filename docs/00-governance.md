@@ -151,6 +151,18 @@ Project内で要求が衝突した場合、原則として次の順でTrade-off�
 
 現在のUser要求が保存互換性や重大Contractを壊す場合は、勝手に破壊せず影響・代替を整理します。
 
+## Agent Autonomy / User Confirmation Boundary
+
+### MUST: 重要度だけを理由にUser回答待ちへしない
+
+Core / High-cost / Systemic等の分類は、Impact Analysis、Research、Rollback、Validationを強めるために使います。分類名だけを理由にUserへ判断を返したり、回答待ちで標準Workflowを止めたりしません。
+
+原則として、Current User Request、Projectの正式Requirements、Current Repository、Existing User Intent、Research / Evidence、Compatibility / Riskから**Best Reasonable Decision**を選び、必要なAssumption / Riskを短く記録して進めます。
+
+User確認を必要とする境界は [21 Rule Routing / Preflight](21-rule-routing-preflight.md) をBehavioral Owner、Requirements固有の判断は [01 Requirements](01-requirements.md) を正本とします。この章では詳細条件を重複定義しません。
+
+明示Approvalが必要な外部・破壊的・不可逆Operation、Userだけが持つCredential / Permission、Evidenceでも解けないMaterial Intent /重大Conflict、Safety / Legal / Security上の明示確認等は例外です。
+
 ## Source of Truth
 
 既存Projectでは、特別な理由がない限りCurrent GitHub RepositoryをCurrent Stateの基準とします。
