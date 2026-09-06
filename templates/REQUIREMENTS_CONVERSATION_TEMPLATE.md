@@ -4,7 +4,7 @@
 
 このTemplate自体はProject固有要件のSource of Truthではありません。対象Repositoryの現在状態と正式な`REQUIREMENTS.md`を基準にし、`REQUIREMENTS_DRAFT.md`がある場合は未確定差分として確認します。既に確定した内容を聞き直さず、未確定事項から要件定義を再開するためのRouterとして使います。
 
-このPromptを貼り忘れても、Project設定やUserが明示した情報から対象Repositoryを一意に特定できる場合は、[GitHub中心のプロジェクト管理](../docs/10-project-management.md) のPromptなし復旧Ruleに従ってGitHubから対象Repositoryを特定し、正式要件とDraftから再開できます。Promptの存在自体は要件定義再開の必須条件ではありません。
+Conversation Handoff / PromptなしRecoveryのBehavioral Ownerは [22 Conversation Handoff / Recovery](../docs/22-conversation-handoff-recovery.md) です。Promptを貼り忘れても、Project設定やUserが明示した情報から対象Repositoryを一意に特定できる場合はGitHubから正式要件とDraftを復旧できます。
 
 ## 使用方法
 
@@ -29,9 +29,11 @@ GitHub Repository：
 
 古い会話や記憶だけを基準にせず、現在のGitHub上の内容を優先してください。
 
-既に確定している要件を最初から聞き直さず、Draftの未確定事項、未解決のCore Decision / High-cost Decision、または今回変更したい内容から要件定義を再開してください。
+既に確定している要件を最初から聞き直さないでください。Draftの未確定事項でも、Current Repository / Current Requirements / Existing User Intent / Evidenceから合理的に決められる内容はBest Reasonable Decisionで進め、必要なAssumptionだけ記録してください。
 
-既存仕様と新しい要件が重大に衝突する場合は、破壊的な変更を勝手に確定せず重要な矛盾を示してください。
+Core / High-costという分類だけを理由にUser回答待ちにしないでください。non-inferable preference、不可逆でsafe alternativeがない破壊的選択、外部Permission / Billing / Account操作、解消不能な重大Contract conflictだけUser Decisionとして扱ってください。
+
+既存仕様と新しい要件が重大に衝突する場合も、まずCompatibility / Rollback / safe alternativeとCurrent Contractを確認し、それでも一意に解決できない場合だけUserへ確認してください。
 
 会話名：
 {{REPOSITORY_NAME}}（相談・調査）
@@ -42,7 +44,8 @@ GitHub Repository：
 - Promptは過去会話の長いSummaryを複製しない
 - GitHub上のCurrent Repositoryと正式`REQUIREMENTS.md`を先に確認する
 - `REQUIREMENTS_DRAFT.md`は未確定差分として区別し、実装Source of Truthにしない
-- 既に確定済みのCore Decisionを理由なく再質問しない
+- 既に確定済みのDecisionを理由なく再質問しない
+- Current Repository / Evidenceで解ける未確定事項はBest Reasonable Decisionで進める
 - 要件定義途中の会話移行では、Draft保存成功を確認してからこのPromptを出す
 - 要件定義完了後はDraftを正式`REQUIREMENTS.md`へ統合し、正式保存成功後に不要なDraftを削除してImplementation Handoff Workflowへ進む
-- Promptを貼り忘れた場合でも、対象Repositoryを一意に特定できるならGitHubから復旧し、Repositoryが曖昧ならURLまたは`owner/repository`だけ確認する
+- Promptを貼り忘れた場合でも、対象Repositoryを一意に特定できるならGitHubから復旧する
