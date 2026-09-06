@@ -99,11 +99,12 @@ Remote handoffが有効でProviderへ接続できる場合、同じ症状をUser
 - Storage / Migration追加
 - Auth / API / Cloud追加
 - Meaningful Visual Changeへ発展
+- MeaningfulなIA / Navigation / Task Flow変更へ発展
 - Game Core Loop / Completion変更へ発展
 - User Requirement変更
 - Conversation Handoff / stale checkpoint / parallel active workが問題になった
 
-Conversation Handoff / Recoveryの詳細は [22 Conversation Handoff / Recovery](../docs/22-conversation-handoff-recovery.md) を正本とします。
+Conversation Handoff / Recoveryの詳細は [23 Conversation Handoff / Recovery](../docs/23-conversation-handoff-recovery.md) を正本とします。
 
 ## Change Policy
 
