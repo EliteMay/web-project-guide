@@ -43,8 +43,8 @@ User-facing UIがある場合は [17 Visual Quality Baseline](docs/17-visual-qua
 
 1. [20 Evidence-first Research](docs/20-evidence-first-research.md)
 2. Topic-specific Owner
-3. Evidence Map / Discussion
-4. Project-specific Decision
+3. Evidence Map / Project Context
+4. Best Reasonable Decision、必要な場合だけUser Decision
 5. Requirements / Prototype / Validation
 
 単純な事実確認や原因が明確な局所BugへDeep Researchを強制しません。
@@ -130,6 +130,15 @@ Setup.exe / Auto Update / Windows固有機能をCIだけで実機確認済み扱
 - 通常と同じTesting / Security / Storage / Visual基準
 
 Memoryや古い会話だけでCurrent Repositoryを推測しません。
+
+## 会話の引き継ぎ / 再開 / 重複会話
+
+実装・要件定義を別ChatGPT会話へ移す、古い会話から再開する、同じ作業区分の会話が複数Activeになった、Current work refを復旧する必要がある場合:
+
+- GitHub変更Workflow → [10 Project Management](docs/10-project-management.md)
+- Conversation固有のHandoff / Recovery → [22 Conversation Handoff / Recovery](docs/22-conversation-handoff-recovery.md)
+
+会話履歴だけで作業位置を推測せず、Current Repository / Branch / PR / Commit / formal documentsから復旧します。
 
 ## 複数RepositoryのGitHub運用
 
