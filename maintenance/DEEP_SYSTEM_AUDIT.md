@@ -1,156 +1,254 @@
 # Deep System Audit Checklist
 
-このChecklistは `web-project-guide` 自身を「まだ40点」と仮定して、**単一Fileの読みやすさだけでなくGuide全体を1つのSystemとして点検するための実行手順**です。
+このChecklistは`web-project-guide`自身を**低Confidence / 40点相当から再評価**し、known actionable findingが残らないところまで点検する実行手順です。
 
-Normative Ownerは [`docs/14-continuous-improvement.md`](../docs/14-continuous-improvement.md) です。このFileはRule本文の第二正本ではなく、Deep Reviewを毎回同じ粒度で実行するためのChecklistです。
+Normative Ownerは [`docs/14-continuous-improvement.md`](../docs/14-continuous-improvement.md) です。このFileはExecution Checklistであり第二Rule本文ではありません。
 
-## 0. Audit stance
+## 0. Audit Baseline
 
-- [ ] 「前回直したから正しい」と仮定せずCurrent `main` /対象Refを確認した
-- [ ] README / START_HERE / docs14 / docs21をCurrent Revisionから読んだ
-- [ ] 以前の会話・要約・MemoryをCurrent Repository確認の代用にしていない
-- [ ] 文字数の多さではなく、責務・到達性・矛盾・運用Failureを主に評価した
-- [ ] 有用なRuleを短縮目的だけで削除しない方針を固定した
+- [ ] Current default branch / target refを取得した
+- [ ] Baseline commit SHAを記録した
+- [ ] `guide-version.json`を記録した
+- [ ] Current RouterからOwner Registryを取得した
+- [ ] Owner数を固定値で仮定していない
+- [ ] Audit dateを記録した
+- [ ] `README` / `START_HERE` / `docs/14` / `docs/21`をCurrent Revisionから読んだ
 
-## 1. Entry / Source-of-Truth integrity
+Audit Reportは`maintenance/audits/YYYY-MM-DD-*.md`等へ保存します。
 
-- [ ] READMEは概要と入口に留まり、詳細Ruleの第二正本になっていない
-- [ ] START_HEREはHuman Routerに留まり、Machine Routerと別の詳細Routing体系を持っていない
-- [ ] REQUIREMENTSはCurrent Contractで、実装済み改善Historyを蓄積していない
-- [ ] CHANGELOG / Work Report / Git historyの役割が混ざっていない
-- [ ] Guide VersionのCurrent値を複数Fileへ手入力していない
+## 1. Audit Stance
 
-## 2. Normative owner topology
+- [ ] 前回直したことをCurrent correctnessのEvidenceにしていない
+- [ ] 過去Conversation / Memory /古いZIPをCurrent Repositoryの代用にしていない
+- [ ] 文字数ではなく責務・矛盾・到達性・Failure Riskで評価している
+- [ ] 短縮目的だけで有用Ruleを削除していない
+- [ ] 平均Score / A判定を終了理由にしていない
 
-各判断Domainについて、`docs/00-governance.md`のOwner表と実際の本文を照合します。
+## 2. Primary Audit — 全Current Owner
 
-- [ ] 同じBehaviorを2つ以上のOwner Docが詳細定義していない
-- [ ] Ruleを別Ownerへ移した後、旧Ownerに詳細Copyが残っていない
-- [ ] 1章が複数の独立したNormative responsibilityを抱えていない
-- [ ] 章が長いだけを理由に分割していない
-- [ ] Project固有Evidence / Pilot / Repository名がCommon Rule本文へ混入していない
-- [ ] Catalog / ReferenceのEvidenceをCommon MUSTとして再定義していない
+Current Routerの全Ownerを1つずつ確認します。
 
-## 3. Human / Machine routing parity
+各Ownerを0〜3で採点:
 
-同じ代表Taskを `START_HERE.md` と `maintenance/rule-router.json` の両方で解決し、結果を比較します。
+- [ ] Coverage
+- [ ] Gap Coverage
+- [ ] Duplication
+- [ ] Rule / Research Separation
+- [ ] Decision Quality
+- [ ] Failure Evidence
 
-最低代表Case:
+各Ownerで最低限:
 
-- [ ] Guide自身のDeep Review /改善
-- [ ] Local UI Bug
-- [ ] Meaningful Visual Change
-- [ ] Existing Save + Schema Migration
-- [ ] Game主要Flow / Completion変更
-- [ ] Cross-repository GitHub infrastructure変更
-- [ ] Researchable Question
+- [ ] 責務を1文で説明できる
+- [ ] Trigger / applicabilityが分かる
+- [ ] Action / expected behaviorが分かる
+- [ ] Exception / trade-offが必要なRuleでは記載がある
+- [ ] Validation / completionへ繋がる
+- [ ] Project-specific / time-specific evidenceがRule本文へ漏れていない
+- [ ] 他Ownerとsame normative decisionを競合していない
 
-確認項目:
+## 3. Gap Register
 
-- [ ] Human Routerが必須とするOwnerへMachine Routerからも到達できる
-- [ ] Router Owners Registryにある重要Ownerが実質到達不能になっていない
-- [ ] Work Type / Domain / Signal名がdocs21とJSONで一致する
-- [ ] Golden Caseが実際の高Risk /誤RoutingしやすいCaseを覆っている
-- [ ] 小さい作業へVisual Research / Deep Research等を過剰Routingしていない
+Findingごとに記録します。
 
-## 4. Template / Checklist drift
+### Gap Type
 
-- [ ] TemplateはProject固有Input / Decision field中心でRule本文を再掲していない
-- [ ] Quality ChecklistはPass / Failできる短い実行確認中心
-- [ ] AGENTS / README TemplateはRouterとして正本へLinkしている
-- [ ] Spec TemplateはTechnical Contract、Project Rules TemplateはOverride / Exceptionに責務限定されている
-- [ ] Conditional PackがCore Templateへ逆流していない
-- [ ] Owner変更後にTemplate / Checklistが古いOwnerを指していない
+- Rule Gap
+- Research Gap
+- Evidence Gap
+- Structural Gap
+- Repository Operation Gap
 
-## 5. Semantic duplication sweep
+### Severity
 
-単純な同一文字列検索だけでなく、**意味が同じRuleの言い換え**を探します。
+- Critical
+- High
+- Medium
+- Low
 
-重点Keyword / Concept例:
+### Action
+
+- KEEP
+- CLARIFY
+- EXPAND
+- MOVE
+- MERGE
+- SPLIT
+- REMOVE
+- RESEARCH
+- ADD EVIDENCE
+- ROUTE FIX
+- REPOSITORY FIX
+
+Research GapだけP0 / P1 / P2を付けます。
+
+- [ ] 全FindingにGap Typeがある
+- [ ] Actionable findingにActionがある
+- [ ] Severityがある
+- [ ] Deferredには具体的理由がある
+
+## 4. Entry / Source-of-Truth Integrity
+
+- [ ] READMEはentry / owner router中心
+- [ ] START_HEREはHuman Router中心
+- [ ] Root REQUIREMENTSはCurrent Project Contractで、temporary audit table / implementation backlogを積んでいない
+- [ ] CHANGELOG / Work Report / Project Learnings / Git historyの役割が分かれている
+- [ ] Guide VersionのCurrent値を複数Fileへhardcodeしていない
+
+## 5. Normative Owner Topology
+
+- [ ] Single Normative Ownerを原則維持
+- [ ] Rule moveはDestinationだけでなくSource cleanupも確認
+- [ ] 1章が複数独立責務を抱える場合はSplit候補として評価
+- [ ] 長いだけの章を機械的にSplitしていない
+- [ ] Named Project / Pilot / current tool stateをCommon Ownerへ埋め込んでいない
+- [ ] Reference / CatalogをRule本文へ昇格させていない
+
+## 6. Human / Machine Router Parity
+
+同じTaskをSTART_HEREと`maintenance/rule-router.json`へ通します。
+
+最低Case:
+
+- [ ] Guide deep review
+- [ ] Local UI bug
+- [ ] Meaningful visual change
+- [ ] Existing save + migration
+- [ ] Game primary flow / completion
+- [ ] Cross-repository GitHub
+- [ ] Conversation handoff / stale recovery
+- [ ] Researchable question
+
+確認:
+
+- [ ] Human-required OwnerへMachine Routerから到達
+- [ ] Registered Ownerがunreachableでない
+- [ ] docs21とJSONのWork Type / Domain / Signal名が一致
+- [ ] High-risk / error-prone caseにGolden Caseがある
+- [ ] Small taskをover-routeしていない
+
+## 7. Template / Checklist Drift
+
+- [ ] TemplateはInput / Decision field中心
+- [ ] ChecklistはPass / Fail可能なshort check中心
+- [ ] AGENTS / README TemplateはRouter
+- [ ] SpecはTechnical Contract
+- [ ] Project RulesはProject-specific override / exception
+- [ ] Conditional PackがCoreへ逆流していない
+- [ ] Owner変更後のLinkが古くない
+- [ ] obsolete user-confirmation wording等がTemplateへ残っていない
+
+## 8. Semantic Duplication Sweep
+
+重点Concept:
 
 - Source of Truth / Current State
-- public URL / Repository discoverability
-- Save / Migration / Import / Reset
-- Security / Secret / RLS / Remote diagnostics
-- Visual completion / Visual research
-- Final commit / CI / Verification state
-- Project-specific vs Common
-- Version / Runtime path / Cache busting
+- Requirements persistence / handoff
+- User confirmation / agent autonomy
+- public URL / discoverability
+- save / migration / import / reset
+- security / auth / RLS / diagnostics
+- Electron security / updater
+- visual completion / visual research
+- final commit / verification
+- project-specific vs common
+- version / runtime path / cache
+- project learnings / history
 
-各Candidateで:
+各Candidate:
 
-- [ ] Normative Ownerを1つ決めた
-- [ ] 他FileはLink /短いBoundary説明にした
-- [ ] Context固有の安全Reminderまで誤って削っていない
+- [ ] Ownerを1つ決めた
+- [ ] 他FileはBoundary / Link中心
+- [ ] Context-specific safety reminderを削除しすぎていない
 
-## 6. Machine-readable contract audit
+## 9. Research Gap Review
 
-- [ ] JSONはparse可能
-- [ ] Schemaが空Route /空Signal等の明らかな構造欠陥を許しすぎていない
-- [ ] ValidatorがRouterの未知Work Type / Domain / Signal / Gate参照を検出する
-- [ ] Routerが参照するDoc / Gateは実在する
-- [ ] Owner RegistryのDocがRouting上どう到達するか説明できる
-- [ ] Required Fileを追加したときValidator / Router / READMEの必要箇所が同期する
-- [ ] ValidatorがProse Snapshotへ戻りすぎていない
+Current external evidenceが必要なGapだけResearchします。
 
-## 7. History / evidence leakage
+- [ ] Fast-changing topicはcurrent official / primary sourceを優先
+- [ ] Research countをQuotaにしていない
+- [ ] Supportingだけでなく必要なcounter / limitationを確認
+- [ ] Project Applicabilityを確認
+- [ ] EvidenceからRule Strengthを機械的に決めていない
 
-- [ ] Named Project Pilot /一時的な導入状況をCommon Rule本文へ置いていない
-- [ ] Project-specific EvidenceはReference / Catalog / Project Learnings等へ分離した
-- [ ] Referenceは非Normativeであることが明確
-- [ ] 古いVersion固有説明がCurrent Ruleとして読めない形になっている
-- [ ] Rejected / Failed approachの再発防止Evidenceを必要範囲で残している
+## 10. Machine-readable / Validator Audit
 
-## 8. Repository surface / operations
+- [ ] JSON parse
+- [ ] Schemaがempty route / invalid structureを許しすぎない
+- [ ] unknown Work Type / Domain / Signal / Gateを検出
+- [ ] Owner referenceが実在
+- [ ] Owner reachability
+- [ ] Required file追加時のRouter / README / Validator同期
+- [ ] Workflow Action等のmachine-checkable self-securityを必要に応じてGuard
+- [ ] Prose Snapshotへ戻りすぎていない
 
-- [ ] WorkflowがFinal CommitでValidatorを実行する
-- [ ] PR Diffで意図しないRule消失・大量Rewriteを確認する
-- [ ] main Merge後のValidationを確認する
-- [ ] Repository description / topics / homepage / license / rulesets等のPublic metadataを確認し、未整備ならWork Reportへ記録する
-- [ ] 不要な一時Branch / Debug Artifact / Draftを残していない
+## 11. History / Evidence Leakage
 
-Repository settingsを現在の接続権限から変更できない場合は、未修正を隠さずManual follow-upとして残します。
+- [ ] Named Pilot / temporary statusをCommon Ownerへ置いていない
+- [ ] Project-specific evidenceをReference / Catalog / Project Learningsへ分離
+- [ ] Referenceがnon-normativeと明確
+- [ ] old version noteをCurrent Ruleと誤読しない
+- [ ] Rejected / Failure evidenceを再発防止に必要な範囲で保持
+- [ ] PROJECT_LEARNINGSを一回ごとに上書きせずrecurrence knowledgeを継続蓄積
 
-## 9. Change classification
+## 12. Repository Surface / Operations
 
-Findingごとに次へ分類します。
+- [ ] WorkflowがFinal CommitでValidator実行
+- [ ] External Actions / reusable workflow reference policyをself-apply
+- [ ] PR Diffで意図しないRule lossを確認
+- [ ] post-merge main validation
+- [ ] description / topics / homepage / license / rulesets / branch lifecycleを確認
+- [ ] merged stale branch / temporary branch / debug artifactを確認
+- [ ] Toolで直せないsettingはexact manual follow-upとして残す
 
-- **Blocking contradiction** — 同じBehaviorの正本が競合 / Routing漏れで高Risk Ruleへ到達不能
-- **Structural debt** — 現在は動くが責務混在・将来Driftしやすい
-- **Documentation polish** — 意味は正しいが読みづらい /表現不統一
-- **Deferred by evidence** — 問題候補だが、今変更するとCost / Riskが上回る
-- **Repository metadata** — Code/Guide本文外の運用品質
+## 13. Learning Capture
 
-重大度だけでなく、**修正によるRule loss Risk**も見て変更順を決めます。
+今回のAuditで再発価値があるFindingは`PROJECT_LEARNINGS.md`へ残します。
 
-## 10. Completion gate
+- [ ] What happened
+- [ ] Root Cause
+- [ ] Final Fix
+- [ ] Detection / Regression Guard
+- [ ] Prevention / next-time hint
+- [ ] Related PR / Commit（分かる場合）
 
-- [ ] Blocking contradictionを解消した、または未解決理由を明記した
-- [ ] Rule移動で意味が失われていないことをOwner側で確認した
-- [ ] Human / Machine Router parityを代表Caseで確認した
-- [ ] Validatorへ再発防止可能な構造Guardを追加した
-- [ ] PROJECT_LEARNINGSへ再発価値の高いFindingだけ保存した
-- [ ] Work Reportへ変更・未確認・Deferred itemを記録した
-- [ ] Branch / PRの最終Diffを確認した
-- [ ] PR HeadのGuide Validation成功を確認した
-- [ ] Merge後mainのGuide Validation成功を確認した
+Work ReportとProject Learningsへ同じ履歴全文を重複させません。
 
-## Audit output
+## 14. Stopping Gate
 
-Deep Auditの結果は、単なる「読んだFile一覧」ではなく次を残します。
+**Score targetだけでは止めません。**
+
+- [ ] Critical actionable finding = 0、またはexternal blockerを具体的に記録
+- [ ] High actionable finding = 0、またはexternal blockerを具体的に記録
+- [ ] Medium in-scope actionable finding = 0、またはrule-loss/correctness理由でevidence-deferred
+- [ ] Low findingもfixed / N/A / external-only / deferredへ分類
+- [ ] known contradictionを`good enough`で残していない
+- [ ] Rule preservation確認
+- [ ] Human / Machine parity確認
+- [ ] Validator guard追加（機械化可能なFinding）
+- [ ] PROJECT_LEARNINGS更新
+- [ ] Work Report更新
+- [ ] Final PR Diff Review
+- [ ] PR Head validation success
+- [ ] Merge後main validation success
+
+## Audit Output
 
 ```text
-Scope:
-High-impact findings:
-Structural findings:
+Audit baseline:
+Owner audit matrix:
+Gap register:
+Duplication/conflict map:
+Research priority map:
 Fixed now:
-Deferred intentionally:
+External/manual-only:
+Deferred by evidence:
 Rule preservation notes:
-Router parity cases:
-Validator guards added:
-Repository metadata findings:
+Learning capture:
+Router parity:
+Validator guards:
 Validation:
-Unverified:
+Final status:
 ```
 
-同じAuditを次回行うときはこのChecklistをCurrent Revisionから使い、必要なら `maintenance/review-policy.json` の `deepSystemAudit` と照合します。
+次回はこのChecklistをCurrent Revisionから使い、前回Reportを「正しい」と仮定せずCurrent Repositoryを再監査します。

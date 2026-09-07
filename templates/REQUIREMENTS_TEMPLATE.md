@@ -9,15 +9,17 @@ Domain固有項目は [Conditional Packs](requirements/README.md) から該当�
 - Adopted Guide Version:
 - Profiles: STATIC / DATA / LEARNING / GAME / MEDIA / AI-HANDOFF / CLOUD / ELECTRON / TOOL / PUBLIC-CONTENT
 
-## 0A. 要件定義の決定モード
+## 0A. Decision / Assumption
 
-会話での進め方は [01 Requirements](../docs/01-requirements.md) を正本とします。
+会話でのDecision Contractは [01 Requirements](../docs/01-requirements.md) を正本とします。
 
-- Recommendation-by-default: Yes / No
-- Best Reasonable Decision: Enabled / Disabled
-- Userが自動決定を止めた項目:
-- 明示的なUser Preference:
-- User Confirmation Exceptionに該当する項目:
+- Agent autonomy: Best Reasonable Decision by default
+- Existing User Intent / Current Contractから確定できるCore Decisions:
+- High-cost / Risk Decisionsとsafe / reversible default:
+- Blocking User Decisions（本当にUserにしか決められないものだけ）:
+- Important Assumptions:
+
+`Core` / `High-cost`という分類だけを理由にUser回答待ちにしません。Current Repository、正式Requirements、既存User Intent、Evidence、Compatibility / Rollbackから合理的に決められる場合は記録して進めます。
 
 ## 1. 目的 / 成功条件
 
@@ -105,7 +107,7 @@ Project固有の追加Packが必要なら、Common Guideを増やす前に対象
 
 ## 10. High-cost / Hard-to-change Decisions
 
-Projectに該当するものだけ記録します。High-costであること自体はUser確認の自動Triggerではありません。
+Projectに該当するものだけ記録します。
 
 - Storage / Schema / ID:
 - URL / Deployment / Release:
@@ -115,17 +117,19 @@ Projectに該当するものだけ記録します。High-costであること自�
 - Cross-module contract:
 - その他:
 
-## 11. 変更可能範囲 / Assumption
+各項目で必要に応じて、理由 / Compatibility / Rollback / safe alternativeを残します。User確認は [01 Requirements](../docs/01-requirements.md) のUser Decision条件に該当する場合だけBlockingにします。
+
+## 11. 変更可能範囲
 
 ### 原則として改善してよい
 
 - 
 
-### Important Assumptions
+### Agentが慎重に扱うHigh-risk範囲
 
 - 
 
-### User Confirmation Exception
+### Blocking User Decisionが必要な例外
 
 - 
 
@@ -151,7 +155,7 @@ Project固有の完成条件:
 - [ ] 必要なStatic / Runtime / Browser / Visual / Playtest / Real-device Validationを実施、または未確認を明記
 - [ ] 必要なDocumentationがCurrent Stateと一致
 - [ ] 重大Known Issueが残っていない、または完成不可として明示
-- [ ] 実装開始を妨げるBlocking Decisionがない、またはNot readyとして明示
+- [ ] 実装を止めるBlocking Decisionがない、またはNot readyとして明示
 
 追加Project-specific completion:
 

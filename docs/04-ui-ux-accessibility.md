@@ -200,7 +200,7 @@ Visual Designが重要なProjectでは、CSSを本格実装する前に一度Dir
 - Content / Task / Audience固有の理由がLayoutに現れているか
 - Primary Actionと重要情報が装飾なしでも分かるか
 - 「modern」「premium」等の抽象語をEffectで埋めていないか
-- DesignShelfやReferenceのSkeletonをそのまま完成形にしていないか
+- Companion ToolやReferenceのSkeletonをそのまま完成形にしていないか
 
 Genericに見える場合は、実装量を増やす前にDirectionを修正します。
 
@@ -327,46 +327,17 @@ Project Typeに応じて適切な構造を変えます。
 
 これはTemplate指定ではありません。同じProject Typeでも内容・利用頻度・主要操作によって別構造を選べます。
 
-## DesignShelfの活用
+## Companion Tool / Visual Catalogの扱い
 
-[DesignShelf](https://github.com/EliteMay/DesignShelf) は、完成サイトのTemplateを選ぶ場所ではなく、**Design Directionを分解して比較するCompanion Tool**として利用できます。
+Design direction比較Tool、過去Layout Catalog、Skeleton集等を使う場合も、それをCommon Ruleの正本や完成Templateにしません。
 
-推奨Workflow:
+- Structure比較の語彙として使う。
+- 2〜3のcoherent directionを比較する。
+- Palette変更だけを新Directionとしない。
+- Layout ID / Skeletonを正解一覧としない。
+- Target ProjectのNavigation / Density / Content / Primary ActionへRebuildする。
 
-1. 本GuideでPurpose / Workflow / Information Architectureを決める。
-2. 色やEffectなしのWireframeを考える。
-3. DesignShelfで2〜3個の**構造的に異なるDirection**を比較する。
-4. 選んだ案をそのままコピーせず、Project固有のNavigation / Density / Primary Action / Contentへ変形する。
-5. Structureが決まってからPaletteを選ぶ。
-6. 最後にDecorative Effectを必要な範囲だけ追加する。
-
-### DesignShelfで扱うDesign属性
-
-将来的にはLayout番号だけでなく、次のような属性を組み合わせてDirectionを表せると再利用しやすくなります。
-
-- Navigation Type
-- Main Structure
-- Content Density
-- Alignment
-- Typography Direction
-- Visual Emphasis
-- Image / Screenshot Usage
-- Component Density / Component family
-- Spacing Rhythm
-- Color Rule
-- Decorative Effect Policy
-- Signature
-
-ただし、これらを完全独立のRandomなつまみとして組み合わせるとDesignが破綻します。**相性のある属性を1つのCoherent Directionとして2〜3案生成し、各案に「なぜこのProjectへ合うか」を付ける**方式を優先します。
-
-### DesignShelfを使うときの注意
-
-- `中央Hero + 3 Cards`等の一般的な骨格も候補の1つとして残してよいが、AIのDefaultだから選ばない。
-- Random提案は発想の入口として使い、完成判断にはしない。
-- Paletteだけ変えて同じLayoutを再利用し続けない。
-- 24 Layoutを「正解の一覧」と扱わない。必要なら混合・削除・変形する。
-- Layout IDは完成TemplateではなくSkeleton / Exampleとして扱う。
-- DesignShelfの現在UIはPalette → Layoutの順でも、Guide運用では**Structure-firstで利用してよい**。
+過去に利用した特定Companion ToolのEvidenceは [DesignShelf Companion Tool Evidence](../references/designshelf-companion-tool-evidence.md) に非Normative Referenceとして保存します。Current Tool実装は利用時にCurrent Repositoryを再確認します。
 
 ## Visual Design Review Gate
 
@@ -417,6 +388,8 @@ Visual Reviewの結果は `Pass` / `Needs work` を明示し、Blockingが残る
 - 下部固定UIがカード上へ重ならない
 - スクロール領域を必要以上に増やさない
 
+WCAG 2.2の **Focus Not Obscured** を踏まえ、Keyboard focus中のComponentがAuthor-created sticky / fixed / overlayで完全に隠れないことを確認します。
+
 ## アクセシビリティ
 
 WCAG 2.2 AAを参考に、個人用サイトでも実用上重要な項目を標準にします。
@@ -430,6 +403,28 @@ WCAG 2.2 AAを参考に、個人用サイトでも実用上重要な項目を標
 - 重要操作は44px前後も検討する
 - `prefers-reduced-motion`を尊重する
 - `aria-pressed`, `aria-expanded`, `aria-live`等は必要な場所だけ正しく使う
+
+### WCAG 2.2 Interaction Coverage
+
+#### Focus Not Obscured
+
+Keyboard focusがsticky header、fixed footer、cookie banner、floating toolbar、modal等で完全に隠れないようにします。Focus移動後にUserが現在位置を認識できることを確認します。
+
+#### Target Size (Minimum)
+
+Pointer targetは原則24×24 CSS px相当以上を意識します。例外条件が成立する場合でも、隣接TargetとのSpacingと誤操作Riskを確認します。主要操作ではより大きなTargetも検討します。
+
+#### Dragging Movements
+
+Draggingを主要操作に使う場合、freehand drawing等drag自体が本質の操作を除き、Click / Button / Keyboard等の単純Pointer操作でも同じOutcomeへ到達できるAlternativeを検討します。
+
+#### Redundant Entry
+
+同じProcess内で一度入力した情報を理由なく再入力させません。既存値の再利用、selection、autofill等が使える場合は優先します。Security上の再確認等、必要な再入力は例外として理由を持たせます。
+
+#### Accessible Authentication
+
+Authenticationがある場合、Password managerやpasteを理由なく禁止しません。記憶・転記・Puzzle等の認知Taskだけを唯一の認証経路にせず、利用者が認証を完了できるAlternativeや補助手段を検討します。
 
 ## ボタンと入力
 

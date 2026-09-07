@@ -11,11 +11,11 @@
   "repositoryReviewPriority": [
     "PROJECT_LEARNINGS.md",
     "recent commits and changed files",
-    "README, specification, PROJECT_RULES and AGENTS.md",
+    "README, requirements, specification, PROJECT_RULES and AGENTS.md",
     "remote diagnostic handoff configuration and recent runtime evidence when safely accessible",
     "work reports and changelog",
-    "visual design direction, user feedback or rating, rejected visual candidates and post-build visual review",
-    "AI-assisted architecture decisions and available oracle or regression tests",
+    "visual design direction, user feedback or rating, rejected candidates and post-build review",
+    "architecture decisions and available oracle or regression tests",
     "diagnostics design and exported schema when committed",
     "tests and GitHub Actions",
     "storage schema and migration"
@@ -23,12 +23,7 @@
   "visualEvidenceReview": {
     "enabled": true,
     "catalog": "catalog/validated-visual-directions.md",
-    "evidenceLevels": [
-      "user-validated",
-      "task-validated",
-      "candidate",
-      "rejected"
-    ],
+    "evidenceLevels": ["user-validated", "task-validated", "candidate", "rejected"],
     "collect": [
       "project and reference commit or version",
       "current visual direction and previous baseline",
@@ -54,29 +49,52 @@
       "rejectedMustRetain": "failure reason and root lesson so the same direction is not regenerated as a new idea"
     }
   },
+  "learningCapture": {
+    "enabled": true,
+    "target": "PROJECT_LEARNINGS.md",
+    "mode": "accumulate-recurrence-knowledge",
+    "recordWhen": [
+      "high-cost or repeated failure",
+      "major structural audit finding",
+      "successful pattern with future reuse value",
+      "guide change that should influence the next audit"
+    ],
+    "requiredFields": [
+      "what happened",
+      "root cause",
+      "final fix",
+      "detection or regression guard",
+      "prevention or next-time hint"
+    ],
+    "doNotUseFor": [
+      "every small edit",
+      "long work history",
+      "release changelog",
+      "duplicate common rule prose"
+    ],
+    "preserveAfterPromotion": true
+  },
   "ruleHygieneReview": {
     "enabled": true,
-    "runWhen": [
-      "a meaningful common rule is added or changed",
-      "monthly deep review"
-    ],
+    "runWhen": ["a meaningful common rule is added or changed", "monthly deep review"],
     "checks": [
       "duplicate normative guidance across owner documents",
       "README or START_HERE repeating detailed rules instead of routing",
-      "orphan numbered docs not reachable from README",
-      "new owner docs not reachable from the relevant START_HERE route",
+      "orphan owner docs not reachable from the router",
       "full completion checklists duplicated outside templates/QUALITY_CHECKLIST.md",
-      "project-specific knowledge stored as common rules instead of PROJECT_LEARNINGS or project rules",
+      "project-specific knowledge stored as common rules instead of evidence/reference/project learnings",
       "catalog evidence promoted to universal rules without reuse evidence",
       "stale version-specific examples or obsolete rules",
-      "rule strength that should be lowered to conditional or project-specific scope"
+      "rule strength that should be conditional or project-specific",
+      "rule move destination updated but source copy left behind"
     ],
     "placementOrder": [
       "merge into an existing normative owner when possible",
       "project-specific PROJECT_LEARNINGS or project rules",
       "failure, success, anti-pattern or visual evidence catalog",
+      "non-normative reference",
       "quality checklist or template",
-      "new common rule only when the previous locations are insufficient"
+      "new common owner only when previous locations are insufficient"
     ],
     "singleNormativeOwner": true,
     "newChapterRequiresDistinctResponsibility": true,
@@ -86,16 +104,31 @@
     "enabled": true,
     "procedure": "maintenance/DEEP_SYSTEM_AUDIT.md",
     "owner": "docs/14-continuous-improvement.md",
-    "assumption": "start from a low-score hypothesis and require current repository evidence to earn confidence",
+    "resultDirectory": "maintenance/audits",
+    "assumption": "start from a low-confidence hypothesis and require current repository evidence to earn confidence",
+    "ownerDiscovery": "maintenance/rule-router.json owners registry",
+    "ownerAxes": [
+      "coverage",
+      "gap coverage",
+      "duplication",
+      "rule-research separation",
+      "decision quality",
+      "failure evidence"
+    ],
+    "scoreScale": {"min": 0, "max": 3},
+    "gapTypes": ["rule gap", "research gap", "evidence gap", "structural gap", "repository operation gap"],
+    "severities": ["critical", "high", "medium", "low"],
+    "actions": ["keep", "clarify", "expand", "move", "merge", "split", "remove", "research", "add evidence", "route fix", "repository fix"],
     "surfaces": [
       "entry and source-of-truth integrity",
-      "normative owner topology",
+      "all normative owners discovered from current router",
       "human and machine routing parity",
       "template and checklist drift",
       "semantic duplication across documents",
+      "research gap and evidence freshness",
       "machine-readable schemas and validator coverage",
       "history and project-specific evidence leakage",
-      "repository metadata, workflows and final-state operations"
+      "repository metadata, workflows, branch lifecycle and final-state operations"
     ],
     "requiredRepresentativeCases": [
       "guide deep review",
@@ -104,126 +137,44 @@
       "existing save and schema migration",
       "game primary flow or completion change",
       "cross-repository GitHub infrastructure change",
+      "conversation handoff or stale checkpoint recovery",
       "researchable question"
     ],
-    "findingClasses": [
-      "blocking contradiction",
-      "structural debt",
-      "documentation polish",
-      "deferred by evidence",
-      "repository metadata"
-    ],
     "completionRequires": [
-      "blocking contradictions fixed or explicitly unresolved",
+      "critical and high actionable findings resolved or explicitly externally blocked",
+      "medium in-scope actionable findings resolved or explicitly evidence-deferred for correctness",
+      "low findings classified as fixed, not applicable, external-only or evidence-deferred",
+      "known contradictions are not relabeled as good enough",
       "rule preservation checked when moving or consolidating guidance",
       "human-machine routing parity reviewed on representative cases",
       "structural regression guards added where automation is appropriate",
-      "final branch or pull request diff reviewed",
+      "PROJECT_LEARNINGS updated for recurrence-value findings",
+      "final pull request diff reviewed",
       "pull request head validation checked",
       "post-merge main validation checked"
-    ]
+    ],
+    "scoreIsNotCompletionGate": true
   },
   "webSources": [
-    {
-      "name": "W3C Web Accessibility Initiative",
-      "url": "https://www.w3.org/WAI/",
-      "topics": ["accessibility", "WCAG"]
-    },
-    {
-      "name": "W3C Internationalization",
-      "url": "https://www.w3.org/International/",
-      "topics": ["language", "internationalization", "RTL"]
-    },
-    {
-      "name": "MDN Web Docs",
-      "url": "https://developer.mozilla.org/",
-      "topics": ["HTML", "CSS", "JavaScript", "Web APIs", "security", "compatibility", "diagnostics", "performance"]
-    },
-    {
-      "name": "web.dev",
-      "url": "https://web.dev/",
-      "topics": ["performance", "Core Web Vitals", "responsive", "reliability"]
-    },
-    {
-      "name": "OWASP Cheat Sheet Series",
-      "url": "https://cheatsheetseries.owasp.org/",
-      "topics": ["web security", "storage", "XSS", "third-party code", "logging"]
-    },
-    {
-      "name": "GitHub Docs",
-      "url": "https://docs.github.com/",
-      "topics": ["GitHub Pages", "Actions", "repository management", "security", "billing"]
-    },
-    {
-      "name": "Supabase Documentation",
-      "url": "https://supabase.com/docs/",
-      "topics": ["database", "RLS", "Data API security", "project pausing", "diagnostics backend"]
-    },
-    {
-      "name": "Supabase Pricing",
-      "url": "https://supabase.com/pricing",
-      "topics": ["free plan", "database quota", "egress", "storage", "active projects"]
-    },
-    {
-      "name": "GitHub Primer",
-      "url": "https://primer.style/product/",
-      "topics": ["visual design", "layout", "typography", "navigation", "design systems", "accessibility"]
-    },
-    {
-      "name": "Anthropic Frontend Design Skill",
-      "url": "https://github.com/anthropics/claude-plugins-official/blob/main/plugins/frontend-design/skills/frontend-design/SKILL.md",
-      "topics": ["AI frontend design", "design critique", "copy", "differentiation"]
-    },
-    {
-      "name": "Microsoft Agent Academy Frontend Design",
-      "url": "https://github.com/microsoft/agent-academy/blob/main/.github/skills/frontend-design/SKILL.md",
-      "topics": ["AI frontend design", "design direction", "differentiation"]
-    },
-    {
-      "name": "Microsoft Frontend Design Review",
-      "url": "https://github.com/microsoft/skills/blob/main/.github/skills/frontend-design-review/SKILL.md",
-      "topics": ["visual review", "design quality", "review severity"]
-    },
-    {
-      "name": "Microsoft Fluent 2",
-      "url": "https://fluent2.microsoft.design/",
-      "topics": ["visual design", "layout", "spacing", "typography", "design tokens", "components"]
-    },
-    {
-      "name": "Apple Human Interface Guidelines",
-      "url": "https://developer.apple.com/design/human-interface-guidelines/",
-      "topics": ["design principles", "hierarchy", "layout", "typography", "platform design"]
-    },
-    {
-      "name": "Google Search Central",
-      "url": "https://developers.google.com/search/docs",
-      "topics": ["public content", "metadata", "SEO"]
-    },
-    {
-      "name": "AGENTS.md",
-      "url": "https://agents.md/",
-      "topics": ["coding agents", "project instructions", "nested instructions"]
-    },
-    {
-      "name": "Electron Documentation",
-      "url": "https://www.electronjs.org/docs/latest/",
-      "topics": ["Electron", "security", "packaging", "updates", "logging"]
-    },
-    {
-      "name": "WHATWG HTML Living Standard",
-      "url": "https://html.spec.whatwg.org/",
-      "topics": ["HTML platform behavior"]
-    }
+    {"name": "W3C Web Accessibility Initiative", "url": "https://www.w3.org/WAI/", "topics": ["accessibility", "WCAG"]},
+    {"name": "W3C Internationalization", "url": "https://www.w3.org/International/", "topics": ["language", "internationalization", "RTL"]},
+    {"name": "MDN Web Docs", "url": "https://developer.mozilla.org/", "topics": ["HTML", "CSS", "JavaScript", "Web APIs", "security", "compatibility", "diagnostics", "performance"]},
+    {"name": "web.dev", "url": "https://web.dev/", "topics": ["performance", "Core Web Vitals", "responsive", "reliability"]},
+    {"name": "OWASP Cheat Sheet Series", "url": "https://cheatsheetseries.owasp.org/", "topics": ["authentication", "authorization", "session", "CSRF", "CSP", "file upload", "logging", "web security"]},
+    {"name": "GitHub Docs", "url": "https://docs.github.com/", "topics": ["GitHub Pages", "Actions", "repository management", "security", "billing"]},
+    {"name": "Supabase Documentation", "url": "https://supabase.com/docs/", "topics": ["database", "RLS", "Data API security", "project pausing", "diagnostics backend"]},
+    {"name": "Supabase Pricing", "url": "https://supabase.com/pricing", "topics": ["free plan", "database quota", "egress", "storage", "active projects"]},
+    {"name": "GitHub Primer", "url": "https://primer.style/product/", "topics": ["visual design", "layout", "typography", "navigation", "design systems", "accessibility"]},
+    {"name": "Microsoft Fluent 2", "url": "https://fluent2.microsoft.design/", "topics": ["visual design", "layout", "spacing", "typography", "design tokens", "components"]},
+    {"name": "Apple Human Interface Guidelines", "url": "https://developer.apple.com/design/human-interface-guidelines/", "topics": ["design principles", "hierarchy", "layout", "typography", "platform design"]},
+    {"name": "Google Search Central", "url": "https://developers.google.com/search/docs", "topics": ["public content", "metadata", "SEO"]},
+    {"name": "AGENTS.md", "url": "https://agents.md/", "topics": ["coding agents", "project instructions", "nested instructions"]},
+    {"name": "Electron Documentation", "url": "https://www.electronjs.org/docs/latest/", "topics": ["Electron", "security", "packaging", "updates", "logging"]},
+    {"name": "WHATWG HTML Living Standard", "url": "https://html.spec.whatwg.org/", "topics": ["HTML platform behavior"]}
   ],
   "discoveryReferences": [
-    {
-      "name": "Front-End Checklist",
-      "url": "https://github.com/thedaviddias/Front-End-Checklist"
-    },
-    {
-      "name": "Front-End Design Checklist",
-      "url": "https://github.com/thedaviddias/Front-End-Design-Checklist"
-    }
+    {"name": "Front-End Checklist", "url": "https://github.com/thedaviddias/Front-End-Checklist"},
+    {"name": "Front-End Design Checklist", "url": "https://github.com/thedaviddias/Front-End-Design-Checklist"}
   ],
   "reviewCadence": {
     "repositoryDeltaReview": "weekly",
@@ -233,14 +184,14 @@
   },
   "changePolicy": {
     "lowRiskGuideChange": "may-update-directly-after-validation",
-    "highImpactRuleChange": "proposal-or-branch-review",
+    "highImpactRuleChange": "branch-or-pull-request",
     "highImpactExamples": [
       "MUST rule added or removed",
       "priority order changed",
       "governance changed",
       "existing project compatibility policy changed",
       "default deployment or storage strategy changed",
-      "fixed visual style or layout imposed across projects",
+      "new or split normative owner",
       "paid dependency made mandatory"
     ],
     "requireAuthoritativeSourceForGeneralWebRule": true,

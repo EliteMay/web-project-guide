@@ -1,258 +1,317 @@
-# 14 Continuous Improvement / 定期レビュー
+# 14 Continuous Improvement / Guide Audit
 
-`web-project-guide` を一度作って終わりにせず、実Projectの経験、Web標準の変化、**Guide自身の複雑化**から継続的に改善するための運用ルールです。
+`web-project-guide`を一度作って終わりにせず、実Projectの経験、Web標準の変化、**Guide自身の複雑化・矛盾**から継続改善するためのNormative Ownerです。
 
-機械可読なReview設定の正本は [`maintenance/review-policy.json`](../maintenance/review-policy.json) とします。
+- Machine-readable review policy: [`maintenance/review-policy.json`](../maintenance/review-policy.json)
+- Deep Audit execution checklist: [`maintenance/DEEP_SYSTEM_AUDIT.md`](../maintenance/DEEP_SYSTEM_AUDIT.md)
+- Audit result history: `maintenance/audits/`
+- General research method: [20 Evidence-first Research](20-evidence-first-research.md)
+- Rule ownership / budget: [00 Governance](00-governance.md)
 
-Deep System Auditの実行Checklistは [`maintenance/DEEP_SYSTEM_AUDIT.md`](../maintenance/DEEP_SYSTEM_AUDIT.md) を使います。Checklistはこの章の実行補助であり、Normative Rule本文の第二正本ではありません。
+Checklist / Audit Reportは実行記録であり、この章の第二Normative Ownerではありません。
 
-Rule追加・正本管理の判断は [Guide Governance](00-governance.md) のRule Budget / Single Normative Ownerを正本とします。
+## Improvement Loops
 
-External Research Method、Source Quality、Opposing Evidence、Bias、Applicability、Research Saturation、Evidence Map等の一般Research Workflowは [Evidence-first Research](20-evidence-first-research.md) を正本とします。この章は **Project Feedback Loop / Rule Hygiene / Common Rule Promotion operation / Guide自身のSystem Audit** を担当します。
+1. **Project Feedback Loop** — Failure / Success / costly fixを抽出
+2. **External Evidence Loop** — current official / primary evidenceで陳腐化を確認
+3. **Rule Hygiene Loop** — duplicate / orphan / project-specific leakageを整理
+4. **System Integrity Loop** — Owner / Router / Template / Validator / History / Repository operationを横断監査
 
-## 目的
+Rule数やCommit数を増やすことを成果にしません。
 
-定期Reviewでは次の4つを行います。
+## MUST: 他Projectは定期ReviewではRead-only
 
-1. **Project Feedback Loop** — 実Projectから失敗・高コスト修正・再利用価値のある設計を抽出
-2. **External Evidence / Standards Loop** — 一次・公式資料や必要な外部Evidenceから不足・陳腐化を確認
-3. **Rule Hygiene Loop** — 重複・Orphan Rule・過剰なChecklist化・Project固有Rule混入を整理
-4. **System Integrity Loop** — Owner / Human Router / Machine Router / Template / Validator / History / Repository運用が一体として矛盾していないか確認
-
-新しいRuleを増やすこと自体を成果にしません。
-
-## MUST: 他Projectは原則Read-only
-
-定期Reviewが自動で書き換える対象は `EliteMay/web-project-guide` のみとします。
-
-他のWeb / Electron RepositoryはGuide改善のための調査対象として読みますが、定期Reviewだけを理由に自動修正しません。
-
-対象Projectの修正は別作業として扱います。
+定期Reviewが自動で書き換える対象は原則`EliteMay/web-project-guide`だけです。他RepositoryをEvidenceとして読む場合も、修正は別作業として扱います。
 
 ## Repository Review
 
-毎回、固定された古いRepo一覧だけを使わず、GitHub上でアクセス可能な `EliteMay` Repositoryを再取得します。
+固定された古いRepo一覧ではなくCurrent accessible repositoriesを確認します。
 
-優先して見るもの:
+優先Evidence:
 
 - `PROJECT_LEARNINGS.md`
-- 前回Review以降のCommit / 変更ファイル
-- README / Spec / Project Rules / AGENTS / Work Report / CHANGELOG
-- User feedback / Rating / Rejected visual candidate
-- Diagnostics / Error ID / Root Cause / Regression Guard
-- Storage Schema / Migration
-- Test / GitHub Actions
-- Versioned Patch / Duplicate Runtime / hardcode
-- 修正回数が多い箇所
-- 複数Projectへ再利用できそうな成功Pattern
+- recent commits / changed files
+- README / Requirements / Spec / Project Rules / AGENTS
+- Work Report / CHANGELOG
+- User feedback / rejected candidate
+- Runtime diagnostics / Root Cause / Regression Guard
+- Storage / Migration
+- Tests / Actions
+- duplicate runtime / hardcode / repeated fixes
 
-毎週すべてのCodeをゼロから精読せず、**差分を先に見て必要なProjectだけ深掘り**します。
+通常はdelta-first、定期的にDeep Reviewを行います。
 
-月1回程度は差分だけでは見つけにくい長期的な構造問題をDeep Reviewします。
+## Project Learningsを継続蓄積する
+
+### MUST: 再発価値のあるLearningを「今回だけ」で捨てない
+
+Project内で次回の修正判断に役立つFailure / Successは`PROJECT_LEARNINGS.md`へ**追記・統合して継続蓄積**します。
+
+最低限:
+
+- What happened / Symptom
+- Root Cause
+- Final Fix
+- Detection / Regression Guard
+- Prevention / next-time hint
+- Related PR / Commit（分かる場合）
+
+すべての小変更を記録しません。再発価値、Cost、Severity、Guide改善価値があるものに絞ります。
+
+一般化してCatalog / Common Ruleへ昇格した後も、Project側Learningを「存在しなかったこと」にせず、resolved / promoted等のStatusと参照を残せます。長い作業履歴はWork Report / Gitへ分離します。
 
 ## Visual Evidence Harvest
 
-Visual Designは「最新main」ではなく評価Evidence付きでReviewします。
+Visualはlatest mainやAI self-assessmentだけをSuccess Evidenceにしません。
 
-Evidence Level、登録条件、Rejected retentionの正本は [Validated Visual Direction Catalog](../catalog/validated-visual-directions.md) です。
+必要に応じて:
 
-定期Reviewでは最近Visual変更があったProjectについて、最低限次を確認します。
+- before / after direction
+- explicit user feedback / rating
+- relative feedback
+- visual success / failure learning
+- candidate / rejected reason
+- reuse boundary
 
-- 変更前 / 変更後のDirection
-- Userが何を良い・悪いと評価したか
-- Ratingや「旧版の方が良い」等の相対比較
-- `PROJECT_LEARNINGS.md` のVisual success / failure
-- User-facing EvidenceがないCandidateを成功扱いしていないか
-- 他Projectへ再利用可能な構造原理があるか
+を確認します。
 
-Domain固有の成功例を他Projectへ横展開する前には [Domain-first Visual Research](18-domain-first-visual-research.md) を優先します。重要で不確実なResearchable Questionがある場合の一般Research Methodは [Evidence-first Research](20-evidence-first-research.md) を併用します。
+Domain transfer前は [18 Domain-first Visual Research](18-domain-first-visual-research.md) を使います。
 
-## External Evidence / Web Standards Review
+## External Evidence / Standards
 
-主なSource設定は [`maintenance/review-policy.json`](../maintenance/review-policy.json) に置き、この章へURL一覧を重複させません。
+一般Rule追加・変更にcurrent external evidenceが必要なら [20](20-evidence-first-research.md) を使います。
 
-一般Ruleの追加・変更に外部Evidenceが必要な場合は、Research強度を判断して [Evidence-first Research](20-evidence-first-research.md) を使います。Quick / Standard / Deep、Original Source確認、Supporting / Opposing Evidence、Bias、Saturation等の方法はこの章へ複製しません。
+特にfast-changingなSecurity / Browser / Cloud / Electron / GitHub Actions等ではCurrent official sourceを優先します。
 
-Guide改善としては、Research結果を受けて次を確認します。
+Research結果を自動的にMUSTへ変換せず、Applicability / Severity / Reversibility / Project variabilityを見ます。
 
-- 現行Guideと公式仕様 / 強いEvidenceが矛盾していないか
-- Browser / Platform変更で従来Ruleが不要・危険になっていないか
-- Security / Accessibility / Performanceの重要変更
-- GitHub Pages / Electron等、利用中Platformの仕様変更
-- Visual Design System等から一般化可能な知見があるか
-- EvidenceがProject固有か、Common Ruleへ一般化できるか
+## Rule Hygiene
 
-Research結果そのものを自動的にMUSTへ変換しません。Rule Strength / 配置判断はGovernanceとこの章のPromotion / Hygieneを通します。
+### MUST: Rule追加時にConsolidationも探す
 
-## Rule Hygiene Review
+- same decisionが別Ownerにないか
+- README / START_HEREがRule本文化していないか
+- Template / Checklistが第二Rule本文になっていないか
+- Catalog evidenceがUniversal MUST化していないか
+- Project-specific / time-specific evidenceがCommon Ownerへ混ざっていないか
+- new docがRouterからorphanになっていないか
+- old rule / example / version-specific proseを移動・統合できないか
 
-### MUST: Ruleを追加するReviewでは重複も同時に探す
+### Rule move completion
 
-意味のあるCommon Rule追加時は、最低限次を確認します。
+Ruleを移す場合:
 
-- 同じ判断を別Docが既に持っていないか
-- Owner Docが2つ以上になっていないか
-- README / START_HEREが詳細Ruleを再掲していないか
-- Docs内にQuality Checklistと同じChecklist全文が増えていないか
-- Catalogの実例がCommon MUSTへそのまま昇格していないか
-- Project固有の事情がCommon Ruleへ残っていないか
-- 新しいDocがREADME / START_HEREから辿れないOrphanになっていないか
-- 古いRule / Example / Version固有記述を削除・統合できないか
+```text
+DestinationにCurrent Ruleを置く
++ Sourceから旧Detailed Copyを除去 / boundary linkへ変更
++ Router / Template / Validator参照を更新
++ Rule preservationを確認
+```
 
-### Monthly Deep Reviewで追加確認
+Destinationだけ確認して終えません。
 
-- 内容がほぼ同じ章を統合できないか
-- 大きくなった章から別Ownerへ責務を戻せないか
-- 同じWorkflowがDocs / Catalog / Checklistへ3重化していないか
-- MUSTが増えすぎて実Projectで適用不能になっていないか
-- CONDITIONALへ下げるべきRuleがないか
-- 過去の一時的な事情を永続Ruleとして残していないか
-- Routerが現在の全Owner Docへ正しく案内しているか
+## Deep System Audit Contract
 
-Ruleを消すことも改善です。
+### MUST: Deep Auditは全Current Ownerを動的に棚卸しする
 
-## Deep System Audit
+固定章数をhardcodeせず、Current Router / Owner RegistryからAudit対象を解決します。
 
-### MUST: GuideをFile集合ではなくSystemとして照合する
+Primary:
 
-Guide自身を大きく点検するときは、各Fileを個別に「問題なし」と判断するだけで終えません。少なくとも次の横断面を相互照合します。
+- all current normative owners
 
-1. Entry / Source of Truth
-2. Normative Owner topology
-3. Human Router / Machine Router parity
-4. Template / Checklist responsibility
-5. Semantic duplication
-6. Machine-readable Schema / Validator coverage
-7. History / Project-specific Evidence leakage
-8. Repository metadata / Workflow / Final-state operations
+Secondary:
 
-実行順・代表Case・Finding分類・Completion Gateは [`maintenance/DEEP_SYSTEM_AUDIT.md`](../maintenance/DEEP_SYSTEM_AUDIT.md) を使います。
+- README / START_HERE / root REQUIREMENTS
+- router / schema / review policy
+- templates / checklist
+- catalog / references
+- validator / workflows
+- repository metadata / branch lifecycle / rulesets等
 
-### MUST: 「前回直した」をEvidenceにしない
+### Six-axis Owner Audit
 
-前回のPRやWork Reportで「移動済み」「整理済み」と書かれていても、Current `main` に旧Copy・古いRoute・Project固有Exampleが残っていないか再確認します。
+各Ownerを0〜3で評価します。
 
-特にRule移動後は、**新Ownerに存在すること**だけでなく**旧Ownerから詳細Copyが消えていること**まで確認します。
+1. **Coverage** — 責務に必要な主要Ruleがあるか
+2. **Gap Coverage** — failure-prone edge / exceptionが抜けていないか
+3. **Duplication** — same normative decisionを重複定義していないか
+4. **Rule / Research Separation** — current ruleとevidence / project exampleを分けているか
+5. **Decision Quality** — Trigger → Criteria → Action → Exception/Trade-off → Validationへ落ちるか
+6. **Failure Evidence** — なぜRuleが必要か、再発防止Evidenceへ辿れるか
 
-### MUST: Human / Machine Routerを同じTaskで比較する
+0〜3の点数は診断用です。平均点をCompletion thresholdにしません。
 
-`START_HERE.md`のHuman Routeと`maintenance/rule-router.json`を別々に読むだけでなく、同じ代表Taskを両方へ通し、必要Ownerの差を確認します。
+Overallは必要に応じてA/B/C/Dを付けられますが、Critical / High Findingが1つあれば平均が高くても未完成です。
 
-Guide自身のDeep Review、Storage Migration、Meaningful Visual Change、Game主要Flow、Cross-Repository GitHub Infrastructure等、見落としCostが高いCaseはGolden Caseで守ることを優先します。
+### Failure Evidence Level
 
-### SHOULD: Validatorは今回見つかった構造Failureを再発防止する
+必要に応じて:
 
-Validatorへ追加するのは、文章の言い回しではなく次のような構造Contractを優先します。
+- F0 — Evidenceなし /由来不明
+- F1 — plausible / theoretical
+- F2 — concrete project or authoritative external evidence
+- F3 — repeated / high-severity / independently reinforced evidence
 
-- Required File / Link
-- Router key /参照整合
-- Unknown Work Type / Domain / Signal / Gate参照
-- Golden Routing Case
-- Audit Procedure到達性
-- Project-specific Evidence separationの明確な構造Marker
+を使えます。
 
-Semantic duplicationそのものを完全自動判定しようとして巨大なRule Engineを作りません。機械検査できない意味重複はDeep Auditで人間 / AI Reviewします。
+Ruleを残すためにF3が必須という意味ではありません。Security / Data-loss等は1件でもSeverityが高ければ強いRuleになり得ます。
 
-## 新しい知見の配置先
+### Gap Type
 
-配置判断は [Guide Governance](00-governance.md#rule-budget--共通ルールを増やしすぎない) を正本とします。
+Findingを最低限次へ分類します。
 
-定期Reviewでは、知見をいきなりCommon Docsへ入れず、次のどこが適切かを判断します。
+- **Rule Gap** — normative behavior不足
+- **Research Gap** — current external evidence確認が必要
+- **Evidence Gap** — Rule根拠 / applicabilityが弱い
+- **Structural Gap** — owner / routing / duplication / storage location問題
+- **Repository Operation Gap** — branch / workflow / metadata / settings等
 
-- 既存Owner Docの補強
-- Project側の`PROJECT_LEARNINGS.md`
-- Failure / Success / Anti-Pattern / Visual Catalog
-- Quality Checklist / Template
-- 新しいCommon Rule
+### Action
 
-新規Common Ruleは最後の選択肢です。
+- KEEP
+- CLARIFY
+- EXPAND
+- MOVE
+- MERGE
+- SPLIT
+- REMOVE
+- RESEARCH
+- ADD EVIDENCE
+- ROUTE FIX
+- REPOSITORY FIX
+
+Severity:
+
+- Critical
+- High
+- Medium
+- Low
+
+Research PriorityはResearch GapだけにP0 / P1 / P2を付けます。Tierを埋めるために不要Researchを作りません。
+
+## Deep Audit Stopping Condition
+
+### MUST: 「点数が上がった」で止めない
+
+Deep Auditは次を満たすまで完了扱いにしません。
+
+1. Critical / High actionable findingを解消した、または**Current tool / external permission / legal decision等で本当に外部Block**されている。
+2. Medium actionable in-scope findingを解消した。変更するとRule loss / correctness低下が大きい場合だけevidence-deferredにできる。
+3. Low findingもfix / not applicable / external-only / evidence-deferredへ分類した。
+4. known contradictionを`good enough`へ言い換えて残していない。
+5. Rule moveでSource / Destination両方を確認した。
+6. Human / Machine Router parityを代表Caseで確認した。
+7. Final PR diff / PR-head validation / post-merge main validationが確認できた。
+
+**100点は「絶対に将来改善点が発生しない」という意味ではありません。Current evidenceとscopeで、既知のactionable findingを意図的に残していない状態**として扱います。
+
+## Audit Output
+
+Deep Audit結果は`maintenance/audits/`等へ保存します。
+
+最低限:
+
+- Audit baseline: repo / commit / guide version / date / owner count
+- Owner audit matrix
+- Gap register
+- Duplication / conflict map
+- Research priority map
+- Fixed now
+- Deferred / external-only
+- Rule preservation notes
+- Validation
+- Final status
+
+Root `REQUIREMENTS.md`へ監査表や一時Backlogを積みません。
+
+## Human / Machine Router Parity
+
+同じ代表TaskをSTART_HEREとMachine Routerへ通します。
+
+最低代表Case:
+
+- Guide deep review
+- local UI bug
+- meaningful visual change
+- existing save + migration
+- game primary flow / completion
+- cross-repository GitHub
+- conversation handoff / recovery
+- researchable question
+
+Router変更時は片側だけ更新しません。
+
+## Validator Strategy
+
+今回見つかった構造Failureは可能ならRegression Guardへ変えます。
+
+優先:
+
+- Required file / link
+- router key / owner reachability
+- unknown Work Type / Domain / Signal / Gate
+- golden case
+- action SHA pinning等、明確なmachine-checkable self-application
+- owner leakageの明確なmarker
+
+Semantic duplicationを巨大Rule Engineで完全自動判定しません。
 
 ## Common Rule Promotion
 
-Project由来では、次のような場合にGuide化を検討します。
+Project由来Rule候補:
 
-- 複数Projectで同じ失敗が起きた
-- 1回でも修正Cost / Severityが非常に高かった
-- データ消失・互換破壊・公開事故等の重大Risk
-- 同じ成功Patternが複数Projectで効果を示した
-- 今のGuideを守っても防げなかったGap
-- User feedbackから共通原因へ一般化できた
+- repeated failure
+- one-time but critical / high-cost incident
+- data loss / compatibility / publication / security risk
+- repeated successful pattern
+- Guideを守っても防げなかったgap
+- user feedbackからgeneralizable causeを抽出できた
 
-External EvidenceやProject ResearchからCommon Rule Candidateを評価する一般的なEvidence Strength / Applicability / Counter-evidence / Project Validationの考え方は [Evidence-first Research](20-evidence-first-research.md#common-rule-promotion--rule-strength) を参照します。
+まず既存Owner / Project Learnings / Catalog / Checklist / Referenceへ統合できないか確認し、新Common Ownerは最後の選択肢にします。
 
-この章ではそのEvidenceを受けて、Rule Budget、既存Owner、Catalog / Checklist / Project側のどこへ配置するか、重複削減、Compatibilityを確認します。
+## Change Path
 
-Rule Strengthは [Guide Governance](00-governance.md#ルールの強さ) を正本とし、この章へ定義を複製しません。
+Low-riskで明確:
 
-## 自動更新してよい範囲
+- typo
+- reference update
+- link
+- existing rule clarification
+- evidence addition
+- duplicate prose → owner link
 
-低Riskで根拠が明確なGuide変更は、Validation成功を条件に直接更新できます。
+High-impact:
 
-例:
+- MUST add/remove
+- governance / SOT
+- priority
+- storage / deployment default
+- compatibility policy
+- fixed visual style
+- major routing / owner split
 
-- Reference URL更新
-- 誤記修正
-- Catalog相互Link追加
-- 既存Ruleの説明補強
-- 実例 / Evidence追加
-- Checklistの明確化
-- 重複説明をOwner DocへのLinkへ置換
+ではBranch / PRを優先します。
 
-## Branch / Proposalを優先する変更
+## Release / Documentation
 
-次は影響が大きいため、Branch / Pull Requestまたは明示的Proposalを優先します。
+Meaningful common behavior changeでは必要に応じて:
 
-- MUSTの追加・削除
-- Governance / Source of Truth / Rule Budget変更
-- 制作優先順位変更
-- Storage / Deployment Default変更
-- 既存Projectへ大規模Migrationを要求
-- GitHub Pages / Electron基本方針の反転
-- 全Projectへ固定Visual Styleを強制
+- guide-version
+- CHANGELOG
+- root REQUIREMENTS current contract
+- Owner Docs
+- README / START_HERE
+- router / schema / review policy
+- templates / checklist
+- PROJECT_LEARNINGS
+- Work Report
+- validator
 
-## 更新時に同時確認するもの
+を同期します。
 
-必要に応じて次を更新します。
+## Validation / No-change
 
-- `guide-version.json`
-- `CHANGELOG.md`
-- `作業報告書.md`
-- Owner Doc
-- README / START HEREのRouter
-- Catalog / Checklist / References
-- `maintenance/review-policy.json`
-- `maintenance/DEEP_SYSTEM_AUDIT.md`
-- Validator
+Final CommitでGuide Validatorを通します。
 
-Versionを上げる必要がない軽微な誤字修正等は例外です。
-
-## Validation
-
-変更後はGuide Validatorを**最終Commit**で通します。
-
-Validatorだけで重複内容の意味までは完全に判定できないため、Rule Hygiene / Deep System Auditは人間 / AI Reviewも併用します。
-
-## No Change / No Commit
-
-定期Reviewの目的はCommit数やRule数を増やすことではありません。
-
-- 新しい知見がなければ変更しない
-- 同じ内容の言い換えだけでVersionを上げない
-- 新Ruleを追加せず、重複削除だけを行うReviewも有効
-
-## Review Result
-
-意味のある変更では最低限次を記録します。
-
-- 何を調べたか
-- どのProject / Sourceから得たか
-- 追加 / 統合 / 削除したRule
-- Owner Docをどこにしたか
-- なぜCommon Rule化したか
-- Compatibilityへの影響
-- Human / Machine Router parityで確認した代表Case
-- Validatorへ追加したRegression Guard
-- Repository metadata /設定で未修正のもの
-- Validation結果
-
-何も変更しなかった場合、空の報告Commitを作る必要はありません。
+新しい知見がなければ空Commitを作りません。削除 /統合だけのReviewも有効です。

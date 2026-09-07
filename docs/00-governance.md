@@ -79,6 +79,8 @@ Common Guideへ新規Ruleを追加する条件は原則として次のいずれ�
 
 Cross-cutting Topicでは各専門章にその分野固有の制約だけを置けます。同じWorkflow全文を複製しません。
 
+Fileが長いことだけを理由にOwnerを分割しません。一方、別々のTaskとしてRouting・変更・Validationできる独立責務が同居している場合は、Owner splitのEvidenceとして扱います。
+
 ### 現在の主要Owner
 
 | Topic | Normative owner | 他の場所の役割 |
@@ -106,6 +108,7 @@ Cross-cutting Topicでは各専門章にその分野固有の制約だけを置�
 | Evidence-first Research | `docs/20-evidence-first-research.md` | Topic固有判断は各Owner |
 | Rule Routing / Preflight Behavior | `docs/21-rule-routing-preflight.md` | `rule-router.json`はMachine Route、START_HEREはHuman Summary |
 | Task-first Structure / Flow Research | `docs/22-task-first-structure-flow-research.md` | 04は一般UX原則、Project固有IA / Flowは対象Project |
+| Conversation Handoff / Recovery | `docs/23-conversation-handoff-recovery.md` | 10はGitHub変更、01はRequirements Persistence |
 
 新Topicが既存Ownerへ自然に収まらない場合だけ新規Docを検討します。
 
@@ -176,6 +179,7 @@ GitHub内で情報が衝突する場合は、単純な固定順位だけで仕�
 - `REQUIREMENTS.md` — 現在守るProject Contract
 - `CHANGELOG.md` — Version単位の長期変更概要
 - `作業報告書.md` — 直近作業 / Validation / 未確認
+- `PROJECT_LEARNINGS.md` — 再発価値のある長期知識
 - Git history — 詳細差分
 
 実装済み改善RequirementsをCurrent Requirementsへ履歴として積み続けません。既存RuleがOwner Docへ反映されていることを確認してから履歴役割を移します。
@@ -192,8 +196,9 @@ GitHub内で情報が衝突する場合は、単純な固定順位だけで仕�
 - Machine Router / Owner / Gateの整合を保つ
 - 相対Linkを壊さない
 - 未確認事項を作業報告へ残す
+- Guideが自ら対象になるCommon Ruleは可能な範囲でSelf-applicationを確認する
 
-`PROJECT_LEARNINGS.md`は通常Projectでは推奨します。このGuide自身ではCatalog / Continuous Improvementと役割が重なるため、持つ場合はGuide固有の運用学習だけに限定し、Common Rule本文やCatalogを複製しません。
+`PROJECT_LEARNINGS.md`はGuide固有の運用学習を長期的に蓄積します。Common Rule本文やCatalogを複製せず、Common Ruleへ昇格した後も「このRepositoryで何が起きたか」というProject Evidenceは履歴として残せます。
 
 ## 例外
 

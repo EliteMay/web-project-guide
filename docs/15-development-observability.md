@@ -65,6 +65,19 @@ Templateは [`PROJECT_LEARNINGS_TEMPLATE.md`](../templates/PROJECT_LEARNINGS_TEM
 - Related files / tests
 - Guideへの還元候補か
 
+### MUST: Learningを継続蓄積し、昇格後もProject Evidenceを失わない
+
+`PROJECT_LEARNINGS.md`は一度作って終わりのReportではなく、Projectの寿命を通じて**再発価値のあるLearningを追加・更新し続けるDurable Memory**です。
+
+- 新しいLearningを追加するために、過去の有効Learningを理由なく削除しない
+- 同じRoot Causeの重複記録は統合できるが、Evidenceを失う場合は統合理由と参照先を残す
+- Guide / Catalogへ一般化・昇格した後も、このProjectで実際に何が起きたかというEvidenceは残す
+- 昇格後は必要に応じて`Promoted to Guide / Catalog`等の参照を追記する
+- 過去Learningの状態が変わった場合は`resolved / monitoring / superseded`等で更新し、古い内容をCurrent Ruleのように誤読させない
+- 単なるCommit履歴や毎回の作業内容はWork Report / CHANGELOG / Git historyへ分ける
+
+「Common Ruleへ昇格したからProject Learningを削除する」ではなく、**Project EvidenceとCommon Ruleを別役割で両方追跡可能にする**ことを優先します。
+
 ---
 
 ## MUST: 高コストBugは「直した」で終わらせない
@@ -533,5 +546,7 @@ PROJECT_LEARNINGS.md
 ↓
 web-project-guide Failure / Success / Anti-Patternへ還元
 ```
+
+Common Guideへ還元した後も、元ProjectのLearningを削除する必要はありません。Project固有Evidenceとして残し、昇格先をLinkすることで「何が起きたか」と「一般Rule」の両方を追跡可能にします。
 
 これによりProjectごとの経験を次のProjectへ持ち越します。

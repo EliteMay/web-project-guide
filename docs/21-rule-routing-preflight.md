@@ -44,11 +44,12 @@ UserがGuideの章番号、Profile、Gate名を覚えていることを前提に
 - Researchable Questionか
 - Save / Migration / Security等の高Risk条件があるか
 - GAME / LEARNING / ELECTRON等の専門Domainが関係するか
+- Conversation Handoff / stale checkpoint / duplicate active conversationのRecoveryが必要か
 - Current Repository / Requirements / Existing User Intentからどこまで自律的に決められるか
 
 Product Intent、Core Decision、High-cost Decisionであっても、既存Context・正式Requirements・Evidenceから合理的に決められる場合はUser回答待ちを標準停止条件にしません。
 
-Userへ確認するのは、User Preferenceだけが決定要因で主要体験が大きく変わる、重大な明示要件同士の衝突を解消できない、不可逆・破壊的変更に安全なRollbackがない、外部System / 権限 / 費用 /安全上の明示同意が必要、または必要値が本当に欠落している等の例外を中心とします。詳細は [01 Requirements](01-requirements.md) のUser Confirmation Exceptionを正本とします。
+Userへ確認するのは、User Preferenceだけが決定要因で主要体験が大きく変わる、重大な明示要件同士の衝突を解消できない、不可逆・破壊的変更に安全なRollbackがない、外部System / 権限 / 費用 /安全上の明示同意が必要、または必要値が本当に欠落している等の例外を中心とします。詳細は [01 Requirements](01-requirements.md) のUser Decision条件を正本とします。
 
 ## Best Reasonable Decision
 
@@ -104,12 +105,15 @@ Routingのための分類は、必要最小限の軸だけ使います。
 - `CONTINUOUS_IMPROVEMENT`
 - `OBSERVABILITY`
 - `CROSS_REPOSITORY_GITHUB`
+- `CONVERSATION_HANDOFF`
 - `GAME_DESIGN`
 - `LEARNING_CONTENT`
 - `RESEARCH`
 - `GOVERNANCE_ROUTING`
 
 `STRUCTURE_FLOW`はUser Goal / TaskからInformation Architecture、Navigation構造、Task Flow、State、Search / Browse、Recovery等を設計・再設計する場合に使います。Navigation barのColor / Typography等だけを変える場合は`VISUAL` / `UI_UX`を使います。
+
+`CONVERSATION_HANDOFF`は会話移行、stale checkpoint、PromptなしRecovery、同じ固定会話の重複Active、Current work ref復元等に使います。Behavioral Ownerは [23 Conversation Handoff / Recovery](23-conversation-handoff-recovery.md) です。Machine Registry上のOwner pathは `docs/23-conversation-handoff-recovery.md` です。
 
 `MAINTENANCE` Work Typeは「保守作業である」という作業種類を示し、`MAINTENANCE` DomainはVersion / Runtime Path / Legacy / Patch等の保守Ruleが実際に関係する場合に使います。
 
@@ -138,6 +142,7 @@ Riskを独立した巨大Score Systemにせず、該当条件をSignalとして�
 - `REAL_DEVICE_REQUIRED`
 - `MEANINGFUL_VISUAL_CHANGE`
 - `RESEARCHABLE_QUESTION`
+- `CONVERSATION_STATE_RECOVERY`
 
 高Risk Signalは「必ずUserへ質問する」Signalではありません。必要Owner / Gateを読み、Riskを理解したうえでBest Reasonable Decisionを作るためのSignalです。
 
@@ -208,7 +213,7 @@ Tool出力が途中で切れている、検索Snippetしか取得していない
 | `STORAGE-MIGRATION-GATE` | `docs/03-data-storage.md` | 既存Save / Schema / Storage変更 |
 | `GAME-PLAYTEST-GATE` | `docs/19-game-development.md` | GAMEの主要Flow / Completion変更 |
 
-Gateを増やすこと自体を目的にしません。通常のRuleはOwner Doc単位でRoutingします。`STRUCTURE_FLOW`も現時点ではDomain Routeとして扱い、専用Stable Gateは設けません。
+Gateを増やすこと自体を目的にしません。通常のRuleはOwner Doc単位でRoutingします。`STRUCTURE_FLOW`と`CONVERSATION_HANDOFF`も現時点ではDomain Routeとして扱い、専用Stable Gateは設けません。
 
 ## Fail / Fallback
 
@@ -222,6 +227,8 @@ Required Docを取得できない場合、そのDocに依存する高Risk判断�
 - **Override** — 条件には該当するが、明示的な理由で外す
 
 MUST相当のOverrideでは理由・影響・代替策を残します。
+
+Current work ref等、**Current State自体を一意に復元できない**場合の停止はUser承認待ちではありません。[23 Conversation Handoff / Recovery](23-conversation-handoff-recovery.md) に従い、復元できるまでその変更経路だけを`unresolved`として扱います。
 
 ## Re-routing
 
@@ -238,6 +245,7 @@ MUST相当のOverrideでは理由・影響・代替策を残します。
 - User Requirementが変わった
 - Guide改善でCommon Rule / Owner / Router / Validatorへ影響が広がった
 - 単一Repository作業からCross-Repository GitHub Infrastructure変更へ発展した
+- Conversation state conflict / stale checkpoint / parallel active workが判明した
 
 同じConversationだから同じRoutingを永久に使う、とは扱いません。
 
@@ -276,7 +284,7 @@ Profileは現行の分類を維持し、Profile体系そのものの再設計は
 
 `START_HERE.md`へ重要Routeを追加・変更した場合、`rule-router.json`のWork Type / Domain / Signalで同じOwnerへ到達できることを確認します。逆にMachine Routerへ重要Domainを追加した場合も、人間向け入口からその作業を発見できるか確認します。
 
-特にGuide自身の改善、Storage Migration、Meaningful Visual Change、Game主要Flow、Cross-Repository GitHub Infrastructure等、見落としCostが高いCaseはGolden CaseでRegression Guardを持つことを優先します。
+特にGuide自身の改善、Storage Migration、Meaningful Visual Change、Task-first Structure / Flow、Game主要Flow、Cross-Repository GitHub Infrastructure、Conversation Handoff / Recovery等、見落としCostが高いCaseはGolden CaseでRegression Guardを持つことを優先します。
 
 ## Validation
 
@@ -291,6 +299,8 @@ Guide Validatorでは少なくとも次を確認します。
 - Owner Registryの重要DocがRoute / Gateから実質到達不能になっていない
 - `START_HERE.md`からこの章へ辿れる
 - Guide自身のDeep Reviewで`docs/14`へMachine Routerから到達できる
+- Structure / Flowの代表Caseで`docs/22`へ到達できる
+- Conversation Recoveryの代表Caseで`docs/23`へ到達できる
 
 文章の特定フレーズを大量固定して品質保証の代わりにしません。文章表現ではなく、Owner / Route / Gate / Link等の構造Contractを優先して検証します。
 

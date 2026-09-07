@@ -4,6 +4,8 @@
 
 Meaningful / Systemicな作業では、最初に [Rule Routing / Preflight](docs/21-rule-routing-preflight.md) を確認し、今回必要なOwner Docを決めてから進めます。Machine-readable Routingは [`maintenance/rule-router.json`](maintenance/rule-router.json) が正本です。
 
+Current Repository / Requirements / Existing User Intent / Evidenceから合理的に判断できる内容は、細かな承認待ちを作らずBest Reasonable Decisionで進めます。User Decisionの例外条件は [01 Requirements](docs/01-requirements.md) を正本とします。
+
 ## 新しいサイト / アプリ / ゲームを作る
 
 1. [00 Governance](docs/00-governance.md)
@@ -146,6 +148,14 @@ Setup.exe / Auto Update / Windows固有機能をCIだけで実機確認済み扱
 - 通常と同じTesting / Security / Storage / Visual基準
 
 Memoryや古い会話だけでCurrent Repositoryを推測しません。
+
+## 会話移行 / stale checkpoint / duplicate active conversation
+
+- [23 Conversation Handoff / Recovery](docs/23-conversation-handoff-recovery.md)
+- GitHub変更・Branch / PR → [10 Project Management](docs/10-project-management.md)
+- Requirements Draft / Persistence → [01 Requirements](docs/01-requirements.md)
+
+Conversation SummaryだけをCheckpointにせず、Current Repository / Requirements / Branch / PR / Commit等から復元します。Current work refが一意に復元できない場合だけ、その変更経路を止めて`unresolved`として扱います。
 
 ## 複数RepositoryのGitHub運用
 

@@ -89,7 +89,7 @@ Remote handoffが有効でProviderへ接続できる場合、同じ症状をUser
 - Electron / OS integration:
 - Other:
 
-高コスト判断はAI提案でも勝手に確定せず、Project Rules / ADR /影響確認に従います。
+高コスト判断でも、Current Requirements / Existing User Intent / Evidence / Compatibility / Rollbackで合理的に解ける内容はBest Reasonable Decisionで進めます。User Decisionが必要なのは、non-inferable preference、不可逆でsafe alternativeがない破壊的選択、外部Permission / Billing / Account操作、解消不能な重大Contract conflict等に限ります。詳細はGuideの [01 Requirements](../docs/01-requirements.md) を正本とします。
 
 ## Re-routing Trigger
 
@@ -99,14 +99,19 @@ Remote handoffが有効でProviderへ接続できる場合、同じ症状をUser
 - Storage / Migration追加
 - Auth / API / Cloud追加
 - Meaningful Visual Changeへ発展
+- MeaningfulなIA / Navigation / Task Flow変更へ発展
 - Game Core Loop / Completion変更へ発展
 - User Requirement変更
+- Conversation Handoff / stale checkpoint / parallel active workが問題になった
+
+Conversation Handoff / Recoveryの詳細は [23 Conversation Handoff / Recovery](../docs/23-conversation-handoff-recovery.md) を正本とします。
 
 ## Change Policy
 
 - 小規模変更はSmallest Safe Changeを優先する。
 - 大規模RewriteをDefaultにしない。
-- Existing Save / URL /主要機能を壊す変更は事前に影響を整理する。
+- Existing Save / URL /主要機能へ影響する変更は、影響・Compatibility・Rollbackを先に整理する。
+- Current Contractから安全に一意化できる場合は不必要な承認待ちを作らない。
 - 一時Script / Debug / Workflowを残さない。
 - AI生成Codeも最終状態のTest / Validationを通す。
 - Remote Diagnosticsを導入していても、Provider障害をCore機能の障害へしない。
@@ -118,6 +123,7 @@ Remote handoffが有効でProviderへ接続できる場合、同じ症状をUser
 - [ ] 最終Commit / Merge Commitの状態を確認
 - [ ] README / Spec / Work Report / Project Learningsを必要に応じて更新
 - [ ] Remote Diagnostics採用時、最新EvidenceとFallbackの整合を確認
+- [ ] 再発価値のあるFailure / Successを必要に応じて`PROJECT_LEARNINGS.md`へ蓄積
 - [ ] 未確認事項を明示
 
 ## Nested AGENTS.md
