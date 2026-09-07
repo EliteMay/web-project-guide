@@ -275,6 +275,71 @@ User-facing UIでは、Static HTML inspectionやDesktop screenshotだけでAcces
 
 Regression価値が高い場合は、axe等の自動check、Keyboard E2E、Screenshot / reflow check、locale fixture等をGuardとして追加できます。Tool固有ScoreをAccessibility完成条件そのものにはしません。
 
+## Content / IA / Search / Discoverability Verification
+
+Content、Search、Navigation、Public DiscoverabilityがPrimary Taskへ影響するProjectでは、実装された件数やMetadataの存在だけで完成扱いにしません。[01 Requirements](01-requirements.md#general-content-quality) と [22 Task-first Structure / Flow Research](22-task-first-structure-flow-research.md) のContractに対し、変更規模とRiskに合う確認を選びます。
+
+### Content Quality
+
+大量Contentで全件Human Reviewを機械的に強制せず、必要に応じて次を組み合わせます。
+
+- Schema / structural validation
+- Representative sample review
+- High-risk / high-traffic Content重点Review
+- Current Evidenceが必要なFactの再確認
+- Duplicate / stale / contradictory Contentの確認
+
+件数・文字数・Field充足だけをContent completenessのOracleにせず、Primary User Question / Taskを必要なDepthでカバーしているかを確認します。
+
+### IA / Relationship
+
+MeaningfulなIA変更では、Primary Taskから重要Contentへ到達できること、Category / hierarchy / current locationが理解可能であること、Rename / Move / Archive後に主要導線が壊れていないことを確認します。
+
+機械確認できる場合はBroken internal link、Orphan page、Missing parent、Deleted item reference、Stale related link等をValidator候補にできます。すべての意図的Deep Link / Contextual pageをOrphan Bugとして扱いません。
+
+### Search Matrix
+
+Searchが重要なら必要に応じてRepresentative Queryを選びます。
+
+- Exact match
+- Partial / multiple match
+- No Result + recovery
+- Filter / Scope併用
+- Rename後
+- Delete後のGhost Result確認
+- Typo / synonym / locale差（Scopeにある場合）
+- Large data / realistic dataset（規模上必要な場合）
+
+`Result count > 0`だけでPassにせず、Relevant resultが合理的な位置にあるか、無関係Resultが多すぎないか、Search後にTaskを継続できるかを見ます。
+
+Search Index / Sitemap / Structured Data等がCanonical Dataから生成される場合、Canonical変更後にDerived Dataも同期し、必要ならRebuildできることを確認します。
+
+### Empty / No Result / Failure
+
+Emptyが起こる主要Surfaceでは、必要な範囲でFirst-use、No Result、Last item removed、Offline / Failure、Permission等を区別します。API / Network failureを`0件`としてPass表示するRegressionを避けます。
+
+### Public Discoverability
+
+External Search / Sharingが重要なPublic Siteでは必要に応じて次を確認します。
+
+- 重要URLをDirect openできる
+- Page title / description / social metadataが実Contentと一致する
+- 意図しないindex blockがない
+- robots / noindexの役割が意図どおり
+- SitemapがCurrent Route / Contentと整合する
+- CanonicalがCurrent URL strategyと矛盾しない
+- Structured DataがVisible Contentと一致する
+
+検索順位やRich Result表示そのものはCommon Pass / Fail条件にしません。
+
+### Static TestとHuman Reviewを分ける
+
+Broken link、Missing metadata、Duplicate ID、Invalid sitemap、Stale index reference等は自動化しやすい一方、Content clarity、IA理解、Search relevance、Empty-state usefulness、Misleading metadata等はHuman / Browser Reviewが必要になりやすいです。
+
+片方だけで全項目を確認済みにしません。Search Analytics / Traffic Dataは改善Evidenceとして利用できますが、Analytics導入自体をCompletion prerequisiteにしません。
+
+Validation depthは小規模Static Site、Content / Search中心Site、大量Content / Public-content Product等でRisk-basedに変えます。新しいStable Gateを増やさず、この章の通常Testing Strategyとして扱います。
+
 ## Specification / Oracle Test
 
 AI生成量が多いProject、既存実装の移植、互換性が重要な処理では、可能なら「正しい出力」を比較できるOracleを作ります。
