@@ -22,6 +22,12 @@ Guide Versionの正本は [`guide-version.json`](guide-version.json) です。
 - `maintenance/research/content-depth-reinforcement.md`を更新し、40-point Auditで確認したActive reinforcement candidateをすべて`reinforced`または`current coverage sufficient`へ移行。Active backlogを`None`へ閉じた
 - READMEへ人間向け公開Guide URLを追加し、正式Rule本文のSource of TruthがRepository `docs/`である境界を維持
 
+### Concurrent Research Preservation
+
+- reinforcement closure後にmainへ追加された `references/research-capture-policy.md` と `references/rule-application-reliability-research.md` を、active / non-normative research evidenceとして保持
+- High-recall Research CaptureとRule Application Reliabilityの調査は本ReleaseでCommon RuleへPromotionせず、adoption / rejectionは今後のRequirements discussionとEvidenceで決める
+- このactive researchは40-point Content Depth backlogの再オープンを意味せず、Current Routing / Owner / Gate / Profileを変更しない
+
 ### Validation / Integration
 
 - Reinforcement PR #61 / #62 / #63とclosure PR #64をmainへ統合し、各PR Headの`Validate Guide`成功を確認
