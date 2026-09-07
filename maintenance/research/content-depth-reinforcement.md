@@ -6,9 +6,9 @@ Status: **current non-normative reinforcement backlog**
 
 Common Rule本文ではありません。現在の正本は各`docs/*` Ownerです。次回のGuide要件定義 / 補強時にはCurrent Revisionを再確認し、この一覧をそのまま正解として扱いません。
 
-## なぜこの一覧を分けるか
+2026-09-07の「現在を40点と仮定して不足を探す」Content Depth Auditを完了し、Current Guide 1.21.0 / `guide/phase-1-19-integration`の実Headを基準に候補を再分類しました。40点は不足を見つけるためのAudit stanceであり、Completion scoreではありません。
 
-Auditで次の2つを混同しないためです。
+## DefectとContent Depth Gapを分ける
 
 ```text
 Defect / contradiction / broken routing
@@ -21,6 +21,8 @@ Content depth gap
 「まだ修正が必要か」だけを答えると、Guideの**内容が薄い場所を育てる視点**が抜けます。
 
 また、Fileが短いこと自体をContent Depth Gapとは扱いません。Router / Checklist / Minimum Gate等、短いことが責務に合うSurfaceもあります。
+
+詳細なpoint-in-time判定は [`../audits/2026-09-07-40-point-content-depth-audit.md`](../audits/2026-09-07-40-point-content-depth-audit.md) を参照します。
 
 ## Recently reinforced — re-audit before reopening
 
@@ -39,7 +41,7 @@ Phase 1で次のGapをCurrent OwnerへPromotion済みです。
 
 Agent Autonomy / Requirements Persistence / Evidence-first Researchは既存Ownerを再利用し、第二Copyを作っていません。今後この領域を再要件化する場合は、実利用で新しいGapが確認できた場合だけCurrent `docs/01`を再監査します。
 
-### 2. External Integration / API Contract Evolution — `docs/02` / `03` / `05` / `07` / `13`
+### 2. External Integration / API Contract Evolution — `docs/02` / `03` / `05` / `07` / `13` / `15`
 
 Status: **reinforced in Phase 19 / guide 1.21.0**
 
@@ -54,15 +56,123 @@ Phase 19で次を既存専門OwnerへPromotion済みです。
 
 Security boundaryは`docs/06`を維持し、新Owner / 新Gate / 新Profile / 新Risk Signalは追加していません。今後はProvider固有要件や実運用Evidenceで不足が判明した場合のみ再監査します。
 
-## Future reinforcement candidates
+### 3. Public Content / Discoverability — `docs/22` / `07` / `01` / `08`
 
-以下は**今すぐRule追加を確定する項目ではありません**。次回要件定義でCurrent Ownerを再監査し、本当に内容が薄いままならResearch / Promotion候補にします。
+Status: **current coverage is sufficient / remove from active reinforcement backlog**
 
-### 3. Project Profile decision depth — `docs/12-project-profiles.md`
+40-point再監査では、以前の候補よりCurrent GuideのCoverageが進んでいることを確認しました。
+
+現在は主に`docs/22-task-first-structure-flow-research.md`と`docs/07-testing-quality.md`で次を扱っています。
+
+- IA maintenance / findability / orphan prevention
+- Taxonomy / duplicate / overlap
+- Content lifecycle / stale / supersede / archive / freshness
+- Search scope / match / ranking / filter / no-result recovery
+- Canonical / robots / noindex
+- Sitemap / Structured Data
+- Social metadata
+- JavaScript-heavy route / direct-open
+- URL migration
+- Public discoverability verification
+
+SEO専用の巨大Ownerを追加する根拠は現在ありません。実Projectで新しいFailure / Requirementが出た場合だけ再度Gapとして開きます。
+
+## Active reinforcement candidates
+
+以下は**今すぐRule追加を確定する項目ではありません**。Current Guideでは利用可能ですが、他の成熟Ownerと比べてDecision Framework / Failure Boundary / Validationが相対的に薄いため、次回要件定義・Researchで優先して再監査します。
+
+### 4. General Web Deployment / Runtime Environments
+
+Priority: **Medium-High**
+
+Related owners: `docs/05` / `06` / `09` / `10` / `13` / `15`
+
+Current GuideはGitHub PagesとElectron配布はかなり具体的ですが、**GitHub Pages以外のWeb App / Backend / Serverless / Managed Hostingを本番運用するDecision System**は相対的に薄いです。
+
+再監査候補:
+
+- Static host / managed app host / serverless / edge / backendを選ぶ境界
+- Local / Preview / Staging / Productionの役割と、どこまで環境を分けるか
+- Environment-specific configurationのAuthority
+- Public configurationとSecretの境界
+- Environment別URL / Origin / OAuth redirect / CORS等の整合
+- Code deployとDatabase / Schema migrationの順序・互換性
+- Health / readiness / smoke / startup failureの確認
+- Deploy失敗、Partial rollout、provider failure時のRollback / Recovery / Forward-fix
+- Preview / temporary environmentのLifecycle / cleanup
+- Background / scheduled job等を使う場合のDeployment / observability boundary
+
+新しいDeployment Ownerを作ることを前提にしません。まず既存Ownerへ自然に分配できるかを確認し、独立責務が明確な場合だけOwner splitを検討します。
+
+### 5. Learning / Explanation Product Decision Depth
+
+Priority: **Medium-High**
+
+Related owners: `docs/01` / `07` / `12` / `22`
+
+Starting Knowledge、Prerequisite Path、Content Depth、Understanding Signal、Next Step等は既にあります。ただしData / Security / Gameと比べると、**「理解させるProduct」を設計・評価するDecision System**はまだ薄く、複数Ownerへ分散しています。
+
+再監査候補:
+
+- Learning objective / observable learning outcomeの決め方
+- Curriculum / concept dependency / prerequisite graphの組み立て
+- Learner levelやconcept difficultyに応じたExplanation depthの決め方
+- Worked example / comparison / misconception / practice / exerciseを使い分けるCriteria
+- Diagnostic / placement / prior-knowledge確認が必要な条件
+- Recall / Retrieval Practice / Review / SpacingのProduct Contract
+- Progress / completionとMastery / Understandingを分ける基準
+- Assessment / feedbackが本当に理解を測れているかのValidation
+- Learning contentのFreshness / superseded lesson / version applicability
+- Beginner向けとReference用途を同じSurfaceで扱う場合の境界
+
+新しいLearning Ownerはまだ確定しません。既存`01 / 07 / 12 / 22`へ統合した方がRule Ownershipが明確なら、そちらを優先します。
+
+### 6. GitHub Pages / Static Delivery Decision Depth — `docs/08-github-pages.md`
 
 Priority: **Medium**
 
-現状は各Profileの特徴と確認項目が中心で、他の成熟OwnerほどDecision Frameworkが厚くありません。
+Relative Path / Public URL / Cache / Service Worker / 404等の基本はありますが、Deployment Ownerとしては他の主要OwnerよりDecision depthが軽めです。
+
+再監査候補:
+
+- Custom Domain / DNS / HTTPSのCurrent operational boundary
+- SPA / Client-side RoutingとDirect Link / 404 fallback
+- Branch deploy / GitHub Actions deployの選定Criteria
+- Build ArtifactとSource Commit / deployed revisionの対応
+- Pages configuration / response headers等のHosting limitation
+- Pagesで要件を満たせなくなった場合の他Hostingへの移行Trigger
+- Broken deploy / stale cache / Service Worker failureからのRecovery
+- Preview / pull-request確認が必要な変更の扱い
+
+Pages固有でないRelease / Rollback / Security Ruleは`docs/09` / `06`へ重複させません。
+
+### 7. Browser / Web Platform Compatibility Decision Depth
+
+Priority: **Medium**
+
+Related owners: `docs/01` / `02` / `05` / `07` / `13`
+
+Current GuideにはBrowser / Runtime / DeviceをNon-functional Requirementとして扱う入口や、Browser Validation stateはあります。しかし、**どこまでのWeb Platform互換性をProduct Contractにするか**を決めるFrameworkは相対的に薄いです。
+
+再監査候補:
+
+- Supported Browser / Runtime baselineをAudience / Usage / Deploymentから決めるCriteria
+- Feature DetectionとUA sniffingの境界
+- Progressive Enhancement / graceful unsupported-feature behavior
+- Polyfill / transpilation / compatibility dependencyを導入するCriteria
+- 新しいWeb APIを採用するときのfallback / unsupported message
+- Desktop / Mobile / Browser engine差のRepresentative Matrix
+- Real browser / real deviceが必要な条件
+- 古いBrowser supportを終了するTrigger / migration communication
+- Current Web Platform supportをどのEvidenceで再確認するか
+
+Current Web Platform / Baseline / browser supportは変化するため、Promotion前に`docs/20`でCurrent external evidenceを確認します。
+
+### 8. Project Profile Decision Depth — `docs/12-project-profiles.md`
+
+Priority: **Medium-Low**
+
+現状は各Profileの特徴と確認項目が中心で、他の成熟OwnerほどDecision Frameworkは厚くありません。ただしProfileはRoutingの補助情報なので、短いこと自体は問題ではありません。
 
 再監査候補:
 
@@ -71,60 +181,9 @@ Priority: **Medium**
 - ProfileからRuleをover-routeしない具体的境界
 - Projectの成長でProfileが変わるTrigger
 - Profile記録とCurrent Runtimeが食い違った場合の扱い
+- Profileを削除 / 変更したときにCurrent Requirements / Routingへ何が影響するか
 
-ただしProfileはRoutingの補助情報なので、詳細を増やしすぎて第二Routerにしないことを優先します。
-
-### 4. GitHub Pages / Static deployment depth — `docs/08-github-pages.md`
-
-Priority: **Medium**
-
-Relative Path / Public URL / Cache / Service Worker等の基本はありますが、Deployment Ownerとしては他の主要Ownerより説明深度が軽めです。
-
-再監査候補:
-
-- Custom Domain / DNS / HTTPSのCurrent operational boundary
-- SPA / Client-side RoutingとDirect Link / 404 fallback
-- Build ArtifactとSource Commitの対応
-- Pages configuration / headers等のHosting limitation
-- Broken deploy / stale cache / Service Worker failureからのRecovery
-- Branch / Actions deploy方式の選定Criteria
-
-Pages固有でないRelease / Rollback / Security Ruleは`docs/09` / `06`へ重複させません。
-
-### 5. Learning / Explanation product depth — `docs/01` / `12` / `22` / `07`
-
-Priority: **Medium, re-audit first**
-
-Learning Site向けにStarting Knowledge、説明深度、Learning Flow等は既にありますが、Data / Security / Game等と比べるとLearning-specificなDecision Systemはまだ分散気味です。
-
-再監査候補:
-
-- Curriculum / concept dependencyの組み立て
-- Explanation depthの決め方
-- Example / comparison / misconception / practiceの使い分け
-- Recall / Review / Spacing / ProgressのProduct Contract
-- 「読んだ」と「理解した」を分けるEvaluation
-- Content freshness / outdated lessonの扱い
-
-必要性が確認できるまでは新しいLearning Ownerを作らず、既存Ownerへ自然に統合できるかを先に確認します。
-
-### 6. Public content / discoverability depth — `docs/01` / `07` / `12` / `08` / `10`
-
-Priority: **Medium-Low, re-audit first**
-
-Metadata / Sitemap / Canonical / Repository discoverability等は存在しますが、Public Contentを継続運用するContent LifecycleのDecisionは複数Ownerに分散しています。
-
-再監査候補:
-
-- Search intent / page purposeとContent scope
-- Internal linking / orphan prevention
-- Canonical / duplicate content strategy
-- Structured Dataを使う / 使わないCriteria
-- Stale content / deprecation / redirect
-- Social sharing metadataと実Content整合
-- Public contentのFreshness / review cadence
-
-SEO専用の巨大Checklistを作るのではなく、Primary Task / Public Discoverabilityへ本当に影響する範囲だけ補強します。
+`docs/21`がMachine / Behavioral Routingの正本であるため、Profileを第二Routerへ成長させないことを優先します。
 
 ## Intentionally concise — 薄いと誤判定しない
 
@@ -138,6 +197,35 @@ SEO専用の巨大Checklistを作るのではなく、Primary Task / Public Disc
 
 これらを「文字量が少ない」という理由だけで厚くしません。詳細判断はNormative Ownerへ置きます。
 
+## Current strong areas — backlog化しない
+
+40-point AuditでCurrent Revisionを再確認し、現時点では独立したContent Depth Backlogを作らない領域:
+
+- Governance / Rule Budget / Single Owner — `docs/00`
+- Requirements base + Phase 1 Decision System — `docs/01`
+- Architecture base + External Integration boundary — `docs/02`
+- Data / Storage / Migration / Sync / Reconciliation — `docs/03`
+- UI / UX / Accessibility — `docs/04`
+- Performance / Reliability + External delivery — `docs/05`
+- Security / Privacy — `docs/06`
+- Testing / Verification + External Integration Validation — `docs/07`
+- Version / Maintenance / Rollback / Product outcome follow-up — `docs/09`
+- GitHub-centered Project Management — `docs/10`
+- Electron / Distribution / Update / Electron Security — `docs/11`
+- Dependencies / Assets / Supply Chain / External contract lifecycle — `docs/13`
+- Continuous Improvement / Deep Audit — `docs/14`
+- Observability / Project Learnings / External diagnostics — `docs/15`
+- Cross-Repository GitHub Infrastructure — `docs/16`
+- Visual minimum quality — `docs/17`（意図的に簡潔）
+- Domain-first Visual Research — `docs/18`
+- Game Development — `docs/19`
+- Evidence-first Research — `docs/20`
+- Rule Routing / Preflight — `docs/21`
+- Task-first Structure / Flow / Search / Discoverability — `docs/22`
+- Conversation Handoff / Recovery — `docs/23`
+
+`strong`は将来Gapが出ないという意味ではありません。Current evidenceで、他領域より優先して補強すべき薄さが確認できなかったという意味です。
+
 ## Next requirements / reinforcement session
 
 次回このGuideの要件定義・補強を行う場合:
@@ -146,16 +234,21 @@ SEO専用の巨大Checklistを作るのではなく、Primary Task / Public Disc
 2. このFileを**Content Depth候補**として読む
 3. Current Ownerで既に解消済みの項目を除外する
 4. `Defect`と`Content Depth Gap`を別Registerで扱う
-5. 1回の要件定義で全部を増やさず、優先領域を絞る
-6. External Evidenceが必要なら`docs/20`でResearchする
-7. Promotion時は既存Ownerへの統合を優先し、新Owner / Gate / Profileを増やす前にRule Budgetを確認する
-8. 実装後はこのFileのStatusを更新し、第二Normative Ownerにしない
+5. Active candidateをPriority順に再監査する
+6. 1回の要件定義で全部を増やさず、優先領域を絞る
+7. External Evidenceが必要なら`docs/20`でResearchする
+8. Promotion時は既存Ownerへの統合を優先し、新Owner / Gate / Profileを増やす前にRule Budgetを確認する
+9. 実装後はこのFileのStatusを更新し、第二Normative Ownerにしない
 
 ## Current checkpoint
 
-- Date: 2026-09-07
-- Baseline main at reinforcement start: `20e82219d168c75105edec5731397c330473e309`
-- Phase 1: reinforced in PR #59 / no longer a current backlog item
-- Phase 19: reinforced in PR #59 / no longer a current backlog item
-- Current backlog starts from items 3–6 and requires re-audit before promotion
-- Existing solved items must not be recreated only because they remain in this historical checkpoint
+- Audit date: 2026-09-07
+- Guide version: `1.21.0`
+- Audit branch at start of final pass: `guide/phase-1-19-integration`
+- Audit baseline head: `19efc9ffae5f7331fdc7b5c1f518e2a7bf656460`
+- Owner count: 24 (`docs/00`〜`docs/23`)
+- Phase 1: reinforced / no longer active backlog
+- Phase 19: reinforced / no longer active backlog
+- Public Content / Discoverability: current coverage sufficient / removed from active backlog
+- Active depth backlog: General Web Deployment, Learning / Explanation, GitHub Pages / Static Delivery, Browser Compatibility, Project Profiles
+- Detailed audit: `maintenance/audits/2026-09-07-40-point-content-depth-audit.md`
