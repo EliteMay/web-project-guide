@@ -255,7 +255,8 @@ Main reinforcement:
 ## Current checkpoint
 
 - Audit date: 2026-09-07
-- Guide version: `1.21.0`
+- Audit baseline Guide version: `1.21.0`
+- Reinforcement completion Guide release: `1.22.0`
 - 40-point audit merged-main baseline: `7c2eb0bef500b9de6cd773f0438b1ca591c07a89`
 - Reinforcement completion merge: `345211dbb86be6d5903eac1bda94f59d5c28d1c0`
 - Owner count: 24 (`docs/00`〜`docs/23`)

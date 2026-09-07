@@ -2,6 +2,43 @@
 
 Guide Versionの正本は [`guide-version.json`](guide-version.json) です。
 
+## 1.22.0 - 2026-09-07
+
+### Added
+
+- 40-point Content Depth Auditをpoint-in-time auditとして完了し、DefectとContent-depth reinforcementを分離したCurrent backlogを整備
+- General Web Deployment / Runtime EnvironmentsのDecision Systemを既存`docs/10` / `07`へ追加し、Static / managed / serverless / backend、Local / Preview / Staging / Production、configuration authority、URL / origin、background runtime、hosting migrationを整理
+- Learning / Explanation ProductのDecision / Verification depthを`docs/01` / `07` / `12` / `22`へ統合し、Learning Objective、Prerequisite、activity選定、Understanding / Mastery、Assessment alignment、Review / Retrieval、Freshnessを補強
+- Browser / Web Platform Support Contractを`docs/01`へ、Compatibility Verificationを`docs/07`へ、Polyfill / transpilation等のCompatibility dependency判断を`docs/13`へ追加
+- `references/web-deployment-runtime-research.md`、`learning-product-decision-research.md`、`github-pages-static-delivery-research.md`、`web-platform-compatibility-research.md`へCurrent non-normative evidenceを保存
+- 人間向けGuide入口`index.html`を追加し、機能 / 作業内容からOwner Docへ到達できるWeb版をGitHub Pagesで公開
+
+### Changed
+
+- `docs/08-github-pages.md`をBranch vs Actions Publishing、Artifact / deployed revision traceability、SPA direct-open / 404、Custom Domain / DNS / HTTPS、Pages limitation、Service Worker / stale cache recoveryで補強
+- `docs/12-project-profiles.md`をProfile選定 / 非選定、複数Profile併用、over-routing防止、Profile lifecycle / drift、追加 / 変更 / 削除ImpactのDecision Frameworkへ拡張
+- `maintenance/rule-router.json` / `START_HERE.md` / `templates/QUALITY_CHECKLIST.md`をDeployment、Learning、Pages、Browser compatibilityのCurrent Ownerへ同期。Project Profileは第二Routerにせず、`docs/21`とMachine RouterをRoutingの正本として維持
+- `templates/requirements/LEARNING.md`と`REQUIREMENTS_TEMPLATE.md`をCurrent Learning / Project Profile Contractへ同期
+- `maintenance/research/content-depth-reinforcement.md`を更新し、40-point Auditで確認したActive reinforcement candidateをすべて`reinforced`または`current coverage sufficient`へ移行。Active backlogを`None`へ閉じた
+- READMEへ人間向け公開Guide URLを追加し、正式Rule本文のSource of TruthがRepository `docs/`である境界を維持
+
+### Validation / Integration
+
+- Reinforcement PR #61 / #62 / #63とclosure PR #64をmainへ統合し、各PR Headの`Validate Guide`成功を確認
+- substantive reinforcement completion merge `345211dbb86be6d5903eac1bda94f59d5c28d1c0`後、`Validate Guide #230`とPages build / deploy #154が成功
+- backlog closure merge `7c2a1245b9a745069f22a9d96ce4afda21cce253`後、`Validate Guide #233`とPages build / deploy #156が成功
+- 並行main変更として入った人間向け`index.html`とREADME公開URLを差分確認し、reinforcement branchから上書きしなかった
+- Temporary patch workflow / scriptは各final diffから削除後にValidator / `git diff --check`を実行
+
+### Rule Hygiene / Compatibility
+
+- 新Normative Owner / 新Stable Gate / 新Project Profile / 新Risk Signalを追加しない
+- Project Profileを第二Routerにせず、Work Type / Domain / Risk SignalによるCurrent routingを維持
+- Small Static SiteへStaging / Canary / Blue-Green等を一律要求しない
+- Learning SiteへQuiz / Spaced Repetition / Placement Test / universal mastery scoreを一律要求しない
+- Universal browser-version matrixを固定せず、Target User / Runtime / Current EvidenceからSupport Contractを決める
+- GitHub Pages / Browser / Providerの変化し得る数値・仕様はCurrent official evidenceを必要時に再確認し、Common Ruleへ固定値で複製しない
+
 ## 1.21.0 - 2026-09-07
 
 ### Added
