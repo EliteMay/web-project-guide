@@ -217,6 +217,36 @@ After a material change, previous routing/completion evidence should not automat
 
 **Adoption status:** candidate for later comparison, not accepted.
 
+## N-08 — Compliance is verified against the completed mapping, not merely against the routing decision
+
+### Evidence
+
+NPR 7150.2D states that implementation means implementing all identified processes, activities, and requirements according to software classification and approved tailoring. It then states that compliance is verified through submission of the completed Requirements Mapping Matrix, including approved tailoring, together with internal/external controls such as audits and reviews.
+
+Appendix C further says that every requirement marked applicable for the project's software class should be addressed in the Requirements Mapping Matrix. Requirements judged not applicable are tailored out with justification rather than silently disappearing from consideration.
+
+Sources:
+
+- NASA, `NPR 7150.2D`, P.5 Measurement/Verification
+  - https://swehb.nasa.gov/spaces/SITE/pages/123601159/NPR%2B7150.2D
+- NASA Software Engineering Handbook, Appendix C — Requirements Mapping and Compliance Matrix
+  - https://swehb.nasa.gov/spaces/SWEHBVD/pages/102695651/7.16%2B-%2BAppendix%2BC.%2BRequirements%2BMapping%2Band%2BCompliance%2BMatrix
+
+### Finding
+
+NASA separates two controls:
+
+1. classification/mapping determines the expected requirement set;
+2. completion/audit verifies that the resulting set was actually addressed.
+
+This means a correct router is not treated as sufficient evidence of compliance.
+
+### Possible implication for this Guide
+
+`web-project-guide` may need an independent final completeness check against the **resolved applicable-rule set**, rather than treating "the correct Owner Docs were routed/read" as completion. This is directly relevant to the recent GitHub Pages/README miss: routing and final compliance verification should be separate failure barriers.
+
+**Adoption status:** candidate for later comparison, not accepted.
+
 ---
 
 ## NASA — Current Working Takeaways
@@ -230,6 +260,7 @@ These are **research takeaways, not requirements**:
 5. Keep a durable applicability/compliance record after routing.
 6. Make `Not Applicable` explicit rather than equivalent to `not considered`.
 7. Re-evaluate classification/applicability after meaningful scope or runtime changes.
+8. Verify completion against the resolved requirement set; routing success alone is not completion evidence.
 
 ## Open Questions Before Any Adoption
 
