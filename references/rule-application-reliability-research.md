@@ -14,16 +14,38 @@ How should a development guide / rule system make it difficult for a human or AI
 
 ## Research Persistence Rule for This Work
 
-Material findings from this requirements/research effort are written to GitHub as they are discovered instead of being held only in conversation context or memory.
+Research capture for this requirements effort is intentionally **high-recall rather than aggressively filtered**.
 
-For each important finding, keep these separate:
+When a source is reviewed, record as much of the useful knowledge learned from it as reasonably possible, even when its eventual importance to `web-project-guide` is not yet clear. Do not keep only the points that currently look important.
 
-1. **Evidence** — what the external source actually does or says.
-2. **Finding** — what appears important about it.
-3. **Possible implication** — how it might help `web-project-guide`.
+Preserve, where available:
+
+- what the source actually requires, recommends, distinguishes, or does,
+- terminology and classification concepts,
+- workflow / lifecycle steps,
+- roles and independent review mechanisms,
+- applicability rules and escalation logic,
+- exception / waiver / tailoring behavior,
+- verification / audit behavior,
+- examples and edge cases,
+- limitations, caveats, scope boundaries, and conditions,
+- mechanisms that appear too heavyweight as well as those that appear useful,
+- open questions raised by the source,
+- source links and enough context to revisit the evidence later.
+
+Research capture and adoption are separate stages. A finding does **not** need to look useful before it is recorded. Later synthesis will decide what is relevant, redundant, too costly, conflicting, accepted, or rejected.
+
+For structured findings, keep these distinct when practical:
+
+1. **Evidence / observed practice** — what the external source actually says or does.
+2. **Finding / interpretation** — what we learned from it.
+3. **Possible implication** — how it might help or affect `web-project-guide`.
 4. **Adoption status** — `not decided`, `candidate`, `accepted`, or `rejected`.
 
-This prevents an interesting external practice from silently becoming a rule before comparison and discussion.
+This prevents two opposite failures:
+
+- losing potentially useful knowledge because it looked unimportant too early,
+- allowing an interesting external practice to silently become a Common Rule before comparison and discussion.
 
 ---
 
