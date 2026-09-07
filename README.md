@@ -2,6 +2,13 @@
 
 個人向けWebサイト / Webアプリ / Electronアプリ / Browser Game制作で、**毎回同じ失敗を繰り返さず、必要な判断基準だけを確実に読むためのSource of Truth**です。
 
+## 人間向けWeb版
+
+機能や作業内容からルールを分かりやすく探したい場合は、まずWeb版を使います。
+
+- 公開サイト: <https://elitemay.github.io/web-project-guide/>
+- 正式なRule本文の正本は、引き続きこのRepositoryの `docs/` と各Owner Docです。
+
 最初から全章を読む必要はありません。
 
 1. [START HERE](START_HERE.md) で今回の作業Routeを確認
