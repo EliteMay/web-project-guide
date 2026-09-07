@@ -2,6 +2,47 @@
 
 Guide Versionの正本は [`guide-version.json`](guide-version.json) です。
 
+## 1.20.0 - 2026-09-07
+
+### Added
+
+- `docs/23-conversation-handoff-recovery.md`をConversation Handoff / stale checkpoint / duplicate active conversation / Current work ref RecoveryのSingle Normative Ownerとして追加
+- Machine Routerへ`CONVERSATION_HANDOFF` Domain、`CONVERSATION_STATE_RECOVERY` Signal、`conversation-handoff-recovery` Golden Caseを追加
+- `maintenance/audits/`へDeep AuditのBaseline / Finding / Resolution / External Admin Follow-upを保存する履歴Surfaceを追加
+- `maintenance/research/requirements-decision-system.md`へ未完了Requirements Decision System ResearchをRoot Requirementsから分離保存
+- `tests/validate-audit-contract.mjs`を追加し、今回実際に発生したOwner衝突・Router drift・Research quota・Security・Learning accumulation・Action pinning等をRegression Guard化
+
+### Changed
+
+- `REQUIREMENTS.md`をCurrent Project Contractへ戻し、監査手順・Research手順・履歴をOwner / maintenance / Gitへ分離
+- Agent Autonomyを`Best Reasonable Decision`中心へ統一し、Core / High-costというLabelだけでUser回答待ちにしないContractへ整理
+- `docs/06-security.md`をAuthN/AuthZ、Session、CSRF、CSP、File Upload / Import、Public Endpoint abuse等で補強
+- `docs/11-electron-distribution.md`をcontextIsolation、sandbox、IPC sender / payload、Navigation / New Window、`shell.openExternal`、Permission Handler、CSP等で補強
+- `docs/04-ui-ux-accessibility.md`へWCAG 2.2のFocus Not Obscured、Target Size、Dragging Movements、Redundant Entry、Accessible Authenticationを追加し、Named Companion Tool固有EvidenceをReferenceへ分離
+- `docs/20-evidence-first-research.md`の固定Source件数目安を撤去し、`Decision Coverage + Research Saturation`を終了条件へ変更
+- `PROJECT_LEARNINGS.md` / Templateへ継続蓄積Contractを追加し、今回のFailure / Root Cause / Fix / Regression GuardをPL-F-008〜014として保存
+- `.github/workflows/validate-guide.yml`のexternal Actionsをfull Commit SHA固定へ変更
+- `docs/10-project-management.md`へBranch lifecycleとUser-facing Completion Statusを統合し、Conversation Recovery詳細は`docs/23`へ分離
+
+### Concurrent Main Preservation
+
+- v1.19.0で追加された`docs/22-task-first-structure-flow-research.md`をCurrent Ownerとして保持し、Conversation Handoff側を`docs/23`へ移番
+- 監査中にmainへ入ったPhase 3 Architecture Decision Systemの`docs/02-architecture.md`と`references/architecture-decision-system-research.md`を保持
+- Final integration前にCurrent mainとのancestry / owner collisionを再確認し、並行作業を覆い戻さない手順をProject Learningへ追加
+
+### Audit Result
+
+- Source-levelのCritical / High / Medium actionable findingは解消
+- Repository Admin権限を要するhistorical branch cleanup、`delete_branch_on_merge`、description / homepage / topics / license等は推測変更せずExternal Follow-upへ分離
+- Scoreを終了条件にせず、known actionable finding、Final PR validation、merged-main validationをCompletion Gateとして採用
+
+### Compatibility
+
+- Product RepositoryのRuntime / Storage / Schema / Deployment Defaultを自動変更しない
+- Deep Researchや固定Source件数を全作業へ強制しない
+- Existing Save / URL /主要機能の破壊をAgent Autonomyの名目で自動確定しない
+- Current mainの並行Owner / Architecture変更を監査Branchの旧状態で上書きしない
+
 ## 1.19.0 - 2026-09-07
 
 ### Added
@@ -455,8 +496,8 @@ v1.12.0で成功 / 失敗Evidenceの強さは整理しましたが、Reference�
   - VReview Review Workbench
   - Lineup Tactical Map Workspace
 - Candidate / Recovery Evidenceを追加
-  - AP Friendly Study Dashboard recovery
-  - ASMRTube ASMR Media Deck / Sound Map
+  - AP recovery
+  - ASMRTube v3 direction
 - Rejected Visual Evidenceを追加
   - ASMRTube v2.4: LyricTubeの装飾削減まで移植し、User評価40/100
   - AP Study Guide r22: Technical Console化で旧r21 40点から30点へ低下
