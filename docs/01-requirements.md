@@ -461,40 +461,160 @@ Continue / Stop / Recover / Escalate
 
 ## Learning / Explanation Content
 
-CONDITIONAL: `LEARNING` Profileでは教材件数だけで完成を決めません。
+CONDITIONAL: `LEARNING` Profileでは教材件数やLesson閲覧だけで完成を決めません。Learning-specific research evidenceは [Learning Product Decision Research](../references/learning-product-decision-research.md) に保存し、この章はRequirements Decisionの正本を維持します。
 
 最低限:
 
-- Starting Knowledge
-- Prerequisite Path
+- Target Learner / Starting Knowledge
+- Learning Objective / Observable Learning Outcome
+- Prerequisite / Concept Dependency
 - Primary Learning Surface
 - Language / Terminology Policy
-- Content Depth Contract
-- Understanding Signal
-- Next Step / Review Path
+- Content Depth / Learning Activity Contract
+- Understanding / Application Signal
+- Feedback / Next Step / Review Path
+- Freshness / Version Applicability（変化する教材で該当時）
 
-### Content Depth
+### Learning Objective → Evidence
 
-主要Lessonは内容に応じて:
+`何を載せるか`より先に、学習後に何ができるようになれば成功かを決めます。
 
-1. What
-2. Why
+```text
+Starting State
+↓
+Learning Objective
+↓
+Observable Learner Capability
+↓
+Learning Activity / Explanation
+↓
+Evidence / Assessment
+↓
+Feedback / Next Step
+```
+
+Objectiveは必要に応じて次を区別します。
+
+- Recognize / identify
+- Recall / explain
+- Compare / distinguish
+- Apply / solve
+- Diagnose / choose
+- Create / perform
+
+`読んだ`、`動画を再生した`、`Lessonを最後までスクロールした`等はCompletion evidenceにはなっても、Understanding / Masteryの直接証明とは扱いません。
+
+### Prerequisite / Concept Dependency
+
+学習順はPage番号やDatabase順ではなく、**後のConceptを理解するために本当に必要な前提**から組み立てます。
+
+- Concept Bを理解するためにAが必要なら、AをPrerequisiteとして先に説明または参照できるようにする。
+- 独立Topicまで強制Linear Courseへせず、必要なら複数Path / optional branchを許容する。
+- 同じ用語を複数Lessonで前提にする場合、Canonicalな説明・Glossary・Concept page等へ戻れるようにする。
+- Curriculum / concept graphを作ること自体を目的にせず、内容量や依存関係が小さい場合は単純なOrdered listで十分とする。
+
+LearnerのStarting Knowledgeが大きく異なり、同じ入口が初心者を詰まらせる /経験者へ無駄を強いる場合だけ、Diagnostic / Placement / self-selectionを検討します。全Learning SiteへPlacement Testを強制しません。
+
+### Content Depth / Learning Activity Decision
+
+主要Lessonは内容とObjectiveに応じて、次を必要な組み合わせで使います。
+
+1. What / definition
+2. Why / purpose
 3. How / mechanism
-4. Example
-5. Comparison / misconception
-6. Understanding check
+4. Concrete example / worked example
+5. Abstract ↔ concrete connection
+6. Comparison / contrast
+7. Common misconception / failure example
+8. Guided practice
+9. Independent practice / retrieval
+10. Explanation question / reflection
 
-を組み合わせます。GlossaryとLessonを同じ深さへ強制しません。
+使い分けの目安:
 
-### Beginner-first Ordering
+- **新しい複雑な手順・問題型:** Worked example →一部穴埋め / guided practice → independent practiceを候補にする。
+- **似たConceptを混同しやすい:** Comparison / contrast、counterexample、misconceptionを強める。
+- **理由や仕組みの理解が重要:** `why / how`を自分の言葉で説明するPromptや原因→結果の確認を使える。
+- **実行・問題解決がOutcome:** 読解だけで終わらせず、実際のApply / Solveを含める。
+- **Quick Reference:** 毎回Lesson形式へ膨らませず、短い検索・参照Surfaceを維持できる。
 
-初心者向けでは製品固有名詞の前に必要な一般概念を置きます。
+すべてのLessonを同じTemplate / 同じ長さへ固定しません。Glossary、Reference、Tutorial、Practice、Reviewは役割が違います。
+
+### Retrieval / Review / Spacing
+
+学習内容を**後日も思い出せること**がProduct Outcomeに含まれる場合、初回理解だけでなくReview / retrieval pathを検討します。
+
+- Important conceptを一定期間後に再び思い出す機会
+- Mixed / interleaved reviewが有効な近接Concept
+- 前回間違えた / uncertaintyが高い項目の再確認
+- Review結果から次のLesson /復習へ戻る導線
+
+Spaced repetition engine、固定間隔、毎日Review、Flashcard化をCommon MUSTにしません。単発How-to / Quick Reference等、長期保持がProduct GoalでないContentでは不要です。
+
+### Completion / Understanding / Masteryを分ける
+
+必要に応じてProgress stateを分けます。
+
+```text
+Opened / Viewed
+→ Completion evidence
+
+Can recall / explain
+→ Understanding evidence候補
+
+Can apply / solve in relevant condition
+→ Application evidence候補
+
+Can repeat reliably / after delay / across variants
+→ Mastery evidence候補
+```
+
+固定の`80% = Mastery`等をCommon Ruleにせず、Objective、Risk、試験 /実務用途、問題数、誤答Costに合うEvidenceを決めます。
+
+### Feedback / Next Step
+
+Feedbackは`正解 / 不正解`やScore表示だけで終えず、重要な学習では必要に応じて次を示します。
+
+- 何ができた /できなかったか
+- Learning Objectiveのどこに関係するか
+- なぜ間違えやすいか
+- どこを見直すか
+- 次にRetry / Example / Review / Next Lessonのどれを行うか
+
+LearnerがFeedbackを受けても行動できないUIにしません。Feedback機能を持たないReference Siteへ無理に追加する必要はありません。
+
+### Beginner-first / Reference Boundary
+
+初心者向けでは製品固有名詞の前に必要な一般概念を置きます。一方、Returning / experienced Userが素早く答えだけ探す用途がある場合は、初心者向け長文を毎回通過させません。
+
+同じProductで両方扱う場合は、必要に応じて:
+
+- Beginner learning path
+- Quick reference / glossary
+- Summary → details
+- Example / explanationの折りたたみ
+- Search / deep link
+
+等で役割を分けます。Beginner SurfaceとReference Surfaceを分けても、重要Factを独立Hardcodeして矛盾させないようCanonical Contentを保ちます。
+
+### Learning Content Freshness
+
+Software、Security、Cloud、制度、価格、試験範囲等、時間で正解が変わる教材では`正しかった過去教材`をCurrent lessonとして放置しません。
+
+必要に応じて:
+
+- Applies to version / exam range / date
+- Last reviewed / evidence checked
+- Superseded by
+- Archived / historical
+
+を持ちます。Current Evidence確認は [20 Evidence-first Research](20-evidence-first-research.md)、一般Content lifecycle / IAは [22 Task-first Structure / Flow Research](22-task-first-structure-flow-research.md) を正本とします。
 
 ### Learner-facing Copy
 
 内部Label / developer terminologyを通常学習UIへそのまま露出しません。学ぶ必要がある英語・略語は意味 /利用場面を添えます。
 
-詳細Inputは [Learning Requirement Pack](../templates/requirements/LEARNING.md) を使います。
+詳細Inputは [Learning Requirement Pack](../templates/requirements/LEARNING.md)、Verificationは [07 Testing / Quality](07-testing-quality.md) を使います。
 
 ## Game Requirements
 
@@ -546,7 +666,7 @@ Prototype / Playable MVP / Main Game Completeを混同しません。詳細は [
 - Narrow viewportで重大overflowがない
 - Save→Reloadが成立
 - Required CI / browser / visual / playtest / real-device checkが成功、または未確認明記
-- LearningならContent Depth / Next Stepを確認できる
+- LearningならLearning ObjectiveとContent Depth / Understanding evidence / Next Stepを確認できる
 - GameならPlayable MVP / Primary Completion ConditionをRuntimeで確認できる
 
 ## Requirements Decision System
