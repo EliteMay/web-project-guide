@@ -399,6 +399,66 @@ Measurementが必要な場合は、取得可能なEventを先に増やすので�
 
 Raw Eventは観測Evidenceであり、Product Truthそのものではありません。例えば`lesson_completed`が記録されたことだけで理解成立を断定せず、定義したOutcomeとの距離を保ちます。
 
+## AI Feature / Output Contract
+
+CONDITIONAL: AI / LLM / RAG / Tool Calling / AgentがPrimary Taskや重要なProduct behaviorへ影響する場合、`Modelから文字列が返った`ことをSuccessとせず、User TaskからAIの役割・期待Output・許容できるUncertainty / Failure・後段Validationを定義します。
+
+```text
+User Task
+↓
+AI Role
+↓
+Expected Output / Allowed Uncertainty
+↓
+Deterministic Validation where possible
+↓
+Userへ提示 / 保存 / Action
+```
+
+AIの役割はSuggestion、Transformation、Extraction、Classification、Generation、Decision Support、Agent Action等でRiskが異なります。同じ`AI Feature`というLabelだけでReview強度を固定しません。
+
+- Fluentな文章をCorrectnessの証明にせず、Fact correctnessが重要ならCanonical Data / Current Evidence / Sourceとの照合Boundaryを持つ。
+- Structured Outputは通常Dataと同じくParse / Schema / Type / Enum / ID / URL等を検証し、malformed outputをCanonical Dataへ自動昇格させない。
+- Source不足・Context不足では`unknown / insufficient evidence / clarification needed`へFallbackできる設計を優先し、必ず答えさせてFabricationを増やさない。
+- ID照合、権限判定、計算、Schema validation、固定Rule等、deterministicに解ける処理を理由なくLLMへ委譲しない。
+- Grounded / source-bound FeatureではSource ScopeとAI Synthesisの境界を [20 Evidence-first Research](20-evidence-first-research.md) で維持する。
+- Provider timeout / rate limit / refusal / malformed output等は通常のFailure Caseとして [05 Performance / Reliability](05-performance-reliability.md) へRoutingする。
+- Model / Provider / Prompt / Tool definition / Retrieval strategy等、AI behaviorを変え得る変更は [07 Testing / Quality](07-testing-quality.md) のRepresentative Evaluation対象とする。
+
+AI Outputを保存する場合のAuthority / Schema / Migrationは [03 Data / Storage](03-data-storage.md)、Prompt Injection / Authorization / Tool Security / Provider Data Policyは [06 Security](06-security.md)、Model / Provider lifecycleは [13 Dependencies / Assets](13-dependencies-assets.md) を正本とします。
+
+### Agent / Tool Action Behavior
+
+Tool-using Agentは`Tool call成功 = Task完了`とせず、User IntentからAuthorized Scopeを保ったまま外部Stateを変更します。
+
+```text
+User Intent
+↓
+Authorized Goal
+↓
+Eligible Tool / Action
+↓
+Validated Input
+↓
+Observed Result
+↓
+Goal達成確認
+↓
+Continue / Stop / Recover / Escalate
+```
+
+- Userの依頼からGoalを勝手に拡張し、不要なRename / Delete / Permission変更等の副作用を増やさない。
+- Suggest / Prepare / Executeを必要に応じて分け、Readで足りるTaskへWrite / Admin Toolを使わない。
+- Tool availabilityをTool necessityと同義にせず、Task達成へ必要な最小Operationを優先する。
+- API成功Responseだけで完了を宣言せず、重要Mutationでは必要に応じてExternal State / operation resultを確認する。
+- Bulk / multi-step ActionではSuccess / Failure / Unknown / Partial Stateを区別し、`一部失敗`を完全成功として報告しない。
+- Timeout / retryでnon-idempotent Actionを二重実行しない。必要なRetry / operation ID / read-backは [05](05-performance-reliability.md) と [03](03-data-storage.md) を使う。
+- Long-running AgentではGoal達成、No new evidence、retry / step / budget上限、Permission boundary、User decision required等のStop Conditionを持てる。
+- UserのStop / Cancelは今後のActionを止めるBoundaryとして尊重し、既に完了したExternal Actionまで`Undo済み`と誤表示しない。
+- High-impact ActionのApproval / Authorization / least privilege / Prompt Injection対策は [06 Security](06-security.md) のCurrent Contractをそのまま使う。
+
+すべての低Risk操作へConfirmationを追加してConfirmation fatigueを作らず、Impact / Irreversibility / External side effectに応じてHuman Controlを強めます。
+
 ## Learning / Explanation Content
 
 CONDITIONAL: `LEARNING` Profileでは教材件数だけで完成を決めません。

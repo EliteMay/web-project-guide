@@ -392,6 +392,111 @@ Schema、required property、duplicate trigger、assignment logic、aggregation 
 
 片方だけでMeasurement全体を確認済みにしません。小規模Personal ProjectではAnalytics自体を持たずManual observation / Direct feedbackだけでも正常です。
 
+## AI Feature / Evaluation Verification
+
+AI / LLM / RAG / Tool Calling / AgentがProject Scopeにある場合は、数回触って`それっぽい回答が出た`ことではなく、[01 Requirements](01-requirements.md) のAI Output Contractに対してRepresentative Evaluationを行います。
+
+### Representative Task Set
+
+重要AI Featureでは必要に応じて次を組み合わせます。
+
+- Normal / common task
+- Boundary / ambiguous input
+- Missing information / insufficient evidence
+- Long / noisy / malformed input
+- Realistic User wording / relevant language or segment
+- Previously failed regression case
+- Adversarial / tool / retrieval / permission failure（Risk上必要な場合）
+
+固定件数をCommon Ruleにせず、小規模Projectでは少数のStable CaseでもRegression価値があれば利用します。Productionで見つかった重大Failureは同型CaseをRegression Setへ追加できます。
+
+Evaluation DimensionはAI Roleに合わせます。ExtractionではField correctness / fabrication / schema、Summarizationでは重要情報保持 / unsupported addition、Classificationではcategory / ambiguity / unknown handling、GenerationではRequirement coverage / factuality / clarity、AgentではTask completion / Tool / target / action correctness等を選びます。
+
+### Evaluation Method / Oracle
+
+Binaryに判定できるParse、Schema、ID、URL allowlist、Citation ID存在、Tool input等はDeterministic Checkを優先します。Open-ended QualityはReference requirement、Human rubric、Model judge等をTaskに合わせて使います。
+
+- Exact Matchが意味的に不適切な生成Taskへ文字列一致を強制しない。
+- Reference Answerを唯一の文章正解とせず、Required points / forbidden claims / constraints等で表せる場合はそうする。
+- Rubricは`良いか 1〜5`だけでなく、重要DimensionのPass / Failure条件を説明できる方を優先する。
+- LLM-as-a-Judgeを絶対Oracleにせず、重大CaseではHuman / Deterministic Reviewを併用する。
+- Judge / rubric / eval version変更でScore比較条件が変わる場合はその境界を追跡できるようにする。
+- AI OutputのVarianceがProduct Riskへ影響する場合は必要に応じて複数RunでStabilityを見る。UniversalなRun回数は設けない。
+
+Average ScoreだけでCritical Failureを隠しません。Unauthorized action、Data loss、Privacy leak、fabricated critical fact、wrong high-impact target等は別途Reviewし、他Caseの高得点で相殺しません。
+
+### Baseline / Regression
+
+Model、Provider、System Prompt、Tool description / schema、Generation setting、Retrieval / chunk / reranking等、AI behaviorを変え得る変更ではRiskに応じてCurrent ProductionとCandidateをRepresentative Setで比較します。
+
+評価Contextとして必要に応じてModel / Provider、Prompt version、Tool definitions、Retrieval strategy、relevant settings、App versionを追跡します。
+
+Eval Setへ過適合しないよう、Stable Regression Setだけでなく新しいRepresentative CaseやReal User Feedbackも利用できます。重要AI Featureでは可能ならPrompt / example調整に使ったDevelopment CaseとEvaluation Caseを一部分けます。
+
+QualityだけでなくTask上重要ならLatency、Cost、Reliability / varianceもTrade-offとして確認します。Eval Scoreが少し上がっただけでCritical regressionやProduct Costを無視して自動Releaseしません。
+
+### Grounded / RAG Verification
+
+[20 Evidence-first Research](20-evidence-first-research.md) のGrounding Contractを採用する場合は、AnswerだけでなくRetrievalとGenerationを分けます。
+
+Representative Case候補:
+
+- Exact known source / semantic query
+- No relevant source
+- Conflicting / old vs current source
+- Deleted / renamed sourceのGhost Retrieval
+- Permission-restricted source
+- Multiple plausible sources
+
+Correct Sourceを取得できたか、Selected ContextがRelevantか、重要ClaimがSourceにGroundedか、Citationが実際にClaimをsupportするかを必要範囲で確認します。たまたまModelの一般知識で正答したことをSource-bound Retrieval成功とは扱いません。
+
+### Agent / Tool-use Verification
+
+Tool-using Agentでは回答文章だけでなくExternal StateをOracleにします。必要に応じて次を確認します。
+
+- Correct / necessary Tool、target、order
+- Read-only Taskで不要なWrite / Admin Operationを使わない
+- High-impact ActionのPreview / approvalとReject時の非実行
+- Permission denied / ambiguous target時に勝手に別対象へ進まない
+- Partial success / Unknown result / retry / duplicate prevention
+- User Stop / Cancel後に次のActionが止まり、既完了Actionを誤ってUndo済み表示しない
+- Tool / Provider failure時のRecovery / escalation
+- External untrusted contentからのPrompt InjectionでPermission boundaryを越えない
+
+Tool callのHTTP successやAgent自身の`完了しました`ではなく、期待するExternal State / Task OutcomeをCompletion Oracleにします。
+
+### Provider Failure / Fallback
+
+AI Providerのtimeout、429 / quota、5xx、refusal等を必要範囲でsimulateし、AI FailureがCore Productへ不必要に拡大しないことを確認します。
+
+Fallback Model / Providerを実装している場合はCapability / Structured Output / Tool Calling / Quality差をRepresentativeに確認します。Fallback未実装でAI unavailableへ明示的にdegradeする設計も正常です。
+
+### AI Feature Completion
+
+AI Featureの完成は`API接続済み`やBenchmark 1指標ではなく、Riskに応じて次が成立することを基準にします。
+
+```text
+AI Feature Contract
++
+Representative Evaluation
++
+Critical Failure Review
++
+Unknown / Failure handling
++
+Grounding integrity if applicable
++
+Agent control if applicable
++
+Provider failure handling
++
+Model / Prompt change regression
++
+Known limitations / Unverified state
+```
+
+Low-riskなTitle候補 / Rewrite等へHigh-impact Agent並みのTestを強制せず、Learning explanation / extraction / RAGではGroundingやUnknown handlingを強め、Send / Delete / Publish / Permission変更等ではSecurity / approval / cancellation / partial failureまで確認します。新しいProfile / Stable Gateは作らずRisk-based Verificationとして扱います。
+
 ## Specification / Oracle Test
 
 AI生成量が多いProject、既存実装の移植、互換性が重要な処理では、可能なら「正しい出力」を比較できるOracleを作ります。
