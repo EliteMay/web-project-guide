@@ -1,0 +1,730 @@
+name: Apply Phase 1 and Phase 19 Promotion
+
+on:
+  push:
+    branches: [guide/phase-1-19-integration]
+
+permissions:
+  contents: write
+
+jobs:
+  promote:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '22'
+
+      - name: Promote approved Phase 1 and Phase 19 decisions
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import json
+
+          ROOT = Path('.')
+
+          def read(path):
+              return (ROOT / path).read_text(encoding='utf-8')
+
+          def write(path, text):
+              (ROOT / path).write_text(text, encoding='utf-8')
+
+          def append_once(path, marker, section):
+              text = read(path)
+              if marker in text:
+                  return
+              write(path, text.rstrip() + '\n\n' + section.strip() + '\n')
+
+          def replace_once(path, old, new):
+              text = read(path)
+              if new in text:
+                  return
+              count = text.count(old)
+              if count != 1:
+                  raise RuntimeError(f'{path}: expected exactly one anchor, found {count}: {old[:80]!r}')
+              write(path, text.replace(old, new, 1))
+
+          def insert_before_once(path, anchor, marker, section):
+              text = read(path)
+              if marker in text:
+                  return
+              if anchor not in text:
+                  raise RuntimeError(f'{path}: insert anchor missing: {anchor!r}')
+              write(path, text.replace(anchor, section.rstrip() + '\n\n' + anchor, 1))
+
+          phase1_section = r'''
+          ## Requirements Decision System
+
+          Phase 1 research evidence is kept in [Requirements Decision System Research](../references/requirements-decision-system-research.md). General external research method remains owned by [20 Evidence-first Research](20-evidence-first-research.md); this section owns only Requirements-specific decisions.
+
+          ### Problem → Outcome → Solution separation
+
+          Meaningful new requirements and feature requests should be reduced in this order when the distinction matters:
+
+          ```text
+          Raw Request / Idea
+          ↓
+          Underlying Problem / Context
+          ↓
+          Desired User / Product Outcome
+          ↓
+          Solution / Feature Candidate
+          ↓
+          Scope Decision
+          ↓
+          Confirmed Requirement
+          ```
+
+          - A named feature is not automatically a requirement. Separate the need or outcome from one proposed implementation when alternative solutions could satisfy the same need.
+          - Distinguish `need / meaningful want / solution idea` when that distinction changes scope or priority. Do not interrogate the User mechanically when Current Repository, Existing Intent, or Evidence already makes the underlying outcome clear.
+          - When one request mixes multiple problems with different dependencies, risks, or completion criteria, split it into separate decision units before prioritizing it.
+          - Requirements should state the needed behavior, outcome, or constraint. Implementation detail belongs in Requirements only when that implementation choice is itself a real constraint or compatibility contract.
+
+          ### Scope Decision — Now / Later / Reject
+
+          Feature candidates may be classified as `Now / Later / Reject` instead of allowing every useful idea to become current scope.
+
+          **Now** is appropriate when the item is necessary to deliver or validly test the Core Outcome, is a prerequisite for another Now item, or is a foundation / risk-control without which the MVP would be misleading or unsafe.
+
+          **Later** is appropriate when the item has meaningful value but the Core Outcome remains valid without it, deferral is safe, and postponing it avoids current complexity or uncertainty. `Later` is not a permanent dumping ground; revisit it when new Requirements, Evidence, or actual use changes the decision.
+
+          **Reject** is appropriate when the item does not materially improve the intended outcome, duplicates an existing capability, conflicts with Non-goals / Current Contract, or its expected maintenance / testing / UI / data / migration / failure / cognitive cost is not justified by the value.
+
+          Prioritization should use the smallest set of factors that changes the decision, such as:
+
+          - Outcome importance / task frequency
+          - Dependency / sequencing
+          - Risk or uncertainty reduction
+          - Implementation + maintenance + testing cost
+          - UI / data / migration complexity
+          - Failure / compatibility impact
+
+          RICE, MoSCoW, Kano, scoring matrices, or fixed numeric weights are optional aids, not Common mandatory process.
+
+          ### MVP Boundary
+
+          MVP is the **smallest end-to-end scope that can deliver or validly test the Core Outcome**, not the smallest number of features.
+
+          - Include foundations, safety, reliability, compatibility, or data behavior that are necessary for the MVP to produce truthful evidence or be safely used in its intended context.
+          - Exclude polish and secondary capability that can be deferred without invalidating the Core Outcome or hiding a material risk.
+          - If removing an item makes the prototype / MVP incapable of testing the risky assumption or completing the primary flow, the reduced scope is not viable for that purpose.
+          - `Prototype`, `MVP`, `Feature Complete`, and `Release Ready` are separate states. Domain owners may add stricter completion gates such as Game playtest, real-device testing, storage migration, or security validation.
+
+          ### Prototype / Cheap Test Trigger
+
+          Use a Prototype / Technical Spike / Data Prototype / Minimal Implementation when all of the following are materially true:
+
+          1. A Project-specific uncertainty remains after Current Repository review and appropriate Research.
+          2. A wrong decision would create meaningful rework, risk, or misleading Requirements.
+          3. A cheaper bounded test can reduce that uncertainty before full implementation.
+
+          Choose the **lowest-fidelity artifact that can answer the question faithfully**: sketch, wireframe, clickable prototype, technical spike, data prototype, or minimal working slice.
+
+          Before the test, state at least:
+
+          ```text
+          Hypothesis / Decision Question
+          + Observable Signal
+          + Pass / Fail or Keep / Revise / Reject condition
+          + Stop Condition
+          ```
+
+          Prototype code is not production code by default. If it becomes part of the product, re-evaluate production Security, Reliability, Accessibility, Data, Test, and Maintenance requirements instead of assuming prototype success proves production readiness.
+
+          Skip a prototype when the decision is already well-supported, low-risk, reversible, and a prototype would not materially change the decision.
+
+          ### Requirement Change Classification / Impact
+
+          Classify meaningful Requirement changes by semantic effect rather than diff size:
+
+          - **Clarification** — meaning is made more explicit without intentionally changing required behavior.
+          - **Extension** — new behavior or scope is added while the existing Contract remains valid.
+          - **Replacement** — an existing Requirement is superseded by a different current Requirement.
+          - **Removal** — previously required behavior is intentionally no longer required.
+          - **Breaking Change** — the change can invalidate existing data, consumers, URLs, integrations, workflows, compatibility, or another non-breakable contract.
+
+          Before implementing a material change, inspect only the affected dimensions, such as Core Outcome, primary flow, Architecture, Data / Migration, external interfaces, Security / Privacy, Performance / Accessibility, Tests, Documentation, Deployment, and backward compatibility.
+
+          Approved changes update the Current Contract. Obsolete clauses should not remain as if still active; history belongs in CHANGELOG / Work Report / Git as appropriate. Replacement / Removal should make clear which previous behavior no longer applies.
+
+          ### Observable Completion / Proportionate Traceability
+
+          Material Requirements should be traceable far enough that completion can be observed:
+
+          ```text
+          Requirement / Expected Outcome
+          ↓
+          Observable Evidence
+          ↓
+          Verification Method
+          ↓
+          Pass / Fail Criteria
+          ↓
+          Actual Result
+          ```
+
+          - Prefer observable language over vague completion terms such as `easy`, `high quality`, `fast`, or `works well` unless the Project defines what those mean in evidence.
+          - Use the verification method that matches the Requirement: automated test, static inspection, browser test, user test, actual playtest, real device, production-safe check, or another justified method.
+          - Record `Pass / Fail / Not Verified / Not Applicable` distinctly when the state matters.
+          - Requirement IDs, matrices, and bidirectional traceability tools are useful when scale / criticality justify them, but are not mandatory ceremony for every small individual Project.
+          - When a Requirement changes, re-evaluate its completion criteria and affected verification. `Feature Complete` does not automatically mean `Release Ready`.
+          '''
+          append_once('docs/01-requirements.md', '## Requirements Decision System', phase1_section)
+
+          architecture_section = r'''
+          ## External Integration Boundary
+
+          CONDITIONAL: External API / SDK / Webhook integration uses this owner for responsibility and mapping boundaries. Historical promotion evidence: [Phase 19 External Integration Decision System](../maintenance/research/external-integration-decision-system.md).
+
+          ```text
+          Product Task
+          ↓
+          Integration Purpose
+          ↓
+          Provider Contract
+          ↓
+          Receive / Normalize / Validate / Map
+          ↓
+          Internal Domain State / Action
+          ↓
+          User-facing Outcome
+          ```
+
+          - Classify the integration purpose when useful: `read / write / command / sync / event receive` etc. Do not let a generic `API integration` label hide materially different responsibilities.
+          - Keep provider-specific raw models, error shapes, and transport detail from spreading through unrelated Product code. Use the smallest Adapter / Mapper boundary that actually limits change propagation; do not force multi-layer wrappers around trivial integrations.
+          - External identifiers should retain provider namespace when collision or cross-provider ambiguity is possible. Do not assume External ID and Internal ID are the same identity domain.
+          - Treat provider responses as external input. Validate the fields the Product depends on and distinguish `missing / null / empty` or unknown enum values when the provider contract makes the distinction meaningful.
+          - Prefer an explicit boundary such as `receive → normalize → validate → map → commit` when unvalidated provider data could otherwise become Canonical State.
+          - Distinguish `Not Found` from Integration Failure and transport success from business-operation success. Do not turn every failure into an empty list, zero, or `not found` state.
+          - Make command semantics explicit when it matters: create / update / partial update / replace / delete / archive are not interchangeable.
+          - Distinguish provider timestamps by meaning (`created / updated / received / synced`) instead of treating every timestamp as the same ordering signal.
+          - Convert provider errors into a Product error model before exposing them as user-facing behavior; do not couple Business Logic to human-readable provider error text when a stable status / code exists.
+
+          Data authority / reconciliation is owned by [03](03-data-storage.md), delivery reliability by [05](05-performance-reliability.md), Security by [06](06-security.md), validation by [07](07-testing-quality.md), and API / SDK lifecycle by [13](13-dependencies-assets.md).
+          '''
+          append_once('docs/02-architecture.md', '## External Integration Boundary', architecture_section)
+
+          data_section = r'''
+          ## External Data Authority / Reconciliation
+
+          CONDITIONAL: When local state represents or synchronizes external provider state, define authority before sync mechanics. Historical promotion evidence: [Phase 19 External Integration Decision System](../maintenance/research/external-integration-decision-system.md).
+
+          - Decide whether External or Local state is Canonical, and when needed define ownership per field (`read-only external / local override / two-way sync`). Do not use last-write-wins as a universal substitute for ownership.
+          - Raw provider payload storage is not the default. Persist the Canonical fields and identifiers the Product actually needs unless audit / recovery requirements justify more.
+          - Distinguish states such as `observed external`, `local derived`, `pending operation`, and `last reconciled` when collapsing them would hide uncertainty. `Last attempt`, `last successful read`, and `last successful reconciliation` may also differ.
+          - Webhook delivery or one successful API call does not prove permanent consistency. Critical state may use push, poll, on-demand reconciliation, or a hybrid based on allowed staleness, provider capability, cost / rate limit, and User expectation.
+          - Do not set one Common polling interval. Derive it from tolerated staleness and provider limits, and give polling a terminal / timeout / maximum-attempt or equivalent stop condition.
+          - Classify drift only as deeply as needed: expected lag, missed update, stale cache, conflicting mutation, deletion, permission loss, provider failure, impossible drift, unknown, etc.
+          - Repair follows the declared authority and field ownership. A newer local timestamp does not automatically override an externally authoritative field.
+          - External delete, permission loss, wrong ID, and provider outage are different states. Do not interpret every `404`-like response as permission to delete Local Canonical Data when the provider contract is ambiguous.
+          - Tombstones, cursors, revision / sequence, incremental sync, and full reconciliation are conditional tools. If incremental state can expire or become invalid, provide a bounded recovery path to a trusted full reconciliation when the integration needs it.
+          - Reconciliation operations should be duplicate-safe where practical. High-impact repair may use dry-run / diff preview / batch limit / backup / rollback when the data risk justifies it; these are not universal requirements.
+          - Reconciliation failure must remain distinguishable from `0 items`, `not found`, or successful convergence.
+
+          Convergence tests are owned by [07 Testing / Quality](07-testing-quality.md); webhook and retry mechanics by [05 Performance / Reliability](05-performance-reliability.md).
+          '''
+          append_once('docs/03-data-storage.md', '## External Data Authority / Reconciliation', data_section)
+
+          reliability_section = r'''
+          ## External Delivery / Webhook Reliability
+
+          CONDITIONAL: Webhook and externally retried delivery paths must assume duplicates, delay, partial failure, and provider-specific retry behavior unless the current provider contract proves otherwise. Historical promotion evidence: [Phase 19 External Integration Decision System](../maintenance/research/external-integration-decision-system.md).
+
+          - Distinguish a **delivery attempt** from the **business event** it represents. Request count is not event count.
+          - When the provider supplies a stable Event / Delivery ID, keep provider namespace and use it as a deduplication signal when appropriate. Storing an ID alone does not magically provide exactly-once processing.
+          - Prefer idempotent business operations where possible. For important mutations, consider the transaction boundary between dedupe recording and the business mutation so a crash does not create a false processed / unprocessed state.
+          - Do not assume delivery order. Arrival time is not automatically a state version; use provider revision / sequence / event time / canonical read when the contract requires stronger ordering evidence.
+          - Separate `ACK accepted` from `business processing complete`. When heavy work would block acknowledgement, `verify → durable record/enqueue → ack → process` is a candidate pattern, not a mandatory queue architecture.
+          - If loss after ACK would be unacceptable, ensure the required durable boundary exists before acknowledging success.
+          - Distinguish provider redelivery, internal queue retry, and downstream retry. Avoid multiplying retries at every layer, classify retryable vs non-retryable failure when useful, and enforce a stop condition instead of infinite retry.
+          - Manual redelivery is still a duplicate-delivery scenario. Repeated failure may use quarantine / dead-letter handling when operational value justifies it; small integrations do not require queue infrastructure by default.
+          - Keep the Canonical mutation owner clear. Secondary effects such as email / analytics should not automatically roll back an already-valid Canonical mutation unless the Product Contract requires atomicity.
+          - Provider outage should have an explicit Product effect proportional to criticality: block, degrade, serve known-stale data, queue safely, or expose a manual recovery path. Do not silently convert outage into empty success.
+          - Provider retry windows, signature formats, replay protections, rate limits, and delivery semantics must come from current official provider guidance rather than Common hardcoded assumptions.
+
+          Signature / auth / secret / replay Security remains owned by [06 Security](06-security.md). Data reconciliation is owned by [03 Data / Storage](03-data-storage.md).
+          '''
+          append_once('docs/05-performance-reliability.md', '## External Delivery / Webhook Reliability', reliability_section)
+
+          testing_section = r'''
+          ## External Integration Validation
+
+          CONDITIONAL: External integrations are complete only when the Product behavior is verified at the level required by integration risk. `HTTP 200`, SDK success, or provider-dashboard delivery alone is not the success oracle. Historical promotion evidence: [Phase 19 External Integration Decision System](../maintenance/research/external-integration-decision-system.md).
+
+          ### Test environment roles
+
+          Distinguish the evidence each environment can provide:
+
+          - **Fixture / Stub / Mock** — deterministic Product logic and rare failure reproduction; primarily proves our assumptions and code behavior.
+          - **Contract Test** — verifies the request / response / error subset the Product depends on.
+          - **Sandbox / Test Provider** — verifies provider-realistic auth, schema, timing, routing, and behavior within sandbox limitations.
+          - **Production-safe Check** — optional evidence for real permission / routing / networking that cannot be established elsewhere; keep blast radius bounded with read-only or dedicated test entities when possible.
+
+          Mock success is not proof of provider behavior. Sandbox success is not automatically Production validation.
+
+          ### Representative integration checks
+
+          Select only cases material to the integration:
+
+          - Primary User Task end-to-end, using expected Product / external state as the oracle.
+          - Read mapping for required fields, `missing / null / unknown enum`, pagination, not-found vs failure, and allowed staleness.
+          - Important writes with read-back or equivalent external-state confirmation when transport success is insufficient.
+          - Retry without duplicate mutation.
+          - Webhook valid delivery, duplicate, out-of-order event, invalid signature, unknown / malformed payload, ACK vs processing-complete, handler / downstream failure.
+          - Reconciliation such as missed event → drift detected → repair → convergence, while preserving Local-only fields.
+          - Permission loss, token expiry, external deletion, provider outage, cursor expiry, partial reconciliation, or polling stop conditions when in scope.
+          - API / SDK / Webhook / Auth / Error semantic changes, including real old/new combinations during migration when compatibility matters.
+          - Schema compatibility **and semantic compatibility**; generated clients and mocks do not prove the latter.
+
+          ### Test-data / completion safety
+
+          - Separate test and production credentials / resources. Do not run destructive experiments against real User data merely because the endpoint is reachable.
+          - Minimize fixtures and sanitize real examples. Do not commit production secrets or private raw payloads to the Repository.
+          - Test resources should have bounded Create → Verify → Cleanup behavior; cleanup failure is a test result, not something to hide with wildcard deletion.
+          - External-provider tests may be separated from fast deterministic CI. They do not need to run on every commit when cost / flakiness / provider limits make that unreasonable.
+          - A provider outage or unavailable test environment yields `Not Verified`, not an invented Pass.
+          - Record whether evidence came from Mock, Sandbox, Production-safe check, or another environment when that distinction affects confidence.
+          '''
+          append_once('docs/07-testing-quality.md', '## External Integration Validation', testing_section)
+
+          dependency_section = r'''
+          ## External API / SDK / Webhook Contract Lifecycle
+
+          CONDITIONAL: External integrations are dependencies with behavioral contracts, not only package versions. Historical promotion evidence: [Phase 19 External Integration Decision System](../maintenance/research/external-integration-decision-system.md).
+
+          - Treat the contract as the Product-dependent subset of endpoint / operation, request and response fields, types, nullability, enums, error semantics, auth / scopes, pagination, rate limits, ordering, idempotency, webhook payload, and timing semantics.
+          - Distinguish **schema compatibility** from **behavioral compatibility**. A default, meaning, ordering guarantee, auth scope, error code, or timing change can be breaking even when JSON still parses.
+          - API version, SDK version, and Webhook version are separate boundaries unless the provider explicitly couples them. Do not infer one from another.
+          - Be tolerant of unknown future fields where safe, but do not automatically persist them into Canonical Data. New enum values should not be silently mapped to an unrelated known state.
+          - New required fields, nullability changes, ID representation, pagination, auth / scope, and error-contract changes deserve compatibility review when existing consumers or saved provider data can be affected.
+          - Identify actual consumers beyond the browser when relevant: backend / function, Electron, CLI, job, Actions, another Repository, or Webhook processor.
+          - For staged breaking changes, `Expand → Migrate → Contract` is a preferred candidate when old and new consumers must coexist. Dual read / dual write require explicit authority and partial-failure behavior, and the compatibility layer should be removed after migration rather than becoming permanent patch code.
+          - Distinguish `Deprecated` from `Removed`. A removal deadline for a critical integration becomes Maintenance work; do not require daily changelog monitoring when no relevant trigger exists.
+          - Re-check current official provider documentation when updating the SDK / API, responding to a provider notice, investigating behavior drift, or performing maintenance that can cross the contract boundary.
+          - OpenAPI / JSON Schema / GraphQL schema can be useful contract evidence when available but are not mandatory. Generated client success does not prove semantic compatibility.
+          - Review mocks / fixtures when API or Webhook versions change so old assumptions do not become a false compatibility oracle.
+          - Prototype / internal-only integrations do not require permanent backward compatibility merely because versioning exists. Match compatibility depth to real consumers, saved data, release model, and breaking impact.
+          - If a provider has already removed the old contract, rollback may be impossible; plan a forward-fix path rather than pretending every external migration is reversible.
+          '''
+          append_once('docs/13-dependencies-assets.md', '## External API / SDK / Webhook Contract Lifecycle', dependency_section)
+
+          observability_section = r'''
+          ## External Integration Diagnostics
+
+          CONDITIONAL: When external integration failures or asynchronous processing need diagnosis, record the smallest evidence that distinguishes transport, processing, and convergence state. Historical promotion evidence: [Phase 19 External Integration Decision System](../maintenance/research/external-integration-decision-system.md).
+
+          Useful fields may include, only as needed:
+
+          - Provider / integration namespace
+          - External resource ID, Event ID, Delivery ID, or internal correlation ID
+          - Operation / event type
+          - Attempt number or retry class
+          - Received / accepted / processed timestamps
+          - Transport status vs business-processing status
+          - Last successful provider read / last successful reconciliation
+          - Failure class / bounded reason code
+          - Quarantine / manual-repair state when used
+
+          - Do not permanently log complete webhook or API payloads by default. Prefer IDs, type, target, status, and bounded failure reason; sanitize secrets, tokens, personal data, and unnecessary content.
+          - Keep `delivery acknowledged`, `business processing completed`, `external state confirmed`, and `reconciliation converged` distinguishable when collapsing them would hide the failure location.
+          - Provider dashboards and logs are evidence, not Canonical Product State or a standalone success oracle.
+          - Diagnostics should help correlate `request / event → handler → mutation → reconciliation` when needed without creating a second data store of provider payload history.
+          '''
+          append_once('docs/15-development-observability.md', '## External Integration Diagnostics', observability_section)
+
+          old_start = '''## 外部API / CDN / Supabase
+
+          - [05 Performance / Reliability](docs/05-performance-reliability.md)
+          - [06 Security](docs/06-security.md)
+          - [13 Dependencies / Assets](docs/13-dependencies-assets.md)
+          - 保存を伴う場合は [03 Data / Storage](docs/03-data-storage.md)'''.replace('          ', '')
+          new_start = '''## 外部API / Webhook / CDN / Supabase
+
+          - Integration contract / mapping / provider boundary → [02 Architecture](docs/02-architecture.md)
+          - Reliability / Webhook delivery / retry / degradation → [05 Performance / Reliability](docs/05-performance-reliability.md)
+          - Auth / signature / secret / permission → [06 Security](docs/06-security.md)
+          - Integration test / Sandbox / completion → [07 Testing / Quality](docs/07-testing-quality.md)
+          - API / SDK / Webhook lifecycle / deprecation → [13 Dependencies / Assets](docs/13-dependencies-assets.md)
+          - 保存 / Sync / Reconciliationを伴う場合 → [03 Data / Storage](docs/03-data-storage.md)
+          - Runtime diagnostics / remote failure analysisが必要な場合 → [15 Observability](docs/15-development-observability.md)'''.replace('          ', '')
+          replace_once('START_HERE.md', old_start, new_start)
+
+          router_path = ROOT / 'maintenance/rule-router.json'
+          router = json.loads(router_path.read_text(encoding='utf-8'))
+          router['signals']['EXTERNAL_API']['docs'] = [
+              'docs/02-architecture.md',
+              'docs/05-performance-reliability.md',
+              'docs/06-security.md',
+              'docs/07-testing-quality.md',
+              'docs/13-dependencies-assets.md'
+          ]
+          if not any(case.get('id') == 'external-api-integration' for case in router.get('goldenCases', [])):
+              router['goldenCases'].append({
+                  'id': 'external-api-integration',
+                  'workType': 'IMPLEMENTATION',
+                  'domains': ['ARCHITECTURE', 'DEPENDENCIES_ASSETS'],
+                  'signals': ['EXTERNAL_API'],
+                  'mustInclude': [
+                      'docs/02-architecture.md',
+                      'docs/05-performance-reliability.md',
+                      'docs/06-security.md',
+                      'docs/07-testing-quality.md',
+                      'docs/13-dependencies-assets.md'
+                  ]
+              })
+          router_path.write_text(json.dumps(router, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+
+          checklist_route_old = '| Public / Auth / OAuth / API / Cloud / AI | Security / Privacy / Dependency | [06](../docs/06-security.md) / [13](../docs/13-dependencies-assets.md) |'
+          checklist_route_new = checklist_route_old + '\n| External API / SDK / Webhook | Contract / Reliability / Security / Validation / Lifecycle | [02](../docs/02-architecture.md) / [05](../docs/05-performance-reliability.md) / [06](../docs/06-security.md) / [07](../docs/07-testing-quality.md) / [13](../docs/13-dependencies-assets.md) |'
+          replace_once('templates/QUALITY_CHECKLIST.md', checklist_route_old, checklist_route_new)
+
+          checklist_section = r'''
+          ## External API / SDK / Webhook — 該当時
+
+          - [ ] Integration purpose、Provider boundary、Not Found vs Failure、transport success vs business successを必要範囲で分けた
+          - [ ] External / Local authorityとID namespaceが明確で、保存 / Sync / Reconciliationがある場合は`docs/03`のData Contractを確認した
+          - [ ] Retry / Webhookでduplicate mutationを起こさず、ordering / ACK / retry stop / provider outageをRiskに応じて確認した
+          - [ ] MockだけをProviderの真実とせず、必要なContract / Sandbox / Production-safe evidenceを区別した
+          - [ ] API / SDK / Webhook / Auth変更時にCompatibilityとDeprecation / Removalを確認した
+          - [ ] Provider unavailableや未確認Environmentを`Verified`とせず、Known limitationを残した
+          - [ ] Diagnosticsが必要な場合、Secret / raw payloadを無制限保存せず`docs/15`の最小Evidenceを使った
+          '''
+          append_once('templates/QUALITY_CHECKLIST.md', '## External API / SDK / Webhook — 該当時', checklist_section)
+
+          req_old = 'Requirements Decision Systemの未完了Research Contractは [`maintenance/research/requirements-decision-system.md`](maintenance/research/requirements-decision-system.md) に保存します。'
+          req_new = '''Requirements Decision SystemのPhase 1 Researchは実装済みです。Current Common Ruleは [`docs/01-requirements.md`](docs/01-requirements.md)、Research Evidenceは [`references/requirements-decision-system-research.md`](references/requirements-decision-system-research.md) を正本とし、[`maintenance/research/requirements-decision-system.md`](maintenance/research/requirements-decision-system.md) はPromotion後のhistorical non-normative contractとして保持します。
+
+          Phase 1で確定したProblem → Outcome → Solution separation、`Now / Later / Reject`、MVP Boundary、Prototype / Cheap Test Trigger、Requirement Change Classification、Observable Completion / proportionate traceabilityは、Agent Autonomy / Requirements Persistenceを第二Copyにせず`docs/01`へ統合します。
+
+          External Integration Decision SystemのPhase 19 Decisionは実装済みです。Integration boundaryは [`docs/02-architecture.md`](docs/02-architecture.md)、External authority / reconciliationは [`docs/03-data-storage.md`](docs/03-data-storage.md)、Webhook / retryは [`docs/05-performance-reliability.md`](docs/05-performance-reliability.md)、Validationは [`docs/07-testing-quality.md`](docs/07-testing-quality.md)、API / SDK / Webhook lifecycleは [`docs/13-dependencies-assets.md`](docs/13-dependencies-assets.md)、Diagnosticsは [`docs/15-development-observability.md`](docs/15-development-observability.md) を正本とします。Security boundaryは既存 [`docs/06-security.md`](docs/06-security.md) を再利用し、[`maintenance/research/external-integration-decision-system.md`](maintenance/research/external-integration-decision-system.md) はhistorical non-normative checkpointとして保持します。'''.replace('          ', '')
+          replace_once('REQUIREMENTS.md', req_old, req_new)
+
+          phase1_research = ROOT / 'maintenance/research/requirements-decision-system.md'
+          text = phase1_research.read_text(encoding='utf-8')
+          text = text.replace('Status: pending research / current project requirement', 'Status: historical non-normative research contract / promoted 2026-09-07', 1)
+          if '## Promotion Result — 2026-09-07' not in text:
+              text = text.rstrip() + '''
+
+          ## Promotion Result — 2026-09-07
+
+          Phase 1 Research was completed and promoted without creating a new Owner, Gate, Profile, or mandatory scoring framework.
+
+          - Normative Requirements decisions → `docs/01-requirements.md`
+          - General research method remains → `docs/20-evidence-first-research.md`
+          - Evidence synthesis → `references/requirements-decision-system-research.md`
+          - Current project status → Root `REQUIREMENTS.md`
+
+          Promoted gaps: Problem → Outcome → Solution separation, `Now / Later / Reject`, MVP boundary, Prototype / Cheap Test trigger, Requirement Change classification / impact, and observable completion with proportionate traceability.
+
+          Existing Agent Autonomy and Requirements Persistence rules were reused rather than duplicated. This file is retained as historical non-normative evidence only.
+          '''.replace('          ', '') + '\n'
+          phase1_research.write_text(text, encoding='utf-8')
+
+          phase19_research = ROOT / 'maintenance/research/external-integration-decision-system.md'
+          text = phase19_research.read_text(encoding='utf-8')
+          text = text.replace('Status: approved decisions / pending normative promotion', 'Status: historical non-normative promotion checkpoint / promoted 2026-09-07', 1)
+          if '## Promotion Result — 2026-09-07' not in text:
+              text = text.rstrip() + '''
+
+          ## Promotion Result — 2026-09-07
+
+          Phase 19 Decisions were promoted into the existing Owner model without adding a new Owner, Stable Gate, Profile, or Risk Signal.
+
+          - Integration boundary / mapping → `docs/02-architecture.md`
+          - Data authority / reconciliation → `docs/03-data-storage.md`
+          - Webhook / delivery / retry → `docs/05-performance-reliability.md`
+          - Security boundary → existing `docs/06-security.md`
+          - Integration validation / environment evidence → `docs/07-testing-quality.md`
+          - API / SDK / Webhook lifecycle → `docs/13-dependencies-assets.md`
+          - Integration diagnostics → `docs/15-development-observability.md`
+          - Short execution checks → `templates/QUALITY_CHECKLIST.md`
+          - Existing `EXTERNAL_API` signal expanded; no new signal was created.
+
+          This file is retained as historical non-normative promotion evidence only.
+          '''.replace('          ', '') + '\n'
+          phase19_research.write_text(text, encoding='utf-8')
+
+          reference = r'''# Phase 1 — Requirements Decision System Research
+
+          ## Status
+
+          - Research phase: completed for Common decision-model promotion
+          - Research date: 2026-09-07
+          - Baseline repository: `EliteMay/web-project-guide`
+          - Working branch: `guide/phase-1-19-integration`
+          - Primary normative owner: `docs/01-requirements.md`
+          - General research method owner: `docs/20-evidence-first-research.md`
+
+          This file is **non-normative research evidence**. Current behavior is defined by the Owner Docs, not by this research summary.
+
+          ## Research Question
+
+          How should a small-team / individual Web, Web App, Electron, or Browser Game project turn an ambiguous request into a necessary, scoped, changeable, and observably complete Requirement without creating a heavyweight approval process or asking the User questions that Current Repository / Evidence can already answer?
+
+          ## Core Evidence
+
+          ### E-01 — Need / outcome should be separable from a proposed implementation
+
+          NASA's Systems Engineering guidance says good Requirements should state what is needed rather than unnecessarily prescribing how to provide it, asks why the Requirement is needed, distinguishes needs from wants, and expects traceability to goals / objectives / higher-level needs.
+
+          **Implication:** a named feature can be treated as a solution candidate until the underlying problem / outcome is clear enough to decide whether that feature is actually required.
+
+          Evidence:
+
+          - NASA, *How to Write a Good Requirement*: https://www.nasa.gov/reference/appendix-c-how-to-write-a-good-requirement/
+          - NASA Software Engineering Handbook, *Software Requirements*: https://swehb.nasa.gov/spaces/SWEHBVB/pages/32604503/SWE-050%2B-%2BSoftware%2BRequirements
+
+          ### E-02 — Requirements should be necessary, manageable, and verifiable
+
+          NASA guidance emphasizes necessary / measurable / testable Requirements, refinement of the initial set, removal of unnecessary / duplicate items, keeping must-haves, and dropping some nice-to-haves. NASA's Requirement quality checklist also asks whether each Requirement is needed and whether a method exists to verify it.
+
+          **Implication:** Common scope should permit a real `Reject` state and should not define MVP as "all useful ideas with lower priority". Completion criteria should be observable.
+
+          Evidence:
+
+          - NASA, *How to Write a Good Requirement*: https://www.nasa.gov/reference/appendix-c-how-to-write-a-good-requirement/
+          - NASA Software Engineering Handbook, *Software Requirements Analysis*: https://swehb.nasa.gov/spaces/7150/pages/16450593/SWE-051%2B-%2BSoftware%2BRequirements%2BAnalysis
+
+          ### E-03 — Acceptance / completion criteria should be defined before declaring the work acceptable
+
+          NASA Software Engineering guidance treats acceptance criteria as conditions the software must satisfy for acceptance and connects them to Verification / Validation activities and measurable performance / correctness conditions.
+
+          **Implication:** Requirement completion should trace to evidence, method, and pass/fail criteria rather than vague statements such as `works well`.
+
+          Evidence:
+
+          - NASA Software Engineering Handbook, *Acceptance Criteria*: https://swehb.nasa.gov/spaces/7150/pages/16450634/SWE-034%2B-%2BAcceptance%2BCriteria
+
+          ### E-04 — Requirement change should be impact-assessed before implementation when the impact is material
+
+          NASA Requirements change guidance calls for analyzing proposed changes for technical, schedule, cost, stakeholder, test, safety / reliability, interface, and other downstream impacts, and notes traceability as an important aid.
+
+          **Implication:** change classification should expose whether the current Contract is merely clarified, extended, replaced, removed, or broken, followed by proportionate impact analysis rather than treating every text edit equally.
+
+          Evidence:
+
+          - NASA Software Engineering Handbook, *Manage Requirements Changes*: https://swehb.nasa.gov/spaces/SWEHBVD/pages/102695435/SWE-053%2B-%2BManage%2BRequirements%2BChanges
+
+          ### E-05 — Prototype the uncertainty, not the whole product
+
+          GOV.UK Service Manual guidance uses prototypes to explore and test ideas before committing to production, recommends choosing the prototype type that fits the current question, and explicitly notes that prototype code need not meet production standards. Its Alpha guidance says to focus on the riskiest assumptions and do the minimum needed to test them.
+
+          **Implication:** Prototype / Technical Spike should be conditional on meaningful unresolved uncertainty, use the cheapest faithful artifact, and have a stop condition. Prototype success is not production readiness.
+
+          Evidence:
+
+          - GOV.UK Service Manual, *Making prototypes*: https://www.gov.uk/service-manual/design/making-prototypes
+          - GOV.UK Service Manual, *How the alpha phase works*: https://www.gov.uk/service-manual/agile-delivery/how-the-alpha-phase-works
+
+          ### E-06 — MVP is a learning / outcome boundary, not simply the fewest features
+
+          Eric Ries defines the MVP around collecting validated learning with the least effort and explicitly warns that MVP is not simply about creating a minimal product.
+
+          **Implication:** an MVP should be the smallest end-to-end scope that can deliver or truthfully test the Core Outcome, including foundations required for the evidence to be valid.
+
+          Evidence:
+
+          - Lean Startup Co., Eric Ries, *What Is an MVP?*: https://leanstartup.co/resources/articles/what-is-an-mvp/
+
+          ### E-07 — Hypothesis / test / metric / success condition is a useful bounded experiment pattern
+
+          Strategyzer's Test Card describes a compact sequence of hypothesis, test, metric, and explicit success condition. This is practitioner evidence rather than a universal standard, but it aligns with the Government prototype guidance and observable-completion principle.
+
+          **Implication:** before a Project-specific prototype, define the decision question, observable signal, and stop / pass-fail condition so the prototype cannot expand indefinitely.
+
+          Evidence:
+
+          - Strategyzer, *Good Ideas Are Bad For Innovators*: https://www.strategyzer.com/library/good-ideas-are-bad-for-innovators
+
+          ## Evidence Map / Promotion Decisions
+
+          ### Strong enough for Common Rule
+
+          - Problem / outcome should remain distinguishable from a solution candidate when the distinction affects the decision.
+          - Scope must allow exclusion of unnecessary features; `Now / Later / Reject` is a lightweight Common classification, not a claimed industry standard.
+          - MVP should preserve the smallest valid end-to-end outcome / learning boundary rather than optimize for raw feature count.
+          - Important unresolved Project-specific uncertainty should move from Research to a bounded cheap test / prototype rather than endless discussion.
+          - Material Requirement changes need proportionate impact analysis and Current Contract cleanup.
+          - Completion must be observable and tied to an appropriate verification method.
+
+          ### Context-dependent / SHOULD, not universal ceremony
+
+          - Numeric prioritization frameworks.
+          - Requirement IDs / traceability matrices.
+          - Prototype fidelity and whether a prototype is needed at all.
+          - Exact amount of acceptance criteria / test evidence.
+          - User test vs technical spike vs data prototype vs direct implementation.
+
+          ### Rejected as Common mandatory rules
+
+          - Fixed RICE / MoSCoW / Kano scoring for every Project.
+          - Requiring a prototype for every feature.
+          - Treating every `Later` item as a commitment to implement it eventually.
+          - Treating MVP as the minimum number of screens / functions.
+          - Requiring heavyweight bidirectional traceability matrices for every small individual Project.
+          - Increasing User-question count as the primary way to improve Requirements quality.
+
+          ## Resulting Decision Model
+
+          ```text
+          Raw Request
+          ↓
+          Problem / Context
+          ↓
+          Desired Outcome
+          ↓
+          Solution Candidate
+          ↓
+          Now / Later / Reject
+          ↓
+          MVP Boundary
+          ↓
+          Research / Cheap Test / User Decision only when needed
+          ↓
+          Confirmed Current Requirement
+          ↓
+          Change Classification / Impact when revised
+          ↓
+          Observable Evidence / Verification
+          ↓
+          Current Contract updated
+          ```
+
+          The promoted model intentionally reuses the existing Agent Autonomy, Evidence-first Research, Requirements Persistence, and domain-specific Testing gates rather than creating a second approval workflow.
+          '''
+          ref_path = ROOT / 'references/requirements-decision-system-research.md'
+          ref_path.write_text(reference.replace('          ', '').strip() + '\n', encoding='utf-8')
+
+          changelog_entry = r'''## 1.21.0 - 2026-09-07
+
+          ### Added
+
+          - Phase 1 Requirements Decision Systemを`docs/01-requirements.md`へPromotionし、Problem → Outcome → Solution separation、`Now / Later / Reject`、MVP Boundary、Prototype / Cheap Test Trigger、Requirement Change Classification、Observable Completion / proportionate traceabilityを追加
+          - `references/requirements-decision-system-research.md`へPhase 1のnon-normative Evidence Map / Promotion rationaleを保存
+          - Phase 19 External Integration rulesを既存OwnerへPromotionし、Integration boundary、External authority / reconciliation、Webhook reliability、Integration validation、API / SDK / Webhook lifecycle、Diagnosticsを追加
+          - `external-api-integration` Golden Routing Caseを追加
+
+          ### Changed
+
+          - `START_HERE.md`のExternal API routeを`docs/02 / 05 / 06 / 07 / 13`中心へ更新し、保存 / Syncは`docs/03`、Diagnosticsは`docs/15`へConditional Routing
+          - `maintenance/rule-router.json`の既存`EXTERNAL_API` SignalをArchitecture / Reliability / Security / Testing / Dependency Ownerへ拡張。新Signal / Gate / Profileは追加しない
+          - `templates/QUALITY_CHECKLIST.md`へExternal API / SDK / Webhookの短いConditional checkを追加
+          - `maintenance/research/requirements-decision-system.md`と`maintenance/research/external-integration-decision-system.md`をPromotion後のhistorical non-normative evidenceへ変更
+          - Root `REQUIREMENTS.md`のResearch Promotion StateをCurrent Owner構成へ同期
+
+          ### Rule Hygiene
+
+          - Phase 1で既存Agent Autonomy / Requirements Persistence / Evidence-first Researchを重複Copyしない
+          - Phase 19のAuth / signature / secret / replay Securityは既存`docs/06`を再利用し、一般Retryは`docs/05`、Sync / Conflictは`docs/03`を維持
+          - 新Owner / 新Stable Gate / 新Profile / 新Risk Signalを追加しない
+          - Mock / Sandbox / Production、MVP / Prototype、Traceability / scoringを全Projectへ機械的に要求しない
+
+          ### Compatibility
+
+          - Existing Product RepositoryのAPI provider、Storage authority、poll interval、Queue、Retry数、Versioning方式をCommon固定値で変更しない
+          - Existing Save / Consumer / URL / Integration ContractのBreaking Changeは各ProjectのCurrent Contract / Migration判断を維持
+          - Prototype codeをProduction-readyとみなさず、Productionへ採用する場合は通常のSecurity / Reliability / Testing Contractを適用
+          '''.replace('          ', '')
+          insert_before_once('CHANGELOG.md', '## 1.20.0 - 2026-09-07', '## 1.21.0 - 2026-09-07', changelog_entry)
+
+          report_entry = r'''## 2026-09-07 Phase 1 + Phase 19 — Requirements / External Integration Promotion
+
+          ### 作業状況
+
+          PR #59 `guide/phase-1-19-integration`からPhase 1 Requirements Decision SystemとPhase 19 External API / Webhook / Contract Evolution decisionsを、Current Owner責務へPromotionした。
+
+          ### Phase 1 Research / Promotion
+
+          Current Agent Autonomy / Requirements Persistenceと重複しないGapだけを`docs/01-requirements.md`へ統合した。
+
+          - Problem → Outcome → Solution separation
+          - `Now / Later / Reject`
+          - Core Outcome基準のMVP Boundary
+          - Project-specific uncertainty向けPrototype / Cheap Test Trigger
+          - Clarification / Extension / Replacement / Removal / Breaking Change
+          - Requirement → Evidence → Verification → Pass / Failのproportionate traceability
+
+          External evidenceはNASA Systems Engineering / Software Engineering Handbook、GOV.UK Service Manual、Lean Startup等を確認し、Evidence Mapを`references/requirements-decision-system-research.md`へ保存した。
+
+          ### Phase 19 Promotion
+
+          - `docs/02` — Integration purpose / Provider boundary / normalize-validate-map / external ID
+          - `docs/03` — Data authority / field ownership / reconciliation / drift / polling recovery
+          - `docs/05` — Webhook duplicate / ordering / ACK / retry responsibility / provider outage
+          - `docs/06` — Existing Security Ownerをそのまま再利用
+          - `docs/07` — Mock / Contract / Sandbox / Production-safe evidence、failure / convergence / compatibility validation
+          - `docs/13` — API / SDK / Webhook contract evolution / deprecation / migration lifecycle
+          - `docs/15` — External integration diagnostics / minimized correlation evidence
+          - `templates/QUALITY_CHECKLIST.md` — short conditional execution checks
+
+          ### Routing / Rule Budget
+
+          - Existing `EXTERNAL_API` signalを`docs/02 / 05 / 06 / 07 / 13`へ拡張
+          - Save / Sync / Reconciliationは既存`DATA_STORAGE` route、Diagnosticsは既存`OBSERVABILITY` routeを使用
+          - 新Owner: なし
+          - 新Stable Gate: なし
+          - 新Profile: なし
+          - 新Risk Signal: なし
+          - Golden Case: `external-api-integration`を追加してCurrent routeをRegression Guard化
+
+          ### Validation
+
+          - Promotion workflowで`git diff --check`、Guide Validator、Audit Contract Validator、Data Storage Contract Validatorを実行
+          - Final PR Head CIはworkflow適用後のfinal commitで確認対象
+          - Temporary promotion workflowは適用Commitへ残さず削除する
+          '''.replace('          ', '')
+          insert_before_once('作業報告書.md', '## 2026-09-07 Phase 17 — Product Measurement / Feedback / Experimentation Integration', '## 2026-09-07 Phase 1 + Phase 19 — Requirements / External Integration Promotion', report_entry)
+
+          version_path = ROOT / 'guide-version.json'
+          version_path.write_text(json.dumps({
+              'guideVersion': '1.21.0',
+              'updated': '2026-09-07',
+              'status': 'candidate'
+          }, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+          PY
+
+      - name: Check whitespace and patch integrity
+        run: git diff --check
+
+      - name: Validate guide structure and links
+        run: node tests/validate-guide.mjs
+
+      - name: Validate exhaustive audit contracts
+        run: node tests/validate-audit-contract.mjs
+
+      - name: Validate data storage contracts
+        run: node tests/validate-data-storage-contract.mjs
+
+      - name: Record promotion validation and remove temporary workflow
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          path = Path('作業報告書.md')
+          text = path.read_text(encoding='utf-8')
+          text = text.replace(
+              '- Promotion workflowで`git diff --check`、Guide Validator、Audit Contract Validator、Data Storage Contract Validatorを実行',
+              '- Promotion workflowで`git diff --check`、Guide Validator、Audit Contract Validator、Data Storage Contract Validator: **Passed**',
+              1
+          )
+          path.write_text(text, encoding='utf-8')
+          PY
+          rm .github/workflows/apply-phase-1-19.yml
+
+      - name: Commit promoted rules
+        shell: bash
+        run: |
+          git diff --check
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Promote Phase 1 and Phase 19 guide rules"
+          git push origin HEAD:${GITHUB_REF_NAME}
