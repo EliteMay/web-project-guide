@@ -1,0 +1,37 @@
+name: Temporary Guide 1.22.0 Release
+
+on:
+  push:
+    branches:
+      - "guide/release-1.22.0"
+
+permissions:
+  contents: write
+
+jobs:
+  release-docs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Apply Guide 1.22.0 release metadata
+        run: python maintenance/scripts/temp-release-1-22-0.py
+      - name: Remove temporary release assets
+        run: |
+          rm maintenance/scripts/temp-release-1-22-0.py
+          rm .github/workflows/temp-release-1-22-0.yml
+      - name: Validate final release state
+        run: |
+          node tests/validate-guide.mjs
+          git diff --check
+      - name: Commit Guide 1.22.0 release state
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Release Guide 1.22.0"
+          git push origin HEAD:${GITHUB_REF_NAME}
