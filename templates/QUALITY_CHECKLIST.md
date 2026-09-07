@@ -13,6 +13,7 @@
 - [ ] 変更した主要Flow / Button / Linkが実際に動く
 - [ ] Existing Data / Save / URL /公開Contractを意図せず壊していない
 - [ ] Secret / Token / Password /不要な個人情報を公開ArtifactやLogへ入れていない
+- [ ] High-risk変更ではRollback / Recovery / Forward-fixのどれが使えるか必要範囲で確認した
 - [ ] Temporary Script / Debug UI / Placeholder /不要Artifactを完成状態へ残していない
 - [ ] 重大Bugに必要なRegression Guardを追加した
 - [ ] README / Spec / Work Report等、変更で陳腐化したDocumentationを更新した
@@ -30,7 +31,8 @@
 | Page Load / 重いRuntime | Performance / Reliability | [05](../docs/05-performance-reliability.md) |
 | Runtime Diagnostics / Remote Handoff | Observability | [15](../docs/15-development-observability.md) |
 | GitHub Pages / 公開Site | Pages / Public URL / Repository discoverability | [08](../docs/08-github-pages.md) / [10](../docs/10-project-management.md) |
-| Public / Auth / API / Cloud | Security / Dependency | [06](../docs/06-security.md) / [13](../docs/13-dependencies-assets.md) |
+| Public / Auth / OAuth / API / Cloud / AI | Security / Privacy / Dependency | [06](../docs/06-security.md) / [13](../docs/13-dependencies-assets.md) |
+| Release / Rollback / Legacy | Version / Maintenance | [09](../docs/09-maintenance.md) |
 | `LEARNING` | Learning Content | [01](../docs/01-requirements.md) |
 | `GAME` | Game / Playtest | [19](../docs/19-game-development.md) |
 | `ELECTRON` | Distribution / Update | [11](../docs/11-electron-distribution.md) |
@@ -92,6 +94,20 @@
 - [ ] Third-party API / CDN / Provider失敗時の影響とFallbackを確認した
 - [ ] 追加最適化のBenefitがComplexity / Regression Riskより小さい場合、過剰最適化を止めた
 
+## Security / Privacy / AI — 該当時
+
+- [ ] AuthNとAuthZを分け、UI表示やClient-provided role / user IDだけで権限を決めていない
+- [ ] OAuth / OIDC採用時、Current Provider guidanceに従いPKCE / redirect / state / nonce / scope等を必要範囲で確認した
+- [ ] BrowserからCloudへ直接Accessする場合、RLS / Grant / operation permissionを必要範囲で確認した
+- [ ] `service_role` / secret / bypass credentialをFrontendへ置いていない
+- [ ] Upload / Import / User Contentでtype / size / path / archive / stored XSS等のRiskを必要範囲で確認した
+- [ ] Public endpoint / paid API / AI proxyでrate / size / count / cost abuseの上限を確認した
+- [ ] Analytics / replay / diagnosticsで不要なPersonal Data・Token・form本文等を収集 /送信していない
+- [ ] Privacy上必要なData flow / retention / provider behaviorをCurrent条件で確認した
+- [ ] AI / RAGへ渡す外部ContentをUntrusted Dataとして扱い、ModelをAuthorization boundaryにしていない
+- [ ] AI Toolへ最小権限を与え、高Impact actionは必要なdeterministic validation / confirmationを通す
+- [ ] Security Scanner / audit結果だけでSecurity完了扱いしていない
+
 ## Diagnostics / AI Handoff
 
 - [ ] Error / Rejection /重要なFetch・Storage Failureを必要範囲で捕捉できる
@@ -136,6 +152,16 @@
 - [ ] Auto Update採用時、旧Version → 新Version / Restart / userData維持を必要範囲で確認した
 - [ ] Update失敗時に手動Release導線と現Version継続利用ができる
 - [ ] 実機未確認・Code Signing等の配布制約を明示した
+
+## Release / Rollback / Maintenance — 該当時
+
+- [ ] Release ArtifactとSource Commit / Version / Tagの対応を追跡できる
+- [ ] Broken Releaseを同Version Artifactの無言差し替えだけで解決していない
+- [ ] Code / Deploy / Data / Config / External StateのどこまでRollback対象か確認した
+- [ ] Schema / Data変更ではRollbackよりForward-fixが安全な場合を含めて判断した
+- [ ] Irreversibleな変換前に必要なBackup / Snapshotを確認した
+- [ ] Deploy failureとBroken Productionを区別した
+- [ ] Hotfix / Legacy / temporary patchを恒久Layerとして残していない
 
 ## Public / Cloud / Media — 該当時
 
