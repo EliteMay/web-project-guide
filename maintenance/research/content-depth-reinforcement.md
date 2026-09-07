@@ -257,7 +257,7 @@ Main reinforcement:
 - Audit date: 2026-09-07
 - Guide version: `1.21.0`
 - 40-point audit merged-main baseline: `7c2eb0bef500b9de6cd773f0438b1ca591c07a89`
-- Current reinforcement branch: `guide/reinforce-project-profiles`
+- Current reinforcement state: merged main `345211dbb86be6d5903eac1bda94f59d5c28d1c0`
 - Owner count: 24 (`docs/00`〜`docs/23`)
 - Phase 1: reinforced / no longer active backlog
 - Phase 19: reinforced / no longer active backlog
@@ -266,6 +266,6 @@ Main reinforcement:
 - Learning / Explanation: reinforced / no longer active backlog
 - GitHub Pages / Static Delivery: reinforced / no longer active backlog
 - Browser / Web Platform Compatibility: reinforced / no longer active backlog
-- Project Profile Decision Depth: reinforced / no longer active backlog after this branch merges
-- Active depth backlog after this branch: None
+- Project Profile Decision Depth: reinforced / no longer active backlog
+- Active depth backlog: None
 - Detailed audit: `maintenance/audits/2026-09-07-40-point-content-depth-audit.md`
