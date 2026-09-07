@@ -56,12 +56,27 @@
 
 ## Data / Storage / Import / Migration
 
+- [ ] Canonical / Derived / Search Index / Cache / History / Backupの役割を必要範囲で分離した
+- [ ] Local / Cloudを併用する場合、Data Authority / Source of Truthが明確
 - [ ] Data Source of Truth / Schema / ID / Storage Keyが明確
+- [ ] Local-first / Cloud-first / Local-onlyをData特性から選び、Storage技術を先に固定していない
+- [ ] Offline Edit / Createを許可する場合、許可操作・Local保存・Pending Queue・Reconnect後のConflict Checkを確認した
+- [ ] Local Saved / Sync Pending / Synced / Save Failed / Sync Failed / Conflictを必要範囲で区別した
+- [ ] Sync対象から再生成可能なCache / Index / Derived Dataを無条件に含めていない
+- [ ] Conflict ResolutionをData riskに合わせ、重要Dataへ無条件LWWを適用していない
+- [ ] 古いRevision / late Autosaveが新しいStateを上書きしない
+- [ ] Edit vs Deleteで必要ならTombstone /同等の削除Contractを確認した
 - [ ] Existing Save / Schema変更ではMigration要否を確認した
 - [ ] 破壊的Import / Reset / Restore前にValidationとRecovery手段を確認した
-- [ ] Import / Migration失敗時に既存Dataを半端な状態へしない
-- [ ] Save → Reload / Backup → Restore等、変更に必要なRound-tripを確認した
+- [ ] Import / Migration / Restore失敗時に既存Dataを半端な状態へしない
+- [ ] Corrupt / Future Schemaを即削除・上書きせずRecovery / Quarantine手段を確認した
+- [ ] Cache削除後の再取得、Index破損後のRebuildが必要な範囲で成立する
+- [ ] 重要UGCのStable ID / Blob参照 / Cleanup / Export / Backup / Conflict Recoveryを必要範囲で確認した
+- [ ] Save → Reload / Backup → Restore → Reload → Integrity Validation等、変更に必要なRound-tripを確認した
+- [ ] BackupをCloud Sync / Autosave / Undoの代用として扱っていない
+- [ ] Backup / History / SnapshotのRetentionが無制限Defaultになっていない
 - [ ] 大容量Mediaや構造化DataをStorage特性に合わない場所へ無条件保存していない
+- [ ] Quota pressure時にCanonical User Dataより先にCache / Derived / Rebuildable IndexをCleanup候補としている
 
 ## Performance / Reliability
 
