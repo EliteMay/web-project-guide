@@ -247,6 +247,63 @@ This means a correct router is not treated as sufficient evidence of compliance.
 
 **Adoption status:** candidate for later comparison, not accepted.
 
+## N-09 — `Not Applicable` is a reviewed conclusion, not an empty state
+
+### Evidence
+
+NASA technical-authority guidance explicitly includes confirming that requirements marked `Not-Applicable` in a project's compliance matrix are genuinely not relevant or are not capable of being applied. NASA's compliance-matrix guidance also notes that technical authorities routinely review whether `Not Applicable` entries are sufficiently justified.
+
+Sources:
+
+- NASA Software Engineering Handbook, `SWE-126 - Waiver and Deviation Considerations`
+  - https://swehb.nasa.gov/spaces/7150/pages/16450524/SWE-126%2B-%2BWaiver%2Band%2BDeviation%2BConsiderations
+- NASA Software Engineering Handbook, `SWE-125 - Requirements Compliance Matrix`
+  - https://swehb.nasa.gov/spaces/SWEHBVD/pages/102695489/SWE-125%2B-%2BRequirements%2BCompliance%2BMatrix
+
+### Finding
+
+NASA treats `Not Applicable` as an affirmative decision that can itself be wrong and therefore deserves review. It is not equivalent to an omitted row or an unchecked rule.
+
+### Possible implication for this Guide
+
+A zero-miss audit should probably make these states distinguishable:
+
+- `Applicable`
+- `Not Applicable — justified`
+- `Exception / Override — applicable but intentionally not followed`
+- `Unresolved`
+- `Not considered` / missing
+
+The last state should never silently pass as `Not Applicable`.
+
+**Adoption status:** candidate for later comparison, not accepted.
+
+## N-10 — Exception from an applicable requirement carries risk, rationale, mitigation, and approval
+
+### Evidence
+
+NASA distinguishes relief from an applicable requirement from simple non-applicability. For an applicable requirement that is entirely or partially relieved, the Requirements Mapping Matrix records risk and rationale, related mitigations/risk acceptance, and approval by the designated Technical Authority. NASA separately defines waiver/deviation processes rather than allowing an applicable requirement to be silently dropped.
+
+Sources:
+
+- NASA Software Engineering Handbook, `SWE-125 - Requirements Compliance Matrix`
+  - https://swehb.nasa.gov/spaces/SWEHBVD/pages/102695489/SWE-125%2B-%2BRequirements%2BCompliance%2BMatrix
+- NASA Software Engineering Handbook, `SWE-126 - Waiver and Deviation Considerations`
+  - https://swehb.nasa.gov/spaces/7150/pages/16450524/SWE-126%2B-%2BWaiver%2Band%2BDeviation%2BConsiderations
+
+### Finding
+
+`Not Applicable` and `Exception` are materially different states:
+
+- `Not Applicable` means the requirement does not apply.
+- `Exception / relief` means it does apply, but there is an explicit decision not to satisfy it in the normal way.
+
+### Possible implication for this Guide
+
+The Guide should avoid a single generic `skip` state. If a MUST/required rule applies but is intentionally overridden, that should remain visible as an exception with reason, impact/risk, and mitigation rather than disappearing from completion evidence.
+
+**Adoption status:** candidate for later comparison, not accepted.
+
 ---
 
 ## NASA — Current Working Takeaways
@@ -261,6 +318,8 @@ These are **research takeaways, not requirements**:
 6. Make `Not Applicable` explicit rather than equivalent to `not considered`.
 7. Re-evaluate classification/applicability after meaningful scope or runtime changes.
 8. Verify completion against the resolved requirement set; routing success alone is not completion evidence.
+9. Review `Not Applicable` decisions because they are themselves a possible source of omission.
+10. Keep `Not Applicable` separate from `Exception / Override`; applicable rules that are intentionally relieved should retain rationale, risk, mitigation, and visible approval/decision evidence.
 
 ## Open Questions Before Any Adoption
 
