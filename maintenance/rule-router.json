@@ -445,6 +445,38 @@
         "docs/07-testing-quality.md",
         "docs/13-dependencies-assets.md"
       ]
+    },
+    {
+      "id": "github-pages-static-delivery",
+      "workType": "DEPLOYMENT",
+      "domains": [
+        "GITHUB_PAGES"
+      ],
+      "signals": [],
+      "mustInclude": [
+        "docs/08-github-pages.md",
+        "docs/10-project-management.md",
+        "docs/09-maintenance.md",
+        "docs/07-testing-quality.md"
+      ]
+    },
+    {
+      "id": "browser-web-platform-compatibility",
+      "workType": "REQUIREMENTS",
+      "domains": [
+        "TESTING_QUALITY",
+        "DEPENDENCIES_ASSETS"
+      ],
+      "signals": [
+        "RESEARCHABLE_QUESTION"
+      ],
+      "mustInclude": [
+        "docs/01-requirements.md",
+        "docs/12-project-profiles.md",
+        "docs/07-testing-quality.md",
+        "docs/13-dependencies-assets.md",
+        "docs/20-evidence-first-research.md"
+      ]
     }
   ]
 }

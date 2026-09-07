@@ -85,6 +85,46 @@ Electron / bundler / framework / updater等では必要に応じて:
 
 更新後は主要FlowとBuild / Pagesを確認し、Electron / Installer等は必要なら [11](11-electron-distribution.md) の実機ValidationへRoutingします。
 
+## Web Platform Compatibility Dependencies
+
+CONDITIONAL: Polyfill / transpilation / compatibility helperは「古いBrowserでも何となく動かす」ためではなく、[01 Browser / Web Platform Support Contract](01-requirements.md#browser--web-platform-support-contract)で必要なGapを埋めるDependencyとして扱います。
+
+### 導入Criteria
+
+導入前に必要に応じて次を確認します。
+
+- Support Targetで不足する具体的なAPI / syntax / CSS capability
+- Feature Detection + simpler fallbackで十分でないか
+- Polyfillで再現できるsemanticか
+- Transpilationが必要なsyntax-level incompatibilityか
+- Bundle size / startup / maintenance cost
+- Dependency provenance / license / security / update状態
+
+対象Userがほぼ存在しないLegacy Runtimeのために巨大compatibility bundleを全Userへ常時配信しません。一方、Current RequirementsでSupport必須なら`modern browserでは動く`を理由に削除しません。
+
+### Feature Detectionとの役割差
+
+Feature DetectionはCapabilityの有無を判断しますが、未対応syntaxを古いEngineがparseできない問題までは解決できません。必要ならtranspilation / build targetを使います。
+
+PolyfillもNative implementationと完全同一とは仮定せず、Permission / performance / security / edge behaviorに差があるFeatureはProject Riskに合わせて検証します。
+
+### Configuration Authority
+
+Browserslist / build target / transpiler target等を使う場合、Current RequirementsのSupport Targetから導かれるImplementation Configとして扱います。Configだけを第二Source of Truthにしません。
+
+Support Target変更時は必要に応じて:
+
+- build target
+- polyfill set
+- automated browser matrix
+- documentation / unsupported message
+
+を同期します。
+
+### Removal / Cleanup
+
+Support終了やNative support拡大で不要になったCompatibility Layerは、Representative Browser test後に削除候補にします。古いPolyfill / conditional branch / transpilation settingを理由なく恒久化せず、Performance / Security / maintenance benefitがある場合にcleanupします。
+
 ## Update Automation / Dependabot
 
 Dependabot等は**更新候補を見つける仕組み**であり、安全なAuto Mergeの証明ではありません。

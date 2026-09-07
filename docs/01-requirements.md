@@ -651,6 +651,75 @@ Prototype / Playable MVP / Main Game Completeを混同しません。詳細は [
 - Visual ambition
 - Real-device requirement
 
+## Browser / Web Platform Support Contract
+
+CONDITIONAL: Browser上のPrimary Taskや新しいWeb API / CSS / JavaScript featureがProduct behaviorへ影響する場合、`Chromeで動いた`や`Baseline対応`だけでSupport Contractを決めません。Current compatibility research evidenceは [Web Platform Compatibility Research](../references/web-platform-compatibility-research.md) に保存します。
+
+### Support TargetをAudienceから決める
+
+Supported Browser / Runtime / Deviceは必要に応じて次から決めます。
+
+- Target User / actual usage environment
+- Public Site / internal Tool / managed device等の利用Context
+- Desktop / Mobile / WebView / installed PWA等のRuntime
+- Primary Taskで必要なWeb Platform capability
+- Accessibility / input / media / permission要件
+- Security update可能性 / provider constraint
+- Compatibility implementation / testing / maintenance cost
+
+`主要Browserの最新2Version`等をUniversal Ruleにしません。Audienceが限定されたinternal Toolと一般公開Siteでは合理的なSupport Matrixが異なります。
+
+必要なら次を分けます。
+
+```text
+Supported
+= Primary TaskをContractどおり完了できる
+
+Enhanced
+= 追加Featureは使えるがCore Taskは必須でない
+
+Unsupported / Degraded
+= 明示Fallback / limitation / upgrade guidanceが必要
+```
+
+### Baseline / Compatibility Dataの役割
+
+MDN BaselineやBrowser Compatibility Dataは**採用候補を判断するEvidence**として使えますが、ProjectのSupport Contractそのものではありません。Baseline対象外の古いBrowser、OS WebView、Assistive Technology、Provider固有Runtime等は別確認が必要な場合があります。
+
+Current support状況でDecisionが変わる場合は [20 Evidence-first Research](20-evidence-first-research.md) でCurrent Evidenceを確認します。
+
+### Feature Detection / Progressive Behavior
+
+Browser名を見て挙動を分ける前に、必要なCapabilityを検出できるか確認します。
+
+- CSS feature → `@supports` / `CSS.supports()`等
+- JavaScript API → relevant object / method / capabilityの存在確認
+- Permission / media / device capability → 実際のAPI result / state確認
+
+UA sniffing / Browser-name branchingは、実際のBrowser-specific behaviorをFeature Detection等で安全に判定できない場合だけ狭く使います。
+
+Progressive Enhancementを使う場合、Unsupported FeatureでCore Taskまで壊さず、必要に応じてBasic fallback、read-only、manual alternative、clear unsupported message等へdegradeします。
+
+### New Web API Adoption
+
+Primary Taskへ新しいWeb API / syntax / CSS featureを採用する場合は必要範囲で次を決めます。
+
+- Required capability
+- Current support evidence
+- Support TargetとのGap
+- Feature Detection可否
+- Fallback / unsupported behavior
+- Polyfill / transpilationの必要性
+- Real browser / real device確認の必要性
+
+Polyfill / transpilation / compatibility dependencyは [13 Dependencies / Assets](13-dependencies-assets.md) を正本とします。
+
+### Support終了
+
+古いBrowser / Runtime supportを終了する場合、単にTestを削除して完了としません。MaterialなUser impactがある場合は、actual usage、Security / provider constraint、maintenance cost、alternative availabilityを確認し、Requirements / Help / Release information等を必要範囲で更新します。
+
+少数Userがいるという理由だけで永久Supportを固定せず、Support終了がPrimary Taskを突然壊す場合はsilent breaking changeにしません。
+
 ## Completion Conditionの書き方
 
 観測可能にします。

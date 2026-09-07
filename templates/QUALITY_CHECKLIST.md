@@ -35,6 +35,7 @@
 | AI Feature / RAG / Agent / Model change | Output / Eval / Grounding / Agent / Model lifecycle | [01](../docs/01-requirements.md) / [07](../docs/07-testing-quality.md) / [20](../docs/20-evidence-first-research.md) / [13](../docs/13-dependencies-assets.md) / [06](../docs/06-security.md) |
 | General Web Deployment / Managed Hosting / Serverless / Backend | Runtime / Environment / Release / Validation | [10](../docs/10-project-management.md) / [09](../docs/09-maintenance.md) / [07](../docs/07-testing-quality.md) |
 | GitHub Pages / 公開Site | Pages / Public URL / Repository discoverability | [08](../docs/08-github-pages.md) / [10](../docs/10-project-management.md) |
+| Browser / Web Platform compatibility | Support Target / Feature fallback / Browser verification / Compatibility dependency | [01](../docs/01-requirements.md) / [07](../docs/07-testing-quality.md) / [13](../docs/13-dependencies-assets.md) |
 | Public / Auth / OAuth / API / Cloud / AI | Security / Privacy / Dependency | [06](../docs/06-security.md) / [13](../docs/13-dependencies-assets.md) |
 | External API / SDK / Webhook | Contract / Reliability / Security / Validation / Lifecycle | [02](../docs/02-architecture.md) / [05](../docs/05-performance-reliability.md) / [06](../docs/06-security.md) / [07](../docs/07-testing-quality.md) / [13](../docs/13-dependencies-assets.md) |
 | Release / Rollback / Legacy | Version / Maintenance | [09](../docs/09-maintenance.md) |
@@ -160,12 +161,29 @@
 
 ## GitHub Pages / Public Site
 
-- [ ] 相対Path / `fetch()` / File名Caseが公開Subpathでも正常
+- [ ] Branch / GitHub ActionsのPublishing SourceがBuild / Artifact要件に合っている
+- [ ] Final Source Commit → Build / Artifact → Pages deploy → Public URLの対応を必要範囲で追跡できる
+- [ ] 相対Path / `fetch()` / File名CaseがProject Site subpathでも正常
+- [ ] SPA /複数RouteではDirect Open / Refresh / 404 recoveryを実公開条件で確認した
 - [ ] `localhost` / PC固有絶対Pathに依存していない
-- [ ] 公開ArtifactへSecretを入れていない
+- [ ] 公開ArtifactへSecret /不要なprivate fileを入れていない
+- [ ] Custom Domain使用時、Pages設定 / DNS / domain verification / HTTPSを必要範囲で確認した
+- [ ] Service Worker / cache採用時、旧Revisionが残るFailureとRecoveryを確認した
+- [ ] Current Pages limitation / intended useがProduct要件へMaterialに影響する場合、Current公式情報を再確認した
 - [ ] 公開URLで主要導線を確認した、または実公開未確認と明記した
 - [ ] 確認した公開URLがユーザーへ渡す最終Commitと対応している
 - [ ] 代表Site URLがある場合、README上部とRepository About `Website`から到達できる
+
+## Browser / Web Platform Compatibility — 該当時
+
+- [ ] Target User / Runtime / Primary TaskからSupported / Enhanced / Unsupportedの境界を必要範囲で定義した
+- [ ] Baseline / compatibility tableだけで実ProjectのBrowser対応を確認済み扱いしていない
+- [ ] Browser名分岐よりFeature Detectionを優先し、必要なunsupported / fallback pathを確認した
+- [ ] 新Web API / CSS / syntax採用時、Support Targetとの差とfallback / polyfill / transpilation要否を確認した
+- [ ] Representative Browser / engine / Desktop-Mobile / WebView等をProject riskに合わせて選んだ
+- [ ] Permission / Media / Touch / PWA / WebView等で必要ならReal Browser / Real Deviceを確認した、または未確認と記録した
+- [ ] Polyfill / transpilationを使う場合、Target Runtimeで実際に動作し、不要なLegacy layerを残していない
+- [ ] Browser support終了時、Current Requirements / test matrix / user-facing limitationを必要範囲で同期した
 
 ## Content / IA / Search / Discoverability — 該当時
 
