@@ -19,14 +19,15 @@ User-facing UIがある場合は [17 Visual Quality Baseline](docs/17-visual-qua
 
 ## 学習・解説サイト
 
-- Requirements / Learning Content → [01](docs/01-requirements.md)
+- Requirements / Learning Outcome / Content → [01](docs/01-requirements.md)
 - Project Profile → [12](docs/12-project-profiles.md)
 - Structure / Learning Flow → [22](docs/22-task-first-structure-flow-research.md)
+- Learning / Assessment Verification → [07](docs/07-testing-quality.md)
 - UI / 読みやすさ → [04](docs/04-ui-ux-accessibility.md)
 - 大きなVisual変更 → [18](docs/18-domain-first-visual-research.md)
 - 大量Data → [03](docs/03-data-storage.md)
 
-教材が存在するだけで完成扱いせず、Starting Knowledge、学習順、説明深度、理解確認、次の学習導線を確認します。
+教材が存在するだけで完成扱いせず、Starting Knowledge、Learning Objective、前提Concept、説明 / Practiceの深さ、Understanding / Application evidence、Feedback、Next Stepを確認します。
 
 ## ゲーム
 
@@ -116,7 +117,22 @@ Navigationの分類・階層・到達経路を変える作業はStructure / Flow
 
 旧Runtime / Patch / Observer後付けを増やすのではなく正式責務へ統合します。
 
+## Web Deployment / Managed Hosting / Serverless / Backend
+
+GitHub Pages以外を含む一般Web Deploymentでは:
+
+- Hosting / Runtime shape、Environment / Config orchestration → [10 Project Management](docs/10-project-management.md)
+- Release / Rollback / Recovery → [09 Version / Maintenance](docs/09-maintenance.md)
+- Deployment / Environment Verification → [07 Testing / Quality](docs/07-testing-quality.md)
+- Runtime failure / degradation → [05 Performance / Reliability](docs/05-performance-reliability.md)
+- Secret / permission → [06 Security](docs/06-security.md)
+- Runtime diagnostics → [15 Observability](docs/15-development-observability.md)
+
+Static / Managed App / Serverless / Edge / Backend等をProvider名から先に固定せず、必要Runtime capabilityから選びます。Local / Preview / Staging / Productionを全Projectへ機械的に増やしません。
+
 ## GitHub Pages / 公開
+
+GitHub Pagesを使う場合は一般Deployment routeに加えて:
 
 - [08 GitHub Pages](docs/08-github-pages.md)
 - [10 Project Management](docs/10-project-management.md)
