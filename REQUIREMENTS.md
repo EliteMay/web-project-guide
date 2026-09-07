@@ -274,11 +274,13 @@ Prose wordingを大量固定しません。
 
 Guide自身も自分のRuleを可能な範囲でself-applyします。
 
-## 17. Open Research Assets
+## 17. Research Assets / Promotion State
 
 Requirements Decision Systemの未完了Research Contractは [`maintenance/research/requirements-decision-system.md`](maintenance/research/requirements-decision-system.md) に保存します。
 
-Data / Storage Decision SystemのPhase 4 Research Contractは [`maintenance/research/data-storage-decision-system.md`](maintenance/research/data-storage-decision-system.md) に保存します。Local-first / Offline / Cloud Sync / Conflict / Autosave / Corruption / Backup / Large Data / Cache / UGC / Advanced Sync等のResearch Domain、P0 / P1 / P2優先度、Failure Validation CaseはこのResearch AssetをCurrent Contractとします。
+Data / Storage Decision SystemのPhase 4 Researchは実装済みです。Current Common Ruleは [`docs/03-data-storage.md`](docs/03-data-storage.md)、Verification Strategyは [`docs/07-testing-quality.md`](docs/07-testing-quality.md) を正本とし、[`maintenance/research/data-storage-decision-system.md`](maintenance/research/data-storage-decision-system.md) はPromotion後のhistorical non-normative evidenceとして保持します。
+
+Phase 4で確定したLocal-first / Offline / Cloud Sync / Conflict / Autosave / History / Optimistic Update / Large Data / Search Index / Cache / UGC / Corruption / Backup / Advanced Sync境界は、Research Assetを第二の正本にせず各専門Ownerへ統合します。
 
 Root RequirementsへResearch Domain一覧・調査手順・一時Findingを積みません。ResearchがCommon Ruleへ昇格する場合は各専門Owner / `docs/20` / `docs/14`等の既存Owner責務を維持し、Current Contractへ必要な恒久結果だけ反映します。
 
@@ -330,14 +332,16 @@ Task-first Structure / Flow Researchは既に`docs/22`へPromotion済みのた�
 
 ## 21. Implementation Handoff
 
-- Requirements Status: Ready for implementation
+- Requirements Status: Ready for ongoing implementation
 - Information Architecture cleanup: Implemented
 - Template / Checklist responsibility split: Implemented
 - Task-first Structure / Flow owner: Implemented
 - Deep System Audit method: Implemented
 - Agent autonomy / User Decision exception: Implemented
-- Conversation Handoff / Recovery owner: Pending final audit PR merge and validation
-- Exhaustive owner audit / remediation: In progress until current audit PR is merged and validated
+- Conversation Handoff / Recovery owner: Implemented
+- Exhaustive owner audit / remediation: Implemented and validated in v1.20.0 audit
+- Data / Storage Decision System Phase 4: Implemented in current `docs/03` / `docs/07` / Quality Checklist
+- Requirements Decision System Research: Open
 - Blocking Decisions: None
 
 Current auditの一時Finding / score /修正Statusは`maintenance/audits/`を参照します。
