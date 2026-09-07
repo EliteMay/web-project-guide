@@ -1,0 +1,47 @@
+name: Fix Phase 1 and Phase 19 Promotion Workflow
+
+on:
+  push:
+    branches: [guide/phase-1-19-integration]
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 0
+
+      - name: Normalize research EOF writes
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          path = Path('.github/workflows/apply-phase-1-19.yml')
+          text = path.read_text(encoding='utf-8')
+          replacements = {
+              "phase1_research.write_text(text, encoding='utf-8')": "phase1_research.write_text(text.rstrip() + '\\n', encoding='utf-8')",
+              "phase19_research.write_text(text, encoding='utf-8')": "phase19_research.write_text(text.rstrip() + '\\n', encoding='utf-8')",
+          }
+          for old, new in replacements.items():
+              if old not in text:
+                  raise RuntimeError(f'missing workflow anchor: {old}')
+              text = text.replace(old, new, 1)
+          path.write_text(text, encoding='utf-8')
+          PY
+          rm .github/workflows/fix-phase-1-19-workflow.yml
+          git diff --check
+
+      - name: Commit workflow fix
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Fix Phase 1 and Phase 19 promotion whitespace"
+          git push origin HEAD:${GITHUB_REF_NAME}
