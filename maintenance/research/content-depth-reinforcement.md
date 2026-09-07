@@ -219,9 +219,11 @@ Main reinforcement:
 - Performance / Reliability + External delivery — `docs/05`
 - Security / Privacy — `docs/06`
 - Testing / Verification + External Integration + Deployment + Learning Verification — `docs/07`
+- GitHub Pages / Static Delivery Decision Depth — `docs/08`
 - Version / Maintenance / Rollback / Product outcome follow-up — `docs/09`
 - GitHub-centered Project Management + General Web Deployment → `docs/10`
 - Electron / Distribution / Update / Electron Security — `docs/11`
+- Project Profiles / selection / combination / lifecycle / drift — `docs/12`
 - Dependencies / Assets / Supply Chain / External contract lifecycle — `docs/13`
 - Continuous Improvement / Deep Audit — `docs/14`
 - Observability / Project Learnings / External diagnostics — `docs/15`
@@ -244,7 +246,7 @@ Main reinforcement:
 2. このFileを**Content Depth候補**として読む
 3. Current Ownerで既に解消済みの項目を除外する
 4. `Defect`と`Content Depth Gap`を別Registerで扱う
-5. Active candidateをPriority順に再監査する
+5. Active candidateがある場合だけPriority順に再監査する
 6. 1回の要件定義で全部を増やさず、優先領域を絞る
 7. External Evidenceが必要なら`docs/20`でResearchする
 8. Promotion時は既存Ownerへの統合を優先し、新Owner / Gate / Profileを増やす前にRule Budgetを確認する
