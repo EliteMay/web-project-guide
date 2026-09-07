@@ -1,0 +1,82 @@
+name: Apply Phase 1 and Phase 19 Promotion v2
+
+on:
+  push:
+    branches: [guide/phase-1-19-integration]
+
+permissions:
+  contents: write
+
+jobs:
+  promote:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '22'
+
+      - name: Extract and run promotion logic
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import textwrap
+
+          workflow = Path('.github/workflows/apply-phase-1-19.yml').read_text(encoding='utf-8')
+          marker = "python - <<'PY'\n"
+          start = workflow.index(marker) + len(marker)
+          end = workflow.index("\n          PY", start)
+          script = textwrap.dedent(workflow[start:end])
+          script = script.replace(
+              "phase1_research.write_text(text, encoding='utf-8')",
+              "phase1_research.write_text(text.rstrip() + '\\n', encoding='utf-8')",
+              1,
+          )
+          script = script.replace(
+              "phase19_research.write_text(text, encoding='utf-8')",
+              "phase19_research.write_text(text.rstrip() + '\\n', encoding='utf-8')",
+              1,
+          )
+          Path('/tmp/promote-phase-1-19.py').write_text(script, encoding='utf-8')
+          PY
+          python /tmp/promote-phase-1-19.py
+
+      - name: Validate promoted guide
+        shell: bash
+        run: |
+          git diff --check
+          node tests/validate-guide.mjs
+          node tests/validate-audit-contract.mjs
+          node tests/validate-data-storage-contract.mjs
+
+      - name: Record validation
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          path = Path('作業報告書.md')
+          text = path.read_text(encoding='utf-8')
+          text = text.replace(
+              '- Promotion workflowで`git diff --check`、Guide Validator、Audit Contract Validator、Data Storage Contract Validatorを実行',
+              '- Promotion workflowで`git diff --check`、Guide Validator、Audit Contract Validator、Data Storage Contract Validator: **Passed**',
+              1,
+          )
+          path.write_text(text, encoding='utf-8')
+          PY
+          git diff --check
+
+      - name: Commit promoted guide changes
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Promote Phase 1 and Phase 19 guide rules"
+          git push origin HEAD:${GITHUB_REF_NAME}
