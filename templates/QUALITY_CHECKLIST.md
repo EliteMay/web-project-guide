@@ -33,11 +33,12 @@
 | Content / IA / Search / Discoverability | Content quality / Findability / Public discovery | [01](../docs/01-requirements.md) / [22](../docs/22-task-first-structure-flow-research.md) / [07](../docs/07-testing-quality.md) |
 | Measurement / Analytics / Experimentation | Outcome / Evidence / Rollout validation | [01](../docs/01-requirements.md) / [20](../docs/20-evidence-first-research.md) / [09](../docs/09-maintenance.md) / [07](../docs/07-testing-quality.md) |
 | AI Feature / RAG / Agent / Model change | Output / Eval / Grounding / Agent / Model lifecycle | [01](../docs/01-requirements.md) / [07](../docs/07-testing-quality.md) / [20](../docs/20-evidence-first-research.md) / [13](../docs/13-dependencies-assets.md) / [06](../docs/06-security.md) |
+| General Web Deployment / Managed Hosting / Serverless / Backend | Runtime / Environment / Release / Validation | [10](../docs/10-project-management.md) / [09](../docs/09-maintenance.md) / [07](../docs/07-testing-quality.md) |
 | GitHub Pages / 公開Site | Pages / Public URL / Repository discoverability | [08](../docs/08-github-pages.md) / [10](../docs/10-project-management.md) |
 | Public / Auth / OAuth / API / Cloud / AI | Security / Privacy / Dependency | [06](../docs/06-security.md) / [13](../docs/13-dependencies-assets.md) |
 | External API / SDK / Webhook | Contract / Reliability / Security / Validation / Lifecycle | [02](../docs/02-architecture.md) / [05](../docs/05-performance-reliability.md) / [06](../docs/06-security.md) / [07](../docs/07-testing-quality.md) / [13](../docs/13-dependencies-assets.md) |
 | Release / Rollback / Legacy | Version / Maintenance | [09](../docs/09-maintenance.md) |
-| `LEARNING` | Learning Content | [01](../docs/01-requirements.md) |
+| `LEARNING` | Learning Outcome / Flow / Verification | [01](../docs/01-requirements.md) / [12](../docs/12-project-profiles.md) / [22](../docs/22-task-first-structure-flow-research.md) / [07](../docs/07-testing-quality.md) |
 | `GAME` | Game / Playtest | [19](../docs/19-game-development.md) |
 | `ELECTRON` | Distribution / Update | [11](../docs/11-electron-distribution.md) |
 
@@ -105,6 +106,21 @@
 - [ ] Soft Budget /代表的な重い状態を必要範囲で測定・Reviewした
 - [ ] Third-party API / CDN / Provider失敗時の影響とFallbackを確認した
 - [ ] 追加最適化のBenefitがComplexity / Regression Riskより小さい場合、過剰最適化を止めた
+
+## General Web Deployment / Environment — 該当時
+
+- [ ] Static / Managed App / Serverless / Edge / Backend等をProvider名ではなく必要Runtime capabilityから選んだ
+- [ ] Local / Preview / Staging / Productionを必要なEvidence / Risk isolationに応じて使い分け、不要なEnvironmentを増やしていない
+- [ ] Environment-specific configのAuthorityが明確で、同じ論理値をbranch判定や複数Fileへ独立Hardcodeしていない
+- [ ] Secret / privileged credentialをClient bundle / public artifactへ入れていない
+- [ ] Public URL / API origin / OAuth redirect / CORS / webhook callback等が対象Environmentと整合している
+- [ ] Intended final Commit / Buildと実Deploymentのrevision対応を確認した
+- [ ] Server / Function / Worker等がある場合、startup / health / readiness相当とPrimary Task smokeを必要範囲で確認した
+- [ ] Code + Schema / Config変更ではold/new revision共存やdeploy順序を考慮し、必要なCompatibility / Migration evidenceを確認した
+- [ ] Background / scheduled runtimeがある場合、trigger / duplicate / missed / retry / old-new coexistenceを必要範囲で確認した
+- [ ] Preview / temporary resourceのCleanupを確認した
+- [ ] Deploy failureとBroken Productionを区別し、必要なRollback / Recovery / Forward-fixを確認した
+- [ ] Preview / Staging成功を未確認のProduction behaviorへ読み替えていない
 
 ## Security / Privacy / AI — 該当時
 
@@ -178,9 +194,17 @@
 
 ## Learning
 
-- [ ] Starting Knowledge / Learning order / Target learnerが定義されている
-- [ ] 主要Lessonが用語紹介だけで終わらず、必要なWhat / Why / How / Exampleを持つ
-- [ ] Understanding check / Completionを必要に応じて区別した
+- [ ] Target Learner / Starting Knowledge / Learning Objective / Observable Capabilityが定義されている
+- [ ] Learning orderが必要なPrerequisite / Concept dependencyに基づき、Page番号やData順だけで決まっていない
+- [ ] 主要Lessonが用語紹介だけで終わらず、Objectiveに必要なWhat / Why / How / Example / Comparison / Practice等を持つ
+- [ ] Worked example / guided practice / independent practice / retrieval等を目的に応じて使い分け、全Lessonへ同じTemplateを強制していない
+- [ ] Lesson viewed / completionとUnderstanding / Application / Masteryを必要に応じて区別した
+- [ ] Assessment / Understanding checkがLearning Objectiveを実際に測り、RecognitionだけでApplicationを証明していない
+- [ ] Feedbackが正誤表示だけで終わらず、必要なReason / Review / Retry / Next Stepへ接続している
+- [ ] Diagnostic / Placementを使う場合、境界・誤判定・Recovery pathを確認した
+- [ ] 長期保持がProduct OutcomeならRetrieval / Review / delayed evidenceを必要範囲で確認した
+- [ ] Beginner learning pathとQuick Referenceを両方扱う場合、互いに不要な遠回りを強制していない
+- [ ] 時間で正解が変わる教材ではFreshness / version applicability / superseded contentを確認した
 - [ ] Lesson後のNext Step / Review導線を確認した
 
 ## Game

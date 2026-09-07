@@ -243,6 +243,61 @@ Testing Strategyとして守ること:
 
 実行時の短い確認項目は [Quality Checklist](../templates/QUALITY_CHECKLIST.md) を使用します。
 
+## Web Deployment / Environment Verification
+
+CONDITIONAL: Managed Hosting / Serverless / Edge / Backend、Environment設定、またはDeployment経路をMeaningfulに変更する場合、PipelineのSuccess表示だけでDeployment完成としません。[10 General Web Deployment / Runtime Environments](10-project-management.md#general-web-deployment--runtime-environments) のContractに対して、実際に使うEnvironmentで必要なEvidenceを確認します。Research evidenceは [General Web Deployment / Runtime Research](../references/web-deployment-runtime-research.md) に保存します。
+
+### Environment Evidenceの役割
+
+- **Local** — code / fixture / development behavior。Production networking / permission / domainの証明ではない。
+- **Preview** — candidate revisionの共有、UI / integration / route確認。Temporary resourceやProduction差を明示する。
+- **Staging** — Production-like integration、migration、permission、routing等を分離確認する価値がある場合。
+- **Production-safe Check** — Real domain / real permission / real network等、他Environmentでは確認できない事実に限ってBlast radiusを抑えて確認する。
+
+Environment数を増やすこと自体をQualityとしません。Productionとの差が大きいStagingを`本番同等`と誤表示しないことを優先します。
+
+### Deployment Smoke / Runtime Checks
+
+変更内容に応じて必要なものを選びます。
+
+- Intended final Commit / BuildからArtifactが生成・Deploymentされている。
+- Public URL / base path / API origin / static asset / route direct-openが対象Environmentで正しい。
+- Authを使う場合、redirect / callback / cookie / origin等が対象Environmentと整合する。
+- Runtime configurationが意図したEnvironmentへ入り、Secretやprivileged credentialがClient bundle / public artifactへ漏れていない。
+- Server / Function / Workerが必要ならstartup / readiness / health相当の観測とPrimary Task smokeが成立する。
+- External API / Storage / Queue等が必要な場合、Environmentごとのtargetを取り違えていない。
+- Failed deploy後にprevious known-good Productionが継続しているのか、Production自体が壊れたのかを区別する。
+- Preview / temporary resourceを作る場合、不要Resource / test data / scheduled job等を意図どおりcleanupできる。
+
+### Code / Schema / Configuration Compatibility
+
+Code deployとData / Schema / Config変更が同時に関係する場合、Deploy順序を暗黙にしません。
+
+必要に応じて:
+
+- old code + new schema / new code + old schemaのどちらが一時的に起こり得るか
+- rolling / partial deployでold/new revisionが共存するか
+- migration前後のread / write compatibility
+- configuration切替の前後で必須値が欠けないか
+- failure途中からRollback / Recovery / Forward-fixできるか
+
+を確認します。Data migrationは [03 Data / Storage](03-data-storage.md)、Rollback / Recoveryの判断は [09 Version / Maintenance](09-maintenance.md) を正本とします。
+
+### Background / Scheduled Runtime
+
+Cron / Queue / Worker / webhook consumer等を変更する場合は、Web画面のSmokeだけで完了扱いにしません。
+
+- Trigger / scheduleが実際に有効か
+- duplicate / missed executionへのbehavior
+- retry / idempotency
+- old/new worker coexistence
+- downstream failure / timeout
+- diagnostics / manual recovery
+
+をRiskに応じて確認します。
+
+Production-only Evidenceを現在確認できない場合は`Not Verified`とし、Preview成功をProduction確認済みへ読み替えません。Small Static SiteへStaging、synthetic monitoring、automatic rollback等を機械的に要求しません。
+
 ## Accessibility / Responsive / i18n Verification
 
 User-facing UIでは、Static HTML inspectionやDesktop screenshotだけでAccessibility / Responsive / i18n完了としません。[04 UI / UX / Accessibility](04-ui-ux-accessibility.md)のBehavioral Contractに対し、変更Riskと対象Userに合うRepresentative Matrixを選びます。
@@ -339,6 +394,72 @@ Broken link、Missing metadata、Duplicate ID、Invalid sitemap、Stale index re
 片方だけで全項目を確認済みにしません。Search Analytics / Traffic Dataは改善Evidenceとして利用できますが、Analytics導入自体をCompletion prerequisiteにしません。
 
 Validation depthは小規模Static Site、Content / Search中心Site、大量Content / Public-content Product等でRisk-basedに変えます。新しいStable Gateを増やさず、この章の通常Testing Strategyとして扱います。
+
+## Learning Product Verification
+
+CONDITIONAL: `LEARNING` Profileで理解・適用・保持がProduct価値に含まれる場合、教材の存在やLesson completionだけで品質を判定しません。[01 Learning / Explanation Content](01-requirements.md#learning--explanation-content) のObjective → Activity → Evidence → Feedback ContractをRiskに応じて確認します。
+
+### Objective / Assessment Alignment
+
+主要なLearning Objectiveについて、少なくとも次の対応を確認します。
+
+```text
+Learning Objective
+↓
+Learnerが行うActivity
+↓
+Assessment / Observable Evidence
+↓
+Feedback / Next Step
+```
+
+- `説明できる`Objectiveを選択肢のRecognitionだけで証明しない。
+- `適用できる / 解ける`ObjectiveをLesson閲覧や用語暗記だけでPassにしない。
+- `比較できる / 判断できる`Objectiveでは、似た選択肢・条件差・misconceptionをRepresentativeに含める。
+- Exact同一問題の反復だけでMasteryを断定せず、必要なら表現・数値・Contextの異なるVariantを見る。
+- Fixed score thresholdをCommon Ruleにせず、Objective / Risk /試験・実務用途に合うPass evidenceをProject側で定義する。
+
+### Representative Learner Cases
+
+変更内容に応じて必要なものを選びます。
+
+- Target Starting KnowledgeのLearnerが前提不足で詰まらず開始できる。
+- Prerequisiteを飛ばした場合に必要なConceptへ戻れる。
+- Normal lesson pathでObjectiveに必要なExplanation / Example / Practiceへ到達できる。
+- 混同しやすいConcept / common misconceptionを正しく区別できる。
+- Guided example後にindependent apply / solveできる（Objective上必要な場合）。
+- Beginner pathとQuick Referenceを両方持つ場合、それぞれが不要な遠回りを強制しない。
+- Long-term retentionがRequirementなら、時間を空けたRetrieval / Review evidenceを必要範囲で確認する。
+
+全ProjectへDelayed Testや正式User Studyを要求しません。単発Reference / How-toではTask completion / clarityの確認で十分な場合があります。
+
+### Feedback Verification
+
+Feedbackを持つ場合は正誤表示だけでなく、必要に応じて:
+
+- 正解Reason /誤答ReasonがContentと矛盾しない
+- Learnerの誤りに対応するExplanation / Exampleへ戻れる
+- Retry / Review / Next LessonのActionが実行できる
+- Hint / answer reveal後の再回答をfresh evidenceと同一視しない
+
+ことを確認します。
+
+### Diagnostic / Placement
+
+Diagnostic / Placementを実装するProjectでは、Scoreが出ることではなく**適切なStarting Pathへ分けられるか**を確認します。
+
+- 境界付近のLearner
+- prerequisiteの一部だけ欠けるLearner
+- false high / false low placementのRecovery
+- Learnerが手動で戻る /進む必要がある場合のescape path
+
+Placement mechanismが不要な小規模Siteへ追加しません。
+
+### Freshness / Applicability
+
+時間で正解が変わる教材では、Representative lessonについてCurrent Evidenceと`applies to version / exam range / date`等の表示・Dataが一致し、Superseded / Archived contentがCurrent pathへ誤って混入しないことを確認します。
+
+Static Validatorはmissing prerequisite、broken lesson link、duplicate ID、stale version marker等をGuardできますが、説明の理解しやすさ、Assessment validity、misconception coverage、Feedback usefulnessはHuman Reviewが必要になりやすいです。両方を同じ`Validated`へまとめません。
 
 ## Measurement / Analytics / Experimentation Verification
 

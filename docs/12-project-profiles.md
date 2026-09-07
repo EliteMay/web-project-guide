@@ -32,17 +32,22 @@ GitHub Pages中心の通常Webサイト。
 
 主な確認:
 - 利用者のStarting Knowledge
-- 前提知識 → 本題の学習順
+- Learning Objective / Observable Learning Outcome
+- 前提知識 / Concept dependency → 本題の学習順
 - Dashboard / 一覧とPrimary Learning Surfaceの役割分離
-- 主要LessonのContent Depth Contract
+- 主要LessonのContent Depth / Learning Activity Contract
 - 用語定義だけでLesson完成扱いしていないか
-- 具体例 / 比較 / 勘違い / 理解確認の必要性
-- 学習者向け言語と英語・略語の説明方針
-- 読了と理解度を同一視しない進捗設計
+- Worked example / 具体例 / 比較 / 勘違い / Practiceの必要性
+- Diagnostic / Placementが本当に必要か
+- 読了 / CompletionとUnderstanding / Application / Masteryを同一視しない進捗設計
+- 長期保持が目的ならRetrieval / Review / Spacingの必要性
+- Assessment / FeedbackがLearning Objectiveと対応しているか
 - Lesson後のNext Step / Review Path
 - 教材Coverageと実際の学習導線Coverageを別に確認
+- 時間で変わる教材のFreshness / Version applicability
+- Beginner learning pathとQuick Reference用途の境界
 
-要件の正本は [01 要件定義](01-requirements.md#learning--explanation-content) を確認します。
+要件の正本は [01 要件定義](01-requirements.md#learning--explanation-content)、Verificationは [07 Testing / Quality](07-testing-quality.md) を確認します。Learning-specific research evidenceは [Learning Product Decision Research](../references/learning-product-decision-research.md) に保存します。
 
 ## GAME
 

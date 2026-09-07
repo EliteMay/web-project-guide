@@ -87,8 +87,9 @@
       "docs/03-data-storage.md"
     ],
     "DEPLOYMENT": [
-      "docs/08-github-pages.md",
-      "docs/10-project-management.md"
+      "docs/10-project-management.md",
+      "docs/09-maintenance.md",
+      "docs/07-testing-quality.md"
     ],
     "MAINTENANCE": [
       "docs/09-maintenance.md",
@@ -159,7 +160,9 @@
     ],
     "LEARNING_CONTENT": [
       "docs/01-requirements.md",
-      "docs/12-project-profiles.md"
+      "docs/12-project-profiles.md",
+      "docs/22-task-first-structure-flow-research.md",
+      "docs/07-testing-quality.md"
     ],
     "RESEARCH": [
       "docs/20-evidence-first-research.md"
@@ -308,6 +311,20 @@
       ]
     },
     {
+      "id": "learning-product-requirements",
+      "workType": "REQUIREMENTS",
+      "domains": [
+        "LEARNING_CONTENT"
+      ],
+      "signals": [],
+      "mustInclude": [
+        "docs/01-requirements.md",
+        "docs/07-testing-quality.md",
+        "docs/12-project-profiles.md",
+        "docs/22-task-first-structure-flow-research.md"
+      ]
+    },
+    {
       "id": "local-ui-bug",
       "workType": "BUG_FIX",
       "domains": [
@@ -339,6 +356,24 @@
         "docs/03-data-storage.md",
         "docs/07-testing-quality.md",
         "docs/09-maintenance.md"
+      ]
+    },
+    {
+      "id": "general-web-deployment",
+      "workType": "DEPLOYMENT",
+      "domains": [
+        "PROJECT_MANAGEMENT"
+      ],
+      "signals": [
+        "PUBLIC_RELEASE"
+      ],
+      "mustInclude": [
+        "docs/07-testing-quality.md",
+        "docs/09-maintenance.md",
+        "docs/10-project-management.md"
+      ],
+      "mustNotRequire": [
+        "docs/08-github-pages.md"
       ]
     },
     {

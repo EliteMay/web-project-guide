@@ -230,6 +230,114 @@ Current Contract / compatibilityを壊さない場合、明確なBug fix、軽�
 
 軽微に見えてもStorage / shared runtime / major navigationへ影響するならImpact Reviewへ上げます。
 
+## General Web Deployment / Runtime Environments
+
+CONDITIONAL: GitHub Pages以外のManaged Hosting / Serverless / Edge / Backendを含むWeb Runtimeでは、Provider名や流行を先に選ばず、**必要なRuntime capabilityと運用責任からDeployment形態を決めます**。
+
+この節はDeployment shape / environment orchestrationの入口を担当します。Release / Rollbackは [09 Version / Maintenance](09-maintenance.md)、Security / Secretは [06 Security](06-security.md)、Reliabilityは [05 Performance / Reliability](05-performance-reliability.md)、Testingは [07 Testing / Quality](07-testing-quality.md)、Runtime Diagnosticsは [15 Development Observability](15-development-observability.md) を正本とします。
+
+### Deployment Shape Decision
+
+まずProductが本番で必要とするCapabilityを分けます。
+
+```text
+Static filesだけでPrimary Taskが成立
+→ Static hosting候補
+
+Request時のServer execution / Secret-backed APIが必要
+→ Managed app / Serverless / Edge / Backend候補
+
+Long-running process / persistent connection / worker / scheduled job等が必要
+→ そのRuntime contractを満たすHost候補
+```
+
+選定では必要なものだけ比較します。
+
+- Server-side execution / runtime duration / connection model
+- Secret / private network / trusted credentialの必要性
+- Persistent Data / file system / object storageのAuthority
+- Background / scheduled / queue workload
+- Region / latency / availability requirement
+- Build / deploy / rollback capability
+- Preview environmentの必要性
+- Cost / free-tier dependency / operational burden
+- Provider-specific limitation / lock-in / migration cost
+
+Staticで足りるSiteへBackendを追加せず、逆にSecretやtrusted server処理が必要なFeatureをClient-sideへ押し込んでStatic hostへ無理に合わせません。
+
+### Environment Roles
+
+`Local / Preview / Staging / Production`を名前だけで全Projectへ作りません。Environmentを分けるのは、**別のRiskを隔離し、Production前に意味のあるEvidenceを得られる場合**です。
+
+- **Local** — fast development / deterministic fixture中心。Production parityの証明ではない。
+- **Preview** — PR / candidate revisionの共有・UI / integration確認。通常はtemporary。
+- **Staging** — Production-like integration / migration / permission / routing等を分離確認する価値が高い場合。
+- **Production** — Real User / real authority / real domain / operational truth。
+
+小規模Static SiteではProduction + local/browser確認だけで十分な場合があります。Stagingを置いてもProductionとData / Auth / Domain / provider behaviorが違えば、その差を明示します。
+
+### Configuration Authority
+
+Environment差分は散在したbranch名判定や手編集で増やさず、何がEnvironment-specificかを説明できる形にします。
+
+最低限区別します。
+
+- Public runtime configuration
+- Secret / privileged credential
+- Build-time configuration
+- Runtime configuration
+- Canonical service / database / bucket / origin identifier
+
+同じ論理設定を複数Fileへ独立Hardcodeしません。SecretをClient bundleへ注入しないこと、Credential / permission境界は [06 Security](06-security.md) を正本とします。
+
+### URL / Origin / External Contract
+
+EnvironmentごとにURL / Originが変わる場合、次のようなExternal Contractを独立した手作業で食い違わせないようにします。
+
+- Public base URL
+- API origin
+- OAuth / OIDC redirect URI
+- CORS allowlist
+- Cookie / secure origin behavior
+- Webhook callback
+- Canonical / social URL（Public environmentで該当時）
+
+Temporary Preview URLをProductionの正式URLとしてDocumentation / Metadata / OAuth設定へ固定しません。
+
+### Preview / Temporary Environment Lifecycle
+
+Preview Environmentを使う場合は`Create → Use → Expire / Delete`を考えます。
+
+- Production secret / production User dataをDefaultで複製しない。
+- Temporary environmentが永続Resource / DB / domain / scheduled jobを残さないよう必要なCleanupを持つ。
+- PreviewがProvider都合で消える前提なら、恒久Evidence / Source of Truthをそこだけへ置かない。
+- Preview failureとProduction failureを混同しない。
+
+### Background / Scheduled Work
+
+Cron / Queue / Worker / webhook consumer等を使う場合は、Web requestとは別Runtimeとして必要に応じて確認します。
+
+- 誰が起動するか
+- 重複実行 / missed runをどう扱うか
+- retry / idempotency
+- timeout / partial failure
+- deploy中のold/new worker coexistence
+- diagnostics / alert / manual recovery
+
+Reliability詳細は [05](05-performance-reliability.md)、External deliveryは必要に応じて同章と [02 Architecture](02-architecture.md) のIntegration Contractを使います。
+
+### Hosting Migration Trigger
+
+Current hostを維持すること自体を目的にしません。次のようなRequirementがCurrent hosting contractで安全・合理的に満たせなくなった場合は、Workaroundを積む前にHosting再選定を検討します。
+
+- trusted server execution / secret isolationが必要になった
+- required runtime / connection / scheduled workloadを支えられない
+- URL / routing / header / platform limitationがPrimary Taskを壊す
+- reliability / scale / region / compliance requirementを満たせない
+- workaroundのmaintenance / security / failure costが移行Costを上回る
+
+移行はHigh-impact変更としてCurrent URL / Data / Auth / Deploy / RollbackへImpact Reviewを行います。
+
 ## Repository discoverability / 公開Site導線
 
 ### CONDITIONAL MUST: 現在利用できる代表Public URLがあるWeb Repository

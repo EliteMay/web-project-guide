@@ -6,7 +6,7 @@ Status: **current non-normative reinforcement backlog**
 
 Common Rule本文ではありません。現在の正本は各`docs/*` Ownerです。次回のGuide要件定義 / 補強時にはCurrent Revisionを再確認し、この一覧をそのまま正解として扱いません。
 
-2026-09-07の「現在を40点と仮定して不足を探す」Content Depth Auditを完了し、Current Guide 1.21.0 / `guide/phase-1-19-integration`の実Headを基準に候補を再分類しました。40点は不足を見つけるためのAudit stanceであり、Completion scoreではありません。
+2026-09-07の「現在を40点と仮定して不足を探す」Content Depth Auditを完了し、Current Guide 1.21.0のOwner構成を基準に候補を再分類しました。40点は不足を見つけるためのAudit stanceであり、Completion scoreではありません。
 
 ## DefectとContent Depth Gapを分ける
 
@@ -77,55 +77,69 @@ Status: **current coverage is sufficient / remove from active reinforcement back
 
 SEO専用の巨大Ownerを追加する根拠は現在ありません。実Projectで新しいFailure / Requirementが出た場合だけ再度Gapとして開きます。
 
+### 4. General Web Deployment / Runtime Environments — `docs/10` / `09` / `07`
+
+Status: **reinforced after the 40-point audit / re-audit before reopening**
+
+Current main `7c2eb0bef500b9de6cd773f0438b1ca591c07a89`を基準に再監査し、新しいDeployment Ownerを作らず既存OwnerへPromotionしました。
+
+主な補強:
+
+- Static / Managed App / Serverless / Edge / Backendを必要Runtime capabilityから選ぶDecision
+- Local / Preview / Staging / Productionの役割とOver-environment防止
+- Environment-specific configuration AuthorityとSecret / Public境界
+- URL / Origin / OAuth redirect / CORS / Webhook callback整合
+- Preview / temporary environment lifecycle / cleanup
+- Background / scheduled runtime deployment boundary
+- Hosting migration trigger
+- Deployed revision / runtime smoke / health / startup verification
+- Code / Schema / Config deploy時のold-new compatibility
+- Deploy failureとBroken Productionの区別
+
+Normative ownership:
+
+- Deployment shape / Environment orchestration → `docs/10`
+- Release / Rollback / Recovery → `docs/09`
+- Deployment / Environment Verification → `docs/07`
+- Reliability / Security / Diagnosticsは既存`05 / 06 / 15`を再利用
+
+Machine Routerでは`DEPLOYMENT`を一般Web Deploymentへ修正し、GitHub Pages固有の`docs/08`は`GITHUB_PAGES` DomainからConditionalに到達させます。新Owner / 新Domain / 新Risk Signal / 新Stable Gateは追加していません。
+
+External evidenceは [`../../references/web-deployment-runtime-research.md`](../../references/web-deployment-runtime-research.md) に保存します。
+
+### 5. Learning / Explanation Product Decision Depth — `docs/01` / `07` / `12` / `22`
+
+Status: **reinforced after the 40-point audit / re-audit before reopening**
+
+「教材が存在する」から「学習Objectiveを達成できる」へCompletionの深度を上げ、既存OwnerへPromotionしました。
+
+主な補強:
+
+- Learning Objective / Observable Learning Outcome
+- Concept dependency / Prerequisite path
+- Learner差が大きい場合だけDiagnostic / Placementを検討
+- Explanation / worked example / comparison / misconception / guided practice / independent practiceの使い分け
+- Long-term retentionがOutcomeに含まれる場合のRetrieval / Review / Spacing
+- Completion / Understanding / Application / Masteryの分離
+- AssessmentとLearning ObjectiveのAlignment
+- Feedback → Retry / Review / Next Step
+- Freshness / version applicability / superseded lesson
+- Beginner learning pathとQuick Referenceの境界
+
+Normative ownership:
+
+- Learning Requirement / Outcome / Activity Contract → `docs/01`
+- Learning Profile applicability → `docs/12`
+- Structure / Learning Flow → `docs/22`を既存のまま再利用
+- Assessment / Learning Verification → `docs/07`
+
+`LEARNING_CONTENT` DomainをこのOwner集合へRoutingし、Golden Caseを追加しました。新Learning Owner / 新Profile / 新Stable Gateは追加していません。
+
+External evidenceは [`../../references/learning-product-decision-research.md`](../../references/learning-product-decision-research.md) に保存します。
+
 ## Active reinforcement candidates
 
 以下は**今すぐRule追加を確定する項目ではありません**。Current Guideでは利用可能ですが、他の成熟Ownerと比べてDecision Framework / Failure Boundary / Validationが相対的に薄いため、次回要件定義・Researchで優先して再監査します。
-
-### 4. General Web Deployment / Runtime Environments
-
-Priority: **Medium-High**
-
-Related owners: `docs/05` / `06` / `09` / `10` / `13` / `15`
-
-Current GuideはGitHub PagesとElectron配布はかなり具体的ですが、**GitHub Pages以外のWeb App / Backend / Serverless / Managed Hostingを本番運用するDecision System**は相対的に薄いです。
-
-再監査候補:
-
-- Static host / managed app host / serverless / edge / backendを選ぶ境界
-- Local / Preview / Staging / Productionの役割と、どこまで環境を分けるか
-- Environment-specific configurationのAuthority
-- Public configurationとSecretの境界
-- Environment別URL / Origin / OAuth redirect / CORS等の整合
-- Code deployとDatabase / Schema migrationの順序・互換性
-- Health / readiness / smoke / startup failureの確認
-- Deploy失敗、Partial rollout、provider failure時のRollback / Recovery / Forward-fix
-- Preview / temporary environmentのLifecycle / cleanup
-- Background / scheduled job等を使う場合のDeployment / observability boundary
-
-新しいDeployment Ownerを作ることを前提にしません。まず既存Ownerへ自然に分配できるかを確認し、独立責務が明確な場合だけOwner splitを検討します。
-
-### 5. Learning / Explanation Product Decision Depth
-
-Priority: **Medium-High**
-
-Related owners: `docs/01` / `07` / `12` / `22`
-
-Starting Knowledge、Prerequisite Path、Content Depth、Understanding Signal、Next Step等は既にあります。ただしData / Security / Gameと比べると、**「理解させるProduct」を設計・評価するDecision System**はまだ薄く、複数Ownerへ分散しています。
-
-再監査候補:
-
-- Learning objective / observable learning outcomeの決め方
-- Curriculum / concept dependency / prerequisite graphの組み立て
-- Learner levelやconcept difficultyに応じたExplanation depthの決め方
-- Worked example / comparison / misconception / practice / exerciseを使い分けるCriteria
-- Diagnostic / placement / prior-knowledge確認が必要な条件
-- Recall / Retrieval Practice / Review / SpacingのProduct Contract
-- Progress / completionとMastery / Understandingを分ける基準
-- Assessment / feedbackが本当に理解を測れているかのValidation
-- Learning contentのFreshness / superseded lesson / version applicability
-- Beginner向けとReference用途を同じSurfaceで扱う場合の境界
-
-新しいLearning Ownerはまだ確定しません。既存`01 / 07 / 12 / 22`へ統合した方がRule Ownershipが明確なら、そちらを優先します。
 
 ### 6. GitHub Pages / Static Delivery Decision Depth — `docs/08-github-pages.md`
 
@@ -199,18 +213,18 @@ Priority: **Medium-Low**
 
 ## Current strong areas — backlog化しない
 
-40-point AuditでCurrent Revisionを再確認し、現時点では独立したContent Depth Backlogを作らない領域:
+40-point Auditと今回のreinforcementでCurrent Revisionを再確認し、現時点では独立したContent Depth Backlogを作らない領域:
 
 - Governance / Rule Budget / Single Owner — `docs/00`
-- Requirements base + Phase 1 Decision System — `docs/01`
+- Requirements base + Phase 1 + Learning Requirement Decision — `docs/01`
 - Architecture base + External Integration boundary — `docs/02`
 - Data / Storage / Migration / Sync / Reconciliation — `docs/03`
 - UI / UX / Accessibility — `docs/04`
 - Performance / Reliability + External delivery — `docs/05`
 - Security / Privacy — `docs/06`
-- Testing / Verification + External Integration Validation — `docs/07`
+- Testing / Verification + External Integration + Deployment + Learning Verification — `docs/07`
 - Version / Maintenance / Rollback / Product outcome follow-up — `docs/09`
-- GitHub-centered Project Management — `docs/10`
+- GitHub-centered Project Management + General Web Deployment → `docs/10`
 - Electron / Distribution / Update / Electron Security — `docs/11`
 - Dependencies / Assets / Supply Chain / External contract lifecycle — `docs/13`
 - Continuous Improvement / Deep Audit — `docs/14`
@@ -244,11 +258,13 @@ Priority: **Medium-Low**
 
 - Audit date: 2026-09-07
 - Guide version: `1.21.0`
-- Audit branch at start of final pass: `guide/phase-1-19-integration`
-- Audit baseline head: `19efc9ffae5f7331fdc7b5c1f518e2a7bf656460`
+- 40-point audit merged-main baseline: `7c2eb0bef500b9de6cd773f0438b1ca591c07a89`
+- Current reinforcement branch: `guide/reinforce-deployment-learning`
 - Owner count: 24 (`docs/00`〜`docs/23`)
 - Phase 1: reinforced / no longer active backlog
 - Phase 19: reinforced / no longer active backlog
 - Public Content / Discoverability: current coverage sufficient / removed from active backlog
-- Active depth backlog: General Web Deployment, Learning / Explanation, GitHub Pages / Static Delivery, Browser Compatibility, Project Profiles
+- General Web Deployment: reinforced / no longer active backlog after this branch merges
+- Learning / Explanation: reinforced / no longer active backlog after this branch merges
+- Active depth backlog after this branch: GitHub Pages / Static Delivery, Browser Compatibility, Project Profiles
 - Detailed audit: `maintenance/audits/2026-09-07-40-point-content-depth-audit.md`
