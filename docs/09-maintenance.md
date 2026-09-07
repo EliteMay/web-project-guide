@@ -222,6 +222,48 @@ Deployment Jobが失敗したことと、Productionが壊れていることを�
 
 Feature Flag / staged rollout等は必要なProjectでのみ使い、個人用小規模Siteへ企業向けRelease Infrastructureを機械的に導入しません。
 
+## Post-release Evaluation / Rollout Monitoring
+
+CONDITIONAL: Release後のProduct Outcomeが重要で、変更の影響をPre-release Testだけでは十分に判断できない場合は、Deploy成功の確認に加えてPost-release Evaluationを行います。
+
+```text
+Implement
+↓
+Pre-release Validation
+↓
+Release / Rollout
+↓
+Early Technical Health
+↓
+Product Outcome Review
+↓
+Keep / Adjust / Rollback / Forward-fix
+↓
+Temporary instrumentation cleanup
+```
+
+Typo、明確な局所Bug、微小Visual修正等へ毎回観測期間を要求しません。Major Navigation / Search / Onboarding / Auth / Data migration / large UI / provider switch / staged rollout / experiment winner採用等では必要性を検討します。
+
+### Technical HealthとProduct Outcomeを分ける
+
+Release直後はError、Crash、API / Save failure、broken route、Performance、Data integrity等のTechnical Healthを確認します。その後必要に応じてTask success、Findability、Completion、Adoption、User feedback、Guardrail等からProduct Outcomeを確認します。
+
+`Deploy success`、`100% rollout`、`Errorなし`はProduct Successそのものではありません。
+
+重要変更ではRelease前に、Expected Improvement、Primary Signal、Guardrails、Early Failure Signal、Decision optionsを短く決められます。
+
+Staged Rolloutを使う場合は次へ進む条件だけでなく、Error急増、Data corruption、Auth failure、重大Performance regression等の停止条件もRiskに応じて考えます。固定ThresholdはCommon Ruleにしません。
+
+Rollback可能という理由だけで即Rollbackせず、Data migration、External State、old-version compatibility、Issue severity、Forward-fix speedを [09 Rollback / Recovery](#rollback--recovery) のCurrent Contractで評価します。Technical BugでなくてもProduct regressionが明確ならPrevious design、Partial revert、Revised design等を選べます。
+
+Usage / AdoptionだけでValueを決めません。低頻度でもRecovery、Backup、Accessibility、安全Control等は重要な場合があります。Low adoptionも不要とは限らず、Discoverability不足、対象Userの少なさ、発生条件の少なさ等を分けます。
+
+Post-release Monitoringは永久運用にせず、`Release → Initial monitoring → Outcome review → Decision → Normal maintenance`へ戻します。Temporary dashboard、extra logging、experiment property、temporary flag等はDecision後に恒久価値がなければCleanupします。
+
+Evidence不足で`改善か悪化か判断不能`となることも正常な結果です。無理にSuccessを断定せず、Longer observation、Qualitative feedback、User test等へ切り替えます。
+
+観測値が少し動くたびにRequirementsを変更せず、Product GoalやCurrent Behavior Contract自体を変えるDecisionが確定した場合だけ [01 Requirements](01-requirements.md) へ戻します。
+
 ## 旧実装
 
 新Runtimeへ切り替えたら、旧Runtimeを本番フォルダへ大量に残さないことを優先します。

@@ -340,6 +340,58 @@ Broken link、Missing metadata、Duplicate ID、Invalid sitemap、Stale index re
 
 Validation depthは小規模Static Site、Content / Search中心Site、大量Content / Public-content Product等でRisk-basedに変えます。新しいStable Gateを増やさず、この章の通常Testing Strategyとして扱います。
 
+## Measurement / Analytics / Experimentation Verification
+
+MeasurementやExperimentationがProject Scopeにある場合は、Analytics SDKやDashboardの存在ではなく、**そのDataを信頼してProduct Decisionへ使えるか**を検証します。[01 Requirements](01-requirements.md) のOutcome / Instrumentation Contract、[20 Evidence-first Research](20-evidence-first-research.md) のFeedback / Experimentation Contract、[09 Version / Maintenance](09-maintenance.md) のPost-release Evaluationに対しRisk-basedに確認します。
+
+### Instrumentation Correctness
+
+重要Eventでは必要に応じて次を確認します。
+
+- Event名と実際のTriggerが一致する。
+- Attempt / Success / Failure / Cancelを混同しない。
+- Double action、Retry、Reload、re-render、offline resend等で重要Outcomeが不自然に二重計上されない。
+- Slow network、offline / reconnect、navigation等で必要Eventが欠落する条件を把握する。
+- Analytics provider / endpoint失敗でもPrimary Taskが成立する。
+- 主要PropertyのType / allowed value / versionがContractと一致する。
+- Password、Token、Cookie、Authorization Header、不要なUser入力本文等がPayloadへ混入していない。
+- Event semantics変更時に旧Dataと無言で意味を混在させない。
+
+Privacy / Trackingの詳細Ruleは [06 Security](06-security.md) を正本とします。
+
+### Metric / Aggregation
+
+Raw Eventが正しくてもAggregationが壊れる可能性があります。重要Metricでは必要に応じてNumerator、Denominator、Eligibility、Exclusion、Period等を代表Sampleで確認します。
+
+Missing telemetryをObserved zeroへ自動変換せず、Provider outageやMeasurement gapがある場合はConfidenceへ反映します。Dashboard表示だけをOracleにせず、代表的なProduct state / raw event / aggregate resultを照合できます。
+
+### Experiment Integrity
+
+A/B Test等では必要に応じて次を確認します。
+
+- Assignment / eligibilityが意図どおり。
+- 必要な範囲で同じ主体が同Variantに留まる。
+- Control / VariantでOutcome instrumentationが同等。
+- 想定比率から大きく外れるSample ratio mismatchがないか確認し、結果解釈前にAssignment / tracking failureを疑う。
+- Primary Outcomeだけでなく重要Guardrailも実際に観測できる。
+- Experiment外Userやstale variantが集計へ混入していない。
+
+高度なStatistical AlertやExperiment Platformを全Projectへ要求しません。
+
+### Feedback / Post-release
+
+Feedback機能を実装する場合はSubmit / failure / duplicate / context / privacyを必要範囲で確認します。直接会話やGitHub Issue等で十分なら専用Infrastructureは不要です。
+
+重要RolloutではRelease / BuildとEvaluation Dataの対応を追跡でき、事前に決めたEarly Failure Signalが実際に観測可能であることを確認します。
+
+Experiment / rollout終了後はobsolete variant、temporary event、debug metric、dead dashboard query、不要Feature Flag等のCleanupをCompletionへ含めます。
+
+### AutomatedとHuman Reviewを分ける
+
+Schema、required property、duplicate trigger、assignment logic、aggregation function、sensitive property pattern等は自動化しやすい一方、Event timingとUser Outcomeの意味一致、Feedback usefulness、Causal interpretation、Post-release Decision等はHuman Reviewが必要になりやすいです。
+
+片方だけでMeasurement全体を確認済みにしません。小規模Personal ProjectではAnalytics自体を持たずManual observation / Direct feedbackだけでも正常です。
+
 ## Specification / Oracle Test
 
 AI生成量が多いProject、既存実装の移植、互換性が重要な処理では、可能なら「正しい出力」を比較できるOracleを作ります。

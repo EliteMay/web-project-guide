@@ -31,6 +31,7 @@
 | Page Load / 重いRuntime | Performance / Reliability | [05](../docs/05-performance-reliability.md) |
 | Runtime Diagnostics / Remote Handoff | Observability | [15](../docs/15-development-observability.md) |
 | Content / IA / Search / Discoverability | Content quality / Findability / Public discovery | [01](../docs/01-requirements.md) / [22](../docs/22-task-first-structure-flow-research.md) / [07](../docs/07-testing-quality.md) |
+| Measurement / Analytics / Experimentation | Outcome / Evidence / Rollout validation | [01](../docs/01-requirements.md) / [20](../docs/20-evidence-first-research.md) / [09](../docs/09-maintenance.md) / [07](../docs/07-testing-quality.md) |
 | GitHub Pages / 公開Site | Pages / Public URL / Repository discoverability | [08](../docs/08-github-pages.md) / [10](../docs/10-project-management.md) |
 | Public / Auth / OAuth / API / Cloud / AI | Security / Privacy / Dependency | [06](../docs/06-security.md) / [13](../docs/13-dependencies-assets.md) |
 | Release / Rollback / Legacy | Version / Maintenance | [09](../docs/09-maintenance.md) |
@@ -147,6 +148,18 @@
 - [ ] External Search / Sharingが重要なPublic Siteではtitle / description / index control / canonical / sitemap / social metadata等を必要範囲で確認した
 - [ ] Metadata / Structured DataがUser-visible Contentと重大に矛盾していない
 - [ ] 検索順位・Rich Result・Analyticsの有無だけをCompletion条件にしていない
+
+## Measurement / Analytics / Experimentation — 該当時
+
+- [ ] Primary Outcome / Proxy / Guardrailを必要範囲で区別し、取得できる数字だけをSuccess Metricにしていない
+- [ ] 重要EventのTrigger / Success-Failure境界 / Property semanticsが実Product behaviorと一致する
+- [ ] Duplicate / Missing telemetry / Analytics provider failureがMetricやPrimary Taskを不自然に壊さない
+- [ ] Analytics Payloadへ不要なSecret / Personal Data / User入力全文を含めていない
+- [ ] 重要Metricの母数 / eligibility / periodを確認し、Missing DataをObserved zeroと混同していない
+- [ ] Experiment時はAssignment / instrumentation parity / Guardrail / sample integrityを必要範囲で確認した
+- [ ] User FeedbackをContext付きEvidenceとして扱い、提案SolutionとUnderlying Needを分けた
+- [ ] 重要ReleaseではTechnical HealthとProduct Outcomeを必要範囲で分けてReviewした
+- [ ] Experiment / rollout終了後にobsolete variant / temporary event /不要Feature Flag等をCleanupした
 
 ## Learning
 
