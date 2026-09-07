@@ -13,7 +13,7 @@ Normative Rule本文ではありません。監査方法の正本は `docs/14-co
 - Baseline owner count: 22 (`docs/00`〜`docs/21`)
 - Secondary surfaces: README / START_HERE / REQUIREMENTS / templates / catalog / references / maintenance JSON / validator / workflow / repository metadata
 
-このBaselineは監査開始時のPoint-in-time Evidenceです。監査中にCurrent mainへv1.19.0 `docs/22-task-first-structure-flow-research.md`が追加されたため、最終Candidateは`docs/00〜23`の24 Owner構成です。
+このBaselineは監査開始時のPoint-in-time Evidenceです。監査中にCurrent mainへv1.19.0 `docs/22-task-first-structure-flow-research.md`が追加されたため、最終構成は`docs/00〜23`の24 Ownerです。
 
 ## Scoring
 
@@ -88,7 +88,7 @@ Current Guide source内に意図的に残しているCritical / High / Medium ac
 
 BaselineではPhase 0の採点・Gap分類・Research手順、Phase 1 Research Contract等がRoot `REQUIREMENTS.md`へ逆流していました。
 
-Final Candidateでは:
+Finalでは:
 
 - Root `REQUIREMENTS.md` = Current Project Contract
 - `docs/14` + `maintenance/DEEP_SYSTEM_AUDIT.md` = Deep Audit behavior / procedure
@@ -107,7 +107,7 @@ User Decisionはnon-inferable preference、safe alternativeのないirreversible
 
 Named Companion ToolのCurrent運用はCommon Owner本文からReferenceへ分離しました。
 
-監査中に別PRでv1.19.0 `docs/22-task-first-structure-flow-research.md`がCurrent mainへ追加されたため、Current Candidateでは:
+監査中に別PRでv1.19.0 `docs/22-task-first-structure-flow-research.md`がCurrent mainへ追加されたため、Finalでは:
 
 - `docs/22` = Task-first Structure / Flow Research
 - `docs/23` = Conversation Handoff / Recovery
@@ -126,17 +126,18 @@ Guide自身の`actions/checkout` / `actions/setup-node`をfull-length Commit SHA
 
 ## Concurrent Main Integration Finding
 
-監査Branch作業中、Current mainへv1.19.0 Task-first Structure / Flow OwnerがMergeされました。Audit Branchはその時点で独自`docs/22`を使用しており、単純MergeではCurrent mainの新Ownerを覆い戻すRiskがありました。
+監査Branch作業中、Current mainへv1.19.0 Task-first Structure / Flow Ownerと、その後Phase 3 Architecture Decision SystemがMergeされました。古いAudit Branchを単純MergeするとCurrent mainを覆い戻すRiskがありました。
 
 対応:
 
 1. latest main README / START_HERE / Owner Registry / Versionを再取得
-2. main v1.19.0 + final validation commitをAudit Branchへ統合
+2. current mainをAudit Branchのancestryへ統合
 3. `docs/22-task-first-structure-flow-research.md`をCurrent mainどおり保持
 4. 未MergeだったConversation Handoff Ownerを`docs/23`へ移番
-5. README / START_HERE / Governance / Router / Templatesを再同期
-6. Final PR前の`behind_by = 0`をCompletion Checkへ追加
-7. `PL-F-013`として再発防止をProject Learningsへ記録
+5. Phase 3 `docs/02-architecture.md` / Architecture Researchを保持
+6. README / START_HERE / Governance / Router / Templatesを再同期
+7. Final PR前の`behind_by = 0`を確認
+8. `PL-F-013`として再発防止をProject Learningsへ記録
 
 ## External Evidence Used
 
@@ -195,15 +196,19 @@ Source内で修正できるWorkflow pinning / Branch lifecycle Ruleは修正済�
 7. Squash Merge成功
 8. merged `main` validation green
 
-## Current Status
+## Final Status
 
 - Baseline 22 Owners: audited
-- Current Candidate 24 Owners (`docs/00〜23`): responsibility integration reviewed
+- Final 24 Owners (`docs/00〜23`): responsibility integration reviewed
 - Secondary structure: audited
 - P0 / P1 research needed for this audit: completed
 - Source-level actionable remediation: **complete**
 - External Repository Admin follow-up: explicit / separate
-- Release target: `1.20.0`
-- PR #46 final validation: **pending**
-- Merge / post-merge main validation: **pending**
-- Audit Completion: **not complete until final PR + merged-main validation are green**
+- Released Guide Version: `1.20.0`
+- PR #46 Final Head: `b25d6b8e4dca83ac2d6634f1c9365bb0694e49f2`
+- PR #46 Validate Guide run #182: **success**
+- PR #46: **squash merged**
+- Merge commit: `b690508cf074fc69645c726436f0547d4746e4c6`
+- merged `main` Validate Guide run #183: **success**
+- Current mainで`docs/22` / `docs/23` / Phase 3 Architecture Research / v1.20.0を再取得確認済み
+- Audit Completion: **complete**
