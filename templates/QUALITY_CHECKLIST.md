@@ -32,6 +32,7 @@
 | Runtime Diagnostics / Remote Handoff | Observability | [15](../docs/15-development-observability.md) |
 | Content / IA / Search / Discoverability | Content quality / Findability / Public discovery | [01](../docs/01-requirements.md) / [22](../docs/22-task-first-structure-flow-research.md) / [07](../docs/07-testing-quality.md) |
 | Measurement / Analytics / Experimentation | Outcome / Evidence / Rollout validation | [01](../docs/01-requirements.md) / [20](../docs/20-evidence-first-research.md) / [09](../docs/09-maintenance.md) / [07](../docs/07-testing-quality.md) |
+| AI Feature / RAG / Agent / Model change | Output / Eval / Grounding / Agent / Model lifecycle | [01](../docs/01-requirements.md) / [07](../docs/07-testing-quality.md) / [20](../docs/20-evidence-first-research.md) / [13](../docs/13-dependencies-assets.md) / [06](../docs/06-security.md) |
 | GitHub Pages / 公開Site | Pages / Public URL / Repository discoverability | [08](../docs/08-github-pages.md) / [10](../docs/10-project-management.md) |
 | Public / Auth / OAuth / API / Cloud / AI | Security / Privacy / Dependency | [06](../docs/06-security.md) / [13](../docs/13-dependencies-assets.md) |
 | Release / Rollback / Legacy | Version / Maintenance | [09](../docs/09-maintenance.md) |
@@ -117,6 +118,19 @@
 - [ ] AI / RAGへ渡す外部ContentをUntrusted Dataとして扱い、ModelをAuthorization boundaryにしていない
 - [ ] AI Toolへ最小権限を与え、高Impact actionは必要なdeterministic validation / confirmationを通す
 - [ ] Security Scanner / audit結果だけでSecurity完了扱いしていない
+
+## AI Feature Quality / RAG / Agent — 該当時
+
+- [ ] AIのRole / Expected Output / Unknown・Failure Boundaryを定義し、`Model応答あり`だけをSuccessにしていない
+- [ ] Normal / Boundary / Ambiguous / Missing information /過去Failure等のRepresentative CaseをRiskに応じて評価した
+- [ ] Average ScoreだけでCritical Failureを隠さず、deterministicに判定できるSchema / ID / URL / Tool Input等をCode側でも確認した
+- [ ] Model / Provider / Prompt / Tool / Retrieval変更後に必要なRegression Evaluationを実施した
+- [ ] Grounded / RAGではNo Source / stale・deleted source / Citation alignment / Permission boundaryを必要範囲で確認した
+- [ ] AgentではCorrect Tool / Target / External Result / Partial・Unknown stateを確認し、Agent自身の`完了`発言をOracleにしていない
+- [ ] High-impact Agent ActionでApprove / Reject / Cancel / Retryを必要範囲で通した
+- [ ] Provider timeout / rate・quota / refusal等でCore Productを不必要に壊さず、Fallbackがある場合はFallback品質も確認した
+- [ ] Model / ProviderのRequired Capability、Cost / Latency / lifecycle / deprecationを変更Riskに応じて確認した
+- [ ] Known limitation /未評価Conditionを対応済みとして扱っていない
 
 ## Diagnostics / AI Handoff
 
