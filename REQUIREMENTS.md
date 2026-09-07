@@ -139,7 +139,7 @@ Decision behaviorの正本は`docs/01-requirements.md`です。
 
 - Best Reasonable DecisionをDefaultにする
 - Repository / Requirements / Existing User Intent / Researchで解けることを再質問しない
-- Core / High-costというLabelだけで回答待ちにしない
+- Core / High-costというLabelだけでUser回答待ちにしない
 - Safe / reversible decisionはAssumption / Riskを記録して進められる
 - User Decisionはnon-inferable preference、external permission / billing / account action、safe alternativeのないirreversible destructive choice、Evidenceでも解けないmaterial conflict等へ絞る
 
@@ -278,7 +278,9 @@ Guide自身も自分のRuleを可能な範囲でself-applyします。
 
 Requirements Decision Systemの未完了Research Contractは [`maintenance/research/requirements-decision-system.md`](maintenance/research/requirements-decision-system.md) に保存します。
 
-Performance / Reliability Decision SystemのPhase 5 Research Contractは [`maintenance/research/performance-reliability-decision-system.md`](maintenance/research/performance-reliability-decision-system.md) に保存します。Phase 5は「高速化Technique集」ではなく、Perceived Performance、Loading / Failure / Retry / Timeout / Offline degradation、Slow device、Memory / Long-running session、Huge Data、Media、Third-party dependency等について、**どのProjectでどこまで最適化・劣化対策・Validationを要求するか**を決めるDecision Systemを研究します。研究中のContractはCommon Rule本文ではなく、Current behaviorは引き続き [`docs/05-performance-reliability.md`](docs/05-performance-reliability.md) を正本とします。
+Performance / Reliability Decision SystemのPhase 5 Researchは実装済みです。Current Common Ruleは [`docs/05-performance-reliability.md`](docs/05-performance-reliability.md)、実行時の短いVerificationは [`templates/QUALITY_CHECKLIST.md`](templates/QUALITY_CHECKLIST.md) を正本とし、[`maintenance/research/performance-reliability-decision-system.md`](maintenance/research/performance-reliability-decision-system.md) はPromotion後のhistorical non-normative evidenceとして保持します。
+
+Phase 5で確定したPrimary Task Readiness、Loading / Skeleton / Progressive Rendering、Failure Isolation、Retry / Timeout / Cancel、Offline Degradation、Slow Device、Memory / Long Session、Huge Data、Media、Third-party、Lab / Field Measurement、Optimization Stop Conditionは、Research Assetを第二の正本にせず各専門Ownerへ統合します。
 
 Data / Storage Decision SystemのPhase 4 Researchは実装済みです。Current Common Ruleは [`docs/03-data-storage.md`](docs/03-data-storage.md)、Verification Strategyは [`docs/07-testing-quality.md`](docs/07-testing-quality.md) を正本とし、[`maintenance/research/data-storage-decision-system.md`](maintenance/research/data-storage-decision-system.md) はPromotion後のhistorical non-normative evidenceとして保持します。
 
@@ -343,7 +345,7 @@ Task-first Structure / Flow Researchは既に`docs/22`へPromotion済みのた�
 - Conversation Handoff / Recovery owner: Implemented
 - Exhaustive owner audit / remediation: Implemented and validated in v1.20.0 audit
 - Data / Storage Decision System Phase 4: Implemented in current `docs/03` / `docs/07` / Quality Checklist
-- Performance / Reliability Decision System Phase 5: Research requirements defined / research pending
+- Performance / Reliability Decision System Phase 5: Implemented in current `docs/05` / Quality Checklist
 - Requirements Decision System Research: Open
 - Blocking Decisions: None
 

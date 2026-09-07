@@ -80,11 +80,17 @@
 
 ## Performance / Reliability
 
+- [ ] Primary Taskが「表示済み」だけでなく実際に操作可能になるまで確認した
 - [ ] Cold Loadで不要なJS / JSON / Media / External ResourceをEager Loadしていない
 - [ ] Critical / Deferred / On Demandの分離がPrimary UXと合っている
+- [ ] Loading / Error / Partial Failure / Offline等、該当するStateでsilent failureや不必要な全画面Failureにならない
+- [ ] Auto Retryする操作はidempotency / duplicate prevention / retry上限を必要範囲で確認した
+- [ ] Timeout / Cancel / late responseがCurrent Stateを壊さない
 - [ ] 大量Data / Entity /長時間同期処理でUIを不必要に固めていない
+- [ ] Long-running / repeated lifecycleがある場合、Memory / Listener / Timer / DOM等が増え続けないか必要範囲で確認した
 - [ ] Soft Budget /代表的な重い状態を必要範囲で測定・Reviewした
 - [ ] Third-party API / CDN / Provider失敗時の影響とFallbackを確認した
+- [ ] 追加最適化のBenefitがComplexity / Regression Riskより小さい場合、過剰最適化を止めた
 
 ## Diagnostics / AI Handoff
 

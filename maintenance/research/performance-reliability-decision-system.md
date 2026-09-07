@@ -1,404 +1,299 @@
-# Performance / Reliability Decision System — Phase 5 Research Contract
+# Performance / Reliability Decision System — Phase 5 Research Record
 
-Status: current / research pending
-Normative status: non-normative research contract
+Status: completed / promoted on 2026-09-07
+Normative status: historical non-normative evidence
+Research status: sufficient for current decision scope / Research Review Gate: pass with limitations
 
-Phase 5では、単なる高速化Technique集ではなく、**何を・どこまでPerformance / Reliabilityとして要求し、どの条件で追加最適化を止めるか**を判断できるDecision Systemを研究します。
+Phase 5では、単なる高速化Technique集ではなく、**何を・どこまでPerformance / Reliabilityとして要求し、どの条件で追加最適化を止めるか**を研究しました。
 
-Current Common Ruleは [`../../docs/05-performance-reliability.md`](../../docs/05-performance-reliability.md) を正本とします。このFileは研究中のQuestion / Scope / Completion Contractであり、Current Rule本文ではありません。
+Current behaviorは [`../../docs/05-performance-reliability.md`](../../docs/05-performance-reliability.md) を正本とします。このFileはResearch Evidence / Decision Historyであり、Common Rule本文ではありません。
 
 一般Research Methodは [`../../docs/20-evidence-first-research.md`](../../docs/20-evidence-first-research.md)、Common Rule Promotionは [`../../docs/14-continuous-improvement.md`](../../docs/14-continuous-improvement.md) を正本とします。
 
-## 1. Research Goal
-
-研究の最終目的は、Projectごとに次を説明可能にすることです。
-
-```text
-User Task / Criticality / Runtime / Device / Network / Data / External Dependency
-↓
-どのPerformance / Reliability Riskが実際に重要か
-↓
-どのLevelまで対策するか
-↓
-何を測るか
-↓
-どこで十分と判断して止めるか
-```
-
-特に次を避けます。
-
-- Budget数値だけでPerformanceをPass / Failする
-- Lighthouse Scoreだけで完成扱いする
-- 全Projectへ同じSkeleton / Retry / Offline / Service Workerを入れる
-- 数KB削減のために保守性や安定性を大きく壊す
-- 高性能PC / 高速回線だけで良好と判断する
-- Loading中 / Failure時 / Long-running sessionをHappy Pathの外として放置する
-
-## 2. Core Research Question
+## Research Question
 
 **Userが実際に感じる待ち時間・操作不能・失敗・劣化・長時間利用のCostを基準に、どのProjectでどこまでPerformance / Reliability対策を要求すべきか。**
 
-研究では、絶対的な最速化ではなく次のBalanceを扱います。
+研究対象:
 
-- Operability
-- Clarity / feedback
-- Reliability / recovery
-- Runtime cost
-- Implementation complexity
-- Maintainability
-- Device / network variability
-- Project criticality
+- Perceived Performance / Interaction Readiness
+- Loading UX / Progress Feedback
+- Skeleton / Progressive Rendering
+- Network Failure / Partial Failure
+- Retry / Backoff / Duplicate Prevention
+- Timeout / Cancel / Long Operation
+- Offline Degradation / Connectivity Change
+- Slow Device / Constrained Runtime
+- Memory Leak / Long-running Session
+- Huge Datasets / Heavy Computation
+- Image / Video / Fonts / Heavy Media
+- Third-party Scripts / External Runtime Dependency
+- Measurement / Validation / Stop Condition
 
-## 3. Decision Model to Produce
+## Evidence Map
 
-最終的なCommon Rule候補は、Technique名の羅列ではなく原則として次の形へ落とします。
+### Established / High-confidence
+
+1. **Performanceは単一のLoad完了時刻ではない。** Visual load、interaction readiness、runtime responsivenessは別のuser-centric outcomeとして扱う必要がある。
+2. **LabとFieldは役割が違う。** Labは再現・診断・release前Regressionに強く、Field / RUMは実Userのdevice / network / interaction variabilityを把握するために強い。
+3. **Core Web Vitalsは公開Webの共通Signalとして有用だが、Primary Task固有の性能を置き換えない。** LCP 2.5s、INP 200ms、CLS 0.1を75 percentileで見る現行目安を維持する。
+4. **Long Taskは見た目が表示済みでも操作をBlockできる。** 50ms超は診断Signalとして有用だが、50msを全処理の絶対Fail上限にはしない。
+5. **FetchはHTTP 4xx / 5xxで自動rejectしない。** 必要なRequestは`response.ok` / status等でapplication failureを判定する必要がある。
+6. **Automatic Retryはoperation safetyと分離できない。** HTTP Semanticsではidempotent requestはcommunication failure時にrepeat可能だが、non-idempotent requestのautomatic retryは安全性を確認できない限り避けるべきとされる。
+7. **Retryは無制限に行わない。** Serverの`Retry-After`を尊重できる場合は利用し、transient failureではbounded backoff / jitterがretry storm低減の一般的候補になる。
+8. **TimeoutにUniversal秒数はない。** 短すぎるtimeoutはretry traffic / false failureを増やし、長すぎるtimeoutはresourceを保持する。Operation / dependency / UX criticalityから決める必要がある。
+9. **`navigator.onLine`はnetwork authorityとして信頼できない。** Connectivity hintとしては使えるが、機能可否をこれだけで決めない。
+10. **Service WorkerはOffline capabilityの一手段でありCore Featureの前提にしない。** First load / activation / browser support差があるためoptional enhancementとして扱うのが妥当。
+11. **Low-end device / slow networkではone-size-fits-allが成立しない場合がある。** ただしNetwork Information / Device Memory等の一部Signalはbrowser supportが限定されるため、これらをCore logicの唯一の判定材料にしない。
+12. **Memory問題は時間経過でprogressive slowdownとしてUserへ現れる。** Detached DOM、retained JS reference、listener / timer等は代表的Leak sourceであり、long-running appではrepetition / heap trend確認が有効。
+13. **Huge Dataは件数だけで決められない。** Network payload、parse、search / sort、DOM、memory、update frequencyを分離し、bottleneckがrenderingならvirtualization等を候補にする。
+14. **Mediaは総File容量よりload timingが重要。** Responsive image、poster、`preload="none"` / `metadata`、lazy / click-to-load等をPrimary Taskとの関係で選ぶ。
+15. **Third-partyはNetwork Costだけでなくmain-thread blockingとavailability riskを持つ。** Non-critical third-partyはPrimary TaskのCritical Pathから外し、必要時はdomain block / SPOF simulationでfailure影響を確認できる。
+
+### Context-dependent / Moderate-confidence
+
+1. **SkeletonはUniversalに最良ではない。** 実Product caseではperceived performance改善例がある一方、wait indicator研究ではspinner / skeleton / progress形式の優劣がtask / duration / presentationで変わる。
+2. **Progress Feedbackは「短く感じさせる」ことよりSystem Statusの明確さに価値がある。** Researchでは情報量・進捗の一貫性がpreference / satisfactionに効くが、perceived durationとの関係は単純ではない。
+3. **Progressive Renderingは早いPartial ContentがTaskに利用できる場合に強い。** Partial contentを見せても操作不能なら、見た目だけの高速化になる可能性がある。
+4. **Adaptive degradationは有効だが、Feature削減をhardware heuristicだけで自動化するのは危険。** Low-endで実測した問題とsafe fallbackがある場合に使う。
+
+### Unknown / intentionally not universalized
+
+- Spinner / Skeletonを表示し始めるUniversal millisecond threshold
+- 全API共通Timeout秒数
+- 全Project共通Retry回数
+- Long-running sessionを定義する固定分数 / 時間
+- Virtualizationを必須にする固定Record件数
+- 全Media共通MB上限
+- Memory usageのUniversal MB ceiling
+
+これらはEvidence上Project variabilityが大きいため、Common hard limitへ昇格しません。
+
+## Core Evidence
+
+主要Source:
+
+- W3C User Timing / Web Performance Working Group publications
+  - https://www.w3.org/TR/user-timing/
+  - https://www.w3.org/groups/wg/webperf/publications/
+- RFC 9110 HTTP Semantics — Idempotent Methods / Retry-After
+  - https://www.rfc-editor.org/rfc/rfc9110.html
+- MDN Fetch / Response.ok / AbortSignal.timeout / Navigator.onLine
+  - https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch
+  - https://developer.mozilla.org/en-US/docs/Web/API/Response/ok
+  - https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal/timeout_static
+  - https://developer.mozilla.org/en-US/docs/Web/API/Navigator/onLine
+- web.dev User-centric Performance / Web Vitals / Lab vs Field
+  - https://web.dev/articles/user-centric-performance-metrics
+  - https://web.dev/articles/vitals
+  - https://web.dev/articles/lab-and-field-data-differences
+- web.dev Long Tasks / Adaptive Loading / Offline / Third-party / Large List / Video
+  - https://web.dev/articles/optimize-long-tasks
+  - https://web.dev/articles/adaptive-loading-cds-2019
+  - https://web.dev/learn/pwa/service-workers
+  - https://web.dev/articles/offline-fallback-page
+  - https://web.dev/articles/optimizing-content-efficiency-loading-third-party-javascript
+  - https://web.dev/articles/virtualize-long-lists-react-window
+  - https://web.dev/learn/performance/video-performance
+- Chrome DevTools Memory / Performance Monitor
+  - https://developer.chrome.com/docs/devtools/memory-problems
+  - https://developer.chrome.com/docs/devtools/performance-monitor
+- AWS reliability guidance used only for general retry / timeout failure mechanics
+  - https://docs.aws.amazon.com/wellarchitected/latest/framework/rel_mitigate_interaction_failure_limit_retries.html
+  - https://docs.aws.amazon.com/wellarchitected/latest/framework/rel_mitigate_interaction_failure_client_timeouts.html
+- HCI wait feedback research
+  - Branaghan & Sanchez, *Feedback Preferences and Impressions of Waiting* (2009)
+  - Chen & Li, *The effect of visual feedback types on the wait indicator interface of a mobile application* (2019)
+  - recent loading-interface studies were reviewed as supporting / conflicting context rather than Universal Rule sources
+
+## Research Limitations
+
+- Skeleton / wait-indicator studies differ in task, duration, sample, and UI presentation; some academic evidence was abstract-only. Therefore visual feedback form is kept CONDITIONAL rather than promoted as Universal MUST.
+- Network Information / Device Memory signals have incomplete cross-browser support, so adaptive loading is treated as enhancement rather than Core Contract.
+- Vendor reliability guidance is used for generic distributed-system failure mechanics only; provider-specific defaults are not promoted.
+- No evidence supported Universal timeout / retry count / long-session duration / dataset count thresholds.
+
+## Promoted Decision System
+
+### 1. User-centric Priority
+
+Performance判断の中心を次へ変更する。
 
 ```text
-Trigger
-↓
-User-facing Risk / Cost
-↓
-Decision Criteria
-↓
-Default Action
-↓
-Escalation条件
-↓
-Exception / Trade-off
-↓
-Validation
-↓
-Stop Condition
+Primary Task Ready
++ Interaction Responsiveness
++ Failure / Recovery
++ Runtime Stability
++ Network / Device Cost
 ```
 
-既存の `Minimum / Standard / Extended` Performance確認強度を維持・改善できるかも検証します。必要なら別名へ変えられますが、複雑なScore Systemを目的にしません。
+First paintやLighthouse scoreだけを中心にしない。
 
-## 4. Research Axes
+### 2. Optimization Escalation Ladder
 
-### A. Perceived Performance / Interaction Readiness
+#### Baseline
 
-研究Question:
+原則すべてのUser-facing Web:
 
-- Actual load timeとPerceived waitをどのように分けて判断するか。
-- First content、usable content、primary action ready、background completionを分離すべきか。
-- 速く見せることが、実際の操作不能や誤解を隠すだけになる条件は何か。
-- Optimistic UI、stale content、instant shell等はどのCriticalityなら許容されるか。
-- Userが待ち時間を予測できることはどの程度重要か。
+- Primary ActionまでのCritical Pathを確認
+- Critical / Deferred / On Demandを分離
+- Loading / Errorが必要な箇所でsilent failureにしない
+- HTTP errorを必要範囲で判定
+- obvious long task / unnecessary initial loadを避ける
 
-目標Output:
+#### Standard escalation
 
-- 「表示された」と「使える」を分ける判断基準
-- Primary Task readinessを中心にしたPerformance判断
-- Perceived improvementを実Performance悪化の言い訳にしない境界
+Interactive App、DATA / CLOUD、外部API、保存・同期等のfailure impactがある場合:
 
-### B. Loading UX / Progress Feedback
+- slow network / CPU条件
+- loading / stale / partial / timeout / retry / failed / recovered state
+- bounded retry / cancellation / stale response guard
+- external dependency failure isolation
+- Cold / Repeat比較
 
-研究Question:
+#### Extended escalation
 
-- 何も表示しない / Spinner / Progress / Existing content維持 / Skeletonをどう使い分けるか。
-- 短すぎるLoadingでIndicatorを出すことでFlickerや遅く感じる問題をどう扱うか。
-- Determinate progressが可能な処理と、不可能な処理をどう分けるか。
-- Loading中にPrimary actionをBlockすべき条件は何か。
-- Background refreshをForeground loadingとして見せる必要がある条件は何か。
+Long-running Tool / Editor / Dashboard、MEDIA-heavy、Huge Data、大規模SPA、Canvas / WebGL / Game、重いthird-party、Performanceが主要Riskの場合:
 
-目標Output:
+- Performance trace / long task
+- memory / repeated action / route cycle
+- large-data bottleneck separation
+- third-party SPOF / blocking test
+- long-session / reconnect repetition
+- representative low-end device / stronger throttling
+- Field / RUM検討（一般公開で十分なtrafficがある場合）
 
-- Loading state選択のDecision Tree
-- Blocking / non-blocking loadingの判断基準
-- Long operationでProgress / Cancelを要求する条件
+Profile名だけでLevelを固定せず、Current Runtime / User Task / Risk Signalで上げ下げする。
 
-### C. Skeleton / Progressive Rendering
+### 3. Loading / Perceived Performance
 
-研究Question:
+- 「何か見えた」と「Primary Taskが使える」を分ける。
+- Existing contentを安全に保持できるbackground refreshでは、blank / full-page loadingへ戻さないことを優先検討する。
+- Determinate progressが分かる処理ではprogress表示を優先候補にする。
+- Skeletonはlayout predictionが安定し、content shapeが分かり、placeholderがflicker / misinformationを増やさない場合だけ候補にする。
+- Perceived speed改善を実際の操作不能・stale state・data riskを隠す理由にしない。
 
-- Skeletonが有効なContent type / duration / layoutは何か。
-- Skeletonが誤解・layout mismatch・flickerを増やす条件は何か。
-- Progressive rendering / chunk rendering / streaming的表示はどの規模で価値があるか。
-- Partial contentを先に見せてもTaskが成立しない場合はどうするか。
-- Layout stabilityとprogressive displayをどう両立するか。
+### 4. Failure Isolation
 
-目標Output:
+Dependencyを少なくとも次へ分ける。
 
-- SkeletonをDefaultにしない採用条件
-- Progressive renderingのTrigger / Stop Condition
-- Placeholder fidelity / layout stabilityの要求範囲
+- **Critical** — 失敗するとPrimary Task自体が成立しない
+- **Important but degradable** — 一部機能は失うがPrimary Taskを残せる
+- **Non-critical** — Analytics / optional embed等、Primary Taskから外せる
 
-### D. Network Failure / Partial Failure
+Non-critical dependency failureをFull-page failureへ拡大しない。
 
-研究Question:
+### 5. Retry
 
-- Initial load、background fetch、save、sync、media、third-party failureを同じError UXで扱うべきか。
-- Offline、timeout、DNS、HTTP error、rate limit、partial response等をUser-facingにどこまで区別するか。
-- 一部Dataだけ失敗した場合、画面全体をErrorへ落とすべき条件は何か。
-- Last known good data / cached dataを表示してよい条件は何か。
-- Failure時にPrimary taskを残すProgressive Degradationをどこまで要求するか。
+- Read / idempotent operationはtransient failureでbounded auto retry候補。
+- Non-idempotent writeはidempotency / duplicate prevention / revision check等で安全性を確保できない限りautomatic retryしない。
+- `Retry-After`等server guidanceがあれば尊重する。
+- Backoff / jitterはretry storm riskがあるremote dependencyで候補にする。
+- Retryは上限とStop Conditionを持ち、失敗を無限loopで隠さない。
 
-目標Output:
+### 6. Timeout / Cancel
 
-- Critical / non-critical dependencyのFailure isolation基準
-- Full-page error / inline error / stale fallbackの使い分け
-- Partial failureを全体Failureに拡大しない判断基準
+- Universal timeout秒数を作らない。
+- **User-facing wait feedback** と **request / operation timeout** を分離する。
+- Timeout後もserver processingが継続し得るwriteでは、late result / duplicate / state reconciliationを考慮する。
+- Long computation / export / import / media処理等はCancel価値が高い場合にcancelableにする。
 
-### E. Retry / Backoff / Duplicate Prevention
+### 7. Offline Degradation
 
-研究Question:
+Offlineをbinary featureにしない。
 
-- 自動Retryしてよい操作と、User確認が必要な操作をどう区別するか。
-- ReadとWrite、idempotent / non-idempotent operationでRetry policyをどう変えるか。
-- Retry回数やbackoffを固定Universal値にするべきか。
-- Retry storm、重複送信、二重保存、二重購入等のRiskをどう抑えるか。
-- Retry UIでUserへ何を伝える必要があるか。
+```text
+No offline guarantee
+→ clear unavailable state
+→ cached / last-known-good read
+→ local read-only capability
+→ local edit + pending queue
+→ richer offline workflow
+```
 
-目標Output:
+上位LevelほどData / Storage contractが必要。`navigator.onLine`のみをauthorityにしない。Service Workerを全Projectへ強制しない。
 
-- Auto retry / manual retry / no retryのDecision Matrix
-- Backoff / jitter / idempotencyとの境界
-- Data / Storage Ownerとの責務分離
+### 8. Slow Device
 
-### F. Timeout / Cancel / Long Operation
+- Low-endでPrimary Taskが破綻するRiskがある場合にCPU / device constraint validationを強化する。
+- Degrade候補はnon-essential animation、visual effect、media quality、prefetch、background work等を優先する。
+- Core functionalityをlimited-support hardware/network APIだけでdisableしない。
 
-研究Question:
+### 9. Memory / Long Session
 
-- Timeoutを全Requestへ同じ秒数で設定するべきか。
-- User-facing wait timeoutとnetwork transport timeoutを分けるべきか。
-- 解析 / export / import / media処理等の長時間TaskでCancelを要求する条件は何か。
-- Timeout後もserver側処理が継続する可能性をどう扱うか。
-- Late response / stale responseがCurrent UIやDataを上書きしないために何が必要か。
+- Long-runningかどうかは「何分」ではなくExpected Session / repeated lifecycleで判断する。
+- Editor / Player / Dashboard / Game / SPA等では、open-close、route change、reconnect、media replace等のrepetition後にheap / DOM / listener等が一方向に増え続けないかを見る。
+- Memory peak自体ではなく、不要Resourceがreleaseされずprogressive degradationするかをLeak判断の中心にする。
 
-目標Output:
+### 10. Huge Data
 
-- Timeout / Cancelabilityの判断基準
-- Long task state model候補
-- Late result / stale request guardの要求範囲
+次を別Bottleneckとして測る。
 
-### G. Offline Degradation / Connectivity Change
+- Fetch / Transfer
+- Parse / Decode
+- Search / Sort / Filter / Computation
+- DOM / Rendering
+- Memory
+- Save / Sync / Migration
 
-研究Question:
+Virtualization / Worker / chunking等はbottleneckが確認されたときに選ぶ。Record countだけで導入しない。
 
-- Offline対応を「完全Offline対応」の二択にしないためのLevel分けはどうするか。
-- Read-only、cached view、local edit queue、feature unavailableをどう使い分けるか。
-- Connectivity復帰時に何を自動再開してよいか。
-- Offline表示が実際の通信可否と食い違う場合をどう扱うか。
-- Offline capabilityにService Workerを必須とすべきか。
+### 11. Media
 
-目標Output:
+- Critical View / Deferred / Interaction-triggeredを分ける。
+- Responsive image、thumbnail / poster、metadata-only、click-to-load等をcontent roleとnetwork costから選ぶ。
+- Media quality degradationはPrimary visual meaningを壊さない範囲で行う。
+- Multiple embeds / video-heavy pageではthird-party / decode / memoryも確認する。
 
-- Offline degradation ladder
-- Feature単位のoffline capability判断
-- Data / Storage Phase 4で確定したOffline write / Syncとの境界整理
+### 12. Third-party
 
-### H. Slow Device / Constrained Runtime
+- Third-partyをPerformance / Availability上のExternal Dependencyとして扱う。
+- Non-critical third-partyはdefer / on-demand / interaction後load候補。
+- Critical third-partyはfailure / timeout時のPrimary Task impactを確認する。
+- `async` / `defer`だけでCPU costが消えるとは扱わない。
 
-研究Question:
+### 13. Measurement
 
-- Slow CPU、low-memory mobile、battery / thermal throttling等をどこまで想定すべきか。
-- CPU throttling等のLab条件をProject規模ごとにどこまで要求するか。
-- Animation / blur / canvas / heavy JS / large DOMをどう評価するか。
-- Low-end条件で機能を減らすAdaptive degradationは必要か。
-- User device差を理由に無制限対応を要求しないStop Conditionは何か。
+- Public WebではCurrent Core Web Vitalsを共通Signalとして維持する。
+- Field dataがある場合はUser impactの優先順位に利用し、Labはdebug / regression / low-end reproductionに利用する。
+- Primary Task固有Metricが必要ならUser Timing等で追加測定する。
+- Lighthouse score単独をCompletion Oracleにしない。
 
-目標Output:
+### 14. Optimization Stop Condition
 
-- Slow-device validation trigger
-- Feature degradation候補の判断基準
-- High-end-only optimization / assumptionを許容する条件
+次を満たす場合、さらに速くできても追加最適化を止めてよい。
 
-### I. Memory Leak / Long-running Session
+- Primary Taskがrepresentative conditionで実用上利用可能
+- Review Trigger超過が解消または理由付きで許容されている
+- Critical dependency failure / timeout / retry loop等の重大Known Reliability issueがない
+- Target Projectに必要なslow network / slow device / memory / long-session / large-data testが通る
+- Before / AfterでUser-facing benefitまたはRisk reductionを確認できる
+- 次の最適化の期待BenefitがComplexity / Maintainability / Regression Riskに対して小さい
 
-研究Question:
+Soft Budget内でもPrimary UXが悪ければ止めない。Soft Budget超過でも目的上必要で実測UXが成立し、代替を検討済みなら自動Failにしない。
 
-- 何分・何時間をLong-running sessionとして扱うかを固定値にすべきか。
-- SPA、Editor、Player、Dashboard、Game等でmemory growthをどう評価するか。
-- Listener、Timer、Observer、Blob URL、Canvas / WebGL resource、large array、cache等のcleanupをどこまでRule化するか。
-- Memoryが一時的に増える正常動作とLeakをどう区別するか。
-- Route change / open-close repetition / reconnect repetition等のrepetition testをどこまで要求するか。
+## Owner Promotion Map
 
-目標Output:
+- Performance / Reliability behavior → [`../../docs/05-performance-reliability.md`](../../docs/05-performance-reliability.md)
+- Data authority / Offline write / Sync / Conflict / Duplicate preventionのData Contract → [`../../docs/03-data-storage.md`](../../docs/03-data-storage.md)
+- Security → [`../../docs/06-security.md`](../../docs/06-security.md)
+- Testing strategy / Verification state → [`../../docs/07-testing-quality.md`](../../docs/07-testing-quality.md)
+- GitHub Pages Service Worker update / cache busting → [`../../docs/08-github-pages.md`](../../docs/08-github-pages.md)
+- Dependency / Asset governance → [`../../docs/13-dependencies-assets.md`](../../docs/13-dependencies-assets.md)
+- Short execution check → [`../../templates/QUALITY_CHECKLIST.md`](../../templates/QUALITY_CHECKLIST.md)
 
-- Long-session risk signal
-- Memory stabilization / repeated-action validationの判断基準
-- Cleanup requirementをProject risk別に調整する方法
+## Completion
 
-### J. Huge Datasets / Heavy Computation
+Phase 5 current-scope Researchは次を満たしたためPromotion可能と判断しました。
 
-研究Question:
+- A〜MのDecision Domainを調査
+- Supporting / opposing / limitationを確認
+- Universal / Context-dependentを分離
+- Existing Soft BudgetをReview Triggerとして維持
+- Loading / Failure / Retry / Timeout / OfflineをDecision Model化
+- Slow Device / Memory / Long SessionのEscalationを整理
+- Huge Data / Media / Third-partyをTrigger-basedに整理
+- Validation Depth / Stop Conditionを定義
+- 新Owner / Gateを作らず既存Ownerへ統合
 
-- Data件数だけでなくpayload、DOM、search、sort、filter、parse、memory、update frequencyをどう合わせて判断するか。
-- Pagination / Load More / Virtualization / Chunk Rendering / Worker / server-side processingをどう使い分けるか。
-- 全件取得は許容できるが全件DOM化は不可、等の分離をどう表現するか。
-- Search index / derived cacheのPerformanceとCanonical Data reliabilityをどう分けるか。
-- Large data optimizationの複雑化をどこで止めるか。
-
-目標Output:
-
-- Huge dataset escalation matrix
-- Network / memory / rendering / computationを分離した判断
-- Data / Storage Ownerとの明確なBoundary
-
-### K. Image / Video / Fonts / Heavy Media
-
-研究Question:
-
-- First View / interaction後 / backgroundで必要なMediaをどう分類するか。
-- Responsive image、thumbnail、poster、metadata-only、click-to-load等をどの条件で要求するか。
-- Video preload / autoplay / multiple embed / background videoのCostをどう評価するか。
-- Image decode / layout shift / memoryもnetwork transferと同様に扱うべきか。
-- Media qualityを下げる最適化とVisual qualityのTrade-offをどう判断するか。
-
-目標Output:
-
-- Media criticality / load timing decision
-- Quality degradationの許容条件
-- Multiple embed / video-heavy pageのescalation基準
-
-### L. Third-party Scripts / External Runtime Dependency
-
-研究Question:
-
-- Analytics、ads、chat、embed、font、SDK、API等のthird-partyをPerformance / Reliability上どう分類するか。
-- Third-party failureでPrimary Taskを止めてよい条件は何か。
-- Deferred / consent後 / interaction後loadをどの条件で使うか。
-- Timeout / retry / fallback / isolationをどこまで要求するか。
-- Third-party script costをInitial Transferだけでなくmain thread / privacy / availabilityまで横断評価する際、05 / 06 / 13のOwner境界をどう保つか。
-
-目標Output:
-
-- Criticality + load timing + failure isolation matrix
-- Third-party dependency追加時のReview Trigger
-- Performance / Security / Dependency ownership境界
-
-### M. Measurement / Validation / Stop Condition
-
-研究Question:
-
-- Lab metrics、field data、subjective UX、failure testをどう組み合わせるか。
-- Cold / repeat、mobile / desktop、fast / slow network、normal / throttled CPUをどこまで要求するか。
-- Core Web VitalsとPrimary Task-specific metricをどう併用するか。
-- Performance regressionをどの程度自動検知するべきか。
-- 最適化前後の差が実用上意味を持つかをどう判断するか。
-- 「まだ速くできる」状態でも終了できるStop Conditionをどう定義するか。
-
-目標Output:
-
-- Project risk別Validation Depth
-- Before / After comparison contract
-- Optimization stopping rule
-
-## 5. Cross-cutting Classification to Research
-
-各Axisを個別Ruleにするだけでなく、少なくとも次のProject条件との関係を研究します。
-
-- Small static / content site
-- Normal interactive web app
-- DATA-heavy app
-- MEDIA-heavy app
-- CLOUD / external API dependent app
-- Long-running tool / editor / dashboard
-- GAME / Canvas / WebGL
-- ELECTRON renderer
-- Public general-audience site
-- Known high-end-device-only internal tool
-
-固定ProfileだけでRuleを決めず、Current Runtime / User Task / Risk Signalを合わせます。
-
-## 6. Required Decision Outputs
-
-Research完了時は少なくとも次を作ります。
-
-1. **Performance / Reliability Decision Model**
-   - Trigger → Risk → Criteria → Action → Exception → Validation → Stop
-2. **Optimization Escalation Ladder**
-   - 小規模Projectへ過剰対策を要求せず、必要時だけ強化する段階
-3. **Loading / Failure State Decision Matrix**
-   - loading / stale / partial / offline / timeout / retry / failed / recovered
-4. **Runtime Degradation Model**
-   - slow network / slow device / memory pressure / long session
-5. **Heavy Content Decision Matrix**
-   - huge data / image / video / third-party
-6. **Validation Contract**
-   - lab / real runtime / failure / repetition / before-after / stop condition
-7. **Owner Promotion Map**
-   - `docs/05`を中心に、`03` / `06` / `07` / `08` / `13`へ必要な専門境界だけ昇格
-
-## 7. Evidence Requirements
-
-Researchは [`../../docs/20-evidence-first-research.md`](../../docs/20-evidence-first-research.md) に従います。
-
-Decision-criticalなClaimでは、Questionに応じて次を優先します。
-
-- Web standards / browser vendor documentation
-- Current official performance guidance
-- Human-computer interaction / perceived wait research
-- Browser / framework-neutral measurement evidence
-- Production postmortem / real product failure evidence
-- Relevant field data / large-scale measurement
-- Supporting / opposing evidence
-
-特定Framework blogや単一Lighthouse scoreだけをUniversal Rule根拠にしません。
-
-Fast-changingなBrowser behavior / metric / APIではCurrent official evidenceを確認します。
-
-## 8. Out of Scope
-
-Phase 5では原則として次を目的にしません。
-
-- minify方法一覧、webpack設定一覧等のTechnique catalog
-- React / Vue / Next.js等、特定Framework専用optimization cookbook
-- 全Project共通のhard KB / ms上限追加
-- Backend database tuning全般
-- CDN vendor比較そのもの
-- Security ruleの再設計
-- Data authority / sync / conflict ruleの再研究
-- Visual style / animation designそのもの
-- Service Worker / PWAを全Projectへ標準導入
-- PerformanceのためだけのArchitecture全面変更をDefault化
-
-隣接TopicがDecisionへ必要ならEvidenceとして扱いますが、Owner責務は維持します。
-
-## 9. Promotion Rules
-
-Research結果をそのままCommon MUSTへしません。
-
-昇格時は:
-
-- `docs/05-performance-reliability.md`をPrimary Normative Ownerとして優先
-- Data canonicality / sync / conflictは`docs/03`
-- Securityは`docs/06`
-- Verification strategyは`docs/07`
-- GitHub Pages固有Cache / Service Worker updateは`docs/08`
-- Dependency / asset distributionは`docs/13`
-- Template / ChecklistへRule本文を複製しない
-- 新Ownerは既存Ownerで表現不能な独立責務がEvidenceで確認された場合だけ検討
-
-## 10. Completion Contract
-
-Phase 5 Researchは次を満たすまで完了扱いにしません。
-
-- [ ] A〜Mの各AxisでDecision-critical Questionを調査した
-- [ ] Supporting / opposing / limitationを必要範囲で確認した
-- [ ] Universal ruleとcontext-dependent ruleを分離した
-- [ ] 小規模Projectへのover-optimizationを防ぐStop Conditionがある
-- [ ] Loading / Failure / Retry / Timeout / Offlineのstate判断が整理されている
-- [ ] Slow device / memory / long sessionのescalation条件が整理されている
-- [ ] Huge data / media / third-partyの判断基準が整理されている
-- [ ] Existing Soft Budgetとの関係を説明できる
-- [ ] Project risk別のValidation Depthを決められる
-- [ ] Current `docs/05`とのduplicate / contradictionを整理した
-- [ ] 必要なRuleを既存OwnerへPromotionした
-- [ ] Quality Checklist等は短いverification entryに留めた
-- [ ] Research Assetを第二Normative Ownerにしていない
-- [ ] Current Root `REQUIREMENTS.md`のPromotion Stateを更新した
-- [ ] Final Guide Validator / relevant validationを確認した
-
-## 11. Research Handoff
-
-- Phase: 5
-- Status: Ready for research
-- Primary Domain: PERFORMANCE_RELIABILITY
-- Work Type: RESEARCH
-- Change Scope: SYSTEMIC
-- Risk Signal: RESEARCHABLE_QUESTION
-- Primary Owner: `docs/05-performance-reliability.md`
-- Research Method: `docs/20-evidence-first-research.md`
-- Promotion / Hygiene: `docs/14-continuous-improvement.md`
-- Blocking Decisions: None
+詳細な検索履歴は保存せず、Core Evidence / Limitations / Promoted DecisionsをこのHistorical Recordへ残します。
