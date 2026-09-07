@@ -869,3 +869,21 @@ Regression Testでは最終状態だけでなく、**Reset成功後に意図的�
 - Failure: [F-002 / F-003 / F-018](../catalog/failures.md)
 - Success: [S-004 / S-005 / S-006 / S-007 / S-022](../catalog/success-patterns.md)
 - Anti-pattern: [AP-005 / AP-006 / AP-025](../catalog/anti-patterns.md)
+
+## External Data Authority / Reconciliation
+
+CONDITIONAL: When local state represents or synchronizes external provider state, define authority before sync mechanics. Historical promotion evidence: [Phase 19 External Integration Decision System](../maintenance/research/external-integration-decision-system.md).
+
+- Decide whether External or Local state is Canonical, and when needed define ownership per field (`read-only external / local override / two-way sync`). Do not use last-write-wins as a universal substitute for ownership.
+- Raw provider payload storage is not the default. Persist the Canonical fields and identifiers the Product actually needs unless audit / recovery requirements justify more.
+- Distinguish states such as `observed external`, `local derived`, `pending operation`, and `last reconciled` when collapsing them would hide uncertainty. `Last attempt`, `last successful read`, and `last successful reconciliation` may also differ.
+- Webhook delivery or one successful API call does not prove permanent consistency. Critical state may use push, poll, on-demand reconciliation, or a hybrid based on allowed staleness, provider capability, cost / rate limit, and User expectation.
+- Do not set one Common polling interval. Derive it from tolerated staleness and provider limits, and give polling a terminal / timeout / maximum-attempt or equivalent stop condition.
+- Classify drift only as deeply as needed: expected lag, missed update, stale cache, conflicting mutation, deletion, permission loss, provider failure, impossible drift, unknown, etc.
+- Repair follows the declared authority and field ownership. A newer local timestamp does not automatically override an externally authoritative field.
+- External delete, permission loss, wrong ID, and provider outage are different states. Do not interpret every `404`-like response as permission to delete Local Canonical Data when the provider contract is ambiguous.
+- Tombstones, cursors, revision / sequence, incremental sync, and full reconciliation are conditional tools. If incremental state can expire or become invalid, provide a bounded recovery path to a trusted full reconciliation when the integration needs it.
+- Reconciliation operations should be duplicate-safe where practical. High-impact repair may use dry-run / diff preview / batch limit / backup / rollback when the data risk justifies it; these are not universal requirements.
+- Reconciliation failure must remain distinguishable from `0 items`, `not found`, or successful convergence.
+
+Convergence tests are owned by [07 Testing / Quality](07-testing-quality.md); webhook and retry mechanics by [05 Performance / Reliability](05-performance-reliability.md).

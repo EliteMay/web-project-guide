@@ -1,6 +1,6 @@
 # External Integration Decision System — Phase 19 Promotion Checkpoint
 
-Status: approved decisions / pending normative promotion
+Status: historical non-normative promotion checkpoint / promoted 2026-09-07
 Current work branch: `guide/phase-1-19-integration`
 
 このFileはCommon Rule本文ではありません。Phase 19で確定したExternal API / Webhook / Contract Evolution / Reconciliation / Integration TestingのDecisionを、会話移行で失わず既存OwnerへPromotionするためのCheckpointです。
@@ -501,3 +501,19 @@ Promotion時は以下を守る。
 8. `templates/QUALITY_CHECKLIST.md`には短い実行Checkだけ置き、Rule本文を複製しない。
 9. Promotion後、このFileはhistorical non-normative evidenceへStatus変更する。
 10. 最終PR Headとmerge後mainで`Validate Guide`を確認する。
+
+## Promotion Result — 2026-09-07
+
+Phase 19 Decisions were promoted into the existing Owner model without adding a new Owner, Stable Gate, Profile, or Risk Signal.
+
+- Integration boundary / mapping → `docs/02-architecture.md`
+- Data authority / reconciliation → `docs/03-data-storage.md`
+- Webhook / delivery / retry → `docs/05-performance-reliability.md`
+- Security boundary → existing `docs/06-security.md`
+- Integration validation / environment evidence → `docs/07-testing-quality.md`
+- API / SDK / Webhook lifecycle → `docs/13-dependencies-assets.md`
+- Integration diagnostics → `docs/15-development-observability.md`
+- Short execution checks → `templates/QUALITY_CHECKLIST.md`
+- Existing `EXTERNAL_API` signal expanded; no new signal was created.
+
+This file is retained as historical non-normative promotion evidence only.

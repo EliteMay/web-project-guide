@@ -548,3 +548,119 @@ Prototype / Playable MVP / Main Game Completeを混同しません。詳細は [
 - Required CI / browser / visual / playtest / real-device checkが成功、または未確認明記
 - LearningならContent Depth / Next Stepを確認できる
 - GameならPlayable MVP / Primary Completion ConditionをRuntimeで確認できる
+
+## Requirements Decision System
+
+Phase 1 research evidence is kept in [Requirements Decision System Research](../references/requirements-decision-system-research.md). General external research method remains owned by [20 Evidence-first Research](20-evidence-first-research.md); this section owns only Requirements-specific decisions.
+
+### Problem → Outcome → Solution separation
+
+Meaningful new requirements and feature requests should be reduced in this order when the distinction matters:
+
+```text
+Raw Request / Idea
+↓
+Underlying Problem / Context
+↓
+Desired User / Product Outcome
+↓
+Solution / Feature Candidate
+↓
+Scope Decision
+↓
+Confirmed Requirement
+```
+
+- A named feature is not automatically a requirement. Separate the need or outcome from one proposed implementation when alternative solutions could satisfy the same need.
+- Distinguish `need / meaningful want / solution idea` when that distinction changes scope or priority. Do not interrogate the User mechanically when Current Repository, Existing Intent, or Evidence already makes the underlying outcome clear.
+- When one request mixes multiple problems with different dependencies, risks, or completion criteria, split it into separate decision units before prioritizing it.
+- Requirements should state the needed behavior, outcome, or constraint. Implementation detail belongs in Requirements only when that implementation choice is itself a real constraint or compatibility contract.
+
+### Scope Decision — Now / Later / Reject
+
+Feature candidates may be classified as `Now / Later / Reject` instead of allowing every useful idea to become current scope.
+
+**Now** is appropriate when the item is necessary to deliver or validly test the Core Outcome, is a prerequisite for another Now item, or is a foundation / risk-control without which the MVP would be misleading or unsafe.
+
+**Later** is appropriate when the item has meaningful value but the Core Outcome remains valid without it, deferral is safe, and postponing it avoids current complexity or uncertainty. `Later` is not a permanent dumping ground; revisit it when new Requirements, Evidence, or actual use changes the decision.
+
+**Reject** is appropriate when the item does not materially improve the intended outcome, duplicates an existing capability, conflicts with Non-goals / Current Contract, or its expected maintenance / testing / UI / data / migration / failure / cognitive cost is not justified by the value.
+
+Prioritization should use the smallest set of factors that changes the decision, such as:
+
+- Outcome importance / task frequency
+- Dependency / sequencing
+- Risk or uncertainty reduction
+- Implementation + maintenance + testing cost
+- UI / data / migration complexity
+- Failure / compatibility impact
+
+RICE, MoSCoW, Kano, scoring matrices, or fixed numeric weights are optional aids, not Common mandatory process.
+
+### MVP Boundary
+
+MVP is the **smallest end-to-end scope that can deliver or validly test the Core Outcome**, not the smallest number of features.
+
+- Include foundations, safety, reliability, compatibility, or data behavior that are necessary for the MVP to produce truthful evidence or be safely used in its intended context.
+- Exclude polish and secondary capability that can be deferred without invalidating the Core Outcome or hiding a material risk.
+- If removing an item makes the prototype / MVP incapable of testing the risky assumption or completing the primary flow, the reduced scope is not viable for that purpose.
+- `Prototype`, `MVP`, `Feature Complete`, and `Release Ready` are separate states. Domain owners may add stricter completion gates such as Game playtest, real-device testing, storage migration, or security validation.
+
+### Prototype / Cheap Test Trigger
+
+Use a Prototype / Technical Spike / Data Prototype / Minimal Implementation when all of the following are materially true:
+
+1. A Project-specific uncertainty remains after Current Repository review and appropriate Research.
+2. A wrong decision would create meaningful rework, risk, or misleading Requirements.
+3. A cheaper bounded test can reduce that uncertainty before full implementation.
+
+Choose the **lowest-fidelity artifact that can answer the question faithfully**: sketch, wireframe, clickable prototype, technical spike, data prototype, or minimal working slice.
+
+Before the test, state at least:
+
+```text
+Hypothesis / Decision Question
++ Observable Signal
++ Pass / Fail or Keep / Revise / Reject condition
++ Stop Condition
+```
+
+Prototype code is not production code by default. If it becomes part of the product, re-evaluate production Security, Reliability, Accessibility, Data, Test, and Maintenance requirements instead of assuming prototype success proves production readiness.
+
+Skip a prototype when the decision is already well-supported, low-risk, reversible, and a prototype would not materially change the decision.
+
+### Requirement Change Classification / Impact
+
+Classify meaningful Requirement changes by semantic effect rather than diff size:
+
+- **Clarification** — meaning is made more explicit without intentionally changing required behavior.
+- **Extension** — new behavior or scope is added while the existing Contract remains valid.
+- **Replacement** — an existing Requirement is superseded by a different current Requirement.
+- **Removal** — previously required behavior is intentionally no longer required.
+- **Breaking Change** — the change can invalidate existing data, consumers, URLs, integrations, workflows, compatibility, or another non-breakable contract.
+
+Before implementing a material change, inspect only the affected dimensions, such as Core Outcome, primary flow, Architecture, Data / Migration, external interfaces, Security / Privacy, Performance / Accessibility, Tests, Documentation, Deployment, and backward compatibility.
+
+Approved changes update the Current Contract. Obsolete clauses should not remain as if still active; history belongs in CHANGELOG / Work Report / Git as appropriate. Replacement / Removal should make clear which previous behavior no longer applies.
+
+### Observable Completion / Proportionate Traceability
+
+Material Requirements should be traceable far enough that completion can be observed:
+
+```text
+Requirement / Expected Outcome
+↓
+Observable Evidence
+↓
+Verification Method
+↓
+Pass / Fail Criteria
+↓
+Actual Result
+```
+
+- Prefer observable language over vague completion terms such as `easy`, `high quality`, `fast`, or `works well` unless the Project defines what those mean in evidence.
+- Use the verification method that matches the Requirement: automated test, static inspection, browser test, user test, actual playtest, real device, production-safe check, or another justified method.
+- Record `Pass / Fail / Not Verified / Not Applicable` distinctly when the state matters.
+- Requirement IDs, matrices, and bidirectional traceability tools are useful when scale / criticality justify them, but are not mandatory ceremony for every small individual Project.
+- When a Requirement changes, re-evaluate its completion criteria and affected verification. `Feature Complete` does not automatically mean `Release Ready`.

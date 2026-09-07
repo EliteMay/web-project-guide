@@ -133,12 +133,15 @@ Navigationの分類・階層・到達経路を変える作業はStructure / Flow
 
 Setup.exe / Auto Update / Windows固有機能をCIだけで実機確認済み扱いにしません。
 
-## 外部API / CDN / Supabase
+## 外部API / Webhook / CDN / Supabase
 
-- [05 Performance / Reliability](docs/05-performance-reliability.md)
-- [06 Security](docs/06-security.md)
-- [13 Dependencies / Assets](docs/13-dependencies-assets.md)
-- 保存を伴う場合は [03 Data / Storage](docs/03-data-storage.md)
+- Integration contract / mapping / provider boundary → [02 Architecture](docs/02-architecture.md)
+- Reliability / Webhook delivery / retry / degradation → [05 Performance / Reliability](docs/05-performance-reliability.md)
+- Auth / signature / secret / permission → [06 Security](docs/06-security.md)
+- Integration test / Sandbox / completion → [07 Testing / Quality](docs/07-testing-quality.md)
+- API / SDK / Webhook lifecycle / deprecation → [13 Dependencies / Assets](docs/13-dependencies-assets.md)
+- 保存 / Sync / Reconciliationを伴う場合 → [03 Data / Storage](docs/03-data-storage.md)
+- Runtime diagnostics / remote failure analysisが必要な場合 → [15 Observability](docs/15-development-observability.md)
 
 ## AI / Coding Agentへ大きく任せる
 

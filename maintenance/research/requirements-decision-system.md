@@ -1,6 +1,6 @@
 # Requirements Decision System — Phase 1 Research Contract
 
-Status: pending research / current project requirement
+Status: historical non-normative research contract / promoted 2026-09-07
 Source of Truth for priority/status: [`../../REQUIREMENTS.md`](../../REQUIREMENTS.md)
 
 このFileはCommon Rule本文ではありません。曖昧なUser Requestから必要十分で検証可能なRequirementへ変換するEnd-to-End判断体系を研究・設計するための、`web-project-guide`自身のCurrent Research Contractです。
@@ -204,3 +204,16 @@ Phase 1完了時は少なくとも次を満たします。
 - 全Requirementへ固定Score、重いTraceability ID、Prototypeを強制する
 
 Phase 1はResearch量やRule数を増やすことではなく、**少ないRuleでRequirements Decision Qualityを上げること**を完成基準とします。
+
+## Promotion Result — 2026-09-07
+
+Phase 1 Research was completed and promoted without creating a new Owner, Gate, Profile, or mandatory scoring framework.
+
+- Normative Requirements decisions → `docs/01-requirements.md`
+- General research method remains → `docs/20-evidence-first-research.md`
+- Evidence synthesis → `references/requirements-decision-system-research.md`
+- Current project status → Root `REQUIREMENTS.md`
+
+Promoted gaps: Problem → Outcome → Solution separation, `Now / Later / Reject`, MVP boundary, Prototype / Cheap Test trigger, Requirement Change classification / impact, and observable completion with proportionate traceability.
+
+Existing Agent Autonomy and Requirements Persistence rules were reused rather than duplicated. This file is retained as historical non-normative evidence only.

@@ -276,7 +276,11 @@ Guide自身も自分のRuleを可能な範囲でself-applyします。
 
 ## 17. Research Assets / Promotion State
 
-Requirements Decision Systemの未完了Research Contractは [`maintenance/research/requirements-decision-system.md`](maintenance/research/requirements-decision-system.md) に保存します。
+Requirements Decision SystemのPhase 1 Researchは実装済みです。Current Common Ruleは [`docs/01-requirements.md`](docs/01-requirements.md)、Research Evidenceは [`references/requirements-decision-system-research.md`](references/requirements-decision-system-research.md) を正本とし、[`maintenance/research/requirements-decision-system.md`](maintenance/research/requirements-decision-system.md) はPromotion後のhistorical non-normative contractとして保持します。
+
+Phase 1で確定したProblem → Outcome → Solution separation、`Now / Later / Reject`、MVP Boundary、Prototype / Cheap Test Trigger、Requirement Change Classification、Observable Completion / proportionate traceabilityは、Agent Autonomy / Requirements Persistenceを第二Copyにせず`docs/01`へ統合します。
+
+External Integration Decision SystemのPhase 19 Decisionは実装済みです。Integration boundaryは [`docs/02-architecture.md`](docs/02-architecture.md)、External authority / reconciliationは [`docs/03-data-storage.md`](docs/03-data-storage.md)、Webhook / retryは [`docs/05-performance-reliability.md`](docs/05-performance-reliability.md)、Validationは [`docs/07-testing-quality.md`](docs/07-testing-quality.md)、API / SDK / Webhook lifecycleは [`docs/13-dependencies-assets.md`](docs/13-dependencies-assets.md)、Diagnosticsは [`docs/15-development-observability.md`](docs/15-development-observability.md) を正本とします。Security boundaryは既存 [`docs/06-security.md`](docs/06-security.md) を再利用し、[`maintenance/research/external-integration-decision-system.md`](maintenance/research/external-integration-decision-system.md) はhistorical non-normative checkpointとして保持します。
 
 Performance / Reliability Decision SystemのPhase 5 Researchは実装済みです。Current Common Ruleは [`docs/05-performance-reliability.md`](docs/05-performance-reliability.md)、実行時の短いVerificationは [`templates/QUALITY_CHECKLIST.md`](templates/QUALITY_CHECKLIST.md) を正本とし、[`maintenance/research/performance-reliability-decision-system.md`](maintenance/research/performance-reliability-decision-system.md) はPromotion後のhistorical non-normative evidenceとして保持します。
 
