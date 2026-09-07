@@ -30,6 +30,7 @@
 | Data / Save / Import / Migration | Data safety | [03](../docs/03-data-storage.md) |
 | Page Load / 重いRuntime | Performance / Reliability | [05](../docs/05-performance-reliability.md) |
 | Runtime Diagnostics / Remote Handoff | Observability | [15](../docs/15-development-observability.md) |
+| Content / IA / Search / Discoverability | Content quality / Findability / Public discovery | [01](../docs/01-requirements.md) / [22](../docs/22-task-first-structure-flow-research.md) / [07](../docs/07-testing-quality.md) |
 | GitHub Pages / 公開Site | Pages / Public URL / Repository discoverability | [08](../docs/08-github-pages.md) / [10](../docs/10-project-management.md) |
 | Public / Auth / OAuth / API / Cloud / AI | Security / Privacy / Dependency | [06](../docs/06-security.md) / [13](../docs/13-dependencies-assets.md) |
 | Release / Rollback / Legacy | Version / Maintenance | [09](../docs/09-maintenance.md) |
@@ -133,6 +134,19 @@
 - [ ] 公開URLで主要導線を確認した、または実公開未確認と明記した
 - [ ] 確認した公開URLがユーザーへ渡す最終Commitと対応している
 - [ ] 代表Site URLがある場合、README上部とRepository About `Website`から到達できる
+
+## Content / IA / Search / Discoverability — 該当時
+
+- [ ] 主要Contentを件数・文字数だけで完成扱いせず、Correctness / Sufficiency / Clarity / Freshness等を必要範囲で確認した
+- [ ] 重要ContentがNavigation / Search / Related / Contextual entry等から合理的に到達でき、意図しないOrphanがない
+- [ ] Rename / Move / Archive / Delete後にBroken link、Stale relation、Ghost Search Resultを残していない
+- [ ] Searchが重要な場合、Exact / Partial / Multiple / No Result / Filter等の代表Queryを実Dataで確認した
+- [ ] Search Resultの存在だけでなくRelevance / Ranking / RecoveryがPrimary Taskに合っている
+- [ ] Search Index / Sitemap / Structured Data等のDerived DataがCanonical Dataと同期し、必要ならRebuildできる
+- [ ] Empty / No Result / Offline / Permission等を混同せず、必要なState explanationと次Actionがある
+- [ ] External Search / Sharingが重要なPublic Siteではtitle / description / index control / canonical / sitemap / social metadata等を必要範囲で確認した
+- [ ] Metadata / Structured DataがUser-visible Contentと重大に矛盾していない
+- [ ] 検索順位・Rich Result・Analyticsの有無だけをCompletion条件にしていない
 
 ## Learning
 
