@@ -172,26 +172,28 @@ Main reinforcement:
 
 新Owner / 新Domain / 新Risk Signal / 新Stable Gateは追加せず、Requirements=`01`、Verification=`07`、Compatibility dependency=`13`、Current external evidence=`20`へ既存責務で分配しました。Evidenceは [`../../references/web-platform-compatibility-research.md`](../../references/web-platform-compatibility-research.md) に保存します。
 
-## Active reinforcement candidates
-
-以下は**今すぐRule追加を確定する項目ではありません**。Current Guideでは利用可能ですが、他の成熟Ownerと比べてDecision Framework / Failure Boundary / Validationが相対的に薄いため、次回要件定義・Researchで優先して再監査します。
-
 ### 8. Project Profile Decision Depth — `docs/12-project-profiles.md`
 
-Priority: **Medium-Low**
+Status: **reinforced after the 40-point audit / re-audit before reopening**
 
-現状は各Profileの特徴と確認項目が中心で、他の成熟OwnerほどDecision Frameworkは厚くありません。ただしProfileはRoutingの補助情報なので、短いこと自体は問題ではありません。
+Main reinforcement:
 
-再監査候補:
-
+- Profileの役割をProject characteristic / routing hintとして明示
 - Profileを選ぶ / 選ばないCriteria
-- 複数Profile併用時の責務衝突の扱い
-- ProfileからRuleをover-routeしない具体的境界
-- Projectの成長でProfileが変わるTrigger
-- Profile記録とCurrent Runtimeが食い違った場合の扱い
-- Profileを削除 / 変更したときにCurrent Requirements / Routingへ何が影響するか
+- 複数Profileの併用とProfile precedence禁止
+- Profile unionによるover-routing防止
+- Project成長時のReview Trigger / Profile Drift
+- Profile metadataとCurrent Requirements / RuntimeのConflict handling
+- Profile追加 /変更 /削除時のImpact boundary
+- Profile体系自体を増やすRule Budget
 
-`docs/21`がMachine / Behavioral Routingの正本であるため、Profileを第二Routerへ成長させないことを優先します。
+`docs/21`と`maintenance/rule-router.json`をRoutingの正本として維持し、Profileを第二Routerへ成長させていません。新Profile / 新Domain / 新Risk Signal / 新Stable Gateは追加していません。
+
+## Active reinforcement candidates
+
+**None.** 2026-09-07の40-point Content Depth Auditで確認したActive candidateは、Current Guideへ既存OwnerのままPromotion済みです。
+
+新しいGapを作る場合は、文字量や章数ではなく実ProjectのFailure / Requirement / Current Evidenceから再監査します。過去の候補を自動的に再オープンしません。
 
 ## Intentionally concise — 薄いと誤判定しない
 
@@ -217,9 +219,11 @@ Priority: **Medium-Low**
 - Performance / Reliability + External delivery — `docs/05`
 - Security / Privacy — `docs/06`
 - Testing / Verification + External Integration + Deployment + Learning Verification — `docs/07`
+- GitHub Pages / Static Delivery Decision Depth — `docs/08`
 - Version / Maintenance / Rollback / Product outcome follow-up — `docs/09`
 - GitHub-centered Project Management + General Web Deployment → `docs/10`
 - Electron / Distribution / Update / Electron Security — `docs/11`
+- Project Profiles / selection / combination / lifecycle / drift — `docs/12`
 - Dependencies / Assets / Supply Chain / External contract lifecycle — `docs/13`
 - Continuous Improvement / Deep Audit — `docs/14`
 - Observability / Project Learnings / External diagnostics — `docs/15`
@@ -242,7 +246,7 @@ Priority: **Medium-Low**
 2. このFileを**Content Depth候補**として読む
 3. Current Ownerで既に解消済みの項目を除外する
 4. `Defect`と`Content Depth Gap`を別Registerで扱う
-5. Active candidateをPriority順に再監査する
+5. Active candidateがある場合だけPriority順に再監査する
 6. 1回の要件定義で全部を増やさず、優先領域を絞る
 7. External Evidenceが必要なら`docs/20`でResearchする
 8. Promotion時は既存Ownerへの統合を優先し、新Owner / Gate / Profileを増やす前にRule Budgetを確認する
@@ -253,14 +257,15 @@ Priority: **Medium-Low**
 - Audit date: 2026-09-07
 - Guide version: `1.21.0`
 - 40-point audit merged-main baseline: `7c2eb0bef500b9de6cd773f0438b1ca591c07a89`
-- Current reinforcement branch: `guide/reinforce-pages-browser-compat`
+- Current reinforcement branch: `guide/reinforce-project-profiles`
 - Owner count: 24 (`docs/00`〜`docs/23`)
 - Phase 1: reinforced / no longer active backlog
 - Phase 19: reinforced / no longer active backlog
 - Public Content / Discoverability: current coverage sufficient / removed from active backlog
 - General Web Deployment: reinforced / no longer active backlog
 - Learning / Explanation: reinforced / no longer active backlog
-- GitHub Pages / Static Delivery: reinforced / no longer active backlog after this branch merges
-- Browser / Web Platform Compatibility: reinforced / no longer active backlog after this branch merges
-- Active depth backlog after this branch: Project Profile Decision Depth
+- GitHub Pages / Static Delivery: reinforced / no longer active backlog
+- Browser / Web Platform Compatibility: reinforced / no longer active backlog
+- Project Profile Decision Depth: reinforced / no longer active backlog after this branch merges
+- Active depth backlog after this branch: None
 - Detailed audit: `maintenance/audits/2026-09-07-40-point-content-depth-audit.md`

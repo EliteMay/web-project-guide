@@ -7,7 +7,9 @@ Domain固有項目は [Conditional Packs](requirements/README.md) から該当�
 ## 0. Guide / Project Profile
 
 - Adopted Guide Version:
-- Profiles: STATIC / DATA / LEARNING / GAME / MEDIA / AI-HANDOFF / CLOUD / ELECTRON / TOOL / PUBLIC-CONTENT
+- Profiles（Current ProjectへMaterialなものだけ。該当なし / 未記録でも可）: STATIC / DATA / LEARNING / GAME / MEDIA / AI-HANDOFF / CLOUD / ELECTRON / TOOL / PUBLIC-CONTENT
+
+ProfileはRoutingの補助Metadataであり、Current Requirements / Runtimeや [Rule Routing / Preflight](../docs/21-rule-routing-preflight.md) の代わりではありません。選定・併用・変更Criteriaは [12 Project Profiles](../docs/12-project-profiles.md) を正本とします。
 
 ## 0A. Decision / Assumption
 
