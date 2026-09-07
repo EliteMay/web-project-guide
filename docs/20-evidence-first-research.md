@@ -411,6 +411,45 @@ Feature FlagはRollout / Kill switch / Internal testing等のControl mechanism�
 
 Experiment終了後はDecisionを残し、不要Variant、temporary event、obsolete flag等をCleanupします。Trafficが少なくA/B Testに向かないProjectではPrototype comparison、User test、Task observation、Direct feedback等へ切り替えられます。
 
+## Grounding / RAG / Citation Integrity
+
+CONDITIONAL: AIがRepository、Document、Knowledge Base、Web、Database等のSourceを根拠として回答する場合、`Retrieval成功 = Answer correctness`とは扱わず、Source authorityからUser-facing ClaimまでEvidenceの対応関係を維持します。
+
+Grounding Scopeは必要に応じて次を区別します。
+
+- **Closed-book** — Modelの一般知識を利用できる。
+- **Grounded** — 指定Sourceを優先するが、一般知識を使う場合は境界を誤認させない。
+- **Source-bound** — 指定Sourceにない重要Factを推測で補わず、`not found / insufficient evidence`を正常Outcomeとして許可する。
+
+### Source / Retrieval Boundary
+
+- Retrievalされた文書を同じAuthorityとして扱わず、Current Requirement / Canonical Data / Official Source / Historical / Community / Unknown等のSource hierarchyが意味を持つ場合は維持する。
+- `recently uploaded / modified`だけでCurrent Truthとせず、version、effective date、deprecated / superseded / archived等を必要範囲で確認する。
+- Retrieval Index / Vector StoreはCanonical Contentから導出されるDerived Dataとして扱い、Indexだけを第二Source of Truthにしない。Lifecycle詳細は [03 Data / Storage](03-data-storage.md) を正本とする。
+- Add / Update / Rename / Delete / Permission change / Archive後にDerived Retrieval Dataが同期し、削除済みSourceをGhost Retrievalし続けない。
+- Exact ID / version / error code / filename等はsemantic retrievalへ機械的に寄せず、Taskに合うExact / lexical / semantic retrievalを選ぶ。
+- Chunk size / overlap / metadata / top-k / reranking等の変更は、重要RAG FeatureではRetrieval behavior changeとして [07 Testing / Quality](07-testing-quality.md) のRepresentative Evaluation対象になり得る。
+- Context量を増やすこと自体をGrounding品質とせず、Relevant Evidenceを埋める無関係Context、Cost、Latency、Prompt Injection surfaceを増やさない。
+
+### Claim / Citation Boundary
+
+- Retrieval QualityとGeneration Qualityを分け、`正しいSourceを取れなかった`のか`正しいContextをModelが誤読した`のかを区別できるようにする。
+- Citationが存在するだけでGroundedとは扱わず、重要Claimと実際にsupportするEvidenceの対応を確認する。
+- Citation ID / Source URL / Document IDが実在しても、SourceがClaimをsupportしなければCitation Integrityを満たしたとは扱わない。
+- Citation数を品質Scoreにせず、直接的なOriginal / Authoritative Sourceを多数の弱い二次Sourceより強く扱える。
+- Source自身がoutdated / incorrect / low-authorityな場合があるため、GroundednessとWorld correctness / Evidence qualityを分ける。
+- Source間ConflictではModelが無言で一方を確定Factにせず、date / version / authority / applicability等から判断し、解けなければConflict / uncertaintyを残す。
+- Sourceのversion / scope / conditionがClaimへ影響する場合はUser-facing AnswerでもそのScopeを保つ。
+- Sourceから直接言えることとAI Synthesis / inferenceを混同しない。
+
+### Security / Failure Boundary
+
+External page、Upload、RAG chunk等はInstructionではなくUntrusted Dataとして扱い、Prompt Injection / poisoned source / cross-user retrieval / authorizationのNormative Ruleは [06 Security](06-security.md) を正本とします。
+
+Source-bound Featureでは`relevant sourceなし`と`retrieval provider / index failure`を分け、Retrieval failureをModel一般知識で隠してGrounded Answerとして表示しません。
+
+Userへ`社内資料に基づく`等と表示する場合は実際のGrounding Scopeと一致させます。
+
 ## Evidence Map / Research Output
 
 Deep Research後はSource一覧をそのまま投げず、まずEvidence Mapへ整理します。
