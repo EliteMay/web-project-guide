@@ -436,6 +436,7 @@ Performance / Reliability上は次を確認します。
 - Critical third-partyはfailure / timeout時のPrimary Task impactを確認する
 - `async` / `defer`を使ってもExecution Cost自体は消えない
 - valueが小さくcost / riskが大きいthird-partyは削除候補
+- 重要機能を外部配信Assetへ依存させる場合、対応可能ならSRI等のintegrity verificationも検討する
 
 Extended確認では、domain block / SPOF simulation等でProvider unavailable時の挙動を確認できます。
 
