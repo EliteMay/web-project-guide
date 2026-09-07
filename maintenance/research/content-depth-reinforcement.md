@@ -137,50 +137,44 @@ Normative ownership:
 
 External evidenceは [`../../references/learning-product-decision-research.md`](../../references/learning-product-decision-research.md) に保存します。
 
+### 6. GitHub Pages / Static Delivery Decision Depth — `docs/08`
+
+Status: **reinforced after the 40-point audit / re-audit before reopening**
+
+Main reinforcement:
+
+- Pagesを選ぶ /選ばない境界とHosting migration trigger
+- Branch vs GitHub Actions Publishing Source decision
+- Source Commit → Build Artifact → Deploy → Public URL traceability
+- Project Site subpath / SPA direct-open / 404 recovery
+- Custom Domain / DNS / verification / HTTPS boundary
+- Pages hosting limitation / intended-use recheck trigger
+- Service Worker / stale cache / broken deploy recovery
+- PR / PreviewとProduction Pages deployの分離
+
+General deployment / rollback / securityは`10 / 09 / 06 / 07`を既存Ownerとして再利用し、Pages固有Decisionだけ`08`へ保持しました。Current external evidenceは [`../../references/github-pages-static-delivery-research.md`](../../references/github-pages-static-delivery-research.md) に保存します。
+
+### 7. Browser / Web Platform Compatibility Decision Depth — `docs/01` / `07` / `13`
+
+Status: **reinforced after the 40-point audit / re-audit before reopening**
+
+Main reinforcement:
+
+- Audience / Usage / RuntimeからSupport Targetを決めるCriteria
+- Supported / Enhanced / Unsupported・Degraded boundary
+- MDN Baseline / compatibility dataをPlanning Evidenceとして使う境界
+- Feature Detection優先、UA sniffing例外化
+- Progressive fallback / unsupported behavior
+- New Web API adoption contract
+- Polyfill / transpilation / build-target dependency criteria
+- Representative browser / device matrixとReal-device trigger
+- Browser support終了時のRequirement / test / communication同期
+
+新Owner / 新Domain / 新Risk Signal / 新Stable Gateは追加せず、Requirements=`01`、Verification=`07`、Compatibility dependency=`13`、Current external evidence=`20`へ既存責務で分配しました。Evidenceは [`../../references/web-platform-compatibility-research.md`](../../references/web-platform-compatibility-research.md) に保存します。
+
 ## Active reinforcement candidates
 
 以下は**今すぐRule追加を確定する項目ではありません**。Current Guideでは利用可能ですが、他の成熟Ownerと比べてDecision Framework / Failure Boundary / Validationが相対的に薄いため、次回要件定義・Researchで優先して再監査します。
-
-### 6. GitHub Pages / Static Delivery Decision Depth — `docs/08-github-pages.md`
-
-Priority: **Medium**
-
-Relative Path / Public URL / Cache / Service Worker / 404等の基本はありますが、Deployment Ownerとしては他の主要OwnerよりDecision depthが軽めです。
-
-再監査候補:
-
-- Custom Domain / DNS / HTTPSのCurrent operational boundary
-- SPA / Client-side RoutingとDirect Link / 404 fallback
-- Branch deploy / GitHub Actions deployの選定Criteria
-- Build ArtifactとSource Commit / deployed revisionの対応
-- Pages configuration / response headers等のHosting limitation
-- Pagesで要件を満たせなくなった場合の他Hostingへの移行Trigger
-- Broken deploy / stale cache / Service Worker failureからのRecovery
-- Preview / pull-request確認が必要な変更の扱い
-
-Pages固有でないRelease / Rollback / Security Ruleは`docs/09` / `06`へ重複させません。
-
-### 7. Browser / Web Platform Compatibility Decision Depth
-
-Priority: **Medium**
-
-Related owners: `docs/01` / `02` / `05` / `07` / `13`
-
-Current GuideにはBrowser / Runtime / DeviceをNon-functional Requirementとして扱う入口や、Browser Validation stateはあります。しかし、**どこまでのWeb Platform互換性をProduct Contractにするか**を決めるFrameworkは相対的に薄いです。
-
-再監査候補:
-
-- Supported Browser / Runtime baselineをAudience / Usage / Deploymentから決めるCriteria
-- Feature DetectionとUA sniffingの境界
-- Progressive Enhancement / graceful unsupported-feature behavior
-- Polyfill / transpilation / compatibility dependencyを導入するCriteria
-- 新しいWeb APIを採用するときのfallback / unsupported message
-- Desktop / Mobile / Browser engine差のRepresentative Matrix
-- Real browser / real deviceが必要な条件
-- 古いBrowser supportを終了するTrigger / migration communication
-- Current Web Platform supportをどのEvidenceで再確認するか
-
-Current Web Platform / Baseline / browser supportは変化するため、Promotion前に`docs/20`でCurrent external evidenceを確認します。
 
 ### 8. Project Profile Decision Depth — `docs/12-project-profiles.md`
 
@@ -259,12 +253,14 @@ Priority: **Medium-Low**
 - Audit date: 2026-09-07
 - Guide version: `1.21.0`
 - 40-point audit merged-main baseline: `7c2eb0bef500b9de6cd773f0438b1ca591c07a89`
-- Current reinforcement branch: `guide/reinforce-deployment-learning`
+- Current reinforcement branch: `guide/reinforce-pages-browser-compat`
 - Owner count: 24 (`docs/00`〜`docs/23`)
 - Phase 1: reinforced / no longer active backlog
 - Phase 19: reinforced / no longer active backlog
 - Public Content / Discoverability: current coverage sufficient / removed from active backlog
-- General Web Deployment: reinforced / no longer active backlog after this branch merges
-- Learning / Explanation: reinforced / no longer active backlog after this branch merges
-- Active depth backlog after this branch: GitHub Pages / Static Delivery, Browser Compatibility, Project Profiles
+- General Web Deployment: reinforced / no longer active backlog
+- Learning / Explanation: reinforced / no longer active backlog
+- GitHub Pages / Static Delivery: reinforced / no longer active backlog after this branch merges
+- Browser / Web Platform Compatibility: reinforced / no longer active backlog after this branch merges
+- Active depth backlog after this branch: Project Profile Decision Depth
 - Detailed audit: `maintenance/audits/2026-09-07-40-point-content-depth-audit.md`

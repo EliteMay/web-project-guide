@@ -197,6 +197,21 @@ Projectが次のようなHosting-dependent behaviorを必要とする場合は�
 
 Workaroundを導入する場合は、Security / URL semantics / Accessibility / SEO / Maintenanceへの副作用を確認します。Primary Contractを満たせない場合はPagesに固執せずHosting再選定を検討します。
 
+## Product / Usage Suitability
+
+GitHub Pagesで技術的に配信できることと、ProviderのCurrent Terms / intended useに適合することを分けます。
+
+Current GitHub guidanceではPagesはStatic HostingとしてProject / personal / organizational page等を主用途とし、無料Hostingとしてのonline business / e-commerce / commercial SaaSや、Password / Credit Card等を送るSensitive Transaction用途には適さない境界があります。
+
+そのため次に該当する場合は、公開前にCurrent GitHub Pages limits / termsを再確認し、必要ならHostingを再選定します。
+
+- Productの主要価値がCommercial SaaS / transaction processingへ変わった
+- Sensitive credential / payment情報をPages上で扱う設計になった
+- Current Provider limit / policyがPrimary Taskや運用へMaterialに影響する
+- Required server behaviorをClient-side workaroundで無理に再現している
+
+Current numerical limitsやProvider termsをCommon Guideへ固定値として複製しません。変化し得る値が判断を左右する場合は [20 Evidence-first Research](20-evidence-first-research.md) で公式情報を再確認します。
+
 ## file://との違い
 
 `fetch()`やES Modules等を使う場合、`file://`直開きでは正常動作しないことがあります。

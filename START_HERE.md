@@ -138,7 +138,18 @@ GitHub Pagesを使う場合は一般Deployment routeに加えて:
 - [10 Project Management](docs/10-project-management.md)
 - [07 Testing](docs/07-testing-quality.md)
 
-公開URLを確認できる場合は最終状態と対応するURLを確認します。
+Publishing Source、SPA direct-open、Custom Domain / HTTPS、Pages hosting limitation、cache / Service Worker recoveryは`08`を正本とします。公開URLを確認できる場合は最終状態と対応するURLを確認します。
+
+## Browser / Web Platform Compatibility
+
+Supported Browser / new Web API / CSS / JavaScript feature / WebView差を判断する場合:
+
+- Support Target / fallback / support終了 → [01 Requirements](docs/01-requirements.md)
+- Representative browser / device verification → [07 Testing / Quality](docs/07-testing-quality.md)
+- Polyfill / transpilation / compatibility dependency → [13 Dependencies / Assets](docs/13-dependencies-assets.md)
+- Current Baseline / Browser support evidence → [20 Evidence-first Research](docs/20-evidence-first-research.md)
+
+Browser名から先に固定せず、Target User / Runtime / Primary TaskからSupport Contractを決めます。MDN Baseline等はPlanning Evidenceとして使い、実ProjectのRuntime確認を置き換えません。
 
 ## Electron / Windows配布
 

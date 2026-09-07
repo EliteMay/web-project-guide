@@ -673,11 +673,57 @@ Blockingが残る場合はVisual完成扱いにしません。
 
 Visualの最低品質は [Visual Quality Baseline](17-visual-quality-baseline.md)、大規模Redesign前のResearchは [Domain-first Visual Research](18-domain-first-visual-research.md) を確認します。
 
-## 対応ブラウザ
+## Browser / Web Platform Compatibility Verification
 
-最低でも主要用途に合わせてFirefox / Chromiumを意識します。
+Browser対応は[01 Browser / Web Platform Support Contract](01-requirements.md#browser--web-platform-support-contract)に対して確認します。全Browser × 全OS × 全Deviceを機械的にTestせず、Target User / Runtime / Feature RiskからRepresentative Matrixを選びます。
 
-新しいWeb API / CSSはMDN Baseline等で対応状況を確認し、ブラウザ名判定よりFeature Detectionを優先します。
+### Planning EvidenceとRuntime Evidenceを分ける
+
+MDN Baseline / compatibility table等はFeature採用前のEvidenceとして有用ですが、`Supportedと記載されている = ProjectのPrimary Taskが検証済み`とは扱いません。
+
+特に次はCompatibility Dataだけで完了しにくいです。
+
+- WebView / embedded browser
+- Mobile input / software keyboard
+- Media codec / autoplay / capture
+- Permission / clipboard / file / device API
+- PWA / Service Worker / install behavior
+- Touch / pointer / drag
+- Browser extension / privacy setting影響
+- Assistive Technologyとの組み合わせ
+
+### Representative Matrix
+
+必要に応じて次から差が出る軸を選びます。
+
+- Browser engine / major Browser family
+- Desktop / Mobile
+- OS WebView / embedded Runtime
+- Stable current version / actual managed old version
+- Touch / Keyboard / Pointer
+- Required permission / media / device capability
+
+Audienceが広いPublic Webでは複数Browser engineを確認する価値が高く、Managed internal Toolでは実配布Environmentへ絞る方が正確な場合があります。固定Browser数をCommon Ruleにしません。
+
+### Unsupported PathもTestする
+
+Feature Detection / fallbackを実装した場合、Supported pathだけでなくFeatureが無い状態も必要範囲で確認します。
+
+- Core TaskがBasic fallbackで継続できる
+- Unsupported messageが行き止まりにならない
+- Missing APIを`undefined is not a function`等のRuntime crashへしない
+- Optional enhancement failureでCanonical Dataを壊さない
+- UA条件分岐を使う例外では、誤判定時のFailure blast radiusを確認する
+
+### Polyfill / Transpilation Verification
+
+Polyfill / transpilationを採用する場合、Build成功だけで互換性完了としません。Target Runtimeで必要なsyntax / APIが実際に成立すること、Bundle / Performance / Securityへの副作用、不要になったLegacy layerが残っていないことを必要範囲で確認します。Dependency判断は [13](13-dependencies-assets.md#web-platform-compatibility-dependencies) を使います。
+
+### Real Browser / Real Device
+
+Simulator / headless browserで再現できない入力・Media・Permission・WebView・PWA・OS integration等がPrimary Taskへ影響する場合はReal Browser / Real Device確認へ上げます。確認できなければ`Real Device Validated`へ昇格させません。
+
+Browser supportを終了した変更では、除外したTargetがCurrent Requirementsと一致すること、Supported environmentのRegressionがないこと、必要なUser-facing limitation / migration guidanceが更新されていることを確認します。
 
 ## 実機確認
 
