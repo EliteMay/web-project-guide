@@ -550,3 +550,24 @@ web-project-guide Failure / Success / Anti-Patternへ還元
 Common Guideへ還元した後も、元ProjectのLearningを削除する必要はありません。Project固有Evidenceとして残し、昇格先をLinkすることで「何が起きたか」と「一般Rule」の両方を追跡可能にします。
 
 これによりProjectごとの経験を次のProjectへ持ち越します。
+
+## External Integration Diagnostics
+
+CONDITIONAL: When external integration failures or asynchronous processing need diagnosis, record the smallest evidence that distinguishes transport, processing, and convergence state. Historical promotion evidence: [Phase 19 External Integration Decision System](../maintenance/research/external-integration-decision-system.md).
+
+Useful fields may include, only as needed:
+
+- Provider / integration namespace
+- External resource ID, Event ID, Delivery ID, or internal correlation ID
+- Operation / event type
+- Attempt number or retry class
+- Received / accepted / processed timestamps
+- Transport status vs business-processing status
+- Last successful provider read / last successful reconciliation
+- Failure class / bounded reason code
+- Quarantine / manual-repair state when used
+
+- Do not permanently log complete webhook or API payloads by default. Prefer IDs, type, target, status, and bounded failure reason; sanitize secrets, tokens, personal data, and unnecessary content.
+- Keep `delivery acknowledged`, `business processing completed`, `external state confirmed`, and `reconciliation converged` distinguishable when collapsing them would hide the failure location.
+- Provider dashboards and logs are evidence, not Canonical Product State or a standalone success oracle.
+- Diagnostics should help correlate `request / event → handler → mutation → reconciliation` when needed without creating a second data store of provider payload history.

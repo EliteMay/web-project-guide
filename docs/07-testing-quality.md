@@ -651,3 +651,41 @@ Checklist側にはHTML / CSS / JS、Visual、Data / Storage、GitHub Pages、Acc
 - 未確認事項が明示されている
 
 個別の確認項目は [Quality Checklist](../templates/QUALITY_CHECKLIST.md) を正本とします。
+
+## External Integration Validation
+
+CONDITIONAL: External integrations are complete only when the Product behavior is verified at the level required by integration risk. `HTTP 200`, SDK success, or provider-dashboard delivery alone is not the success oracle. Historical promotion evidence: [Phase 19 External Integration Decision System](../maintenance/research/external-integration-decision-system.md).
+
+### Test environment roles
+
+Distinguish the evidence each environment can provide:
+
+- **Fixture / Stub / Mock** — deterministic Product logic and rare failure reproduction; primarily proves our assumptions and code behavior.
+- **Contract Test** — verifies the request / response / error subset the Product depends on.
+- **Sandbox / Test Provider** — verifies provider-realistic auth, schema, timing, routing, and behavior within sandbox limitations.
+- **Production-safe Check** — optional evidence for real permission / routing / networking that cannot be established elsewhere; keep blast radius bounded with read-only or dedicated test entities when possible.
+
+Mock success is not proof of provider behavior. Sandbox success is not automatically Production validation.
+
+### Representative integration checks
+
+Select only cases material to the integration:
+
+- Primary User Task end-to-end, using expected Product / external state as the oracle.
+- Read mapping for required fields, `missing / null / unknown enum`, pagination, not-found vs failure, and allowed staleness.
+- Important writes with read-back or equivalent external-state confirmation when transport success is insufficient.
+- Retry without duplicate mutation.
+- Webhook valid delivery, duplicate, out-of-order event, invalid signature, unknown / malformed payload, ACK vs processing-complete, handler / downstream failure.
+- Reconciliation such as missed event → drift detected → repair → convergence, while preserving Local-only fields.
+- Permission loss, token expiry, external deletion, provider outage, cursor expiry, partial reconciliation, or polling stop conditions when in scope.
+- API / SDK / Webhook / Auth / Error semantic changes, including real old/new combinations during migration when compatibility matters.
+- Schema compatibility **and semantic compatibility**; generated clients and mocks do not prove the latter.
+
+### Test-data / completion safety
+
+- Separate test and production credentials / resources. Do not run destructive experiments against real User data merely because the endpoint is reachable.
+- Minimize fixtures and sanitize real examples. Do not commit production secrets or private raw payloads to the Repository.
+- Test resources should have bounded Create → Verify → Cleanup behavior; cleanup failure is a test result, not something to hide with wildcard deletion.
+- External-provider tests may be separated from fast deterministic CI. They do not need to run on every commit when cost / flakiness / provider limits make that unreasonable.
+- A provider outage or unavailable test environment yields `Not Verified`, not an invented Pass.
+- Record whether evidence came from Mock, Sandbox, Production-safe check, or another environment when that distinction affects confidence.

@@ -194,3 +194,21 @@ Font Family / WeightのPage Load Cost、初期表示への必要性は [05 Perfo
 - 外部Storage / Release Asset / CDN等へ分ける場合は、可用性・権利・更新方法を確認する
 
 実際の配信用画像寸法、WebP / AVIF、`srcset` / `sizes`、Thumbnail、Lazy Load、First View Budget等の詳細は [05 Performance / Reliability](05-performance-reliability.md) を正本とし、この章へ数値Ruleを複製しません。
+
+## External API / SDK / Webhook Contract Lifecycle
+
+CONDITIONAL: External integrations are dependencies with behavioral contracts, not only package versions. Historical promotion evidence: [Phase 19 External Integration Decision System](../maintenance/research/external-integration-decision-system.md).
+
+- Treat the contract as the Product-dependent subset of endpoint / operation, request and response fields, types, nullability, enums, error semantics, auth / scopes, pagination, rate limits, ordering, idempotency, webhook payload, and timing semantics.
+- Distinguish **schema compatibility** from **behavioral compatibility**. A default, meaning, ordering guarantee, auth scope, error code, or timing change can be breaking even when JSON still parses.
+- API version, SDK version, and Webhook version are separate boundaries unless the provider explicitly couples them. Do not infer one from another.
+- Be tolerant of unknown future fields where safe, but do not automatically persist them into Canonical Data. New enum values should not be silently mapped to an unrelated known state.
+- New required fields, nullability changes, ID representation, pagination, auth / scope, and error-contract changes deserve compatibility review when existing consumers or saved provider data can be affected.
+- Identify actual consumers beyond the browser when relevant: backend / function, Electron, CLI, job, Actions, another Repository, or Webhook processor.
+- For staged breaking changes, `Expand → Migrate → Contract` is a preferred candidate when old and new consumers must coexist. Dual read / dual write require explicit authority and partial-failure behavior, and the compatibility layer should be removed after migration rather than becoming permanent patch code.
+- Distinguish `Deprecated` from `Removed`. A removal deadline for a critical integration becomes Maintenance work; do not require daily changelog monitoring when no relevant trigger exists.
+- Re-check current official provider documentation when updating the SDK / API, responding to a provider notice, investigating behavior drift, or performing maintenance that can cross the contract boundary.
+- OpenAPI / JSON Schema / GraphQL schema can be useful contract evidence when available but are not mandatory. Generated client success does not prove semantic compatibility.
+- Review mocks / fixtures when API or Webhook versions change so old assumptions do not become a false compatibility oracle.
+- Prototype / internal-only integrations do not require permanent backward compatibility merely because versioning exists. Match compatibility depth to real consumers, saved data, release model, and breaking impact.
+- If a provider has already removed the old contract, rollback may be impossible; plan a forward-fix path rather than pretending every external migration is reversible.

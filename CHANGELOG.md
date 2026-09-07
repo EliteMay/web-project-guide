@@ -2,6 +2,36 @@
 
 Guide Versionの正本は [`guide-version.json`](guide-version.json) です。
 
+## 1.21.0 - 2026-09-07
+
+### Added
+
+- Phase 1 Requirements Decision Systemを`docs/01-requirements.md`へPromotionし、Problem → Outcome → Solution separation、`Now / Later / Reject`、MVP Boundary、Prototype / Cheap Test Trigger、Requirement Change Classification、Observable Completion / proportionate traceabilityを追加
+- `references/requirements-decision-system-research.md`へPhase 1のnon-normative Evidence Map / Promotion rationaleを保存
+- Phase 19 External Integration rulesを既存OwnerへPromotionし、Integration boundary、External authority / reconciliation、Webhook reliability、Integration validation、API / SDK / Webhook lifecycle、Diagnosticsを追加
+- `external-api-integration` Golden Routing Caseを追加
+
+### Changed
+
+- `START_HERE.md`のExternal API routeを`docs/02 / 05 / 06 / 07 / 13`中心へ更新し、保存 / Syncは`docs/03`、Diagnosticsは`docs/15`へConditional Routing
+- `maintenance/rule-router.json`の既存`EXTERNAL_API` SignalをArchitecture / Reliability / Security / Testing / Dependency Ownerへ拡張。新Signal / Gate / Profileは追加しない
+- `templates/QUALITY_CHECKLIST.md`へExternal API / SDK / Webhookの短いConditional checkを追加
+- `maintenance/research/requirements-decision-system.md`と`maintenance/research/external-integration-decision-system.md`をPromotion後のhistorical non-normative evidenceへ変更
+- Root `REQUIREMENTS.md`のResearch Promotion StateをCurrent Owner構成へ同期
+
+### Rule Hygiene
+
+- Phase 1で既存Agent Autonomy / Requirements Persistence / Evidence-first Researchを重複Copyしない
+- Phase 19のAuth / signature / secret / replay Securityは既存`docs/06`を再利用し、一般Retryは`docs/05`、Sync / Conflictは`docs/03`を維持
+- 新Owner / 新Stable Gate / 新Profile / 新Risk Signalを追加しない
+- Mock / Sandbox / Production、MVP / Prototype、Traceability / scoringを全Projectへ機械的に要求しない
+
+### Compatibility
+
+- Existing Product RepositoryのAPI provider、Storage authority、poll interval、Queue、Retry数、Versioning方式をCommon固定値で変更しない
+- Existing Save / Consumer / URL / Integration ContractのBreaking Changeは各ProjectのCurrent Contract / Migration判断を維持
+- Prototype codeをProduction-readyとみなさず、Productionへ採用する場合は通常のSecurity / Reliability / Testing Contractを適用
+
 ## 1.20.0 - 2026-09-07
 
 ### Added

@@ -492,3 +492,33 @@ MeaningfulなArchitecture判断では、必要な範囲で次を残せる状態�
 - Failure: [F-001 / F-008 / F-010 / F-019](../catalog/failures.md)
 - Success: [S-003 / S-023](../catalog/success-patterns.md)
 - Anti-pattern: [AP-001 / AP-002 / AP-003](../catalog/anti-patterns.md)
+
+## External Integration Boundary
+
+CONDITIONAL: External API / SDK / Webhook integration uses this owner for responsibility and mapping boundaries. Historical promotion evidence: [Phase 19 External Integration Decision System](../maintenance/research/external-integration-decision-system.md).
+
+```text
+Product Task
+↓
+Integration Purpose
+↓
+Provider Contract
+↓
+Receive / Normalize / Validate / Map
+↓
+Internal Domain State / Action
+↓
+User-facing Outcome
+```
+
+- Classify the integration purpose when useful: `read / write / command / sync / event receive` etc. Do not let a generic `API integration` label hide materially different responsibilities.
+- Keep provider-specific raw models, error shapes, and transport detail from spreading through unrelated Product code. Use the smallest Adapter / Mapper boundary that actually limits change propagation; do not force multi-layer wrappers around trivial integrations.
+- External identifiers should retain provider namespace when collision or cross-provider ambiguity is possible. Do not assume External ID and Internal ID are the same identity domain.
+- Treat provider responses as external input. Validate the fields the Product depends on and distinguish `missing / null / empty` or unknown enum values when the provider contract makes the distinction meaningful.
+- Prefer an explicit boundary such as `receive → normalize → validate → map → commit` when unvalidated provider data could otherwise become Canonical State.
+- Distinguish `Not Found` from Integration Failure and transport success from business-operation success. Do not turn every failure into an empty list, zero, or `not found` state.
+- Make command semantics explicit when it matters: create / update / partial update / replace / delete / archive are not interchangeable.
+- Distinguish provider timestamps by meaning (`created / updated / received / synced`) instead of treating every timestamp as the same ordering signal.
+- Convert provider errors into a Product error model before exposing them as user-facing behavior; do not couple Business Logic to human-readable provider error text when a stable status / code exists.
+
+Data authority / reconciliation is owned by [03](03-data-storage.md), delivery reliability by [05](05-performance-reliability.md), Security by [06](06-security.md), validation by [07](07-testing-quality.md), and API / SDK lifecycle by [13](13-dependencies-assets.md).

@@ -566,3 +566,21 @@ Soft Budget / Default Ruleから外れる場合は、少なくとも次を判断
 - Primary UXを極端に悪化させていないか
 
 重要な意図的超過はRequirements / SPEC / Work Report等の適切な既存文書へ短く理由を残せます。Performance Exception専用の新しいSource of Truthは作りません。
+
+## External Delivery / Webhook Reliability
+
+CONDITIONAL: Webhook and externally retried delivery paths must assume duplicates, delay, partial failure, and provider-specific retry behavior unless the current provider contract proves otherwise. Historical promotion evidence: [Phase 19 External Integration Decision System](../maintenance/research/external-integration-decision-system.md).
+
+- Distinguish a **delivery attempt** from the **business event** it represents. Request count is not event count.
+- When the provider supplies a stable Event / Delivery ID, keep provider namespace and use it as a deduplication signal when appropriate. Storing an ID alone does not magically provide exactly-once processing.
+- Prefer idempotent business operations where possible. For important mutations, consider the transaction boundary between dedupe recording and the business mutation so a crash does not create a false processed / unprocessed state.
+- Do not assume delivery order. Arrival time is not automatically a state version; use provider revision / sequence / event time / canonical read when the contract requires stronger ordering evidence.
+- Separate `ACK accepted` from `business processing complete`. When heavy work would block acknowledgement, `verify → durable record/enqueue → ack → process` is a candidate pattern, not a mandatory queue architecture.
+- If loss after ACK would be unacceptable, ensure the required durable boundary exists before acknowledging success.
+- Distinguish provider redelivery, internal queue retry, and downstream retry. Avoid multiplying retries at every layer, classify retryable vs non-retryable failure when useful, and enforce a stop condition instead of infinite retry.
+- Manual redelivery is still a duplicate-delivery scenario. Repeated failure may use quarantine / dead-letter handling when operational value justifies it; small integrations do not require queue infrastructure by default.
+- Keep the Canonical mutation owner clear. Secondary effects such as email / analytics should not automatically roll back an already-valid Canonical mutation unless the Product Contract requires atomicity.
+- Provider outage should have an explicit Product effect proportional to criticality: block, degrade, serve known-stale data, queue safely, or expose a manual recovery path. Do not silently convert outage into empty success.
+- Provider retry windows, signature formats, replay protections, rate limits, and delivery semantics must come from current official provider guidance rather than Common hardcoded assumptions.
+
+Signature / auth / secret / replay Security remains owned by [06 Security](06-security.md). Data reconciliation is owned by [03 Data / Storage](03-data-storage.md).

@@ -133,12 +133,15 @@ Navigationの分類・階層・到達経路を変える作業はStructure / Flow
 
 Setup.exe / Auto Update / Windows固有機能をCIだけで実機確認済み扱いにしません。
 
-## 外部API / CDN / Supabase
+## 外部API / Webhook / CDN / Supabase
 
-- [05 Performance / Reliability](docs/05-performance-reliability.md)
-- [06 Security](docs/06-security.md)
-- [13 Dependencies / Assets](docs/13-dependencies-assets.md)
-- 保存を伴う場合は [03 Data / Storage](docs/03-data-storage.md)
+- Integration contract / mapping / provider boundary → [02 Architecture](docs/02-architecture.md)
+- Reliability / Webhook delivery / retry / degradation → [05 Performance / Reliability](docs/05-performance-reliability.md)
+- Auth / signature / secret / permission → [06 Security](docs/06-security.md)
+- Integration test / Sandbox / completion → [07 Testing / Quality](docs/07-testing-quality.md)
+- API / SDK / Webhook lifecycle / deprecation → [13 Dependencies / Assets](docs/13-dependencies-assets.md)
+- 保存 / Sync / Reconciliationを伴う場合 → [03 Data / Storage](docs/03-data-storage.md)
+- Runtime diagnostics / remote failure analysisが必要な場合 → [15 Observability](docs/15-development-observability.md)
 
 ## AI / Coding Agentへ大きく任せる
 
@@ -166,12 +169,13 @@ Conversation SummaryだけをCheckpointにせず、Current Repository / Requirem
 1. [00 Governance](docs/00-governance.md)
 2. [21 Rule Routing / Preflight](docs/21-rule-routing-preflight.md)
 3. [14 Continuous Improvement](docs/14-continuous-improvement.md)
-4. External Evidenceが必要なら [20 Evidence-first Research](docs/20-evidence-first-research.md)
-5. 既存Owner / Catalog / Checklist / Project側へ統合できないか確認
-6. Owner / Router / Validatorを整合
-7. 最終CommitでGuide Validatorを確認
+4. 次回の要件定義・補強では [Content Depth Reinforcement Candidates](maintenance/research/content-depth-reinforcement.md) を読み、Defectと「内容が薄い領域」を分けて再評価
+5. External Evidenceが必要なら [20 Evidence-first Research](docs/20-evidence-first-research.md)
+6. 既存Owner / Catalog / Checklist / Project側へ統合できないか確認
+7. Owner / Router / Validatorを整合
+8. 最終CommitでGuide Validatorを確認
 
-新Rule追加と同時に、重複・History混在・Orphan Ruleを減らせないか確認します。
+新Rule追加と同時に、重複・History混在・Orphan Ruleを減らせないか確認します。Content Depth候補もCurrent Ownerで既に解消済みなら再要件化しません。
 
 ## 完成前
 

@@ -35,6 +35,7 @@
 | AI Feature / RAG / Agent / Model change | Output / Eval / Grounding / Agent / Model lifecycle | [01](../docs/01-requirements.md) / [07](../docs/07-testing-quality.md) / [20](../docs/20-evidence-first-research.md) / [13](../docs/13-dependencies-assets.md) / [06](../docs/06-security.md) |
 | GitHub Pages / 公開Site | Pages / Public URL / Repository discoverability | [08](../docs/08-github-pages.md) / [10](../docs/10-project-management.md) |
 | Public / Auth / OAuth / API / Cloud / AI | Security / Privacy / Dependency | [06](../docs/06-security.md) / [13](../docs/13-dependencies-assets.md) |
+| External API / SDK / Webhook | Contract / Reliability / Security / Validation / Lifecycle | [02](../docs/02-architecture.md) / [05](../docs/05-performance-reliability.md) / [06](../docs/06-security.md) / [07](../docs/07-testing-quality.md) / [13](../docs/13-dependencies-assets.md) |
 | Release / Rollback / Legacy | Version / Maintenance | [09](../docs/09-maintenance.md) |
 | `LEARNING` | Learning Content | [01](../docs/01-requirements.md) |
 | `GAME` | Game / Playtest | [19](../docs/19-game-development.md) |
@@ -233,3 +234,13 @@
 - User validated
 - Known limitation
 - Not verified
+
+## External API / SDK / Webhook — 該当時
+
+- [ ] Integration purpose、Provider boundary、Not Found vs Failure、transport success vs business successを必要範囲で分けた
+- [ ] External / Local authorityとID namespaceが明確で、保存 / Sync / Reconciliationがある場合は`docs/03`のData Contractを確認した
+- [ ] Retry / Webhookでduplicate mutationを起こさず、ordering / ACK / retry stop / provider outageをRiskに応じて確認した
+- [ ] MockだけをProviderの真実とせず、必要なContract / Sandbox / Production-safe evidenceを区別した
+- [ ] API / SDK / Webhook / Auth変更時にCompatibilityとDeprecation / Removalを確認した
+- [ ] Provider unavailableや未確認Environmentを`Verified`とせず、Known limitationを残した
+- [ ] Diagnosticsが必要な場合、Secret / raw payloadを無制限保存せず`docs/15`の最小Evidenceを使った
