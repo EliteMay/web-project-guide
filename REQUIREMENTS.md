@@ -274,11 +274,13 @@ Prose wordingを大量固定しません。
 
 Guide自身も自分のRuleを可能な範囲でself-applyします。
 
-## 17. Open Research Asset
+## 17. Open Research Assets
 
 Requirements Decision Systemの未完了Research Contractは [`maintenance/research/requirements-decision-system.md`](maintenance/research/requirements-decision-system.md) に保存します。
 
-Root RequirementsへResearch Domain一覧・調査手順・一時Findingを積みません。ResearchがCommon Ruleへ昇格する場合は`docs/01` / `docs/20` / `docs/14`等の既存Owner責務を維持し、Current Contractへ必要な恒久結果だけ反映します。
+Data / Storage Decision SystemのPhase 4 Research Contractは [`maintenance/research/data-storage-decision-system.md`](maintenance/research/data-storage-decision-system.md) に保存します。Local-first / Offline / Cloud Sync / Conflict / Autosave / Corruption / Backup / Large Data / Cache / UGC / Advanced Sync等のResearch Domain、P0 / P1 / P2優先度、Failure Validation CaseはこのResearch AssetをCurrent Contractとします。
+
+Root RequirementsへResearch Domain一覧・調査手順・一時Findingを積みません。ResearchがCommon Ruleへ昇格する場合は各専門Owner / `docs/20` / `docs/14`等の既存Owner責務を維持し、Current Contractへ必要な恒久結果だけ反映します。
 
 Task-first Structure / Flow Researchは既に`docs/22`へPromotion済みのため、Phase履歴はCHANGELOG / Git / Work Reportへ置きます。
 
