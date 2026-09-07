@@ -22,40 +22,37 @@ Content depth gap
 
 また、Fileが短いこと自体をContent Depth Gapとは扱いません。Router / Checklist / Minimum Gate等、短いことが責務に合うSurfaceもあります。
 
-## Current high-priority reinforcement
+## Recently reinforced — re-audit before reopening
 
 ### 1. Requirements Decision System — `docs/01-requirements.md`
 
-Priority: **High / active Phase 1**
+Status: **reinforced in Phase 1 / guide 1.21.0**
 
-Current OwnerはRequirements Persistence / Agent Autonomy / Decision Class等が既に強い一方、Product要件を組み立てるDecision Systemとしては次がまだ相対的に薄いです。
+Phase 1で次のGapをCurrent OwnerへPromotion済みです。
 
 - Problem → Outcome → Solutionの分離
 - Now / Later / RejectによるScope判断
-- MVP boundaryとMVP外を切るCriteria
-- Prototype / Spikeを先に行うTrigger
-- Requirement追加 / Clarification / Change / Breaking Changeの分類
-- Observable CompletionへRequirementをTraceする方法
-- 要件を増やさないDecision / Reject理由の保持方法
+- Core Outcome基準のMVP boundary
+- Prototype / Cheap Testを先に行うTrigger
+- Clarification / Extension / Replacement / Removal / Breaking Changeの分類とImpact
+- Observable Completionへのproportionate traceability
 
-Current work branch / PR #59でPromotion対象になっているため、まずPhase 1で既存Ownerへ統合し、重複Ruleを作らないことを優先します。
+Agent Autonomy / Requirements Persistence / Evidence-first Researchは既存Ownerを再利用し、第二Copyを作っていません。今後この領域を再要件化する場合は、実利用で新しいGapが確認できた場合だけCurrent `docs/01`を再監査します。
 
 ### 2. External Integration / API Contract Evolution — `docs/02` / `03` / `05` / `07` / `13`
 
-Priority: **High / active Phase 19**
+Status: **reinforced in Phase 19 / guide 1.21.0**
 
-External API利用自体のSecurity / Failure / Dependency Ruleは存在しますが、外部SystemとのContractを長期運用する観点はまだ相対的に薄いです。
+Phase 19で次を既存専門OwnerへPromotion済みです。
 
-補強対象:
-
-- Request / Response ContractとData Authority
+- Request / Response Contract、Integration boundary、Data Authority
 - Webhook / Event delivery、Retry、Idempotency、Ordering
-- API Versioning / Backward Compatibility / Deprecation
+- API / SDK / Webhook Versioning、Backward Compatibility、Deprecation
 - Reconciliation / Polling / Eventual Consistency / External State Drift
-- Sandbox / Mock / Contract Test / Production Safety
-- Operational Readiness / Integration-specific Completion
+- Mock / Contract / Sandbox / Production-safe validation boundary
+- Operational diagnostics / Integration-specific Completion
 
-Security boundaryは`docs/06`を維持し、新Owner / 新Gateを増やさず既存専門Ownerへ分配する方針を優先します。
+Security boundaryは`docs/06`を維持し、新Owner / 新Gate / 新Profile / 新Risk Signalは追加していません。今後はProvider固有要件や実運用Evidenceで不足が判明した場合のみ再監査します。
 
 ## Future reinforcement candidates
 
@@ -157,8 +154,8 @@ SEO専用の巨大Checklistを作るのではなく、Primary Task / Public Disc
 ## Current checkpoint
 
 - Date: 2026-09-07
-- Baseline main: `20e82219d168c75105edec5731397c330473e309`
-- Active work: PR #59 / `guide/phase-1-19-integration`
-- Phase 1: active reinforcement target
-- Phase 19: active reinforcement target
-- Other items: future re-audit candidates, not confirmed normative gaps
+- Baseline main at reinforcement start: `20e82219d168c75105edec5731397c330473e309`
+- Phase 1: reinforced in PR #59 / no longer a current backlog item
+- Phase 19: reinforced in PR #59 / no longer a current backlog item
+- Current backlog starts from items 3–6 and requires re-audit before promotion
+- Existing solved items must not be recreated only because they remain in this historical checkpoint
