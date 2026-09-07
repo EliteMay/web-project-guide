@@ -243,6 +243,38 @@ Testing Strategyとして守ること:
 
 実行時の短い確認項目は [Quality Checklist](../templates/QUALITY_CHECKLIST.md) を使用します。
 
+## Accessibility / Responsive / i18n Verification
+
+User-facing UIでは、Static HTML inspectionやDesktop screenshotだけでAccessibility / Responsive / i18n完了としません。[04 UI / UX / Accessibility](04-ui-ux-accessibility.md)のBehavioral Contractに対し、変更Riskと対象Userに合うRepresentative Matrixを選びます。
+
+### Minimum
+
+通常のUser-facing UIで変更内容に関係する範囲を確認します。
+
+- Semantic element / Accessible Name / Label等の基本構造
+- Keyboardだけで主要Flowへ到達・実行・離脱できる
+- Focus-visibleとFocus orderが理解でき、sticky / overlayで完全に隠れない
+- Narrow viewport / Zoom /文字拡大で主要情報・操作が失われない
+- Error / Empty / Loading等のStateがColorやPointer hoverだけに依存しない
+
+### Conditional Matrix
+
+該当するProjectでは必要に応じて追加します。
+
+- **Touch / Pointer:** Small target、Drag alternative、Hover-only content、誤Tap risk
+- **Dialog / Composite Widget:** Focus entry / trap / escape / restore、Keyboard interaction
+- **Responsive:** Portrait / Landscape、低いViewport height、software keyboard、content expansion
+- **Forms:** Label、Instructions、Autofill、Validation error association、入力保持、Error recovery
+- **i18n / l10n:** 日本語 / 英語等の実Content、長い翻訳、Date / Number / Currency format、Language metadata、必要ならRTL / Script差
+- **Motion / Media:** Reduced Motion、Pause / Stop、Caption / Transcript等、Project Scope内のAlternative
+- **Assistive Technology:** 対象User / Risk上必要ならScreen Reader、Voice input、Switch等の代表環境
+
+### MUST: 未確認の組み合わせを対応済みと扱わない
+
+全Browser × 全Assistive Technology × 全Localeを機械的にTestする必要はありません。ただし、対象Projectで重要な組み合わせを決め、未確認条件をVerification Stateへ反映します。Automated accessibility scannerだけでTask completion、Focus behavior、Error recovery、実際のReading order等をPass扱いにしません。
+
+Regression価値が高い場合は、axe等の自動check、Keyboard E2E、Screenshot / reflow check、locale fixture等をGuardとして追加できます。Tool固有ScoreをAccessibility完成条件そのものにはしません。
+
 ## Specification / Oracle Test
 
 AI生成量が多いProject、既存実装の移植、互換性が重要な処理では、可能なら「正しい出力」を比較できるOracleを作ります。

@@ -47,6 +47,14 @@
 - [ ] Keyboard / focus-visible / Contrast /色だけに依存しない状態表現を確認した
 - [ ] UIを変更した場合、最終状態をBrowser / Screenshot等で確認した、またはVisual未確認と記録した
 
+- [ ] Keyboardだけで主要Taskへ到達・実行・離脱でき、Focus trap /不自然なFocus order / Focus restore漏れがない
+- [ ] Hover / Drag / Touch gesture / Shortcutだけに主要操作や重要情報を依存させていない
+- [ ] Zoom /文字拡大 /狭い幅 /低いViewport height / Orientation変更でPrimary Taskを失わない
+- [ ] 長いText・実際の日本語/英語等でContent expansionを確認し、固定Height / clippingで重要情報を失わない
+- [ ] 複数Locale対応時、Language metadataとDate / Number / Currency等のLocale-sensitive表示を必要範囲で確認した
+- [ ] FormでLabel / Instruction / Autofill / Error association /入力保持 / Recovery導線を必要範囲で確認した
+- [ ] Motion / Mediaがある場合、Reduced Motion、Pause / Stop、必要なCaption / Transcript等をScopeに応じて確認した
+
 ## Meaningful Visual Change
 
 - [ ] CSSを本格変更する前にCurrent UI / User Feedback / Target Typeを確認した

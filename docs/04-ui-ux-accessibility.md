@@ -377,6 +377,31 @@ Visual Reviewの結果は `Pass` / `Needs work` を明示し、Blockingが残る
 - PC専用UIでも、低い縦解像度・表示倍率125〜150%を確認する。
 - Responsiveでは単純に列数を減らすだけでなく、Navigation / Secondary Content / Action priorityを必要に応じて再構成する。
 
+### Responsive Robustness / Zoom / Reflow
+
+Responsiveは代表ViewportのScreenshotだけで判定せず、**Zoom、文字拡大、Content expansion、Orientation、低いViewport heightでもPrimary Taskを継続できるか**を確認します。
+
+- Browser ZoomやOS / Browserの文字拡大で主要Content / Actionが消えない。
+- Reflowが必要な狭い幅では、Page全体の二方向Scrollを避ける。Data table、Timeline、Canvas、Editor等、二次元Layoutが本質の領域は局所Scrollを許可できる。
+- Portrait / Landscapeのどちらかを理由なく唯一の操作可能Orientationにしない。特定Orientationが本質の場合だけ例外にする。
+- `100vh`前提でMobile browser chrome、software keyboard、低いViewport heightにより主要操作を隠さない。必要に応じてdynamic viewport unitやscroll可能なLayoutを検討する。
+- Translation、User-generated text、長いName / Label、Font差でTextが伸びても、固定Heightやellipsisだけで重要情報を失わせない。
+- Responsiveで情報を非表示にする場合、単にDesktopの内容を削るのではなく、Primary Task / Action priorityを保つ。
+
+## Internationalization / Localization
+
+Internationalization（i18n）は「後で翻訳する作業」ではなく、**言語・Script・地域差へ適応できるよう実装を硬直させない設計**として扱います。Localization（l10n）は、対象Localeへ実際のContent / Format /表現を適合させる作業です。
+
+CONDITIONAL: 複数言語、Locale切替、日本語・英語併記、海外公開等があるProjectでは次を必要範囲で確認します。単一言語の小規模Projectへ翻訳Infrastructureを機械的に追加しません。
+
+- Document / Contentの実言語を`lang`等で表し、Mixed-language Contentでは必要に応じて部分的なLanguage metadataを持つ。
+- UI StringをLayout / Logicへ過度に埋め込み、翻訳時にComponent構造を書き換える前提にしない。
+- 日本語と英語の文字数差だけでなく、より長い翻訳、異なるWord break、Font metric、Scriptを想定して固定Width / Height依存を避ける。
+- Date / Time / Number / Currency / Percent / Unit等は、User-facing表示でLocale-sensitive formattingが必要なら`Intl`等の標準機構を優先する。保存用Canonical valueと表示Formatを混同しない。
+- UserがLocaleを選べる場合、Language preferenceとContent Dataそのものを必要に応じて分離し、Locale変更でCanonical User Dataを壊さない。
+- RTLやVertical / complex scriptがScopeに入る場合は、物理方向`left/right`だけに依存したLayoutやIcon意味を見直す。Scope外のScript対応を完成済みと主張しない。
+- Locale依存のSort / Search / Case / normalizationが正確性へ影響する場合、単純ASCII前提の比較だけで実装しない。
+
 ## fixed / sticky
 
 便利ですが、過去に操作阻害を何度も起こしたため慎重に使います。
@@ -392,6 +417,16 @@ WCAG 2.2の **Focus Not Obscured** を踏まえ、Keyboard focus中のComponent�
 
 ## アクセシビリティ
 
+### Accessibility as Task Completion
+
+AccessibilityはChecklist上の属性追加ではなく、**異なる入力方法・知覚方法・補助技術でもPrimary Taskへ実質的に到達できること**を中心に判断します。
+
+- Semantic HTML / ARIAは手段であり、主要Flowを完了できるかをOutcomeとして確認する。
+- Visual、Pointer、Audio等の1手段だけで成立する重要情報・操作には、Task上同等のOutcomeへ到達できるAlternativeを必要に応じて用意する。
+- Alternativeは必ず同じ見た目・同じ操作手順である必要はないが、重要な情報・権限・結果を失わせない。
+- Accessibility対応を理由にPrimary Taskを別の劣化版Flowへ追い出さない。
+- 未対応のAssistive Technology / Input Methodを確認済みとして扱わず、必要な利用者・Platformに応じてValidation範囲を明示する。
+
 WCAG 2.2 AAを参考に、個人用サイトでも実用上重要な項目を標準にします。
 
 - `button`, `nav`, `main`, `header`, `label`など適切なHTML要素を使う
@@ -403,6 +438,18 @@ WCAG 2.2 AAを参考に、個人用サイトでも実用上重要な項目を標
 - 重要操作は44px前後も検討する
 - `prefers-reduced-motion`を尊重する
 - `aria-pressed`, `aria-expanded`, `aria-live`等は必要な場所だけ正しく使う
+
+### Input-method Independence / Focus
+
+主要操作をMouse / Touch / Drag / Hover / Shortcut等の単一Input Methodへ理由なく固定しません。
+
+- Keyboardで到達したFocusがComponent、Dialog、Menu、Custom Widget等に閉じ込められず、意図したModal境界を除いて抜けられることを確認する。
+- DOM順・Visual順・Focus順を大きく乖離させず、Task理解を壊す不自然な`tabindex`正数指定を避ける。
+- Dialog / Popover等を閉じた後、可能なら操作開始元など意味のある位置へFocusを戻す。
+- Hoverだけで必須Information / Actionを出さない。Hover contentが必要ならKeyboard / Touchでも取得できる経路を持つ。
+- Touch GestureやMulti-pointer、Dragを本質としない操作には、Tap / Button / Keyboard等のAlternativeを検討する。
+- Shortcutを使う場合、Text入力との衝突、OS / Browser shortcutとの競合、誤発火を避ける。重要操作をShortcutだけにしない。
+- Pointer typeやBrowser名の推測だけで操作経路を決めず、可能ならCapability / actual eventに合わせる。
 
 ### WCAG 2.2 Interaction Coverage
 
@@ -432,6 +479,29 @@ Authenticationがある場合、Password managerやpasteを理由なく禁止し
 - 無効状態は理由が分かるようにする
 - エラーは「エラー」だけでなく修正方法を表示する
 - 破壊操作はUndo / 確認 / Backupのいずれかを持つ
+
+### Forms / Validation / Error Recovery
+
+Formは「値を送信できる」だけでなく、**何を入力すべきか理解でき、Errorから入力を失わず回復できること**を完成条件に含めます。
+
+- Input / Select / Textarea等は、Placeholderだけに依存せずProgrammaticに関連付いたLabelまたは同等のAccessible Nameを持つ。
+- 必須 / Format / 制約は、可能ならError後ではなく入力前または入力時に理解できる形で示す。
+- Validation ErrorはFieldと関連付け、どこが・なぜ・どう直せるかを伝える。ColorやBorderだけをError表現にしない。
+- Submit失敗時にUserが正しく入力した値まで理由なく消さない。最初のErrorへFocusを移す、Error summaryからFieldへ移動できる等、長いFormではRecovery導線を検討する。
+- Native input type、`autocomplete`、Password manager等を利用できる場合は理由なく妨げない。Autofill後もLabel / Validation / Contrastが壊れないことを確認する。
+- Async validationやSubmit中に二重送信、古いError、late responseでCurrent input stateを壊さない。Network / Reliability固有のRetry判断は[05 Performance / Reliability](05-performance-reliability.md)を正本とする。
+- Authentication FormはSecurity強化を理由にAccessibilityを無視せず、Credential / AuthorizationのSecurity判断は[06 Security](06-security.md)を正本とする。
+
+## Motion / Animation / Media
+
+MotionやMediaはDecorative qualityだけでなく、操作可能性・理解可能性・代替手段を合わせて設計します。
+
+- `prefers-reduced-motion`では、非本質的なparallax、large movement、continuous animation等を減らす / 停止する。単にDurationを少し短くするだけで十分とは限らない。
+- 自動開始して長く続くAnimation / Carousel / Media等がTaskを妨げる場合、Pause / Stop / Hide等を必要に応じて用意する。
+- Animation終了だけをState changeの唯一のSignalにせず、Reduced Motion時も同じ結果を理解できる。
+- Audioだけに重要情報を載せず、必要に応じてText / Caption / Transcript等のAlternativeを用意する。Visualだけに重要なNarration / Instructionを載せる場合も同様にAlternativeを検討する。
+- User-generated / third-party Mediaでは、提供できるAlternativeのScopeを明示し、存在しないCaption等を対応済みと扱わない。
+- Autoplay / Media performance固有のCostは[05 Performance / Reliability](05-performance-reliability.md)を正本とする。
 
 ## 自動処理
 
