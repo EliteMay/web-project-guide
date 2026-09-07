@@ -330,6 +330,87 @@ ConsensusやMajorityを自動的な真実としません。新しい少数Eviden
 
 Repeated implementationはEmpirical Replicationと同義ではなく、Conventionのコピーである可能性も確認します。
 
+## User Feedback / Qualitative Evidence
+
+実際にProductを使ったUserからのFeedbackは、単なる感想でも自動Requirementでもなく、Context付きのQualitative Evidenceとして扱います。
+
+```text
+Raw Feedback
+↓
+Context / Task / Problem
+↓
+Severity / Frequency / Confidence
+↓
+他Evidenceとの照合
+↓
+Underlying Need
+↓
+Product Decision
+↓
+変更後Validation
+```
+
+### FeedbackとSolutionを分ける
+
+Userが提案したUI変更やFeature案は、そのままUnderlying Needと同義にしません。例えば「検索ボタンを上へ」は、実際には「検索が見つけにくい」というProblem Evidenceかもしれません。
+
+ただしUserがCurrent Product Requirementとして明示的に決定した内容は、Research Feedbackではなく [01 Requirements](01-requirements.md) のCurrent Contractとして扱います。
+
+可能ならFeedbackにはTask、Page / Flow、Audience / expertise、Device / input、Expected / Actual、停止点、Workaround等のContextを残します。VerbatimとAgent / DeveloperのInterpretationを分け、User自身の表現をAI解釈へ書き換えてOriginal Evidence扱いしません。
+
+PriorityはFrequencyだけで決めず、Severity、Task importance、Recoverability、User segment、Confidence等を必要に応じて合わせます。少数でもData loss、Accessibility blocker等の重大Findingは単純な件数で無視しません。
+
+Support / SNS / Communityの声は母集団全体を必ず代表するとは限りません。Heavy user、Beginner、Expert、Mobile、Accessibility needs、Locale等のSampling biasを考慮し、必要なら別Segmentでも確認します。
+
+Negative Feedbackだけでなく、何が分かりやすかったか、どのFlowが自然だったか等のPositive Feedbackも、壊してはいけないContractやSuccess PatternのEvidenceとして利用できます。
+
+似たFeedbackはUnderlying Problem単位でClusterできますが、同じUserからの重複Reportを独立User数へ水増ししません。繰り返し発生していること自体はPersistence / Severity Evidenceになり得ます。
+
+全ProjectへNPS、CSAT、Popup survey、Feedback widget等を要求しません。Surveyを使う場合はSolutionを前提にした誘導質問を避け、必要に応じて自由記述を併用します。Feedback収集時のPersonal Data / Replay / Trackingは [06 Security](06-security.md) のPrivacy Contractを維持します。
+
+重要Feedbackは`Received → Understand → Decide → Implement / Reject / Defer → Validate`へ進めます。すべてを実装することをUser-centricとは扱わず、Reject / DeferもProduct Goal、Trade-off、Evidenceに基づく正常なDecisionです。
+
+## Experimentation / A-B Test / Causal Comparison
+
+Experimentは高度な開発の証明ではなく、**不確実なProduct Decisionについて比較可能なEvidenceを得る手段**です。明確なBug、Security fix、Data-loss prevention、Accessibility最低基準等へA/B Testを機械的に要求しません。
+
+```text
+Uncertain Decision
+↓
+Hypothesis
+↓
+Primary Outcome / Guardrail
+↓
+Comparison Design
+↓
+Measurement
+↓
+Interpretation
+↓
+Keep / Revise / Reject
+```
+
+結果を見る前にHypothesis、Primary Outcome、主要Guardrailを可能な範囲で決め、結果後に都合の良いMetricだけを選ぶことを避けます。
+
+Control / baselineを持てる場合は使い、Before / Afterしかない場合は時期、Traffic、User mix、Seasonality、Content変更等のConfounderが残るためCausal Confidenceを下げます。
+
+A/B Testでは必要に応じて次を確認します。
+
+- Assignment unitをUser / Session / Workspace等からOutcomeとinterferenceに合わせて選ぶ。
+- 同じ主体が不必要にVariant間を揺れないようにする。
+- 比較したい要因以外を可能な範囲で揃え、複数変更を混ぜる場合は何を比較しているか明示する。
+- Sampleが小さい場合に派手な倍率や因果を強く断定しない。
+- Statistical SignificanceとPractical Significanceを分ける。
+- 途中結果を都合の良い瞬間だけ採用しない。重要Experimentではminimum observation / sample / stop conditionを必要に応じて事前に決める。
+- Seasonality / novelty / learning effectを必要範囲で考慮する。
+- 後付けSegment探索は探索的Evidenceとして扱い、無限なSubgroup slicingで偶然差をProduct Truthにしない。
+- 両VariantともSecurity / Accessibility / Privacy / Data safety等のCommon minimum qualityを満たす。
+- Variant間でInstrumentation品質が同等か確認し、Tracking failureをProduct effectと誤認しない。
+
+Feature FlagはRollout / Kill switch / Internal testing等のControl mechanismであり、Experimentそのものではありません。`5% → 25% → 100%`等のStaged RolloutもRandomized Comparisonがなければ自動的にCausal Experimentとは扱いません。
+
+Experiment終了後はDecisionを残し、不要Variant、temporary event、obsolete flag等をCleanupします。Trafficが少なくA/B Testに向かないProjectではPrototype comparison、User test、Task observation、Direct feedback等へ切り替えられます。
+
 ## Evidence Map / Research Output
 
 Deep Research後はSource一覧をそのまま投げず、まずEvidence Mapへ整理します。

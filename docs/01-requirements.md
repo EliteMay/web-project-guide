@@ -357,6 +357,48 @@ AI生成Contentも`生成できた = 品質確認済み`としません。大量
 
 CMS / Editorial approval system / Headless CMS等はContentがあるという理由だけで導入せず、Project規模・更新頻度・権限・運用Costに必要な場合だけ採用します。
 
+## Product Outcome / Measurement Contract
+
+CONDITIONAL: Productの価値や改善効果を継続的に判断する必要があるProjectでは、Analytics Toolや取得可能な数字を先に選ばず、Product GoalからUser OutcomeとObservable Signalを定義します。
+
+```text
+Product Goal
+↓
+User Outcome
+↓
+Observable Signal
+↓
+必要ならMetric
+↓
+必要ならInstrumentation
+```
+
+Page View、Click数、Session時間、登録者数等は用途によって有用ですが、数字が増えたこと自体をProduct改善とは扱いません。Primary Task Successへどれだけ近いSignalかを確認し、OutcomeとProxyを区別します。
+
+重要Metricでは必要に応じて、何を数えるか、母数、期間、対象User / Session、Data Sourceを説明できるようにします。単一Metricへ最適化せず、Error、Performance、Accessibility、Privacy、Support burden等のGuardrailも変更Riskに応じて確認します。
+
+「改善した」と判断する場合は可能ならBaseline / previous state / comparison conditionを持ち、Baselineがない絶対値や相関だけから因果を断定しません。
+
+AnalyticsをすべてのProjectへ要求しません。小規模・個人ToolではManual observation、Direct feedback、既存Canonical Dataから導けるLocal Signal等で十分な場合があります。外部Tracking SDKを導入しないことも正常なDecisionです。
+
+### Analytics / Instrumentation Contract
+
+Measurementが必要な場合は、取得可能なEventを先に増やすのではなく、必要なEvidenceからEventを逆算します。
+
+- UI位置や色に依存する`button_click`等より、`search_submitted`、`workout_saved`、`lesson_completed`等のProduct上の意味を優先する。
+- Attempt / Success / Failure / Cancelを混同せず、成功Eventは実際の成功Boundaryに近い場所で記録する。
+- 主要Metricへ使うEventほどTrigger、Property、意味、収集しないDataを説明できるContractを持つ。
+- Eventの意味を大きく変える場合は新Event / version等で時系列の意味境界を作る。
+- Retry、double action、re-render、offline resend等で重要Outcomeが二重計上されないかをRiskに応じて確認する。
+- User identityをAnalyticsのDefault要件にせず、Session / anonymous / authenticated userのどの粒度が必要かをMetricから決める。
+- Propertyを「使うかもしれない」で増やさず、必要ならbucket / category等で十分な粒度へ落とす。
+- Missing telemetryをObserved zeroと同義にしない。
+- Analytics Provider / SDK失敗でPrimary Taskを壊さない。
+- Product AnalyticsとDevelopment Diagnosticsを目的・Payload・Retention上で区別する。Diagnosticsは [15 Development Observability](15-development-observability.md) を正本とする。
+- Analytics SDKのPerformance / Provider failureは [05](05-performance-reliability.md)、Privacy / Tracking / Consent / Retentionは [06](06-security.md)、Dependency選定は [13](13-dependencies-assets.md) を正本とする。
+
+Raw Eventは観測Evidenceであり、Product Truthそのものではありません。例えば`lesson_completed`が記録されたことだけで理解成立を断定せず、定義したOutcomeとの距離を保ちます。
+
 ## Learning / Explanation Content
 
 CONDITIONAL: `LEARNING` Profileでは教材件数だけで完成を決めません。
