@@ -25,3 +25,6 @@ jobs:
 
       - name: Validate exhaustive audit contracts
         run: node tests/validate-audit-contract.mjs
+
+      - name: Validate data storage contracts
+        run: node tests/validate-data-storage-contract.mjs
