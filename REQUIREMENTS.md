@@ -278,6 +278,8 @@ Guide自身も自分のRuleを可能な範囲でself-applyします。
 
 Requirements Decision Systemの未完了Research Contractは [`maintenance/research/requirements-decision-system.md`](maintenance/research/requirements-decision-system.md) に保存します。
 
+Performance / Reliability Decision SystemのPhase 5 Research Contractは [`maintenance/research/performance-reliability-decision-system.md`](maintenance/research/performance-reliability-decision-system.md) に保存します。Phase 5は「高速化Technique集」ではなく、Perceived Performance、Loading / Failure / Retry / Timeout / Offline degradation、Slow device、Memory / Long-running session、Huge Data、Media、Third-party dependency等について、**どのProjectでどこまで最適化・劣化対策・Validationを要求するか**を決めるDecision Systemを研究します。研究中のContractはCommon Rule本文ではなく、Current behaviorは引き続き [`docs/05-performance-reliability.md`](docs/05-performance-reliability.md) を正本とします。
+
 Data / Storage Decision SystemのPhase 4 Researchは実装済みです。Current Common Ruleは [`docs/03-data-storage.md`](docs/03-data-storage.md)、Verification Strategyは [`docs/07-testing-quality.md`](docs/07-testing-quality.md) を正本とし、[`maintenance/research/data-storage-decision-system.md`](maintenance/research/data-storage-decision-system.md) はPromotion後のhistorical non-normative evidenceとして保持します。
 
 Phase 4で確定したLocal-first / Offline / Cloud Sync / Conflict / Autosave / History / Optimistic Update / Large Data / Search Index / Cache / UGC / Corruption / Backup / Advanced Sync境界は、Research Assetを第二の正本にせず各専門Ownerへ統合します。
@@ -341,6 +343,7 @@ Task-first Structure / Flow Researchは既に`docs/22`へPromotion済みのた�
 - Conversation Handoff / Recovery owner: Implemented
 - Exhaustive owner audit / remediation: Implemented and validated in v1.20.0 audit
 - Data / Storage Decision System Phase 4: Implemented in current `docs/03` / `docs/07` / Quality Checklist
+- Performance / Reliability Decision System Phase 5: Research requirements defined / research pending
 - Requirements Decision System Research: Open
 - Blocking Decisions: None
 
