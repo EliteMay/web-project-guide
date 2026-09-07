@@ -311,6 +311,52 @@ CONDITIONAL: Visual Directionが完成度へ大きく影響する場合、Requir
 
 詳細は [Visual Requirement Pack](../templates/requirements/VISUAL.md)、Visual Researchは [18](18-domain-first-visual-research.md) を使います。
 
+## General Content Quality
+
+CONDITIONAL: ContentがPrimary Taskや意思決定へ影響するProjectでは、件数・文字数・Field充足だけでContent完成を決めません。
+
+Contentは必要に応じて次の観点でContractを持ちます。
+
+- **Correctness** — 重大な事実誤認やCurrent Contractとの矛盾がない
+- **Sufficiency** — Userの目的に必要な前提・制約・例外が不足していない
+- **Relevance** — Page / Taskの目的に関係する内容へ絞られている
+- **Clarity** — 対象Audienceが用語・説明・次の判断を理解できる
+- **Consistency** — 別Page / Data / Documentationと重要Factが理由なく食い違わない
+- **Freshness** — 時期で変わる情報は必要なCurrent Evidenceで確認されている
+- **Actionability** — 手順・判断・Recoveryが必要なContentでは次に何をすべきか分かる
+
+### Content RoleでDepthを変える
+
+すべてのContentを同じ長さ・同じ構造へ強制しません。
+
+```text
+Quick Reference
+→ 短くてよい
+
+How-to
+→ 前提 → 手順 → 成功状態 → 失敗時の対応
+
+Explanation
+→ What → Why → Mechanism → Example
+
+Warning
+→ 条件 → Risk / Impact → Avoidance / Recovery
+```
+
+Layoutを埋めるためだけの文章、内容のないFeature紹介、`Lorem ipsum`、未処理Placeholder / TODOを完成Contentとして扱いません。
+
+### Evidence / Canonical Content Boundary
+
+価格・制度・API・Security・Software仕様等、鮮度が重要なFactは必要に応じて [20 Evidence-first Research](20-evidence-first-research.md) でCurrent Evidenceを確認します。
+
+同じ重要Fact / Policyを複数Pageへ独立Hardcodeし、片方だけ古くなる構造を避けます。Canonical Dataから導出できる場合はそちらを優先し、Data authority / schema詳細は [03 Data / Storage](03-data-storage.md) を正本とします。
+
+Fact / Assumption / Recommendation / AI synthesisの区別がUserの判断へ影響する場合は、根拠のない断定や偽の精密さを避けます。
+
+AI生成Contentも`生成できた = 品質確認済み`としません。大量Contentでは全件手作業Reviewを機械的に要求せず、Schema / structural validation、代表Sample、High-risk Content重点Review等を組み合わせられます。Validation詳細は [07 Testing / Quality](07-testing-quality.md) を正本とします。
+
+CMS / Editorial approval system / Headless CMS等はContentがあるという理由だけで導入せず、Project規模・更新頻度・権限・運用Costに必要な場合だけ採用します。
+
 ## Learning / Explanation Content
 
 CONDITIONAL: `LEARNING` Profileでは教材件数だけで完成を決めません。

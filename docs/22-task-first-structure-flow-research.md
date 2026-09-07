@@ -433,6 +433,156 @@ Context依存
 
 保持期間やStorage方式はTask / Privacy / Data size / Reliabilityに応じて判断し、永続保存の詳細は [03 Data / Storage](03-data-storage.md) を参照します。
 
+## 13. IA Maintenance / Content Lifecycle
+
+IAは初回設計で固定せず、Content追加・削除・Rename・Move・Merge / Split・新しいContent Type追加等で構造へ意味のある影響が出る場合にDriftを確認します。1記事追加ごとにFull IA Reviewを要求しません。
+
+### Findabilityを腐らせない
+
+重要Contentが存在していても、Navigation / Search / Related link / Contextual entry等の合理的な到達経路がない場合は実質的に発見不能です。
+
+ただしDeep Link専用、Contextual Help、内部Page等、意図的な限定到達は許容できます。`到達経路がない = 常にBug`とはしません。
+
+### Taxonomy / Category Sprawl
+
+Content増加のたびにCategory / Tagを増やし続けず、必要に応じて次を見直します。
+
+- 同義Category / 表記揺れ
+- 1件だけのCategory乱立
+- 巨大な`その他`
+- 内部実装都合の分類
+- CategoryとTagの役割混同
+- 廃止済み分類名
+
+分類はDatabase構造よりUserが探す期待を優先します。
+
+### Duplicate / Overlap
+
+似たContentは役割を見て扱います。
+
+```text
+完全Duplicate
+→ 統合候補
+
+役割が異なる
+→ 差を明確化
+
+Quick Reference + Detailed Guide
+→ 両立可能
+```
+
+似ているという理由だけで全Contentを一Pageへまとめません。
+
+### Content Lifecycle
+
+必要に応じて`Create → Maintain → Update → Supersede / Deprecate → Archive → Remove`のLifecycleで考えます。状態名を全ProjectのSchemaへ固定しません。
+
+API / Software Version / 制度 / 料金 / Security / Setup手順等、鮮度が重要なContentでは古い情報をCurrentに見せないため、必要に応じてUpdated date / Applies to version / Superseded by / Archived等を示します。全Pageへ更新日表示を強制しません。
+
+公開URL・Bookmark・External Linkに意味があるContentをRename / Moveする場合はInternal Link、Navigation、Search Index、必要なURL Recoveryを確認します。URL / Release詳細は [08 GitHub Pages](08-github-pages.md) / [09 Version / Maintenance](09-maintenance.md) を正本とします。
+
+Archiveは保存価値があってもPrimary IA / Search priorityを古い情報で埋めないよう分離を検討します。Review頻度は固定周期でなくContentの変化速度・Impactに合わせます。
+
+## 14. Search Quality / Findability
+
+Searchの完成条件は検索欄を置くことではなく、**Userが持つ不完全な手掛かりから目的のContent / Itemへ合理的に到達できること**です。Navigationで十分な小規模ProjectへSearchを強制しません。
+
+### Search Scope
+
+Title / Name / Body / Tag / Category / ID / Metadata等、何を検索対象にするかを実装とUIで食い違わせません。Scope切替は必要な場合だけ使います。
+
+### Query理解 / Match
+
+Human language検索では必要に応じて大文字小文字、全角半角、空白、表記揺れ、略称、日本語 / 英語名称、Synonym等を考慮できます。一方、ID / Code / 型番等ではExact matchを優先する方が安全な場合があります。
+
+曖昧検索を強くしすぎて無関係Resultを大量に返さないよう、Content TypeとTaskからToleranceを決めます。
+
+### Ranking
+
+Result順を偶然のData順にせず、Task上重要なMatchへ意味ある優先度を持たせます。例としてExact title → strong name / prefix → tag / category → body → weak fuzzy等を使えますが、固定Algorithmではありません。
+
+### Search + Filter
+
+Query / Scope / Category / Filter / Sort等がResultを狭めている場合、Active conditionと解除方法が理解できるようにします。
+
+No ResultをDead Endにせず、必要に応じてQuery見直し、Filter解除、Scope拡大、Browse、Related category等へRecoveryできるようにします。無関係なRecommendationで0件を隠しません。
+
+### Search Index Boundary
+
+Search Indexを持つ場合はCanonical Dataから再生成可能なDerived Dataとして扱い、第二Source of Truthにしません。新規・Rename・Delete・Category変更を反映し、Ghost Resultを残さず、壊れたIndexを必要に応じてRebuildできるようにします。Data / Cache詳細は [03 Data / Storage](03-data-storage.md) を正本とします。
+
+### Feature Discoverability
+
+重要機能をHover、Hidden shortcut、Context menu、意味不明なIcon等だけに理由なく依存させません。Primary / Frequentは発見しやすく、Contextualは必要な場所で、Advanced / RareはProgressive Disclosureを使えます。
+
+External Search Provider / AI Semantic SearchはData量、Cost、Privacy、Offline、Provider failure等から必要性を判断し、小規模Static Dataへ機械的に導入しません。
+
+## 15. Public Web Discoverability
+
+CONDITIONAL: Search Engineや外部共有から発見されることが価値を持つPublic Site / Public Contentでは、SEOを検索順位の小技ではなく**ContentをMachineとUserが正しく発見・理解できる状態**として扱います。
+
+Private tool、Electron runtimeのみ、内部用途等へSEO Infrastructureを強制しません。
+
+### Page Identity / Metadata
+
+重要Pageでは内容に対応する意味ある`title`を持たせ、必要に応じてmeta descriptionやsocial metadataを設定します。全Page同一文、Keyword羅列、実Contentと異なるMarketing Copyを避けます。
+
+検索EngineやSNSがMetadataをそのまま表示する保証はないため、表示結果を完全制御できるとは扱いません。
+
+### Canonical / Index Control
+
+同一またはほぼ同一Contentが複数URLに存在する場合だけcanonicalを検討し、全Pageへ理由なく追加しません。
+
+`robots.txt`のcrawl制御と`noindex`等のindex制御を混同しません。秘密情報をrobots.txtで隠そうとせず、公開可否は [06 Security](06-security.md) の責務を維持します。
+
+### Sitemap / Derived Metadata
+
+Page数・更新頻度・Deep URL等から有用な場合に`sitemap.xml`を使えます。Canonical Route / Content Dataから生成できる場合はそれを優先し、Sitemapを第二Source of Truthにしません。
+
+Structured Dataは実Contentに適合するTypeがありUser-visible Contentと矛盾しない場合だけ使い、存在しないRating / Review等をMarkupへ入れません。Rich Result表示を保証済みと扱いません。
+
+Social sharingが重要ならOGP等を必要範囲で設定し、Public Site identityとしてfavicon等も確認できます。SNSを使わない内部Projectへ強制しません。
+
+### JavaScript / URL Migration
+
+JavaScript-heavy SiteではInitial HTML / rendered Content / Route direct-open / routeごとのMetadata等を実公開条件で確認します。SPAという理由だけで不可とは扱いません。
+
+Public URL変更ではInternal links、Sitemap、Canonical、External links、Redirect / Recovery、Indexing impactを確認し、URL migration詳細は [08 GitHub Pages](08-github-pages.md) / [09 Version / Maintenance](09-maintenance.md) へ委譲します。
+
+Search ConsoleやSEO Analyticsは改善Evidenceとして利用できますが、Common completion prerequisiteにしません。
+
+Content Quality / User Taskを優先し、Keyword stuffing、薄い大量Page、Hidden text、不要な長文等でUXを壊しません。Current Search Engine仕様が重要な判断では [20 Evidence-first Research](20-evidence-first-research.md) でCurrent official guidanceを確認します。
+
+## 16. Empty-state Quality / First-use Guidance
+
+Empty Stateは`データがありません`という表示だけでなく、**なぜ空なのか、正常なのか問題なのか、次に何ができるか**を理解できる状態として設計します。
+
+### Emptyの原因を分ける
+
+必要に応じて次を区別します。
+
+- First-use Empty
+- User-cleared Empty
+- No Result
+- Permission / Auth related
+- Offline / Unavailable
+- Partial Empty
+- Truly Empty
+
+Successful responseで0件なのか、Request failure / incomplete dataなのかを分け、Error / OfflineをEmptyとして隠しません。Permissionで見えない状態もSecurity上許される範囲で実際のStateに合うFeedbackを使います。
+
+### Next Action
+
+Actionが存在するEmpty Stateでは必要に応じて`State explanation + Primary recovery / start action + supporting help`を使います。Read-onlyでActionがない場合に無理なCTAを追加しません。
+
+First-useではEmpty State自体をContextual onboardingとして使えます。Sample Dataを使う場合はDemo / Sampleと分かり、User Dataと混同しないようにします。
+
+Collection自体が0件の場合とSearch / Filter結果が0件の場合を分けます。後者ではActive query / filterと解除方法を見せます。
+
+DecorationはState理解・Next Actionを押しのけない範囲で使い、Copyは`Nothing here`だけでなく何が空なのかを具体的にします。
+
+最後のItem削除等でNormal → Emptyへ遷移するFlowではstale selection / detail / IDを残さず、正しいEmpty Stateへ移ることを確認します。Data lifecycle詳細は [03 Data / Storage](03-data-storage.md) を正本とします。
+
 ## Research Brief
 
 MeaningfulなStructure / Flow Researchでは、必要に応じて短く次を整理します。
@@ -590,6 +740,10 @@ MeaningfulなStructure / Flow設計では、必要範囲で次を説明できる
 - First-time / Returningで必要な差は何か
 - Advanced機能をいつ見せるか
 - Back / Resume時に保持すべきContextは何か
+- Content追加 / Rename / Move / Archive後も重要Contentが発見可能か
+- Search scope / relevance / No Result recoveryがTaskに合うか
+- Public Search / Sharing対象ならMetadata / index boundaryが意図どおりか
+- Empty Stateが原因と次Actionを正しく伝えるか
 - Research / Prototype / Testで何を確認したか
 - 最終IA / Flowが対象ProjectのSource of Truthへ保存されているか
 
