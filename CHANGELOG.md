@@ -496,8 +496,8 @@ v1.12.0で成功 / 失敗Evidenceの強さは整理しましたが、Reference�
   - VReview Review Workbench
   - Lineup Tactical Map Workspace
 - Candidate / Recovery Evidenceを追加
-  - AP recovery
-  - ASMRTube v3 direction
+  - AP Friendly Study Dashboard recovery
+  - ASMRTube ASMR Media Deck / Sound Map
 - Rejected Visual Evidenceを追加
   - ASMRTube v2.4: LyricTubeの装飾削減まで移植し、User評価40/100
   - AP Study Guide r22: Technical Console化で旧r21 40点から30点へ低下
