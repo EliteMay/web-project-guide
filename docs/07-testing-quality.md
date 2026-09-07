@@ -2,7 +2,7 @@
 
 この章は**Testing戦略と検証状態の考え方**を定義する正本です。
 
-実際の完成前チェック項目は [Quality Checklist](../templates/QUALITY_CHECKLIST.md) を正本とし、この章へ同じChecklistを複製しません。Page Load PerformanceのTarget / Review Trigger / Resource Timing / Performance固有の確認深度は [05 Performance / Reliability](05-performance-reliability.md) を正本とします。
+実際の完成前チェック項目は [Quality Checklist](../templates/QUALITY_CHECKLIST.md) を正本とし、この章へ同じChecklistを複製しません。Page Load PerformanceのTarget / Review Trigger / Resource Timing / Performance固有の確認深度は [05 Performance / Reliability](05-performance-reliability.md) を正本とします。Data Authority / Storage / Sync / Conflict / RecoveryのBehavioral Contractは [03 Data / Storage](03-data-storage.md) を正本とします。
 
 ## 基本方針
 
@@ -37,6 +37,9 @@ Pure Functionにできる処理はブラウザUIから切り離してTestしま�
 - Score計算
 - Migration
 - Normalize / Validate
+- Conflict判定
+- Index Builder
+- Cache Invalidation条件
 - URL解析
 - Detector後処理
 
@@ -61,6 +64,169 @@ Pure Functionにできる処理はブラウザUIから切り離してTestしま�
 ```
 
 UIが重要なSiteでは、変更内容に応じてNavigation / overflow / fixed UI / Canvas geometry /主要Button visibility等も確認します。
+
+## Data / Storage Verification
+
+Data / Storage変更ではHappy Pathだけで完成扱いにしません。Projectに該当する範囲で、[03 Data / Storage](03-data-storage.md) のContractをFailure Caseまで検証します。
+
+### Save / Autosave
+
+最低候補:
+
+- 新規保存 → Reload後も保持
+- Autosave待ち中のNavigation / Data切替
+- Save中の追加編集
+- 古い非同期Saveが新しいStateを上書きしない
+- Storage write failureをSaved表示しない
+- Offline保存を許可する場合、Local保存とRemote Sync状態を混同しない
+- Reset後のlate AutosaveでDataが復活しない
+
+Save成功のOracleは、UI表示ではなくCanonical StorageへCommitされた結果を基準にします。
+
+### Offline / Reconnect
+
+Offline Edit / Createを許可するProjectでは、必要に応じて次を通します。
+
+```text
+Online
+↓
+Offline
+↓
+Create / Edit
+↓
+Reload
+↓
+Online復帰
+↓
+Current Remote State確認
+↓
+Conflict Check
+↓
+Sync
+```
+
+確認候補:
+
+- Pending QueueがReload / App restart後も必要な範囲で保持される
+- Retryで同じOperationが二重適用されない
+- Remote Revision / Tombstone / Auth / Schema不整合を無視してQueueを送らない
+- Background executionが動かなかった場合でも次回起動 / Online復帰時にRecoveryできる
+
+### Cloud Sync / Conflict
+
+Multi-device / Cloud Syncでは必要に応じて次を確認します。
+
+- Device A変更 → Device Bへ反映
+- Edit vs Edit
+- Edit vs Delete
+- Delete vs Offline Edit
+- 古いRevisionからSave
+- 同Field / 別Fieldの同時変更
+- RetryによるDuplicate
+- Partial Sync Failure
+- Long-term Pending / Quarantineからの再投入
+
+重要Dataでは、Conflict時に片方が黙って消えないことを確認します。
+
+### Corruption / Integrity
+
+意図的に壊したDataでFailure behaviorを確認します。
+
+候補:
+
+- Invalid JSON
+- Missing Required Field
+- Wrong Type
+- Duplicate / Invalid ID
+- Missing Blob
+- Broken Reference
+- Future Schema
+- Partial Migration
+- Partial Sync
+- Corrupt Backup
+
+期待結果は、**Corruption検知 → 正常Data保護 → 必要なら隔離 / Recovery**です。全Resetを最初の動作にしません。
+
+### Migration
+
+重要Schema変更では必要に応じて次を確認します。
+
+- 旧Version → Migration → 新Version → Reload → Validation
+- Migration途中Failure
+- 再実行Safety
+- Future Schema
+- 大量Data Migration
+- Migration前Backup
+- Chunk / Resume方式を採用した場合の中断復帰
+
+### Backup / Restore
+
+Backupが重要なProjectでは、Backup File作成だけでなくRestore Round-tripまで確認します。
+
+```text
+Current Data
+↓
+Backup
+↓
+Data変更 / 削除
+↓
+Restore
+↓
+Reload
+↓
+Integrity Validation
+```
+
+Riskに応じて次もTest候補にします。
+
+- 不正Backup
+- 古いSchema
+- Restore途中Failure
+- 一部Store Failure
+- Cross-version Restore
+- Partial Restore
+
+### Large Data
+
+実Dataに近い規模で必要に応じて次を測定します。
+
+- Initial Load
+- Search
+- Save / Autosave
+- Sync
+- Migration
+- Backup / Restore
+- Index Rebuild
+- Memory Usage
+- Quota pressure / cleanup
+
+固定性能値をCommon Ruleにせず、Projectごとの実用上のBudgetを決めます。
+
+### Cache / Index
+
+Cache削除後の再取得、Index削除 / 破損後のRebuildを確認し、Derived Data消失だけでCanonical Dataが壊れないことをRegression対象にします。
+
+必要に応じて次も確認します。
+
+- Canonical変更後に古いIndex / Cacheが残らない
+- User切替 / Logout / Permission変更で別UserのCacheを再利用しない
+- Index Version変更後にRebuildできる
+- Cache write failureをCanonical Save failureとして扱わない
+
+### User Generated Content
+
+重要UGCでは必要に応じて次を確認します。
+
+- Rename / MoveでStable IDと参照が保たれる
+- Duplicate
+- Delete / Trash / Restore
+- Missing Blob
+- Broken Reference
+- Orphan Cleanup
+- Export / Import
+- Backup / Restore
+- Sync Conflict
+- App update / Migration後の保持
 
 ## Performance Verification
 
