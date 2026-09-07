@@ -166,12 +166,13 @@ Conversation SummaryだけをCheckpointにせず、Current Repository / Requirem
 1. [00 Governance](docs/00-governance.md)
 2. [21 Rule Routing / Preflight](docs/21-rule-routing-preflight.md)
 3. [14 Continuous Improvement](docs/14-continuous-improvement.md)
-4. External Evidenceが必要なら [20 Evidence-first Research](docs/20-evidence-first-research.md)
-5. 既存Owner / Catalog / Checklist / Project側へ統合できないか確認
-6. Owner / Router / Validatorを整合
-7. 最終CommitでGuide Validatorを確認
+4. 次回の要件定義・補強では [Content Depth Reinforcement Candidates](maintenance/research/content-depth-reinforcement.md) を読み、Defectと「内容が薄い領域」を分けて再評価
+5. External Evidenceが必要なら [20 Evidence-first Research](docs/20-evidence-first-research.md)
+6. 既存Owner / Catalog / Checklist / Project側へ統合できないか確認
+7. Owner / Router / Validatorを整合
+8. 最終CommitでGuide Validatorを確認
 
-新Rule追加と同時に、重複・History混在・Orphan Ruleを減らせないか確認します。
+新Rule追加と同時に、重複・History混在・Orphan Ruleを減らせないか確認します。Content Depth候補もCurrent Ownerで既に解消済みなら再要件化しません。
 
 ## 完成前
 
