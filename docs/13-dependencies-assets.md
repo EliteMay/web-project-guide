@@ -97,6 +97,46 @@ Dependabot等は**更新候補を見つける仕組み**であり、安全なAut
 
 Cross-repositoryなDependabot運用は [16](16-cross-repository-github-infrastructure.md) を確認します。
 
+## AI Model / Provider Lifecycle
+
+CONDITIONAL: Hosted AI Model / ProviderがProduct behaviorへ影響する場合、Model名を単なるAPI設定値ではなく、Quality / Cost / Latency / Reliabilityを変えるExternal Dependencyとして扱います。
+
+重要AI Featureでは必要に応じてProvider、Model identifier / snapshot or alias、API version、relevant generation settings、Required Capabilityを追跡できる状態にします。
+
+### Selection / Pinning
+
+- `常に最新Model`をRequirementにせず、[01 Requirements](01-requirements.md) のAI Output Contractを満たすことを優先する。
+- Alias / `latest`がProvider側で切り替わり得るか、特定Snapshot / VersionがBehaviorを固定するかを確認する。
+- PinningのReproducibilityと、最新Modelへ追従するQuality / Cost / Capability改善をTrade-offとして扱い、`always pin / always latest`のUniversal Ruleを作らない。
+- AI Featureが必要とするStructured Output、Tool Calling、Vision、Context size、Language等のCapabilityを必要範囲で説明できるようにする。
+- Provider portabilityを全Projectへ要求せず、Vendor risk / availability / migration likelihood / cost sensitivityが高い場合だけAbstractionを強める。
+- Provider共通Interfaceを作ってもTool Calling / Vision / Retrieval等のCapability差が消えるとは扱わない。
+
+### Change / Migration
+
+Model / Provider / API versionの変更は、API互換だけで完了とせず [07 Testing / Quality](07-testing-quality.md) のRepresentative AI EvaluationでCurrent ProductionとCandidateを比較します。
+
+Provider変更では必要に応じてTool Calling、Structured Output、Streaming、Rate Limit、Content filtering、Context behavior、Data policy等の差も確認します。
+
+Model migrationとPrompt / Tool / Retrievalの大変更を同時に大量実施せず、可能ならChangeを分離してRegression原因を追跡できるようにします。
+
+DeprecationはMigration Eventとして扱い、Replacement候補 → Required Capability → Representative Eval → Cost / Latency / Reliability → Rolloutの順で確認します。旧Modelへ戻せない場合はRollback可能と誤認せずForward-fix / replacementを準備します。
+
+### Cost / Latency / Fallback
+
+Model選定はToken単価やBenchmark 1指標だけで決めず、必要に応じてQuality、Latency、Total task cost、Retry / Tool call、Reliabilityを合わせます。
+
+- Cheapest Model / strongest Modelを全Taskへ一律適用しない。
+- Dynamic routing / multi-provider gatewayをComplexityに見合うProjectだけ採用する。
+- Context windowが大きいことを`全部Contextへ入れる`理由にせず、Truncationで重要情報をsilentに失わない。
+- Fallback Model / Providerを使う場合もPrimaryと同等だと仮定せず、必要なCapabilityと代表品質を確認する。
+- FallbackでVision / Tool / Structured Output等を失う場合はDegraded capabilityをProduct behaviorへ反映する。
+- Secondary AI FeatureではProvider停止時にAI unavailableとしてdegradeするだけでも正常で、Fallback ProviderをCompletion prerequisiteにしない。
+
+Rate limit / quota / provider outage / timeout等のRuntime Failure、Retry、Latency、Failure blast radiusは [05 Performance / Reliability](05-performance-reliability.md)、Provider Data Policy / Privacyは [06 Security](06-security.md)、Post-release Evaluationは [09 Version / Maintenance](09-maintenance.md) を正本とします。
+
+Provider lock-inは一律に悪いとは扱わず、Prompt / Tool rewrite、Data export、re-index、Evaluation等のExit Costと、Current development speed / quality / maintenance benefitを比較します。
+
 ## CDN
 
 外部CDNを使う場合:
