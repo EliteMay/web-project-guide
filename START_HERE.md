@@ -38,9 +38,9 @@ User-facing UIがある場合は [17 Visual Quality Baseline](docs/17-visual-qua
 - Save → [03](docs/03-data-storage.md)
 - Performance → [05](docs/05-performance-reliability.md)
 - UI / Visual → [04](docs/04-ui-ux-accessibility.md) / [17](docs/17-visual-quality-baseline.md)
-- 大きなVisual変更 → [18](docs/18-domain-first-visual-research.md)
+- HUD / Inventory / Build UI / Management UI / Menu等のMeaningfulなUI要件・Visual Directionを決める → **候補案を固定する前に** [18](docs/18-domain-first-visual-research.md)
 
-主要Flow / Completionへ影響する変更ではActual PlaytestをStatic Testで置き換えません。
+主要Flow / Completionへ影響する変更ではActual PlaytestをStatic Testで置き換えません。既存ThemeやVisual Directionがあっても、今回のGameplay Taskに合うUI構成・情報密度が未検証ならVisual Researchを省略しません。
 
 ## 調査して方針を決める
 
@@ -88,16 +88,18 @@ Alignment / overflow / clipping / Component State等:
 - [17 Visual Quality Baseline](docs/17-visual-quality-baseline.md)
 - [07 Testing](docs/07-testing-quality.md)
 
-### Meaningful Visual Change
+### MeaningfulなUI要件 / Visual Change
 
-Layout / Theme / Visual Composition / 大規模Redesign:
+HUD / Inventory / Build UI / Management UI / Menu / Layout / Theme / Visual Composition / 大規模Redesign等:
 
-1. Current UI / Screenshot / User Feedback
+1. Current UI / Screenshot / Requirements / User Feedback
 2. IA / Navigation / Task Flow自体を変えるなら先に [22 Task-first Structure / Flow Research](docs/22-task-first-structure-flow-research.md)
-3. [18 Domain-first Visual Research](docs/18-domain-first-visual-research.md)
+3. **要件定義中でも候補案やおすすめを固定する前に** [18 Domain-first Visual Research](docs/18-domain-first-visual-research.md)
 4. [04 UI / UX / Accessibility](docs/04-ui-ux-accessibility.md)
 5. [17 Visual Quality Baseline](docs/17-visual-quality-baseline.md)
-6. Browser / Screenshotで最終確認
+6. 実装した場合はBrowser / Screenshotで最終確認
+
+既存Theme / Visual Directionが決まっているだけではResearch済み扱いにしません。方向が未確定なMeaningful UIでは、AIの一般知識だけからA / B / C案や「おすすめ」をResearchより先に固定しません。
 
 Navigationの分類・階層・到達経路を変える作業はStructure / Flow、Navigation barの見た目を変える作業はVisualとしてRoutingします。何度直しても改善しない場合は `18` のVisual Foundation Resetを確認します。
 
@@ -176,6 +178,7 @@ Setup.exe / Auto Update / Windows固有機能をCIだけで実機確認済み扱
 - [10 Project Management](docs/10-project-management.md)
 - Projectに`AGENTS.md`があればそのRouter
 - 通常と同じTesting / Security / Storage / Visual基準
+- MeaningfulなUI / Visual要件では [18 Domain-first Visual Research](docs/18-domain-first-visual-research.md) を候補案・実装より先に行う
 
 Memoryや古い会話だけでCurrent Repositoryを推測しません。
 

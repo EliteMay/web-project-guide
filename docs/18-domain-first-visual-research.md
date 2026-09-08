@@ -42,7 +42,7 @@ Navigation UIのLayout / Density / Typography / Color等を変える
 
 ## MUST: Meaningful Visual Changeの前にDomain / Genre Researchを行う
 
-次のような変更では、CSSを本格修正する前に、そのサイトと同じ用途・ジャンル・Taskに近い現行Site / Appを調査します。
+次のような変更・要件決定では、候補案やVisual Directionを確定したりCSSを本格修正したりする前に、そのサイト / App / Gameと同じ用途・ジャンル・Taskに近い現行Productを調査します。
 
 - Page Composition / Layoutを大きく変える
 - Navigation UIのPlacement / Density / Visual hierarchyを大きく変える
@@ -51,6 +51,12 @@ Navigation UIのLayout / Density / Typography / Color等を変える
 - 「もっと良い見た目にして」のように方向自体が未確定
 - 既存Visualの評価が低く、Foundationから直す
 - 新規PageでVisual Directionが完成度へ大きく影響する
+- GameのHUD / Inventory / Build UI / Management UI / Menu / Interaction UI等、主要Gameplayへ関わるUI要件や情報密度を新しく決める
+- 既存Theme / Visual Directionは決まっていても、今回のTaskに合うUI構成・表示量・操作表現が未検証
+
+**要件定義中でまだ実装へ入っていなくても、MeaningfulなUI / Visualの方向を決める作業はこのGateの対象です。** `Themeが既にある`、`大枠のVisual Directionが決まっている`、`既存UIを具体化するだけ`という理由だけでDomain / Genre Researchを省略しません。
+
+方向が未確定な状態では、AIや担当者の一般知識だけからA / B / C案や「おすすめ」を先に固定しません。まずTarget Typeと近いReferenceを調べ、そのEvidenceからCandidateを作ります。
 
 IA / Navigation structure / Primary Task Flow自体を変える場合は、先に [22 Task-first Structure / Flow Research](22-task-first-structure-flow-research.md) で構造判断を行います。
 
@@ -89,6 +95,8 @@ IA / Navigation structure / Primary Task Flow自体を変える場合は、先�
 良い分類:
 初心者が毎日10〜20分使う、進捗付きの技術学習Dashboard + Reference
 ```
+
+GameではGenre名だけで終わらせず、視点、一番繰り返すGameplay、常時必要な情報、入力方式、Session長、探索 / 戦闘 / 建築 / 管理等の比重までTarget Typeへ含めます。
 
 ## Referenceの優先順位
 
@@ -145,6 +153,15 @@ Broad Research自体のSource diversity / Core Sample / Contrast Sample等は [E
 - Background / Border / Shadow / Radiusの強さ
 - hover / selected / loading / empty等のState
 - narrow viewportで何を残し何を畳むか
+
+Game UIでは必要に応じて次も観察します。
+
+- 3D / Gameplay viewをどれだけ遮るか
+- HUDで常時出す情報とContextual表示の分け方
+- Interaction promptの位置・優先順位
+- Inventory / Build / Management等のMode切替
+- Keyboard / Mouse / Controller入力とUIの対応
+- Combat / Exploration / Building等、SceneやModeごとの情報密度差
 
 ### 3. 共通点だけでなく差も見る
 
@@ -319,9 +336,9 @@ Purpose / User Task
 
 目安として、局所修正の追加コスト・例外・複雑さが、Wireframeから再設計するコストを上回り始めたらFoundation Resetへ切り替えます。
 
-## AIへVisual修正を任せる場合
+## AIへVisual要件定義 / 修正を任せる場合
 
-AIへ「見た目を良くして」と依頼された場合、いきなりCSSを変更しません。
+AIへMeaningfulなUI / Visual要件定義や「見た目を良くして」を依頼された場合、いきなり候補案をおすすめしたりCSSを変更したりしません。
 
 原則順序:
 
@@ -334,19 +351,20 @@ AIへ「見た目を良くして」と依頼された場合、いきなりCSSを
 6. Domain Research Brief
 7. KEEP / FIX / REMOVE
 8. 必要なら2〜3 Directionを比較
-9. Candidateを実装
-10. Current vs Candidateを確認
-11. Visual Review
-12. User feedbackをEvidenceへ残す
+9. 要件 / Candidateを確定
+10. Candidateを実装
+11. Current vs Candidateを確認
+12. Visual Review
+13. User feedbackをEvidenceへ残す
 ```
 
-AI自身が過去に作った成功例を最初の答えとして使わないことを基本とします。
+AI自身が過去に作った成功例や一般知識だけを最初の答えとして使わないことを基本とします。
 
 ## Completion Check
 
-大きなVisual変更で次を説明できない場合、Design Directionの検討不足と扱います。
+MeaningfulなUI / Visual要件決定または大きなVisual変更で次を説明できない場合、Design Directionの検討不足と扱います。
 
-- このProjectは何種類のSite / Appか
+- このProjectは何種類のSite / App / Gameか
 - IA / Navigation / Task Flow変更が必要だった場合、docs/22で構造判断を先に行ったか
 - 必要なResearch DepthでどんなEvidence / Candidateを調べたか
 - どのRepresentative Visual Referencesを重点比較したか
