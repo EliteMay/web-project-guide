@@ -40,12 +40,16 @@ UserがGuideの章番号、Profile、Gate名を覚えていることを前提に
 
 - どのOwner Docが必要か
 - MeaningfulなIA / Navigation / Task Flow変更か
-- Meaningful Visual Changeか
+- Meaningful Visual Changeか（実装前のUI / Visual要件定義・方向決定も含む）
 - Researchable Questionか
 - Save / Migration / Security等の高Risk条件があるか
 - GAME / LEARNING / ELECTRON等の専門Domainが関係するか
 - Conversation Handoff / stale checkpoint / duplicate active conversationのRecoveryが必要か
 - Current Repository / Requirements / Existing User Intentからどこまで自律的に決められるか
+
+HUD / Inventory / Build UI / Management UI / Menu / Interaction UI等、複数Componentや主要体験へ関わるUI要件を新しく決める場合は、**まだCodeやCSSを変更していなくてもMeaningful Visual Changeとして判定**します。既存Themeや大枠のVisual Directionが確定済みでも、今回のTaskに合うUI構成・情報密度・操作表現が未検証なら`MEANINGFUL_VISUAL_CHANGE`を外しません。
+
+「要件定義だからVisual Researchは後」「既存方向の具体化だからResearch不要」と分類せず、方向が未確定なら候補案やおすすめを固定する前に`VISUAL-RESEARCH-GATE`を解決します。Game UIでは`REQUIREMENTS + UI_UX + VISUAL + GAME_DESIGN`を組み合わせ、重要かつ不確実なら`RESEARCHABLE_QUESTION`も追加します。
 
 Product Intent、Core Decision、High-cost Decisionであっても、既存Context・正式Requirements・Evidenceから合理的に決められる場合はUser回答待ちを標準停止条件にしません。
 
@@ -143,6 +147,8 @@ Riskを独立した巨大Score Systemにせず、該当条件をSignalとして�
 - `MEANINGFUL_VISUAL_CHANGE`
 - `RESEARCHABLE_QUESTION`
 - `CONVERSATION_STATE_RECOVERY`
+
+SignalはUserの依頼文にその単語が書かれているかではなく、**作業の意味と影響範囲から判定**します。たとえば「UIについて要件定義しよう」「HUDを決めたい」のような依頼でも、複数の主要UIやVisual hierarchy / density / interaction patternを決めるなら`MEANINGFUL_VISUAL_CHANGE`です。逆に既存Design System内の局所Button文言や数pxのAlignment修正は通常このSignalを付けません。
 
 高Risk Signalは「必ずUserへ質問する」Signalではありません。必要Owner / Gateを読み、Riskを理解したうえでBest Reasonable Decisionを作るためのSignalです。
 
@@ -284,7 +290,7 @@ Profileは現行の分類を維持し、Profile体系そのものの再設計は
 
 `START_HERE.md`へ重要Routeを追加・変更した場合、`rule-router.json`のWork Type / Domain / Signalで同じOwnerへ到達できることを確認します。逆にMachine Routerへ重要Domainを追加した場合も、人間向け入口からその作業を発見できるか確認します。
 
-特にGuide自身の改善、Storage Migration、Meaningful Visual Change、Task-first Structure / Flow、Game主要Flow、Cross-Repository GitHub Infrastructure、Conversation Handoff / Recovery等、見落としCostが高いCaseはGolden CaseでRegression Guardを持つことを優先します。
+特にGuide自身の改善、Storage Migration、Meaningful Visual Change、Task-first Structure / Flow、Game主要Flow、Cross-Repository GitHub Infrastructure、Conversation Handoff / Recovery等、見落としCostが高いCaseはGolden CaseでRegression Guardを持つことを優先します。MeaningfulなGame UI要件定義では既存`meaningful-game-ui-requirements` Golden Caseが`docs/18`を含むことを維持します。
 
 ## Validation
 
