@@ -244,12 +244,24 @@
 - **検出:** Reset後に意図的なstale saveを実行するRegression Test + Reset → Reload → 再読込Browser Smoke。
 - **Related:** [Data / Storage](../docs/03-data-storage.md) / [Testing](../docs/07-testing-quality.md)
 
+## F-021 既知のGame Failureを読まずVisual / Collider /操作性を再発させる
+
+- **Category:** Game / Rule Application / Runtime Integrity
+- **発生:** Scrap Factory → Farm Up
+- **Severity / Cost:** High / 高い
+- **症状:** 過去に「見えるFenceを通れる」「VisualとColliderが一致しない」「WebGL Prototype感」「操作感はStatic CIで分からない」をProject Learningへ保存済みだったのに、別Gameで大型PropsのCollisionを持たないWorldと実Play未確認のCameraを再実装し、同種の不満が再発した。
+- **Root Cause:** Learningを保存する仕組みはあったが、Meaningful実装前のPreflightで今回のSystemに関係するLearningを検索・適用するContractが弱く、Visual追加をInteraction / Collision / Actual Playtestから分離した。
+- **最終対応:** `docs/21`へKnown Failure Preflightを追加し、関連Learningを実装前のPrevention / Guard / Completionへ接続する。GameではVisual / Collider / ControlsをRuntime / Actual Playtestの同じ品質Gateで扱う。
+- **予防:** Camera / Movement / Collision / Visual Foundation等へ触る前に対象Project LearningsとFailure CatalogをTargeted Searchし、既知Failureがあれば同じ実装PassでPreventionとRegression Guardを入れる。Learningが存在したのに再発した場合は局所修正だけで終わらずRule Application FailureとしてCommon Rule / Checklist等へ昇格する。
+- **検出:** Preflight review / Browser runtime validation / Actual Playtest / visible-solid-object collision sweep / user feedback。
+- **Related:** [Rule Routing / Preflight](../docs/21-rule-routing-preflight.md) / [Game Development](../docs/19-game-development.md) / [Development Observability](../docs/15-development-observability.md) / [Quality Checklist](../templates/QUALITY_CHECKLIST.md)
+
 ---
 
 ## 修正コストの目安
 
 - **非常に高い:** 保存Schema、座標体系、Runtime構造、複数Player/Provider統合、破壊的Importのデータ消失
-- **高い:** 大容量保存方式、主要Layout、既存データMigration
+- **高い:** 大容量保存方式、主要Layout、既存データMigration、GameのCamera / Collision / Interaction Foundation再設計
 - **中:** Navigation、Version一元化、Stable Runtime化、Fixed UI、Error State、Renderer責務整理、変更経路の整理
 - **低い:** 文言、余白、単純な配色・表示調整
 
@@ -263,6 +275,7 @@
 | Migration / normalize / Import Validation | 補助 | 強い | 補助 | - |
 | Import途中失敗 / Rollback | 弱い | 強い | 強い | 補助 |
 | Geometry / overflow | 弱い | 弱い | 強い | 強い |
+| Game Camera / Collider /操作感 | 弱い | 補助 | 強い | Human必須 |
 | Media / Codec | 弱い | 弱い | 中 | 強い |
 | OS固有Electron | 弱い | 補助 | 弱い | 必須 |
 | UX過密 / 分かりやすさ | 弱い | - | 補助 | Human必須 |
