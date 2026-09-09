@@ -1,0 +1,185 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://elitemay.github.io/web-project-guide/schemas/ai-ui-diversity-benchmark-v0.1.json",
+  "title": "AI UI Diversity Benchmark v0.1 Run Result",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "benchmark_version",
+    "run_id",
+    "task_id",
+    "condition",
+    "baseline_guide_commit",
+    "model",
+    "artifact",
+    "budget",
+    "functional_validation",
+    "failures"
+  ],
+  "properties": {
+    "benchmark_version": {
+      "const": "0.1"
+    },
+    "run_id": {
+      "type": "string",
+      "pattern": "^[LWG]-[ABCD]-[0-9]{2}$"
+    },
+    "task_id": {
+      "enum": ["L", "W", "G"]
+    },
+    "condition": {
+      "enum": ["A", "B", "C", "D"]
+    },
+    "baseline_guide_commit": {
+      "type": "string",
+      "minLength": 7
+    },
+    "workflow_revision": {
+      "type": "string"
+    },
+    "task_revision": {
+      "type": "string"
+    },
+    "model": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name"],
+      "properties": {
+        "name": {"type": "string"},
+        "configuration": {"type": "string"},
+        "provider": {"type": "string"}
+      }
+    },
+    "run_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "viewport": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "desktop": {"type": "string"},
+        "narrow": {"type": "string"}
+      }
+    },
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["revision", "desktop_screenshot"],
+      "properties": {
+        "revision": {"type": "string"},
+        "source_location": {"type": "string"},
+        "desktop_screenshot": {"type": "string"},
+        "narrow_screenshot": {"type": "string"},
+        "interaction_trace": {"type": "string"},
+        "runtime_log": {"type": "string"}
+      }
+    },
+    "budget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "research_actions",
+        "generation_passes",
+        "candidate_count",
+        "critique_passes",
+        "revision_cycles",
+        "validation_passes"
+      ],
+      "properties": {
+        "research_actions": {"type": "integer", "minimum": 0},
+        "generation_passes": {"type": "integer", "minimum": 0},
+        "candidate_count": {"type": "integer", "minimum": 0},
+        "critique_passes": {"type": "integer", "minimum": 0},
+        "revision_cycles": {"type": "integer", "minimum": 0},
+        "validation_passes": {"type": "integer", "minimum": 0},
+        "tool_actions": {"type": "integer", "minimum": 0},
+        "elapsed_minutes": {"type": "number", "minimum": 0},
+        "input_tokens": {"type": "integer", "minimum": 0},
+        "output_tokens": {"type": "integer", "minimum": 0},
+        "monetary_cost": {"type": "number", "minimum": 0}
+      }
+    },
+    "functional_validation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "checks"],
+      "properties": {
+        "status": {
+          "enum": ["pass", "partial", "fail", "not_tested"]
+        },
+        "checks": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["name", "status"],
+            "properties": {
+              "name": {"type": "string"},
+              "status": {"enum": ["pass", "fail", "not_tested"]},
+              "evidence": {"type": "string"}
+            }
+          }
+        },
+        "runtime_errors": {
+          "type": "array",
+          "items": {"type": "string"}
+        }
+      }
+    },
+    "design_decisions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["question", "selected_option", "render_fidelity"],
+        "properties": {
+          "question": {"type": "string"},
+          "selected_option": {"type": "string"},
+          "reason": {"type": "string"},
+          "render_fidelity": {
+            "enum": ["implemented", "partial", "missing", "not_applicable"]
+          },
+          "evidence": {"type": "string"}
+        }
+      }
+    },
+    "rubric": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "task_fit": {"$ref": "#/$defs/rating"},
+        "structural_quality": {"$ref": "#/$defs/rating"},
+        "visual_quality": {"$ref": "#/$defs/rating"},
+        "category_familiarity": {"$ref": "#/$defs/rating"},
+        "project_identity": {"$ref": "#/$defs/rating"}
+      }
+    },
+    "failures": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "F1_CANDIDATE_COLLAPSE",
+          "F2_OVER_DIVERGENCE",
+          "F3_REFERENCE_FIXATION",
+          "F4_DECISION_THEATER",
+          "F5_VISUAL_REGRESSION",
+          "F6_COST_EXPLOSION",
+          "F7_EVALUATOR_INSTABILITY",
+          "F8_FUNCTIONAL_REGRESSION"
+        ]
+      },
+      "uniqueItems": true
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "$defs": {
+    "rating": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 5
+    }
+  }
+}
