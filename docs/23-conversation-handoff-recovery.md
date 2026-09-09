@@ -151,6 +151,65 @@ Parallel Work Conflictとして:
 
 統合前に片側を無条件削除しません。
 
+## Autonomous / Scheduled Worker Coordination
+
+同じ未完了作業を、手動ConversationとScheduled Automation、または複数のAutonomous Agentが同時に再開できる構成では、Conversationの注意喚起だけで排他制御したことにしません。
+
+### CONDITIONAL MUST: 同じWrite Pathへ複数Workerが入り得る場合はExclusive Leaseまたは同等のAtomic Coordinationを使う
+
+適用条件:
+
+- 同じRepository / Migration / Branch系列へ複数Workerが書き得る
+- User操作なしでScheduled Automationが起動する
+- Handoff後の旧Conversationが引き続き書込み可能
+- 複数Agentが同じCurrent work refを独立に復元できる
+
+この場合、書込み開始前に**Repository-backed lease / compare-and-swap lock / 同等のAtomic Coordination**でActive writerを1つへ収束させます。
+
+LeaseはProject Source of Truthではなく、**同時書込みを防ぐためのCoordination Evidence**です。Requirements / Migration semantics / Current ContractをLeaseへ保存しません。
+
+最低条件:
+
+- `holderId`はrun / conversationごとに一意
+- 対象Scope / work unit / work branchを識別できる
+- 無期限Lockではなく期限付きでrenew可能
+- acquire / renew / releaseはstale writeを検知できる仕組みを使う
+- 他Holderの有効Leaseを確認したWorkerは書込まずyieldする
+- read-only inspection / recoveryだけならLeaseを要求しない
+- normal completion / safe abort / handoffでreleaseする
+
+GitHub fileをLease stateとして使う場合は、取得時に読んだblob SHAを更新時のpreconditionとして使うなど、**同じ古い状態を読んだ2 Workerが両方取得成功しない**仕組みを使います。単なる`active: true`の上書きだけではAtomic Coordinationとして不十分です。
+
+### MUST: Expiryだけで安全なTakeoverとみなさない
+
+Lease期限切れは「Coordination claimがstale」のEvidenceであって、前Workerの未merge作業が消えた証明ではありません。
+
+Takeover前に必要範囲で:
+
+1. previous work branch / PR
+2. unique unmerged commits / Diff
+3. current default branch
+4. checkpoint / Handoff / current work ref
+5. semantic overlap
+
+を確認します。
+
+前Workerのunique unfinished workが残る場合は、新しい競合Branchを作るより既存系列へRecovery / convergenceします。Current work refを一意にできない場合は通常の`unresolved` Recoveryへ戻ります。
+
+### SHOULD: Lease churnをProject historyへ混ぜない
+
+Lock acquire / renew / releaseのたびにProject `main`へ意味のないCommitを積む構成は避けます。
+
+可能なら:
+
+- dedicated coordination branch / ref
+- external atomic coordination store
+- Project historyと分離できる短期coordination state
+
+を使います。
+
+ただしCoordination store自体が失われてもCurrent Repository / Branch / PR / RequirementsからRecoveryできるようにし、Lease storeを第二Source of Truthへしません。
+
 ## 別作業区分のParallel Work
 
 別区分でもScopeが独立していれば並行できます。
