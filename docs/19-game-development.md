@@ -43,6 +43,8 @@ Gameの規模・継続時間・World Scale・State量・Platformに応じて、M
 - UI / Visual / AnimationとGame Stateの重大な矛盾を残さない。
 - User-facing GameをStatic Testだけで完成判定しない。
 - 現在PhaseのFlow完成を無視してFeature追加を続けない。
+- 3D WorldでSolidに見える主要ObjectとCollision / Traversal Ruleの重大な矛盾を完成状態へ残さない。
+- Camera / Movement / Targeting等の主要操作を、設定項目やStatic Testが存在するだけで操作性確認済み扱いしない。
 
 ### SHOULD
 
@@ -447,6 +449,8 @@ Visualは見た目だけでなくGameplay Stateを正しく伝える必要があ
 次のような矛盾を完成状態へ残しません。
 
 - 通れそうに見えるがColliderで通れない
+- Solidな壁・建物・Fence・大型Propsに見えるのに理由なく通り抜けられる
+- Visual meshとColliderの位置・向き・Scaleがずれている
 - Hazard / Enemy / Objectiveが背景へ埋もれる
 - Lootに見えるDecoration
 - LODで重要Gameplay情報が消える
@@ -461,6 +465,76 @@ AudioはFeedback、Gameplay Information、Atmosphereに分けます。重要情�
 大量Entity GameではAudio Spamを避け、Distance、Grouping、Priority、Cooldown、Voice limit等を必要に応じて使います。
 
 UI / UX / Accessibility一般は [04 UI / UX / Accessibility](04-ui-ux-accessibility.md)、Visual Minimumは [17 Visual Quality Baseline](17-visual-quality-baseline.md)、意味のあるVisual Direction変更前は [18 Domain-first Visual Research](18-domain-first-visual-research.md)、Asset License等は [13 Dependencies / Assets](13-dependencies-assets.md) を正本とします。
+
+## 3D World Interaction Integrity
+
+3D Gameでは、Movement / Collision / Camera / Targetingを別々の飾りとして扱わず、**PlayerがWorldを信頼して操作できる1つのInteraction Contract**として設計・検証します。
+
+### MUST: Visible SolidとCollisionを同じWorld Contractへ接続する
+
+Playerが物理的に通れないと自然に期待する次のようなObjectは、原則としてCollision / Traversal Ruleを持たせます。
+
+- 建物 / Wall / Fence
+- Silo / Tank /大型設備
+- Vehicle / Machine
+- 大型Crate / Boulder / Tree trunk等のBlocking Props
+- Level Boundaryとして使う主要Scenery
+
+草、Crop leaf、小石、薄いDecoration等、意図的にNon-blockingなObjectは例外にできます。例外は「Colliderを作り忘れた」状態と区別できるよう、Object category / data / builder側で明示することを優先します。
+
+Visual meshとColliderを別々のmagic numberで配置せず、可能なら同じTransform / footprint / source dataから生成します。
+
+Collision実装は「止まればよい」で終わらせず、Project規模に応じて次をRuntimeで確認します。
+
+- すり抜け / tunneling
+- corner snag / 引っ掛かり
+- 接触時の振動 / jitter
+- Spawn直後のめり込み
+- 高速移動 / Sprint時の貫通
+- Obstacle沿いに動く必要があるGameでは自然なslide / response
+
+### MUST: Camera ObstructionをRuntimeで確認する
+
+Third-person / Orbit Cameraでは、CameraがWall / Building / Terrain /大型Propsへ容易に貫通し、Playerや作業対象を見失う状態を完成扱いしません。
+
+必要に応じて次を使います。
+
+- Camera collision / sphere cast / raycast shortening
+- Minimum camera distance
+- Occluder fade / transparency
+- Camera recenter
+- Pitch / zoom range制限
+
+どれを使うかはGameのCamera / World density / Core Experienceで決めます。すべての3D Gameへ同じCamera Systemを強制しません。
+
+### MUST: ControlsをActual Playtestで調整する
+
+Movement、Camera、Aim / Targeting、Interaction rangeは相互依存します。
+
+Sensitivity slider、Camera distance設定、Key binding、Pointer Lock等の機能が存在するだけでは操作性確認になりません。少なくとも代表的なGameplayで、Playerが次を無理なく行えるかActual Playtestします。
+
+- 移動しながら進行方向を把握する
+- Cameraを回して目的地 / 作業対象を見つける
+- 対象へ近づく
+- 狙う / 選ぶ / Interactionする
+- Cameraを戻す
+- UI / Menuへ出入りする
+
+### Foundation FailureではFeature追加より先に直す
+
+User feedbackやActual Playtestで、Controls / Camera / Collision / Core readabilityがBlockingな低評価になった場合は、Props・Content・Progressionを追加して品質問題を覆い隠しません。
+
+原則:
+
+```text
+Controls / Camera
+→ Collision / World integrity
+→ Core Interaction feedback
+→ Visual / Asset quality
+→ Content / Feature expansion
+```
+
+既知FailureがProject Learningに存在したのに再発した場合は [21 Rule Routing / Preflight](21-rule-routing-preflight.md) のKnown Failure Preflightへ戻り、局所修正だけでなくRule Application Failureも閉じます。
 
 ## Controls / Tutorial / Accessibility
 
@@ -512,6 +586,8 @@ Bugがないことだけで面白さ・遊びやすさを保証しません。
 継続開発GameではNew SaveとExisting Saveを必要範囲で両方確認します。
 
 Happy Pathだけでなく、Resource不足、Inventory Full、Death / Failure、Invalid interaction、Reward重複、Save Reloadによる再取得等、主要Edge Case / basic exploitを確認します。
+
+3D World / Camera変更では必要に応じて、主要Routeを歩いて**visible-solid-object collision sweep**を行い、建物・Fence・大型Propsを理由なく通過できないこと、見えないColliderへ不自然に止められないこと、Cameraが主要Obstacleへ恒常的にめり込まないことを確認します。
 
 長時間GameではLong Session Test、大量Entity GameではLate-game / Stress Testを条件付きで実施します。
 
@@ -607,7 +683,7 @@ Player FeedbackはEvidenceとして扱い、そのまま仕様へ変換せず、
 
 `PROJECT_LEARNINGS.md`へ軽微なTypo等を何でも保存せず、再発しやすい、高Risk、原因特定Costが高い、後続Phase / 他Projectでも有効な知見を優先します。
 
-Project LearningをすぐCommon Ruleへ昇格させず、[Guide Governance](00-governance.md) のRule Budgetに従います。ただしData loss、Save corruption、重大互換破壊等は1件でもCommon候補になり得ます。
+Project LearningをすぐCommon Ruleへ昇格させず、[Guide Governance](00-governance.md) のRule Budgetに従います。ただしData loss、Save corruption、重大互換破壊等は1件でもCommon候補になり得ます。既存Learningに予防策が存在したのに同種Failureが再発した場合は、[21 Rule Routing / Preflight](21-rule-routing-preflight.md)に従いRule Application FailureとしてCommon昇格要否を再評価します。
 
 ## 代表Anti-pattern
 
@@ -621,6 +697,8 @@ Project LearningをすぐCommon Ruleへ昇格させず、[Guide Governance](00-g
 - AutomationがCore Experienceそのものを消す
 - UI / Visual / AnimationをGame Stateの正本にする
 - Visual RuleとRuntime Ruleの二重Source of Truthを作る
+- Solidに見えるSceneryへColliderを付けず通過可能なまま完成扱いする
+- Camera / Controlsの不快さを設定Slider追加だけで解決済み扱いする
 - Derived / Cacheまで無差別にSaveする
 - Development都合だけでExisting SaveをResetさせる
 - Static TestだけでGame Completeと判定する
@@ -644,6 +722,7 @@ Game Developmentの変更を完成扱いする前に、Project規模に応じて
 - Failure / Edge Case / basic exploitを必要範囲で確認した
 - Controls / Tutorial / Game UXをRuntimeで確認した
 - VisualとCollider / Runtime Ruleが一致する
+- 3D Gameでは主要Solid objectのCollisionとCamera obstructionをRuntimeで確認した
 - Prototype Placeholderを完成扱いしていない
 - 通常Gameplayと重い代表SceneのRuntime Performanceを確認した
 - 必要なAutomated Testが成功した
