@@ -8,6 +8,7 @@
 
 - [ ] Current Repository / Requirements / Spec等のSource of Truthを必要範囲で確認した
 - [ ] 変更対象と影響範囲を確認した
+- [ ] Meaningfulな既存Project作業では、今回のSystem / 症状に関係する`PROJECT_LEARNINGS.md` / Failure CatalogをTargeted Searchし、既知Failureの予防策を今回の実装・Guardへ接続した
 - [ ] 同じ機能の旧Runtime / Patch / Version別実装を本番へ重複させていない
 - [ ] Syntax / 起動時Error / 必須Asset・Link参照切れがない
 - [ ] 変更した主要Flow / Button / Linkが実際に動く
@@ -18,6 +19,7 @@
 - [ ] 重大Bugに必要なRegression Guardを追加した
 - [ ] README / Spec / Work Report等、変更で陳腐化したDocumentationを更新した
 - [ ] 高コストBug / 再発しやすい知見を必要に応じて`PROJECT_LEARNINGS.md`へ残した
+- [ ] 既存Learningに予防策があったのに同種Failureが再発した場合、局所修正だけでなくRule Application FailureとしてGuide / Checklist / Validator等への昇格要否を確認した
 - [ ] Cleanup後の最終Commit / Merge Commitに対するCI・Validation結果を確認した
 - [ ] 確認できなかった項目を「未確認」として明示した
 
@@ -118,7 +120,7 @@
 - [ ] Intended final Commit / Buildと実Deploymentのrevision対応を確認した
 - [ ] Server / Function / Worker等がある場合、startup / health / readiness相当とPrimary Task smokeを必要範囲で確認した
 - [ ] Code + Schema / Config変更ではold/new revision共存やdeploy順序を考慮し、必要なCompatibility / Migration evidenceを確認した
-- [ ] Background / scheduled runtimeがある場合、trigger / duplicate / missed / retry / old-new coexistenceを必要範囲で確認した
+- [ ] Background / scheduled runtimeがある場合、trigger / duplicate / missed / retry / old-new coexistenceをRiskに応じて確認した
 - [ ] Preview / temporary resourceのCleanupを確認した
 - [ ] Deploy failureとBroken Productionを区別し、必要なRollback / Recovery / Forward-fixを確認した
 - [ ] Preview / Staging成功を未確認のProduction behaviorへ読み替えていない
@@ -230,7 +232,11 @@
 - [ ] Core Loop / 現在PhaseのMain Flowを実際にPlayしてEnd-to-End確認した
 - [ ] ProgressionがPrimary Completion Conditionへ接続している
 - [ ] Controls / Tutorial / Game UXをRuntimeで確認した
+- [ ] Camera / Movement / Targetingを代表GameplayでActual Playtestし、設定Sliderがあるだけで操作性確認済み扱いしていない
 - [ ] Visual / Animation / Collider等がGame Ruleと重大に矛盾していない
+- [ ] 3D Gameでは、建物・Fence・Tank・Vehicle・大型Props等のVisible Solidを理由なく通過できず、見えないColliderで不自然に止まらないことを主要Routeで確認した
+- [ ] Third-person / Orbit Cameraでは主要Obstacleへの恒常的なCamera clipping / obstructionを確認した
+- [ ] Controls / Camera / CollisionがBlockingな状態で、Content / Props / Feature追加を品質改善の代替にしていない
 - [ ] 永続Saveがある場合、New Save / Save / Reload / Existing Saveを必要範囲で確認した
 - [ ] 必要なAutomated Test / Runtime ValidationとActual Playtestを分けて実施した
 - [ ] Main Game Complete時はFresh StartからPrimary Completion Conditionまで主要Flowを確認した
