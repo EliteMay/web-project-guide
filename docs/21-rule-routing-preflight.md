@@ -32,6 +32,34 @@ Research / Best Reasonable Decision / 要件確定 / 実装
 
 ただし、Typo修正や原因と正解が明確な局所Bugへ大規模Preflightを要求しません。小規模作業でも関係する専門Ownerだけは必要範囲で確認します。
 
+### MUST: Known Failureを実装前に再利用する
+
+既存ProjectのMeaningfulな実装・Bug Fix・Redesignでは、Current Runtime / Requirementsだけでなく、**今回の変更領域に関係する既知Failure / Project Learningを実装前に確認**します。
+
+最低限の対象:
+
+- 対象Repositoryの`PROJECT_LEARNINGS.md`
+- Guideの[Failure Catalog](../catalog/failures.md) / [Anti-Pattern Catalog](../catalog/anti-patterns.md)のうち今回の領域に関係する項目
+- 直近Work Report / Known Issueに同種の再発Evidenceがある場合はその記録
+
+全ProjectでCatalog全文を毎回精読する必要はありません。Camera / Collision / Save / Import / Layout / Deployment等、**今回触るSystem・症状・Riskに合わせてTargeted Searchする**ことを優先します。
+
+関連Learningが見つかった場合は「読んだ」で終わらせず、次のいずれかへ接続します。
+
+```text
+既知Failure / Learning
+↓
+今回の設計・実装上のPrevention
+↓
+Regression Guard / Runtime Check / Playtest項目
+↓
+Completion判定
+```
+
+特に、過去Learningに予防策が書かれているのに同じRoot Causeを再発させた場合は、**局所BugだけでなくRule Application Failureとして扱います。** その場合は今回の症状を直す前後に、なぜ既存Learningが作業開始時へ届かなかったかを確認し、必要に応じてOwner Rule / Router / Checklist / Validator / Project Ruleへ昇格・統合して次回の作業経路から防ぎます。
+
+重大なSecurity / Data loss等の緊急復旧を遅らせるためのRuleではありません。Immediate containmentが必要なら先に安全化し、その同じ作業内で再発防止経路まで閉じます。
+
 ## User Rule Knowledge Independence
 
 UserがGuideの章番号、Profile、Gate名を覚えていることを前提にしません。
