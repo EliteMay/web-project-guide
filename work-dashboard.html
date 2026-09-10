@@ -31,23 +31,23 @@
         <div class="meta-row"><span>Run</span><strong id="runId">読み込み中</strong></div>
         <div class="meta-row"><span>状態</span><strong id="runStatus">-</strong></div>
         <div class="meta-row"><span>Assignment</span><strong id="revision">-</strong></div>
-        <div class="meta-row"><span>表示方式</span><strong>公開Snapshot</strong></div>
+        <div class="meta-row"><span>表示方式</span><strong>Worker即時更新</strong></div>
       </div>
     </header>
 
     <section class="section" aria-labelledby="safety-title">
       <div class="notice">
         <strong id="safety-title">安全な分担の境界</strong>
-        A/B/C/DはGuideを読むだけです。正式なDataファイルも直接変更せず、自分専用のData Branch上で自分のRunフォルダへ完成成果物を置きます。Iだけが現在のmainと再照合して正式位置へ適用します。
+        A/B/C/Dは正式なGuide Ruleを変更しません。作業成果物は自分専用のData Branchへ保存し、Dashboard表示だけはWorker専用の公開Status Branchへ書きます。A/B/C/Dが同時終了しても書込先が別なので競合しません。
       </div>
-      <div id="snapshotNotice" class="snapshot-note" role="status">公開Snapshotの同期時刻を確認しています…</div>
+      <div id="snapshotNotice" class="snapshot-note" role="status">Worker状態を確認しています…</div>
     </section>
 
     <section class="section" aria-labelledby="summary-title">
       <div class="section-head">
         <div>
           <h2 id="summary-title">全体状況</h2>
-          <p class="section-intro">Private Dataの全内容を公開せず、作業判断に必要な最小限の状態だけを表示します。</p>
+          <p class="section-intro">Private Dataの全内容は公開せず、Workerが明示的に公開した最小限の状態だけを表示します。</p>
         </div>
       </div>
       <div class="summary-grid" id="summaryGrid">
@@ -62,7 +62,7 @@
       <div class="section-head">
         <div>
           <h2 id="workers-title">A / B / C / D</h2>
-          <p class="section-intro">各会話は自分の担当と専用Branchだけ進めます。別Workerの範囲へ勝手に広げません。</p>
+          <p class="section-intro">各会話は自分の担当と専用Branchだけ進めます。状態変更後は自分専用の公開Statusだけを更新します。</p>
         </div>
       </div>
       <div id="workerGrid" class="worker-grid">
@@ -74,7 +74,7 @@
       <div class="section-head">
         <div>
           <h2 id="integration-title">Integration Worker I</h2>
-          <p class="section-intro">Iは準備作業をやり直す役ではなく、各Worker Branchの完成成果物を現在のmainへ安全に適用する役です。</p>
+          <p class="section-intro">Iは各Worker Branchの完成成果物を現在のmainへ安全に適用する役です。Iの表示状態も専用Status Branchから取得します。</p>
         </div>
       </div>
       <div id="integrationCard"></div>
@@ -84,22 +84,26 @@
       <div class="section-head">
         <div>
           <h2 id="flow-title">このRunの流れ</h2>
-          <p class="section-intro">並列にするのは準備まで。正式反映は直列にします。</p>
+          <p class="section-intro">作業Branchと表示Branchを分離します。</p>
         </div>
       </div>
       <div class="flow">
-        <div class="flow-step"><div class="step-no">1</div><div class="step-panel"><h3>A/B/C/Dを別会話で開始</h3><p>上の開始文をコピーして、それぞれ新しい会話へ貼ります。各Workerは専用Branchをclaimします。</p></div></div>
-        <div class="flow-step"><div class="step-no">2</div><div class="step-panel"><h3>各Workerが専用Branchで完成させる</h3><p>調査、重複確認、判断、完成版ファイル、change-set、事前Validationまでを自分のRunフォルダへ保存します。Data mainへ直接書きません。</p></div></div>
-        <div class="flow-step"><div class="step-no">3</div><div class="step-panel"><h3>ready_for_applyへ</h3><p>「考えてください」ではなく、Iが設計し直さなくても適用できる状態まで仕上げます。</p></div></div>
-        <div class="flow-step"><div class="step-no">4</div><div class="step-panel"><h3>IがWorker Branchと現在mainを再照合</h3><p>古いGuide/Dataを前提にしていないか、他Workerと意味的にぶつからないかを確認します。</p></div></div>
-        <div class="flow-step"><div class="step-no">5</div><div class="step-panel"><h3>正式反映 → Validation → PR → Merge</h3><p>Iがintegration branchへ1つずつ適用し、最終状態で検証してから完了にします。Worker Branch自体はmainへ直接mergeしません。</p></div></div>
+        <div class="flow-step"><div class="step-no">1</div><div class="step-panel"><h3>A/B/C/Dを別会話で開始</h3><p>開始文をコピーして、それぞれ新しい会話へ貼ります。各Workerは自分のData Branchをclaimします。</p></div></div>
+        <div class="flow-step"><div class="step-no">2</div><div class="step-panel"><h3>各Workerが専用Data Branchで作業</h3><p>成果物・change-set・事前ValidationはPrivate Data側へ保存し、公開Statusには秘密情報を含めません。</p></div></div>
+        <div class="flow-step"><div class="step-no">3</div><div class="step-panel"><h3>状態変更後に自分のStatusだけ更新</h3><p>AならA専用、BならB専用の公開Branchにあるdashboard-worker.jsonだけを更新します。他WorkerのStatusを変更しません。</p></div></div>
+        <div class="flow-step"><div class="step-no">4</div><div class="step-panel"><h3>Dashboardが各Statusを合成表示</h3><p>ページは15秒ごとに各Workerの公開Statusを再取得します。読めないWorkerだけmain Snapshotへfallbackします。</p></div></div>
+        <div class="flow-step"><div class="step-no">5</div><div class="step-panel"><h3>Iが正式反映</h3><p>IはPrivate Data上の正式なWorker state/outputを再確認してから統合します。Dashboard表示だけを根拠に正式適用しません。</p></div></div>
       </div>
     </section>
 
-    <footer class="footer">表示元は公開用の要約データです。Private Data Repositoryの詳細内容そのものをブラウザから直接取得しません。</footer>
+    <footer class="footer">Dashboardは公開用Statusだけを読みます。Private Data Repositoryや認証情報をブラウザから直接取得しません。</footer>
   </main>
 
   <script>
+    const STATUS_REFRESH_MS = 15000;
+    const PUBLIC_STATUS_FIELDS = ['status', 'completed', 'total', 'currentTask', 'readyForApply', 'workBranch', 'updatedAt'];
+    let dashboardBase = null;
+
     const statusLabel = {
       assigned: '開始待ち',
       claimed: '取得済み',
@@ -119,37 +123,28 @@
     };
 
     const statusTone = {
-      assigned: 'assigned',
-      waiting: 'waiting',
-      stale: 'waiting',
-      superseded: 'waiting',
-      claimed: 'active',
-      working: 'active',
-      active: 'active',
-      integrating: 'active',
-      ready_for_apply: 'completed',
-      applied: 'completed',
-      verified: 'completed',
-      completed: 'completed',
-      blocked: 'blocked',
-      recovery_required: 'blocked',
-      rejected: 'blocked'
+      assigned: 'assigned', waiting: 'waiting', stale: 'waiting', superseded: 'waiting',
+      claimed: 'active', working: 'active', active: 'active', integrating: 'active',
+      ready_for_apply: 'completed', applied: 'completed', verified: 'completed', completed: 'completed',
+      blocked: 'blocked', recovery_required: 'blocked', rejected: 'blocked'
     };
+
+    function escapeHtml(value) {
+      return String(value).replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+    }
 
     function workerCard(worker, integration = false) {
       const percent = worker.total ? Math.round((worker.completed / worker.total) * 100) : 0;
       const prompt = escapeHtml(worker.startPrompt || '');
       const branchRow = worker.workBranch ? `<dt>Branch</dt><dd><code>${escapeHtml(worker.workBranch)}</code></dd>` : '';
+      const updatedRow = worker.updatedAt ? `<dt>公開更新</dt><dd>${escapeHtml(formatTime(worker.updatedAt) || worker.updatedAt)}</dd>` : '';
       const tone = statusTone[worker.status] || 'waiting';
       return `
         <article class="worker-card ${integration ? 'integration' : ''}">
           <div class="worker-head">
             <div class="worker-title-wrap">
               <span class="worker-id">${escapeHtml(worker.id)}</span>
-              <div>
-                <h3 class="worker-title">${escapeHtml(worker.title)}</h3>
-                <div class="worker-role">${escapeHtml(worker.role)}</div>
-              </div>
+              <div><h3 class="worker-title">${escapeHtml(worker.title)}</h3><div class="worker-role">${escapeHtml(worker.role)}</div></div>
             </div>
             <span class="badge ${escapeHtml(tone)}">${escapeHtml(statusLabel[worker.status] || worker.status)}</span>
           </div>
@@ -158,69 +153,96 @@
               <dt>現在</dt><dd>${escapeHtml(worker.currentTask || '-')}</dd>
               ${branchRow}
               <dt>反映準備</dt><dd>${worker.readyForApply ? '完了' : '未完了'}</dd>
+              ${updatedRow}
             </dl>
             <div class="progress" aria-label="進捗 ${percent}%"><span style="width:${percent}%"></span></div>
             <div class="progress-meta"><span>${worker.completed} / ${worker.total}</span><span>${percent}%</span></div>
             <div class="prompt-box">
               <div class="prompt-label"><span>新しい会話へ貼る開始文</span><button class="copy" type="button" data-prompt="${encodeURIComponent(worker.startPrompt || '')}">開始文をコピー</button></div>
-              <details class="prompt-details">
-                <summary>開始文を表示</summary>
-                <pre class="prompt">${prompt}</pre>
-              </details>
+              <details class="prompt-details"><summary>開始文を表示</summary><pre class="prompt">${prompt}</pre></details>
             </div>
           </div>
         </article>`;
     }
 
-    function escapeHtml(value) {
-      return String(value).replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
-    }
-
-    function formatSnapshotTime(value) {
+    function formatTime(value) {
       const date = new Date(value);
       if (Number.isNaN(date.getTime())) return null;
-      return new Intl.DateTimeFormat('ja-JP', {
-        year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit'
-      }).format(date);
+      return new Intl.DateTimeFormat('ja-JP', {year:'numeric', month:'numeric', day:'numeric', hour:'2-digit', minute:'2-digit', second:'2-digit'}).format(date);
     }
 
-    function updateSnapshotNotice(data) {
-      const notice = document.getElementById('snapshotNotice');
-      const formatted = formatSnapshotTime(data.snapshotUpdatedAt);
-      if (!formatted) {
-        notice.classList.add('stale');
-        notice.innerHTML = '<strong>同期時刻不明</strong> この画面はPrivate Dataのリアルタイム表示ではありません。作業開始前はData側のstateも確認してください。';
-        return;
+    function statusUrl(runId, workerId) {
+      const ref = `dashboard/${runId}/${workerId}`;
+      return `https://raw.githubusercontent.com/EliteMay/web-project-guide/${ref}/dashboard-worker.json?t=${Date.now()}`;
+    }
+
+    function mergePublicStatus(baseWorker, live) {
+      if (!live || live.runId !== dashboardBase.runId || live.worker !== baseWorker.id) return baseWorker;
+      const merged = {...baseWorker};
+      for (const field of PUBLIC_STATUS_FIELDS) {
+        if (Object.prototype.hasOwnProperty.call(live, field)) merged[field] = live[field];
       }
-      const ageMinutes = Math.max(0, Math.floor((Date.now() - new Date(data.snapshotUpdatedAt).getTime()) / 60000));
-      const stale = ageMinutes > 30;
-      notice.classList.toggle('stale', stale);
-      notice.innerHTML = `<strong>${stale ? '表示が古い可能性があります' : '公開Snapshot'}</strong>${escapeHtml(formatted)} に同期された要約です。Private Dataとはリアルタイム同期していません${stale ? '。開始前に最新stateを再確認してください。' : '。'}`;
+      return merged;
+    }
+
+    async function fetchWorkerStatus(runId, workerId) {
+      const response = await fetch(statusUrl(runId, workerId), {cache: 'no-store', mode: 'cors'});
+      if (!response.ok) throw new Error(`${workerId}: HTTP ${response.status}`);
+      const live = await response.json();
+      if (live.schemaVersion !== 1) throw new Error(`${workerId}: unsupported schema`);
+      return live;
+    }
+
+    async function getWorkersWithLiveState(base) {
+      const results = await Promise.allSettled(base.workers.map(worker => fetchWorkerStatus(base.runId, worker.id)));
+      let liveCount = 0;
+      const workers = base.workers.map((worker, index) => {
+        const result = results[index];
+        if (result.status !== 'fulfilled') return worker;
+        const merged = mergePublicStatus(worker, result.value);
+        if (merged !== worker) liveCount += 1;
+        return merged;
+      });
+      return {workers, liveCount};
+    }
+
+    function render(data, liveCount) {
+      const prep = data.workers.filter(w => w.id !== 'I');
+      const integration = data.workers.find(w => w.id === 'I');
+      document.getElementById('runId').textContent = data.runId;
+      document.getElementById('runStatus').textContent = statusLabel[data.runStatus] || data.runStatus;
+      document.getElementById('revision').textContent = `rev ${data.assignmentRevision}`;
+      document.getElementById('prepCount').textContent = prep.length;
+      document.getElementById('totalCount').textContent = prep.reduce((n, w) => n + Number(w.total || 0), 0);
+      document.getElementById('doneCount').textContent = prep.reduce((n, w) => n + Number(w.completed || 0), 0);
+      document.getElementById('readyCount').textContent = prep.filter(w => w.readyForApply).length;
+      document.getElementById('workerGrid').innerHTML = prep.map(w => workerCard(w)).join('');
+      document.getElementById('integrationCard').innerHTML = integration ? workerCard(integration, true) : '<div class="error">Iの状態がありません。</div>';
+      const notice = document.getElementById('snapshotNotice');
+      notice.classList.toggle('stale', liveCount !== data.workers.length);
+      notice.innerHTML = liveCount === data.workers.length
+        ? `<strong>Worker即時Status</strong>${liveCount}/${data.workers.length} Workerを公開Status Branchから取得しました。15秒ごとに自動更新します。`
+        : `<strong>一部Snapshot表示</strong>${liveCount}/${data.workers.length} Workerを即時取得できました。取得できないWorkerだけmainのSnapshotを表示しています。`;
+      bindCopy();
+    }
+
+    async function refreshLiveStates() {
+      if (!dashboardBase) return;
+      const {workers, liveCount} = await getWorkersWithLiveState(dashboardBase);
+      render({...dashboardBase, workers}, liveCount);
     }
 
     async function loadDashboard() {
       try {
-        const response = await fetch('dashboard-data.json', { cache: 'no-store' });
+        const response = await fetch('dashboard-data.json', {cache: 'no-store'});
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
-        const data = await response.json();
-        const prep = data.workers.filter(w => w.id !== 'I');
-        const integration = data.workers.find(w => w.id === 'I');
-        document.getElementById('runId').textContent = data.runId;
-        document.getElementById('runStatus').textContent = statusLabel[data.runStatus] || data.runStatus;
-        document.getElementById('revision').textContent = `rev ${data.assignmentRevision}`;
-        document.getElementById('prepCount').textContent = prep.length;
-        document.getElementById('totalCount').textContent = prep.reduce((n, w) => n + w.total, 0);
-        document.getElementById('doneCount').textContent = prep.reduce((n, w) => n + w.completed, 0);
-        document.getElementById('readyCount').textContent = prep.filter(w => w.readyForApply).length;
-        document.getElementById('workerGrid').innerHTML = prep.map(w => workerCard(w)).join('');
-        document.getElementById('integrationCard').innerHTML = integration ? workerCard(integration, true) : '<div class="error">Iの状態がありません。</div>';
-        updateSnapshotNotice(data);
-        bindCopy();
+        dashboardBase = await response.json();
+        await refreshLiveStates();
       } catch (error) {
         document.getElementById('workerGrid').innerHTML = `<div class="error">Dashboard Dataを読み込めませんでした。${escapeHtml(error.message)}</div>`;
         const notice = document.getElementById('snapshotNotice');
         notice.classList.add('stale');
-        notice.textContent = '公開Snapshotを読み込めませんでした。開始文や進捗を最新情報として扱わないでください。';
+        notice.textContent = 'Dashboardの基本データを読み込めませんでした。';
       }
     }
 
@@ -261,28 +283,19 @@
           const text = decodeURIComponent(button.dataset.prompt || '');
           let copied = false;
           if (navigator.clipboard?.writeText) {
-            try {
-              await navigator.clipboard.writeText(text);
-              copied = true;
-            } catch {
-              copied = false;
-            }
+            try { await navigator.clipboard.writeText(text); copied = true; } catch { copied = false; }
           }
           if (!copied) copied = legacyCopy(text);
-
           const old = button.textContent;
-          if (copied) {
-            button.textContent = 'コピー済み';
-          } else {
-            revealPrompt(button);
-            button.textContent = '開始文を選択しました';
-          }
+          if (copied) button.textContent = 'コピー済み';
+          else { revealPrompt(button); button.textContent = '開始文を選択しました'; }
           setTimeout(() => button.textContent = old, 1800);
-        });
+        }, {once: true});
       });
     }
 
     loadDashboard();
+    setInterval(refreshLiveStates, STATUS_REFRESH_MS);
   </script>
 </body>
 </html>
