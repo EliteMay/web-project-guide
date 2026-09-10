@@ -1,109 +1,107 @@
 # Parallel Work Dashboard V2 要件定義
 
-Status: Draft for requirements review
+Status: Requirements complete / implementation not started
 Target: `EliteMay/web-project-guide`
-Scope: Public human-facing parallel work dashboard / repository-specific dashboards
+Scope: Public human-facing parallel-work dashboard / repository-specific dashboards
+Research evidence: `references/parallel-dashboard-v2-domain-research.md`
 
-この文書は、Parallel Work Dashboardを「Git内部状態を見るための画面」ではなく、Repository ownerが現在状況と次の行動を短時間で判断するためのHuman-facing control surfaceとして再設計するための要件です。実装詳細やConversation履歴ではなく、今後も守るCurrent Product Contract候補だけを記録します。
+この文書は、Parallel Work Dashboardを「Git内部状態を見る画面」ではなく、Repository ownerが現在状況と次の行動を短時間で判断するためのHuman-facing control surfaceとして再設計するためのCurrent Requirementsです。
 
-## 1. 目的
+## 1. Product Goal
 
-Dashboardを開いた人が、内部status名やBranch構成を理解していなくても、数秒で次を判断できることを目的とします。
+Dashboardを開いた人が、内部status名やBranch構成を理解していなくても、数秒で次を判断できること。
 
 1. どこまで終わっているか
 2. 問題があるか
 3. 自分の操作が必要か
 4. 次に誰・何を動かすべきか
-5. 表示している情報が最新か
+5. 表示している情報がCurrentかfallbackか
 
-DashboardはPrivate DataやGitのRaw Stateをそのまま表示するDebug Viewerではありません。内部状態は必要に応じて詳細表示へ退避し、Primary UIは人間向けの意味へ翻訳します。
+DashboardはPrivate DataやGitのRaw Stateをそのまま見せるDebug Viewerではありません。Raw情報は必要時にDetailsから確認できるようにし、Primary UIは人間向けの意味へ翻訳します。
 
-## 2. Primary User / Usage Context
+## 2. Primary User / Context
 
-Primary UserはRepository ownerです。PCだけでなくスマートフォンから状況確認する利用を正式に含めます。
+Primary UserはRepository ownerです。Desktopだけでなく、スマートフォンから短時間で状況確認する利用を正式に含めます。
 
-代表的な利用状況:
+主な利用:
 
-- A/B/C/D等を複数会話で並列実行した後、どこまで進んだか確認する
-- 移動中やPCを触れない時にスマートフォンから状況だけ確認する
-- Workerが完了した後、Iを開始してよいか確認する
-- 100%なのに次工程へ進めないWorkerの理由を理解する
-- Worker状態の取得失敗や古いSnapshotを最新状態と誤認しない
-- Repositoryごとの作業状態を混同せず確認する
+- 複数Workerを別会話で並列実行した後の進捗確認
+- PCを触れない時のMobile確認
+- Worker完了後にIntegration Worker Iを開始してよいか確認
+- 100%なのに次工程へ進めない理由の確認
+- stale / fallback表示をCurrentと誤認しない確認
+- RepositoryごとのRunを混同しない確認
 
-## 3. Product Principle
+## 3. Core Information Model
 
-### 3.1 Human meaning first
+### 3.1 Progress / Operational State / Handoffを分離する
 
-Primary UIでは内部用語より人間が判断に使う意味を優先します。
+最低限、以下を別の意味として扱います。
+
+- **Work Progress** — 担当作業が何件終わったか
+- **Operational State** — 未開始 / 作業中 / 待機 / 一時停止 / 要対応 / 復旧確認など
+- **Handoff State** — 次工程へ渡せるか
+- **Freshness State** — Current sourceを取得できているか、fallbackか
+
+`26 / 26 = 100%` は「担当作業数が100%」という意味だけです。
+
+100%であってもBlockerが残る場合があります。逆にRun全体が一時停止でも、Worker成果物自体は完成・handoff可能な場合があります。
+
+UIでは単なる`100%`ではなく、`担当作業 26 / 26`のように意味をLabelします。
+
+### 3.2 Run-levelとWorker-levelを分離する
+
+Run全体の状態を各Workerへ上書きしません。
 
 例:
 
-- `ready_for_apply` をそのまま見せるのではなく「作業完了・反映待ち」
-- `blocked` を一律「停止中」にしない
-- `currentTask` の英語Raw TextをPrimary説明にしない
+- D: 27/27、handoff ready、Runがuser pause → Workerは「作業完了・反映可能」、Page上部で「Run一時停止中」
+- C: 26/26、handoff not ready、blockerあり → Workerは「要対応」
 
-内部status / Branch / Run metadataは削除せず、詳細表示で確認可能にします。
+両者を同じ赤い「停止中」にしません。
 
-### 3.2 Progress と State と Handoff Readiness を分離する
+### 3.3 Integration Gateをready countと分離する
 
-1つのstatus Badgeへ複数の意味を押し込みません。最低限、次の3軸を別々に扱います。
+`Iへ渡せるWorker数`と`Iを開始してよいか`は別情報です。
 
-- Work Progress: 担当作業が何件完了したか
-- Operational State: 現在作業中・待機・一時停止・要対応など、今どういう状態か
-- Handoff Readiness: 次工程、特にIntegration Worker Iへ渡せるか
+I開始可否はDashboard独自の推測で決めず、Current Run ContractのTriggerに従います。
 
-`26 / 26 = 100%` は「担当作業数が100%」という意味であり、「問題なし」「Run完了」「Iへ渡せる」を意味しません。UIでも必ず「担当作業」等のLabelを付けて誤解を防ぎます。
+Current parallel-run modelでは、Preparation Workerが`ready_for_apply`、またはRun Contract上の`blocked / rejected / superseded`等として明示的にresolvedであることをIntegration Gateで評価できる必要があります。
 
-## 4. Status Model
+最低限のRun-level field候補:
 
-### 4.1 Raw statusを1対1で表示しない
+- `integrationGate`: `waiting / ready / integrating / blocked / complete`
+- `integrationGateSummary`
 
-Human-facing statusはRaw statusだけで決めず、少なくとも以下を合わせて評価します。
+`3 / 4 ready`でもIntegration Gateがreadyの場合があり、`4 / 4 progress complete`でもGateがblockedの場合があります。
 
-- raw status
-- completed / total
-- readyForApply
-- blocker / pause reason category
-- integration state
-- freshness / fetch result
+## 4. Human-facing Status
 
-### 4.2 Human-facing status候補
+Raw statusを1対1でBadge表示しません。
 
-| Human Status | 意味 | 基本Tone |
+Human-facing statusは、progress / operational state / handoff / issue / run contextを合わせて決めます。
+
+| Human-facing status | 意味 | 基本Tone |
 |---|---|---|
-| 未開始 | まだ担当作業を始めていない | Neutral |
+| 未開始 | 担当作業開始前 | Neutral |
 | 開始準備済み | claim等は済み、実作業開始前 | Blue |
-| 作業中 | 担当作業を進行中 | Blue |
-| 作業完了・反映待ち | 担当作業完了かつIへ渡せる | Green |
-| 待機中 | 問題ではなく他工程待ち | Yellow / Neutral |
-| 一時停止 | 意図的にRunまたはWorkerを止めている | Yellow |
-| 完了・一時停止 | 担当作業とhandoff準備は完了しているがRunが意図的に停止中 | Green + pause context |
-| 要対応 | 担当作業数は完了していてもBlockerにより次工程へ進めない | Red / Attention |
-| 復旧確認が必要 | State drift等により安全な継続前にRecoveryが必要 | Red |
+| 作業中 | 担当作業進行中 | Blue |
+| 作業完了・反映待ち | 担当作業完了、handoff ready | Green |
+| 待機中 | 問題ではなく他工程待ち | Neutral / Yellow |
+| 一時停止 | 未完了の作業を意図的に停止 | Yellow |
+| 作業完了・Run一時停止 | Workerは完了済みだがRun全体を停止 | Green + pause context |
+| 要対応 | 作業数は完了していてもBlocker等でhandoff不可 | Red |
+| 復旧確認が必要 | drift / stale checkpoint等で安全な継続前にRecoveryが必要 | Red |
 | 反映中 | Iが正式統合中 | Blue |
 | 反映済み | Apply済み、最終検証待ち | Green / Blue |
 | 完了 | 最終検証まで終了 | Green |
-| 状態取得失敗 | Live statusを取得できない | Red / Warning |
+| 状態取得失敗 | Current public statusを取得できない | Red / Warning |
 
-色だけで意味を伝えず、必ずText Labelと説明を併用します。
+色だけで意味を伝えず、必ずTextと組み合わせます。
 
-### 4.3 Run-level と Worker-level を混同しない
+## 5. Page Information Architecture
 
-UserがRun全体を一時停止した場合、Run-levelの「一時停止」はPage上部に1回明示します。
-
-Workerが担当作業を完了している場合、そのWorker Cardを一律赤い「停止中」に上書きしません。
-
-例:
-
-- D: 27/27、readyForApply=true、Runがuser pause → 「作業完了・反映可能」+「Run一時停止中」
-- C: 26/26、readyForApply=false、blockerあり → 「要対応」
-
-この2つは同じ`blocked`系Raw Stateであっても、Human-facing表示を分けます。
-
-## 5. Information Architecture
-
-DashboardのPrimary information orderは次とします。
+Primary information orderは次とします。
 
 ### 5.1 Project Identity
 
@@ -113,100 +111,104 @@ Run IDより先にProject / Repository identityを認識できること。
 
 - Project name
 - Repository name
-- Current active Run ID
+- active Run ID
 - Run-level state
-- latest fetch / freshness state
-
-Repository固有Dashboardでは別RepositoryのRun / Worker statusを混在させません。
+- Current / fallback state
 
 ### 5.2 Next Action
 
-First Viewで最も重要な情報として「次にやること」を表示します。
+First Viewで最重要のSurfaceとして「次にやること」を出します。
 
 最低限:
 
-- 次のActionを1文で表示
-- 誰のActionかを表示: `あなた` / `Worker` / `Integration Worker` / `待つだけ`
-- User操作が必要な場合だけPrimary Buttonを出す
-- User操作不要なら「操作不要」「待機中」と明示
+- 次Actionを1文で表示
+- Action ownerを表示: `あなた / Worker / Integration Worker / 操作不要`
+- User操作が必要な場合だけPrimary Buttonを表示
+- User操作不要なら「現在あなたの操作は不要です」と明示
 
 例:
 
-- 「Cの問題を解消する必要があります」
-- 「A/B/C/Dの準備が完了しました。Iを開始できます」
-- 「Iが統合中です。現在あなたの操作は不要です」
-- 「Runは完了しています」
+- `Cの問題を確認する必要があります。`
+- `Integration Gateを満たしました。Iを開始できます。`
+- `Iが統合中です。現在あなたの操作は不要です。`
+- `このRunは完了しています。`
 
 ### 5.3 Overall Summary
 
-数字だけを並べず、結論とセットで表示します。
+数字だけでなく意味を併記します。
 
 最低表示候補:
 
 - 担当作業: `105 / 105`
-- 反映準備: `3 / 4 Worker`
+- handoff ready: `3 / 4 Worker`
+- Integration Gate: `開始可能 / 待機 / 要対応`
 - 要対応: `1件`
 - 作業中: `0件`
-- Run state
 
-`105 / 105`だけで全Run完了と誤解させません。
+`105 / 105`だけでRun完了と誤認させません。
 
 ### 5.4 Worker Overview
 
-各Worker CardのPrimary情報は以下に絞ります。
+WorkerのPrimary情報:
 
 - Worker ID / short title
 - Human-facing status
-- 担当作業 `completed / total`
-- handoff readiness
+- `担当作業 completed / total`
+- handoff state
 - 人間向けSummary
-- 次のAction
+- 必要な場合だけNext Action
 
-Branch名、Raw status、更新元、technical blocker detail、start promptはSecondary / Detailsへ移動します。
+Secondaryへ退避:
+
+- Raw status
+- Worker Branch
+- Public Status Branch
+- exact timestamp
+- validation / technical reason
+- Start Prompt
 
 ### 5.5 Integration Worker
 
-IはPreparation Workerと役割が違うため別Sectionにします。
+IはPreparation Workerと責務が違うため別Sectionにします。
 
-Preparation Workerが全員readyになるまで、Iの開始可否を明示します。Dashboard表示だけをCanonical EvidenceとしてIを開始・適用してはいけません。IはPrivate Dataの正式state/outputを再確認します。
+I Cardには少なくとも以下を表示できること。
+
+- Integration Gate
+- Iの状態
+- I開始可否
+- I開始後の進行状態
+- 完了 / verification状態
+
+Dashboard表示だけをCanonical EvidenceとしてApplyしません。IはPrivate Dataの正式state/output/validationを再確認します。
 
 ### 5.6 Technical Details
 
-必要な人だけ開けるProgressive Disclosureとします。
+Raw Git informationはProgressive Disclosureにします。
 
-詳細候補:
+普段の状況確認でBranch名や長いPromptを読まなくてもよい構造にします。
 
-- raw status
-- worker branch
-- public status branch
-- exact updatedAt
-- validation / evidenceへの安全な参照
-- start prompt
-
-Primary UIに常時出しません。
-
-## 6. Worker Card Action Rules
-
-ActionはWorker stateに応じて変えます。
+## 6. Action Rules
 
 | 状態 | Primary Action |
 |---|---|
-| 未開始 | 「Aを開始」または「開始文をコピー」 |
-| 作業中 | 原則Primary Actionなし。必要なら詳細から開始文確認 |
-| 作業完了・反映待ち | Start buttonをPrimaryから削除。I待ちを表示 |
-| 要対応 | 「問題の詳細を見る」 |
-| 一時停止・未完了 | 「再開条件を見る」 |
+| 未開始 | `Aを開始` / `開始文をコピー` |
+| 作業中 | 原則Primary Actionなし |
+| 作業完了・反映待ち | Start actionをPrimaryから消す |
+| 要対応 | `問題の詳細を見る` |
+| 一時停止・未完了 | `再開条件を見る` |
+| Integration Gate ready | Page上部で`Iを開始` |
+| I統合中 | `操作不要` |
 | 完了 | Primary Actionなし |
 
-完了済みWorkerに「新しい会話へ貼る開始文」を常時大きく表示しません。
+完了済みWorkerに「新しい会話へ貼る開始文」を常時大きく残しません。
 
-## 7. Human-facing Copy Contract
+## 7. Human Copy Contract
 
-Primary copyは日本語のPlain Languageを基本とします。
+Primary UIは日本語Plain Languageを基本とします。
 
 ### 7.1 Summary
 
-1〜2文で以下を説明します。
+1〜2文で次を説明します。
 
 - 何が終わっているか
 - 問題があるか
@@ -220,181 +222,238 @@ Primary copyは日本語のPlain Languageを基本とします。
 
 `担当作業はすべて完了しています。Iによる正式反映を待っています。`
 
-### 7.2 Blocker
+### 7.2 Controlled Vocabulary
 
-Raw error / SHA /内部File PathをPrimary文章へそのまま出しません。
+Workerごとの自由文だけでPrimary statusを作りません。
+
+Human Status labelはcontrolled enumからRendererが統一して日本語表示します。
+
+自由文はSpecific contextが必要な以下へ限定候補とします。
+
+- `issueSummary`
+- `nextActionDetail`
+
+### 7.3 Blocker Copy
+
+Raw error / SHA / private pathをPrimary文章へそのまま出しません。
 
 Primary:
 
-`元データの確認が必要なため、Iへはまだ渡せません。`
+`元データの確認が必要なため、次工程へはまだ進めません。`
 
-Details:
+Technical Details:
 
-必要なtechnical reasonを表示。
+必要なRaw reasonをPrivate/public boundaryの範囲で表示します。
 
-### 7.3 Next Action
+## 8. Run-level Public Control
 
-曖昧な「停止中」で終わらせず、可能な限り次の行動まで書きます。
+Page上部のRun状態やNext ActionはA/B/C/D個別JSONの多数決で決めません。
 
-- 誰が
-- 何を
-- なぜ
+Repository単位のPublic Controlに最低限以下を持てる構造とします。
 
-を短く示します。
+- repository
+- projectName
+- activeRunId
+- runState
+- integrationGate
+- overallSummary
+- nextAction
+- actionOwner
+- updatedAt
 
-## 8. Freshness / Fallback Contract
+A/B/C/Dは自分のWorker statusだけをself-publishし、Run-level controlを書き換えるAuthorityを持たせません。
 
-今回発生した「GitHubでは更新済みだが、Dashboardが古いSnapshotを正常表示していた」問題を再発させません。
+## 9. Worker Public Status V2
 
-### 8.1 Freshnessは状態の一部
+V2のSemantic model候補:
 
-Dashboardは最低限以下を区別します。
+```json
+{
+  "schemaVersion": 2,
+  "runId": "RUN-...",
+  "worker": "A",
+  "role": "preparation",
+  "assignmentRevision": 1,
+  "progress": {"completed": 26, "total": 26},
+  "workState": "complete",
+  "handoffState": "ready",
+  "issueState": "none",
+  "issueSummary": null,
+  "nextActionDetail": "Iによる正式反映を待っています。",
+  "updatedAt": "..."
+}
+```
 
-- Live / current public statusの取得成功
-- fallback snapshot表示
-- status取得失敗
-- base dashboard data取得失敗
+Field名はSchema実装時にCurrent Data contractと突合して確定します。
 
-### 8.2 Silent fallback禁止
+### 9.1 Assignment Revision
 
-Live status取得に失敗してSnapshotへfallbackした場合、通常表示と同じ見た目で黙って表示しません。
+Worker public statusはCurrent assignment scopeと照合可能であること。
+
+Worker revisionとRun Control revisionが不一致の場合、旧`26 / 26 = 100%`をCurrent completionとして表示せず`要再確認`扱いにします。
+
+### 9.2 Backward Compatibility
+
+Existing schema v1を一斉破壊しません。
+
+- V2 rendererは移行期間中v1 adapterを持てる
+- Current Runを壊さない
+- New RunからV2をDefault候補にする
+
+## 10. Freshness / Fallback Contract
+
+### 10.1 Silent fallback禁止
+
+Live/current public statusを取得できずSnapshotへfallbackする場合、通常表示と同じ見た目で隠しません。
 
 例:
 
 `Aの最新状態を取得できません。15:18時点の保存済み情報を表示しています。`
 
-### 8.3 Update Time と Fetch Timeを分ける
+### 10.2 UpdateとFetchを分離
 
-- Worker Update Time: Workerが最後に状態を書いた時刻
-- Dashboard Fetch Time: Browserがstatus取得に成功した時刻
+- Worker Update Time: Workerがstatusを書いた時刻
+- Dashboard Fetch State/Time: BrowserがCurrent sourceを取得できたか
 
-更新時刻が古いだけで自動的にstaleとは判定しません。Event-driven statusでは「変化していないため時刻が古い」場合があるためです。
+更新時刻が古いだけでstaleとは判定しません。Event-driven statusは変化がなければ時刻が古いまま正常だからです。
 
-### 8.4 Cache耐性
+### 10.3 Root Causeを要件で固定しない
 
-Branch名のRaw URLだけを無条件にCurrent Sourceとみなさない設計を検討します。少なくともCurrent commit/refの確認、cache-busting、または同等のFreshness Oracleを用意し、古いRaw cacheを最新状態として扱わないことをCompletion条件とします。
+今回の古い表示原因を「Raw cache」と決め打ちしません。
 
-## 9. Repository Separation
+実装前にBrowser Network / fetch result / fallback pathを再現し、CORS / cache / fetch failure / branch resolution等を確認します。
 
-各Project Repositoryに専用Dashboard entryを持ちます。
+Completion Conditionは原因名ではなく、**古い情報をCurrentとしてsilent表示しないこと**です。
 
-Requirements:
+### 10.4 Refresh Cadence
 
-- `game` / `lyrictube`等、Repository間でactive RunやWorker statusを混ぜない
-- RepositoryごとにCurrent active Runを識別できる
-- 同じWorker ID `A` が別Repositoryに存在しても衝突しない
+15秒はCurrent implementation valueであり恒久Requirementにしません。
+
+User-facing requirementは、Worker state変更が実用上短い時間で表示へ反映されることです。
+
+実装時にはvisibility state / rate limit / worker countを考慮し、必要ならManual RefreshをRecovery pathとして持ちます。
+
+## 11. Repository / Run Isolation
+
+- Repositoryごとに専用Dashboard entryを持つ
+- 別RepositoryのRun / Worker stateを混在させない
+- Repositoryごとに`activeRunId`を明示する
+- activeRunId=nullならIdle
+- 一番新しいRunを日時だけで勝手にactiveと推測しない
+- active Runが曖昧ならConfiguration Errorとして表示する
+- 同名Worker `A`が複数Repositoryに存在しても衝突しない
 - Worker write targetはRepository + Run + Workerで一意に分離する
-- 同一Run内でもA/B/C/D/Iが同じstatus file/refへ同時writeしない
+- 同一RunのA/B/C/D/Iが同一status file/refへ同時writeしない
 
-UI Engine / CSS / Componentは共通化可能ですが、Repository stateは分離します。
+Run history UIはV2 Primary Scope外とします。
 
-## 10. Dynamic Worker Count
+## 12. Dynamic Worker Count
 
-UIをA/B/C/D/I固定レイアウトへ強く依存させません。
+UIをA/B/C/D/I固定Gridへ依存させません。
 
-Current RunがA/B/C/D/Iでも、将来Preparation Worker数が増減してもWorker collectionから描画できる構造を目標とします。
+Current RunがA/B/C/D/Iでも、Worker collectionから描画できる構造を採用します。
 
-Roleにより最低限以下を区別します。
+最低限Role:
 
 - preparation
 - integration
 
 必要になるまで不要なRole taxonomyは増やしません。
 
-## 11. Privacy / Public Data Boundary
+## 13. Privacy / Public Boundary
 
-Public DashboardはPrivate `web-project-data`を直接Browser fetchしません。
+Public DashboardはPrivate `web-project-data`をBrowserから直接取得しません。
 
-Public statusへ出してよい情報は明示allowlist方式とし、少なくとも以下は公開しません。
+Allowlist outsideのPrivate情報を公開しません。
+
+公開禁止例:
 
 - holderId
 - acceptedTaskBlobSha
-- Private TASK全文
-- change-set全文
-- validation内部Evidence
-- proposed成果物本文
-- secret / credential / token
-- private-only repository content
-- conversation history
+- Private TASK本文
+- change-set / validation / proposed成果物本文
+- internal evidence
+- conversation data
+- secret / token / credential
+- private-only path / content
 
-Human-facing summary / next actionを追加する場合も、Public-safeにsanitizeされた専用Fieldとして生成し、Raw private reasonの自動コピーを禁止します。
+`issueSummary` / `nextActionDetail`等を追加する場合もPublic-safe専用Fieldとし、Raw private reasonの自動コピーを禁止します。
 
-## 12. Data Contract Candidate
+## 14. Visual Direction
 
-V2 Public Worker Statusは、既存Fieldに加えてHuman-facing Fieldを持てる設計を推奨します。
+Research結果からV2のPrimary Directionは**Operations Console**とします。
 
-候補:
+Characteristics:
 
-```json
-{
-  "worker": "C",
-  "status": "blocked",
-  "completed": 26,
-  "total": 26,
-  "readyForApply": false,
-  "humanStatus": "needs_attention",
-  "humanSummary": "担当作業は完了していますが、元データの確認が必要です。",
-  "nextAction": "問題を解消してからIへ渡します。",
-  "actionOwner": "integration",
-  "issueSummary": "元データの確認が必要です。",
-  "updatedAt": "..."
-}
-```
+- Medium density
+- Project identity + Next Actionを上位
+- Workerはcompact row/panel中心
+- Issue Workerだけ必要情報を展開
+- Integration Workerは別Section
+- Technical detailはDisclosure
+- Border / spacing / typographyでHierarchyを作る
+- Semantic color以外の装飾を増やしすぎない
+- Large hero / glow / glass / decorative chartをPrimaryにしない
 
-Field名は実装前にSchemaとの整合を確認して確定します。Private DataのRaw reasonをPublic Fieldへ自動複製しません。
+Current dark shellやProgress自体は再利用可能ですが、現在のCard Gridの情報重複はそのまま維持しません。
 
-## 13. Responsive / Accessibility
+## 15. Responsive / Accessibility
 
-Desktopだけを完成条件にしません。
+### Mobile priority
 
-Mobile Requirements:
+1. Project identity
+2. Run state / freshness
+3. Next Action
+4. Issue / Integration Gate
+5. Worker overview
+6. Technical Details
 
-- 1 columnでもPrimary情報の順序が崩れない
-- Project / Next Action / IssueがFirst View付近で理解できる
-- Branch / Prompt等のSecondary情報で縦長になりすぎない
-- touch targetは主要操作で十分な大きさを確保
-- 横スクロール前提のPrimary UIを避ける
+Requirements:
+
+- Primary UIは1 columnで成立
+- 長いPrompt / BranchでPageを縦長化しない
+- Primary Actionが画面下部へ埋もれない
+- 主要tap targetは十分な大きさ
+- 横スクロール前提にしない
 
 Accessibility:
 
 - 色だけで状態を伝えない
-- ProgressにAccessible Name / Valueを持たせる
-- Dynamic refreshで不必要な読み上げ連発を避ける
-- Error / stale / successをTextでも明示
+- ProgressにAccessible Name / Value
+- Dynamic refreshで不必要な読み上げを連発しない
+- Error / fallback / successをTextでも伝える
 - KeyboardでDetails / copy actionへ到達可能
 
-## 14. Loading / Empty / Error / Success
-
-最低限4状態を設計します。
+## 16. Loading / Idle / Error / Complete
 
 ### Loading
 
-何を取得中かを示し、古いDataを新しいDataとして一瞬表示しないことを優先します。
+何を取得中かを表示し、旧Snapshotを一瞬Currentとして見せないことを優先します。
 
-### Empty / Idle Repository
+### Idle Repository
 
 `このRepositoryでは現在進行中のRunはありません。`
 
-と明示します。0 / 0のWorker Cardを並べません。
+0/0 Workerを並べません。
 
-### Error / Partial Error
+### Partial Error
 
-1 Workerのstatus取得失敗でPage全体を壊しません。ただし該当Workerがfallbackであることを明示します。
+1 Workerの取得失敗でPage全体を壊しません。ただし該当Workerがfallbackであることを明示します。
 
-### Success / Complete
+### Complete
 
-Run完了時はWorker別Cardを読まなくても、Page上部で`このRunは完了しています`と判断できます。
+Run完了時はWorker Cardを全部読まなくても、Page上部で`このRunは完了しています`と判断できます。
 
-## 15. Main User Flow
+## 17. Main User Flow
 
 ```text
-Project Dashboardを開く
+Repository Dashboardを開く
 ↓
-Project / Runを確認
+Project / Run / freshnessを確認
 ↓
 Next Actionを見る
 ↓
-全体状況を見る
+Integration Gate / issueを見る
 ↓
 必要なWorkerだけ確認
 ↓
@@ -405,89 +464,24 @@ Next Actionを見る
 Status更新を確認
 ```
 
-BranchやRaw statusを先に読ませるFlowにしません。
+BranchやRaw statusを最初に解釈させません。
 
-## 16. Completion Contract
-
-Dashboard V2は、少なくとも以下を満たすまで完成扱いにしません。
-
-### 16.1 5-second comprehension test
-
-初見のRepository ownerがFirst View〜短いスクロールだけで、約5秒を目安に以下へ答えられること。
-
-- 誰が終わっているか
-- 誰に問題があるか
-- Iを始めてよいか
-- 次に自分が何をするか
-- 表示情報がCurrentかfallbackか
-
-厳密な計測秒数をCIで固定するのではなく、Human Reviewの判断基準として使用します。
-
-### 16.2 Conflicting-looking state test
-
-以下のCaseを説明なしで区別できること。
-
-- 100% + ready → 作業完了・反映待ち
-- 100% + blocker + not ready → 要対応
-- 100% + ready + Run paused → 完了・一時停止
-- incomplete + paused → 一時停止
-- live fetch failed + snapshot → 保存済み情報表示
-
-特に`100%なのに赤い停止中`だけを表示して意味説明が必要になる状態を不合格とします。
-
-### 16.3 Action correctness
-
-- 完了WorkerへStartをPrimary Actionとして出さない
-- Iを開始できない時に開始可能と誤表示しない
-- User操作不要なのに操作を要求しない
-- Blocker時は「何が問題か」だけでなく「次にどうするか」を表示する
-
-### 16.4 Freshness correctness
-
-- live fetch成功 / fallback / failureを区別
-- fallbackをCurrentと誤表示しない
-- update timeとfetch resultを確認可能
-- cacheにより古いRaw stateが正常な最新statusとして残り続けないことを実Browserで検証
-
-### 16.5 Repository isolation
-
-複数Repository / 同名Worker / 同時更新でstatusが混線しないこと。
-
-### 16.6 Responsive / browser verification
-
-DesktopとMobile幅で実Browser確認し、Primary Action、Status、Issue、Progressがclipping / overflow /順序崩れなく利用できること。
-
-## 17. Non-goals
-
-V2のPrimary Scopeには以下を含めません。
-
-- DashboardをPrivate DataのSource of Truthにする
-- DashboardからCanonical Worker stateを直接編集する
-- Dashboard表示だけを根拠にIが正式適用する
-- Private Repository内容をBrowserへ公開する
-- 全Git history / Evidence Viewer化
-- Notification systemの全面実装
-- Run history analyticsの大規模機能
-- 見た目のためだけの複雑なanimation / decoration
-
-## 18. Wireframe Requirement
-
-Visual styling前の構造候補は以下を基準とします。
+## 18. Wireframe Contract
 
 ```text
 ┌──────────────────────────────────────────┐
 │ ← Project Dashboards                    │
 │ Scrap Factory                           │
 │ EliteMay/game · RUN-XXXX                │
-│ Run: 一時停止中     状態取得: 最新      │
+│ Run: 一時停止中     取得状態: 最新      │
 ├──────────────────────────────────────────┤
 │ 次にやること                            │
-│ Cの問題を解消する必要があります         │
+│ Cの問題を確認する必要があります         │
 │ 担当: Integration Worker                │
 │                         [問題を見る]     │
 ├──────────────────────────────────────────┤
-│ 担当作業 105/105  反映準備 3/4          │
-│ 要対応 1          作業中 0              │
+│ 担当作業 105/105   Handoff Ready 3/4    │
+│ I開始条件: 満たしている / 待機 / 要対応 │
 ├──────────────────────────────────────────┤
 │ A  作業完了・反映待ち                   │
 │ 担当作業 26/26 █████████ 100%           │
@@ -496,32 +490,99 @@ Visual styling前の構造候補は以下を基準とします。
 ├──────────────────────────────────────────┤
 │ C  要対応                               │
 │ 担当作業 26/26 █████████ 100%           │
-│ 作業数は完了。問題のためIへ渡せません。 │
-│ 次: 元データを確認                      │
+│ 作業数は完了。問題のためhandoff不可。    │
+│ 次: 問題を確認                          │
 │                         [問題の詳細]     │
 ├──────────────────────────────────────────┤
 │ D  作業完了                             │
 │ 担当作業 27/27 █████████ 100%           │
-│ Iへ渡せます。Run全体は一時停止中。       │
+│ Handoff可能。Run全体は一時停止中。       │
 │                              [詳細]      │
 ├──────────────────────────────────────────┤
 │ Integration Worker I                    │
-│ 現在: Cの解消待ち                       │
+│ Gate: ready / waiting / blocked         │
 └──────────────────────────────────────────┘
 ```
 
-これはVisual Designの完成形ではありません。情報順序と責務のWireframeです。Visual DirectionはこのStructureが確定した後に別途Research / Reviewします。
+これはVisual完成形ではなくInformation OrderのContractです。
 
-## 19. Implementation Gate
+## 19. Completion Contract
 
-このRequirementsを実装へ移す前に以下を行います。
+### 19.1 5-second comprehension
 
-- Current `work-dashboard.html` / repository-specific dashboard engine / public status contractを再確認
-- Current Data側self-publish contractとの互換を確認
-- V2 Public Status Schema変更の影響を整理
-- Raw cache / fallback問題のRoot Causeを実Browserで再現・検証
-- Meaningful Visual Changeとして必要なVisual Researchを行う
-- Wireframeを崩さずVisual hierarchyを設計
-- Static Validation + Browser Test + Mobile ReviewをCompletionへ含める
+初見のRepository ownerがFirst View〜短いスクロールで、約5秒を目安に以下へ答えられること。
 
-Requirementsが確定するまでは既存UIを場当たり的にCSS修正して完成扱いにしません。
+- 誰が終わっているか
+- 誰に問題があるか
+- Iを始めてよいか
+- 次に自分が何をするか
+- Current表示かfallbackか
+
+厳密な秒数をCIで固定せずHuman Review基準とします。
+
+### 19.2 Conflicting-looking state
+
+説明なしで以下を区別できること。
+
+- 100% + handoff ready → 作業完了・反映待ち
+- 100% + blocker + handoff not ready → 要対応
+- 100% + handoff ready + Run paused → 作業完了・Run一時停止
+- incomplete + paused → 一時停止
+- live fetch failed + fallback → 保存済み情報表示
+
+`100%なのに赤い停止中`だけを表示して追加説明が必要になる状態は不合格です。
+
+### 19.3 Integration Gate correctness
+
+- ready countだけでI開始可否を決めない
+- Current Run Triggerと一致する
+- Gate blocked時にI開始可能と表示しない
+- resolved blocked/rejected/superseded等をRun Contractに従って扱える
+
+### 19.4 Action correctness
+
+- 完了WorkerへStartをPrimary表示しない
+- User操作不要なのに操作を要求しない
+- Blockerはreasonだけでなく次Actionも示す
+- Next Action ownerが分かる
+
+### 19.5 Freshness correctness
+
+- Current / fallback / failureを区別
+- fallbackをCurrentと誤表示しない
+- update timeとfetch stateを確認できる
+- 古いstateがsilentに残り続けないことを実Browserで確認
+
+### 19.6 Repository isolation
+
+複数Repository / 同名Worker / 同時更新で状態が混線しない。
+
+### 19.7 Responsive / browser verification
+
+Desktop + Mobile幅の実Browserで、Primary status / Next Action / Integration Gate / Progressにclipping・overflow・順序崩れがないこと。
+
+## 20. Non-goals
+
+- DashboardをCanonical Data Sourceにする
+- DashboardからPrivate canonical worker stateを直接編集する
+- Dashboard表示だけでIが正式Applyする
+- Private Repository内容をBrowserへ露出する
+- 全Git history / Evidence Viewer化
+- Notification system全面実装
+- Run history analytics大規模実装
+- 見た目のためだけの複雑なanimation / decoration
+
+## 21. Implementation Gate
+
+実装開始前に以下を確認します。
+
+- Current `work-dashboard.html` / repository-specific dashboard engine / public status contract
+- Current Data側self-publish contract
+- V2 Public Control / Worker Status Schema互換
+- Current Runを壊さないv1 adapter方針
+- 古いSnapshot表示問題を実Browserで再現しRoot Cause確認
+- Current mainとの差分 / existing learnings
+
+実装後はStatic Validationだけでなく、Desktop / Mobile Browser Test、freshness failure test、100% + blocker / 100% + pause等のState Matrixを実画面で確認します。
+
+Requirements complete ≠ Implementation completeです。この文書確定時点ではUI実装は開始済み扱いにしません。
