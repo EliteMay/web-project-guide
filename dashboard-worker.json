@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "runId": "RUN-20260910-001",
+  "worker": "I",
+  "status": "waiting",
+  "completed": 0,
+  "total": 4,
+  "currentTask": "A/B/C/Dのready_for_apply待ち",
+  "readyForApply": false,
+  "workBranch": null,
+  "updatedAt": null
+}
