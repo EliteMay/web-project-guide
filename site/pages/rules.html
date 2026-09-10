@@ -780,7 +780,7 @@
     searchInput.addEventListener('input', filterGuide);
     updateCount();
 
-    fetch('./guide-version.json')
+    fetch('../../guide-version.json')
       .then((response) => response.ok ? response.json() : Promise.reject())
       .then((data) => {
         const version = data.guideVersion ? `Guide v${data.guideVersion}` : '最新版';
