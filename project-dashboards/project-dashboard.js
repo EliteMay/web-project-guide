@@ -1,89 +1,18 @@
-const scriptUrl = document.currentScript.src;
-const DASHBOARD_ROOT = new URL('./', scriptUrl);
-const REFRESH_MS = 15000;
-const PUBLIC_STATUS_FIELDS = ['status','completed','total','currentTask','readyForApply','workBranch','updatedAt'];
-const statusLabel = {
-  idle:'待機中', assigned:'開始待ち', claimed:'取得済み', working:'作業中', active:'作業中',
-  ready_for_apply:'反映準備完了', waiting:'待機中', integrating:'統合中',
-  applied:'反映済み', verified:'検証完了', completed:'完了', blocked:'停止中',
-  stale:'要再確認', recovery_required:'復旧確認', rejected:'却下', superseded:'置換済み'
-};
-const statusTone = {
-  idle:'waiting',assigned:'assigned',waiting:'waiting',stale:'waiting',superseded:'waiting',
-  claimed:'active',working:'active',active:'active',integrating:'active',
-  ready_for_apply:'completed',applied:'completed',verified:'completed',completed:'completed',
-  blocked:'blocked',recovery_required:'blocked',rejected:'blocked'
-};
-const esc = v => String(v ?? '').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
-const fmt = v => {
-  if(!v) return '-'; const d=new Date(v); if(Number.isNaN(d.getTime())) return String(v);
-  return new Intl.DateTimeFormat('ja-JP',{year:'numeric',month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit',second:'2-digit'}).format(d);
-};
-function controlUrl(slug){return `https://raw.githubusercontent.com/EliteMay/web-project-guide/dashboard/${slug}/control/project-dashboard.json?t=${Date.now()}`;}
-function workerUrl(slug,runId,id){return `https://raw.githubusercontent.com/EliteMay/web-project-guide/dashboard/${slug}/${runId}/${id}/dashboard-worker.json?t=${Date.now()}`;}
-async function fetchJson(url){const r=await fetch(url,{cache:'no-store',mode:'cors'});if(!r.ok)throw new Error(`HTTP ${r.status}`);return r.json();}
-function workerCard(w){
-  const total=Number(w.total||0), completed=Number(w.completed||0), pct=total?Math.round(completed/total*100):0;
-  const tone=statusTone[w.status]||'waiting';
-  const branch=w.workBranch?`<dt>Branch</dt><dd><code>${esc(w.workBranch)}</code></dd>`:'';
-  return `<article class="worker-card">
-    <div class="worker-head"><div class="worker-title-wrap"><span class="worker-id">${esc(w.id)}</span><div><h3 class="worker-title">${esc(w.title||w.id)}</h3><div class="worker-role">${esc(w.role||'Worker')}</div></div></div><span class="badge ${esc(tone)}">${esc(statusLabel[w.status]||w.status||'-')}</span></div>
-    <div class="worker-body"><dl class="kv"><dt>現在</dt><dd>${esc(w.currentTask||'-')}</dd>${branch}<dt>反映準備</dt><dd>${w.readyForApply?'完了':'未完了'}</dd><dt>公開更新</dt><dd>${esc(fmt(w.updatedAt))}</dd></dl>
-    <div class="progress" aria-label="進捗 ${pct}%"><span style="width:${pct}%"></span></div><div class="progress-meta"><span>${completed} / ${total}</span><span>${pct}%</span></div>
-    ${w.startPrompt?`<div class="prompt-box"><div class="prompt-label"><span>開始文</span><button class="copy" type="button" data-prompt="${encodeURIComponent(w.startPrompt)}">コピー</button></div><details class="prompt-details"><summary>開始文を表示</summary><pre class="prompt">${esc(w.startPrompt)}</pre></details></div>`:''}
-    </div></article>`;
-}
-function bindCopy(){
-  document.querySelectorAll('.copy').forEach(btn=>btn.addEventListener('click',async()=>{
-    const text=decodeURIComponent(btn.dataset.prompt||''); let ok=false;
-    try{await navigator.clipboard.writeText(text);ok=true}catch{}
-    if(!ok){const a=document.createElement('textarea');a.value=text;a.style.position='fixed';a.style.opacity='0';document.body.appendChild(a);a.select();try{ok=document.execCommand('copy')}catch{}a.remove();}
-    const old=btn.textContent;btn.textContent=ok?'コピー済み':'コピー失敗';setTimeout(()=>btn.textContent=old,1500);
-  },{once:true}));
-}
-async function loadProjectIdentity(){
-  const slug=document.body.dataset.projectSlug;
-  const r=await fetch(new URL('projects.json',DASHBOARD_ROOT),{cache:'no-store'});
-  if(!r.ok)throw new Error(`projects.json HTTP ${r.status}`);
-  const registry=await r.json();
-  const project=(registry.projects||[]).find(p=>p.slug===slug);
-  if(!project)throw new Error(`Unknown project: ${slug}`);
-  return project;
-}
-function renderIdle(project,control){
-  document.getElementById('projectName').textContent=project.name;
-  document.getElementById('repoPath').textContent=project.repository;
-  document.getElementById('projectStatus').textContent=statusLabel[control.status]||control.status||'待機中';
-  document.getElementById('runId').textContent='なし';
-  document.getElementById('updatedAt').textContent=fmt(control.updatedAt);
-  document.getElementById('workerGrid').innerHTML='<div class="notice"><strong>現在Active Runはありません。</strong>このRepositoryで並列作業を開始すると、A/B/C/D/Iの状態がここへ表示されます。</div>';
-  document.getElementById('liveNotice').textContent='Project専用Control Branchを15秒ごとに確認しています。';
-}
-async function refresh(project){
-  const control=await fetchJson(controlUrl(project.slug));
-  if(control.projectSlug!==project.slug||control.repository!==project.repository)throw new Error('Control identity mismatch');
-  if(!control.activeRunId){renderIdle(project,control);return;}
-  document.getElementById('projectName').textContent=project.name;
-  document.getElementById('repoPath').textContent=project.repository;
-  document.getElementById('projectStatus').textContent=statusLabel[control.status]||control.status||'-';
-  document.getElementById('runId').textContent=control.activeRunId;
-  document.getElementById('updatedAt').textContent=fmt(control.updatedAt);
-  const defs=Array.isArray(control.workers)?control.workers:[];
-  const statuses=await Promise.allSettled(defs.map(w=>fetchJson(workerUrl(project.slug,control.activeRunId,w.id))));
-  let live=0;
-  const merged=defs.map((base,i)=>{
-    const res=statuses[i]; if(res.status!=='fulfilled')return base;
-    const s=res.value; if(s.runId!==control.activeRunId||s.worker!==base.id||s.projectSlug!==project.slug)return base;
-    live++; const out={...base}; for(const f of PUBLIC_STATUS_FIELDS){if(Object.prototype.hasOwnProperty.call(s,f))out[f]=s[f];} return out;
-  });
-  document.getElementById('workerGrid').innerHTML=merged.map(workerCard).join('');
-  document.getElementById('liveNotice').textContent=`${live}/${defs.length} Workerを専用Status Branchから取得。15秒ごとに更新します。`;
-  bindCopy();
-}
-(async()=>{
-  try{
-    const project=await loadProjectIdentity();
-    await refresh(project);
-    setInterval(()=>refresh(project).catch(e=>{document.getElementById('liveNotice').textContent=`更新失敗: ${e.message}`;}),REFRESH_MS);
-  }catch(e){document.getElementById('workerGrid').innerHTML=`<div class="error">${esc(e.message)}</div>`;}
-})();
+const scriptUrl=document.currentScript.src;
+const DASHBOARD_ROOT=new URL('./',scriptUrl);
+const REFRESH_MS=15000;
+const PUBLIC_STATUS_FIELDS=['status','completed','total','currentTask','readyForApply','workBranch','updatedAt'];
+const statusLabel={idle:'待機中',assigned:'開始待ち',claimed:'取得済み',working:'作業中',active:'作業中',ready_for_apply:'反映準備完了',waiting:'待機中',integrating:'統合中',applied:'反映済み',verified:'検証完了',completed:'完了',blocked:'停止中',stale:'要再確認',recovery_required:'復旧確認',rejected:'却下',superseded:'置換済み'};
+const statusTone={idle:'waiting',assigned:'assigned',waiting:'waiting',stale:'waiting',superseded:'waiting',claimed:'active',working:'active',active:'active',integrating:'active',ready_for_apply:'completed',applied:'completed',verified:'completed',completed:'completed',blocked:'blocked',recovery_required:'blocked',rejected:'blocked'};
+const esc=v=>String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+const fmt=v=>{if(!v)return '-';const d=new Date(v);if(Number.isNaN(d.getTime()))return String(v);return new Intl.DateTimeFormat('ja-JP',{year:'numeric',month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit',second:'2-digit'}).format(d)};
+function controlUrl(slug){return `https://raw.githubusercontent.com/EliteMay/web-project-guide/dashboard/${slug}/control/project-dashboard.json?t=${Date.now()}`}
+function workerUrl(slug,runId,id){return `https://raw.githubusercontent.com/EliteMay/web-project-guide/dashboard/${slug}/${runId}/${id}/dashboard-worker.json?t=${Date.now()}`}
+async function fetchJson(url){const r=await fetch(url,{cache:'no-store',mode:'cors'});if(!r.ok)throw new Error(`HTTP ${r.status}`);return r.json()}
+function validControl(control,project){if(!control||control.schemaVersion!==1)return false;if(!control.activeRunId&&control.controlTemplate===true&&control.projectSlug===null&&control.repository===null)return true;return control.projectSlug===project.slug&&control.repository===project.repository}
+function workerCard(w){const total=Number(w.total||0),completed=Number(w.completed||0),pct=total?Math.round(completed/total*100):0;const tone=statusTone[w.status]||'waiting';const branch=w.workBranch?`<dt>Branch</dt><dd><code>${esc(w.workBranch)}</code></dd>`:'';return `<article class="worker-card"><div class="worker-head"><div class="worker-title-wrap"><span class="worker-id">${esc(w.id)}</span><div><h3 class="worker-title">${esc(w.title||w.id)}</h3><div class="worker-role">${esc(w.role||'Worker')}</div></div></div><span class="badge ${esc(tone)}">${esc(statusLabel[w.status]||w.status||'-')}</span></div><div class="worker-body"><dl class="kv"><dt>現在</dt><dd>${esc(w.currentTask||'-')}</dd>${branch}<dt>反映準備</dt><dd>${w.readyForApply?'完了':'未完了'}</dd><dt>公開更新</dt><dd>${esc(fmt(w.updatedAt))}</dd></dl><div class="progress" aria-label="進捗 ${pct}%"><span style="width:${pct}%"></span></div><div class="progress-meta"><span>${completed} / ${total}</span><span>${pct}%</span></div>${w.startPrompt?`<div class="prompt-box"><div class="prompt-label"><span>開始文</span><button class="copy" type="button" data-prompt="${encodeURIComponent(w.startPrompt)}">コピー</button></div><details class="prompt-details"><summary>開始文を表示</summary><pre class="prompt">${esc(w.startPrompt)}</pre></details></div>`:''}</div></article>`}
+function bindCopy(){document.querySelectorAll('.copy').forEach(btn=>btn.addEventListener('click',async()=>{const text=decodeURIComponent(btn.dataset.prompt||'');let ok=false;try{await navigator.clipboard.writeText(text);ok=true}catch{}if(!ok){const a=document.createElement('textarea');a.value=text;a.style.position='fixed';a.style.opacity='0';document.body.appendChild(a);a.select();try{ok=document.execCommand('copy')}catch{}a.remove()}const old=btn.textContent;btn.textContent=ok?'コピー済み':'コピー失敗';setTimeout(()=>btn.textContent=old,1500)},{once:true}))}
+async function loadProjectIdentity(){const slug=document.body.dataset.projectSlug;const r=await fetch(new URL('projects.json',DASHBOARD_ROOT),{cache:'no-store'});if(!r.ok)throw new Error(`projects.json HTTP ${r.status}`);const registry=await r.json();const project=(registry.projects||[]).find(p=>p.slug===slug);if(!project)throw new Error(`Unknown project: ${slug}`);return project}
+function renderIdle(project,control){document.getElementById('projectName').textContent=project.name;document.getElementById('repoPath').textContent=project.repository;document.getElementById('projectStatus').textContent=statusLabel[control.status]||control.status||'待機中';document.getElementById('runId').textContent='なし';document.getElementById('updatedAt').textContent=fmt(control.updatedAt);document.getElementById('workerGrid').innerHTML='<div class="notice"><strong>現在Active Runはありません。</strong>このRepositoryで並列作業を開始すると、A/B/C/D/Iの状態がここへ表示されます。</div>';document.getElementById('liveNotice').textContent='Project専用Control Branchを15秒ごとに確認しています。'}
+async function refresh(project){const control=await fetchJson(controlUrl(project.slug));if(!validControl(control,project))throw new Error('Control identity mismatch');if(!control.activeRunId){renderIdle(project,control);return}document.getElementById('projectName').textContent=project.name;document.getElementById('repoPath').textContent=project.repository;document.getElementById('projectStatus').textContent=statusLabel[control.status]||control.status||'-';document.getElementById('runId').textContent=control.activeRunId;document.getElementById('updatedAt').textContent=fmt(control.updatedAt);const defs=Array.isArray(control.workers)?control.workers:[];const statuses=await Promise.allSettled(defs.map(w=>fetchJson(workerUrl(project.slug,control.activeRunId,w.id))));let live=0;const merged=defs.map((base,i)=>{const res=statuses[i];if(res.status!=='fulfilled')return base;const s=res.value;if(s.runId!==control.activeRunId||s.worker!==base.id||s.projectSlug!==project.slug)return base;live++;const out={...base};for(const f of PUBLIC_STATUS_FIELDS){if(Object.prototype.hasOwnProperty.call(s,f))out[f]=s[f]}return out});document.getElementById('workerGrid').innerHTML=merged.map(workerCard).join('');document.getElementById('liveNotice').textContent=`${live}/${defs.length} Workerを専用Status Branchから取得。15秒ごとに更新します。`;bindCopy()}
+(async()=>{try{const project=await loadProjectIdentity();await refresh(project);setInterval(()=>refresh(project).catch(e=>{document.getElementById('liveNotice').textContent=`更新失敗: ${e.message}`}),REFRESH_MS)}catch(e){document.getElementById('workerGrid').innerHTML=`<div class="error">${esc(e.message)}</div>`}})();
