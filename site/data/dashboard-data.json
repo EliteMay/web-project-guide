@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "source": "sanitized-public-snapshot",
+  "sourceRepository": "EliteMay/web-project-data",
+  "runId": "RUN-20260910-001",
+  "runStatus": "blocked",
+  "assignmentRevision": 1,
+  "snapshotUpdatedAt": "2026-09-10T16:46:00+09:00",
+  "snapshotAutoRefresh": false,
+  "syncCadence": "paused",
+  "dataMainAtSnapshot": "e6d81a1442890107632a5e84e78f7e39950dec83",
+  "guideCommitAtPlanning": "afdddbb440b18ec4980a3e9e635fc4ae6236bd55",
+  "note": "Manual one-time public snapshot refresh. RUN-20260910-001 remains paused; Private Data is authoritative.",
+  "workers": [
+    {"id":"A","role":"準備Worker","title":"Security core/privacy + CHANGELOG fingerprint","status":"ready_for_apply","completed":26,"total":26,"currentTask":"Preparation complete; awaiting Coordinator/Integration Worker apply","readyForApply":true,"workBranch":"parallel/RUN-20260910-001/A","updatedAt":"2026-09-10T15:18:01+09:00","startPrompt":"あなたは会話Aです。\nRun: RUN-20260910-001\nまず最新の web-project-guide の README.md / START_HERE.md を読み、GuideはREAD ONLYとして扱ってください。次に web-project-data の migrations/2026/MIG-20260908-GUIDE-V1-TO-V2/parallel-runs/RUN-20260910-001/run.json と A/TASK.md・A/state.json を読み、workBranch=parallel/RUN-20260910-001/A を確認してください。Data mainへは書かず、その専用Branch上でA/state.jsonをSHA付きでclaimしてから担当範囲だけ進めてください。完成成果物はAのRunフォルダへ保存し、自分でWorker branchをmergeしないでください。"},
+    {"id":"B","role":"準備Worker","title":"Testing core/oracle + Security navigation fingerprint","status":"ready_for_apply","completed":26,"total":26,"currentTask":"Preparation complete; awaiting Coordinator/Integration Worker apply","readyForApply":true,"workBranch":"parallel/RUN-20260910-001/B","updatedAt":"2026-09-10T15:31:18+09:00","startPrompt":"あなたは会話Bです。\nRun: RUN-20260910-001\nまず最新の web-project-guide の README.md / START_HERE.md を読み、GuideはREAD ONLYとして扱ってください。次に web-project-data の migrations/2026/MIG-20260908-GUIDE-V1-TO-V2/parallel-runs/RUN-20260910-001/run.json と B/TASK.md・B/state.json を読み、workBranch=parallel/RUN-20260910-001/B を確認してください。Data mainへは書かず、その専用Branch上でB/state.jsonをSHA付きでclaimしてから担当範囲だけ進めてください。完成成果物はBのRunフォルダへ保存し、自分でWorker branchをmergeしないでください。"},
+    {"id":"C","role":"準備Worker","title":"Security browser/cloud + Testing content/external fingerprint","status":"blocked","completed":26,"total":26,"currentTask":"Blocker rechecked; integration handoff documented","readyForApply":false,"workBranch":"parallel/RUN-20260910-001/C","updatedAt":"2026-09-10T15:14:58+09:00","startPrompt":"あなたは会話Cです。\nRun: RUN-20260910-001\nまず最新の web-project-guide の README.md / START_HERE.md を読み、GuideはREAD ONLYとして扱ってください。次に web-project-data の migrations/2026/MIG-20260908-GUIDE-V1-TO-V2/parallel-runs/RUN-20260910-001/run.json と C/TASK.md・C/state.json を読み、workBranch=parallel/RUN-20260910-001/C を確認してください。Data mainへは書かず、その専用Branch上でC/state.jsonをSHA付きでclaimしてから担当範囲だけ進めてください。完成成果物はCのRunフォルダへ保存し、自分でWorker branchをmergeしないでください。"},
+    {"id":"D","role":"準備Worker","title":"Testing measurement/performance/final + remaining singles fingerprint","status":"blocked","completed":27,"total":27,"currentTask":"Paused by user request; completed output preserved","readyForApply":true,"workBranch":"parallel/RUN-20260910-001/D","updatedAt":"2026-09-10T14:49:00+09:00","startPrompt":"あなたは会話Dです。\nRun: RUN-20260910-001\nまず最新の web-project-guide の README.md / START_HERE.md を読み、GuideはREAD ONLYとして扱ってください。次に web-project-data の migrations/2026/MIG-20260908-GUIDE-V1-TO-V2/parallel-runs/RUN-20260910-001/run.json と D/TASK.md・D/state.json を読み、workBranch=parallel/RUN-20260910-001/D を確認してください。Data mainへは書かず、その専用Branch上でD/state.jsonをSHA付きでclaimしてから担当範囲だけ進めてください。完成成果物はDのRunフォルダへ保存し、自分でWorker branchをmergeしないでください。"},
+    {"id":"I","role":"Integration Worker","title":"A/B/C/D成果物の統合・正式反映","status":"blocked","completed":0,"total":4,"currentTask":"Paused by user request","readyForApply":false,"workBranch":null,"updatedAt":"2026-09-10T14:49:00+09:00","startPrompt":"あなたは会話Iです。\nRun: RUN-20260910-001\nまず最新の web-project-guide の README.md / START_HERE.md と current Guide/Data main を確認してください。次に web-project-data の同Runの run.json と I/TASK.md を読み、A/B/C/Dそれぞれの workBranch 上の state.json・change-set.json・validation.json・result.md・proposed成果物を確認してください。ready_for_applyになった成果物だけをcurrent mainと再照合し、I専用のintegration branchで正式Data/Guideへ直列適用してください。Worker branch自体はmainへ直接mergeしないでください。"}
+  ]
+}

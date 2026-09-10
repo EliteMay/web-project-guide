@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Web Project Guide のルールを、人間向けに AI の分岐と作業手順として説明するページです。">
+  <title>AIの作業ルール | Web Project Guide</title>
+  <link rel="stylesheet" href="human-guide.css">
+  <link rel="stylesheet" href="mobile-fixes.css">
+</head>
+<body>
+  <header class="sitebar">
+    <div class="sitebar-inner">
+      <a class="brand" href="index.html">Web Project Guide</a>
+      <nav class="tabs" aria-label="Guide navigation">
+        <a href="work-dashboard.html">作業ダッシュボード</a>
+        <a href="ai-workflow.html" aria-current="page">AIの作業ルール</a>
+        <a href="rules.html">ルール検索</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">HOW THE AI DECIDES</p>
+        <h1>AIが「何を読んで、何を調べて、どこで実装するか」を見る。</h1>
+        <p class="lead">このページはOwner番号を覚えるためのものではありません。依頼を受けたあと、AIがどう分岐して作業範囲を決めるかを、人間が追える形でまとめています。正式な細かい条件は各Owner Docが正本です。</p>
+      </div>
+      <div class="hero-meta">
+        <div class="meta-row"><span>開始地点</span><strong>Current GitHub</strong></div>
+        <div class="meta-row"><span>基本</span><strong>必要なRuleだけ読む</strong></div>
+        <div class="meta-row"><span>終了</span><strong>最終Validation</strong></div>
+      </div>
+    </header>
+
+    <section class="section">
+      <div class="notice">
+        <strong>一番大事な考え方</strong>
+        AIは古い会話や記憶だけで続きを決めません。現在のRepository、Requirements、Spec、Rules、Branch / PR / Commitなどを見て、今の状態から作業を始めます。
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="route-title">
+      <div class="section-head">
+        <div>
+          <h2 id="route-title">最初の分岐：何をしようとしている？</h2>
+          <p class="section-intro">依頼の種類で読むRuleが変わります。全部のGuideを毎回読むわけではありません。</p>
+        </div>
+      </div>
+      <div class="table-scroll" tabindex="0" aria-label="依頼ごとのAI作業ルート。横にスクロールできます。">
+        <table class="decision-table">
+          <thead><tr><th>依頼</th><th>AIが最初に見ること</th><th>主なRoute</th></tr></thead>
+          <tbody>
+            <tr><td>新しいサイト / アプリ / ゲーム</td><td>目的、利用者、主要Task、必要機能、保存、完成条件</td><td>Requirements → Structure / Flow → 専門Owner → Testing</td></tr>
+            <tr data-route="learning"><td>学習・解説サイト</td><td>Starting Knowledge、Learning Objective、前提Concept、Practice、理解確認、次のStep</td><td>Requirements → Profile → Structure / Flow → Learning Verification → UI</td></tr>
+            <tr><td>バグ修正</td><td>現在の症状、再現条件、既存仕様、原因に関係する範囲</td><td>Current Repo → 専門Owner → Smallest Safe Change → Test</td></tr>
+            <tr><td>UIを大きく変える</td><td>今のTask / IAまで変えるか、見た目だけか</td><td>Structure / Flow → Visual Research → UI / UX → Visual Check</td></tr>
+            <tr><td>調査して方針を決める</td><td>何を知ればDecisionが良くなるか、不確実性は高いか</td><td>Evidence-first Research → Topic Owner → Decision → Validation</td></tr>
+            <tr><td>保存やSchema変更</td><td>既存データを壊さないか、Migration / Backup / Restoreが必要か</td><td>Data / Storage → Version → Testing</td></tr>
+            <tr data-route="web-deployment"><td>一般Web公開 / Runtime変更</td><td>Staticで足りるか、Server実行・Secret・Background処理が必要か、Environment差分は何か</td><td>Project Management → Maintenance → Testing → Reliability / Security</td></tr>
+            <tr><td>GitHub Pagesで公開</td><td>Publishing Source、subpath、404 / direct-open、公開Revision、実URL</td><td>GitHub Pages → Project Management → Testing</td></tr>
+            <tr data-route="browser-compatibility"><td>Browser互換性 / 新Web API</td><td>対象User / Runtime、必要Feature、fallback、実際に差が出るBrowser / Device</td><td>Requirements → Testing → Dependencies → Current Evidence</td></tr>
+            <tr data-route="external-integration"><td>外部API / Webhook / Supabase</td><td>Integration境界、外部Authority、失敗・Retry、Auth、Version / Deprecation</td><td>Architecture → Reliability → Security → Testing → Dependencies</td></tr>
+            <tr><td>Electron / Windows配布</td><td>Installer、Auto Update、OS固有機能、Security、実機確認</td><td>Electron → Security → Testing → Observability</td></tr>
+            <tr><td>会話移行 / 並列作業</td><td>今のBranch / PR / Run / holder / checkpointが一意か</td><td>Conversation Recovery → Project Management → Parallel Run</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="mainflow-title">
+      <div class="section-head">
+        <div>
+          <h2 id="mainflow-title">基本の作業フロー</h2>
+          <p class="section-intro">大きな作業は、だいたいこの順番で狭めていきます。</p>
+        </div>
+      </div>
+      <div class="flow">
+        <div class="flow-step"><div class="step-no">1</div><div class="step-panel"><h3>Current Repositoryを確認</h3><p>README、START_HERE、Requirements、Spec、現在コード、PR / Branchなどから「今どうなっているか」を確定します。</p></div></div>
+        <div class="flow-step"><div class="step-no">2</div><div class="step-panel"><h3>作業を分類して必要なOwnerだけ読む</h3><p>保存ならData、SecurityならSecurity、ゲームならGame、UI構造ならStructure / FlowというようにRouteを絞ります。</p></div></div>
+        <div class="flow-step"><div class="step-no">3</div><div class="step-panel"><h3>要件と壊せないものを確認</h3><p>目的、利用者、主要Task、保存データ、互換性、公開方法などを確認し、既存仕様を勝手に消しません。</p></div></div>
+        <div class="flow-step"><div class="step-no">4</div><div class="step-panel"><h3>Research Gate</h3><p>重要で不確実な判断なら調査へ。原因と正解が明確な小規模修正ならDeep Researchを挟まず進みます。</p></div></div>
+        <div class="flow-step"><div class="step-no">5</div><div class="step-panel"><h3>構造 → 実装</h3><p>大きなUIではGoal → Task → Information / Function → IA → Navigation / Flow → State → Pageの順に考え、見た目だけ先に固定しません。</p></div></div>
+        <div class="flow-step"><div class="step-no">6</div><div class="step-panel"><h3>Validation</h3><p>実装したファイルだけではなく、最終Commit / 本番 / Browser / 実機など、必要な最終状態で確認します。</p></div></div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="current-routes-title">
+      <div class="section-head">
+        <div>
+          <h2 id="current-routes-title">最近追加・強化された専門Route</h2>
+          <p class="section-intro">同じ「Web制作」でも、学習、Runtime、Browser、外部連携では確認する事実と失敗条件が違います。</p>
+        </div>
+      </div>
+      <div class="branch-grid">
+        <div class="branch"><strong>学習・解説</strong><p>教材があるだけで完成にせず、開始知識、学習目標、前提、説明 / Practice、理解・応用Evidence、Feedback、Next Stepを確認します。</p></div>
+        <div class="branch"><strong>Web Deployment / Runtime</strong><p>Provider名を先に決めず、Static files、Server execution、Secret、Background workなど必要Capabilityから形を選びます。</p></div>
+        <div class="branch"><strong>Browser互換性</strong><p>Compatibility表だけで完成扱いせず、Target User / Runtimeに合うRepresentative Browser / DeviceでPrimary Taskを確認します。</p></div>
+        <div class="branch"><strong>外部Integration</strong><p>HTTP成功だけをOracleにせず、Auth、Authority、Retry、Duplicate、Provider failure、Version lifecycleまでProduct behaviorとして確認します。</p></div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="research-title">
+      <div class="section-head">
+        <div>
+          <h2 id="research-title">Research Gate：いつ論文を見る？</h2>
+          <p class="section-intro">「何でも論文を探す」ではなく、重要度と不確実性で調査の深さを変えます。</p>
+        </div>
+      </div>
+      <div class="research-ladder">
+        <article class="research-level">
+          <h3>Quick Research</h3>
+          <p>Version、仕様、対応有無、日付などの単純な事実。公式資料や一次Sourceで確認できれば終わります。</p>
+        </article>
+        <article class="research-level">
+          <h3>Standard Research</h3>
+          <p>普通の比較や改善判断。複数の独立Source、Alternative、Limit、Projectへの適用可能性を確認します。</p>
+        </article>
+        <article class="research-level">
+          <h3>Deep Research</h3>
+          <p>重要かつ不確実な判断。既存研究、Original Source、賛成・反対Evidence、Bias、Failure、Evidence Mapまで確認します。</p>
+        </article>
+      </div>
+
+      <div class="branch-grid">
+        <div class="branch"><strong>Academic EvidenceがあるTopic</strong><p>Systematic Review → Meta-analysis → Peer-reviewed Paper → Independent Replication → Experimentなどを優先候補にします。</p></div>
+        <div class="branch"><strong>Software / Platform仕様</strong><p>公式Documentation、Standards、一次Sourceを優先します。古いBlogだけで現在仕様を決めません。</p></div>
+        <div class="branch"><strong>UI / Productの使われ方</strong><p>Real Product、User Research、Case Study、実際のSite / Game、必要ならCommunityの実利用Evidenceも見ます。</p></div>
+        <div class="branch"><strong>検索しても決まらない</strong><p>無限に調査を続けず、Prototype、Measurement、Playtest、User TestなどProject内の検証へ移します。</p></div>
+      </div>
+
+      <div class="evidence-list" aria-label="Evidence examples">
+        <div class="evidence"><strong>研究</strong><br>Systematic Review / Meta-analysis / Paper / Experiment</div>
+        <div class="evidence"><strong>公式</strong><br>Standards / Official Documentation / 公的機関</div>
+        <div class="evidence"><strong>実例</strong><br>Real Product / Real Game / Case Study / Postmortem</div>
+        <div class="evidence"><strong>利用者</strong><br>User Research / Survey / Community / Forum / Reddit</div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="ui-title">
+      <div class="section-head">
+        <div>
+          <h2 id="ui-title">UIを作るときの分岐</h2>
+          <p class="section-intro">「モダンにして」でいきなりCSSへ行かないための分岐です。</p>
+        </div>
+      </div>
+      <div class="flow">
+        <div class="flow-step"><div class="step-no">A</div><div class="step-panel"><h3>Navigation / Task Flowまで変わる？</h3><p>Yes → 先にStructure / Flow。No → 既存構造を維持してUI / Visualへ。</p><div class="route-strip"><span>Goal</span><span>Task</span><span>IA</span><span>Navigation</span><span>State</span><span>Page</span></div></div></div>
+        <div class="flow-step"><div class="step-no">B</div><div class="step-panel"><h3>MeaningfulなVisual Change？</h3><p>Yes → 同じ用途の実在UIやEvidenceを調べて方向を決めます。色だけ変えて「別デザイン」にしません。</p></div></div>
+        <div class="flow-step"><div class="step-no">C</div><div class="step-panel"><h3>実装後に人が見る状態で確認</h3><p>Browser / Screenshot / Responsive / Overflow / Empty / Error / Loading / Keyboardなど、必要な状態を確認します。</p></div></div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="decision-title">
+      <div class="section-head">
+        <div>
+          <h2 id="decision-title">AIが勝手に進める範囲 / 止まる範囲</h2>
+          <p class="section-intro">何でも確認待ちにするのでも、何でも勝手に決めるのでもありません。</p>
+        </div>
+      </div>
+      <div class="table-scroll" tabindex="0" aria-label="AIが進める範囲と止まる範囲。横にスクロールできます。">
+        <table class="decision-table">
+          <thead><tr><th>状況</th><th>AIの動き</th></tr></thead>
+          <tbody>
+            <tr><td>Current Repoと既存Intentから合理的に決められる</td><td>Best Reasonable Decisionで進める。細かい確認を毎回返さない。</td></tr>
+            <tr><td>既存仕様を壊さず安全に直せる小変更</td><td>必要Ownerだけ確認し、Smallest Safe Changeで修正してValidation。</td></tr>
+            <tr><td>重大な仕様変更・削除・Normative Owner衝突</td><td>勝手に決めず、その変更経路を止めてUser Decisionへ。</td></tr>
+            <tr><td>Source / Branch / PR / Runが一意に復旧できない</td><td>推測で上書きせず、Recovery / unresolvedとして止める。</td></tr>
+            <tr><td>Validationが失敗した</td><td>完成扱いしない。原因を直すか、未確認として明示する。</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="parallel-title">
+      <div class="section-head">
+        <div>
+          <h2 id="parallel-title">複数会話で作業するとき</h2>
+          <p class="section-intro">考える作業は並列、正式ファイルへの反映はIへ集約します。</p>
+        </div>
+      </div>
+      <div class="branch-grid">
+        <div class="branch"><strong>A / B / C / D</strong><p>Guideを読み、調査・要件整理・重複確認・完成版ファイル・事前ValidationまでをPrivate Data側で作ります。</p></div>
+        <div class="branch"><strong>I</strong><p>全Workerの完成成果物を現在mainと再照合して、Data / Guideへ1つずつ正式反映します。</p></div>
+      </div>
+      <p style="margin:14px 0 0"><a href="work-dashboard.html">現在のA/B/C/D/Iと開始文を見る →</a></p>
+    </section>
+
+    <section class="section" aria-labelledby="original-title">
+      <div class="section-head">
+        <div>
+          <h2 id="original-title">詳しい条件を読みたいとき</h2>
+          <p class="section-intro">このページは説明用。正式条件は原文を確認します。</p>
+        </div>
+      </div>
+      <div class="route-strip">
+        <a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/01-requirements.md">Requirements</a>
+        <a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/02-architecture.md">Architecture</a>
+        <a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/04-ui-ux-accessibility.md">UI / UX</a>
+        <a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/07-testing-quality.md">Testing</a>
+        <a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/08-github-pages.md">GitHub Pages</a>
+        <a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/10-project-management.md">Project Management</a>
+        <a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/12-project-profiles.md">Profiles</a>
+        <a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/13-dependencies-assets.md">Dependencies</a>
+        <a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/18-domain-first-visual-research.md">Visual Research</a>
+        <a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/20-evidence-first-research.md">Evidence-first Research</a>
+        <a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/21-rule-routing-preflight.md">Rule Routing</a>
+        <a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/22-task-first-structure-flow-research.md">Structure / Flow</a>
+        <a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/23-conversation-handoff-recovery.md">Conversation Recovery</a>
+      </div>
+    </section>
+
+    <footer class="footer">このページは人間向けの説明です。MUST / SHOULD / CONDITIONALなどの正式な条件は各Owner Docを正本として扱います。</footer>
+  </main>
+</body>
+</html>

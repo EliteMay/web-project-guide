@@ -1,0 +1,793 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="web-project-guide のルールを、人が機能や作業内容から分かりやすく探すための入口です。">
+  <title>Web Project Guide</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #f6f8fa;
+      --surface: #ffffff;
+      --surface-2: #f6f8fa;
+      --text: #1f2328;
+      --muted: #59636e;
+      --border: #d1d9e0;
+      --accent: #0969da;
+      --accent-soft: #ddf4ff;
+      --good: #1a7f37;
+      --warn: #9a6700;
+      --sidebar: 248px;
+      --content: 1120px;
+      --radius: 8px;
+      --shadow: 0 1px 2px rgba(31,35,40,.04);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0d1117;
+        --surface: #151b23;
+        --surface-2: #0d1117;
+        --text: #f0f6fc;
+        --muted: #9198a1;
+        --border: #3d444d;
+        --accent: #4493f8;
+        --accent-soft: #102f4c;
+        --good: #3fb950;
+        --warn: #d29922;
+        --shadow: none;
+      }
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans JP", sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      line-height: 1.65;
+    }
+
+    a { color: var(--accent); text-underline-offset: 2px; }
+    button, input { font: inherit; }
+
+    .skip-link {
+      position: fixed;
+      left: 12px;
+      top: -60px;
+      z-index: 100;
+      padding: 8px 12px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+    }
+    .skip-link:focus { top: 12px; }
+
+    .shell { min-height: 100vh; }
+
+    .sidebar {
+      position: fixed;
+      inset: 0 auto 0 0;
+      width: var(--sidebar);
+      padding: 24px 18px;
+      border-right: 1px solid var(--border);
+      background: var(--surface);
+      overflow-y: auto;
+    }
+
+    .brand {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--text);
+      font-weight: 720;
+      font-size: 18px;
+      text-decoration: none;
+      letter-spacing: -.01em;
+    }
+
+    .version {
+      min-height: 24px;
+      margin-bottom: 24px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .nav-label {
+      margin: 18px 10px 6px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .04em;
+    }
+
+    .side-nav { display: grid; gap: 2px; }
+    .side-nav a {
+      padding: 7px 10px;
+      border-radius: 6px;
+      color: var(--text);
+      text-decoration: none;
+      font-size: 14px;
+    }
+    .side-nav a:hover,
+    .side-nav a:focus-visible { background: var(--surface-2); }
+
+    .sidebar-note {
+      margin-top: 28px;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--muted);
+      font-size: 12px;
+      background: var(--surface-2);
+    }
+
+    .main {
+      margin-left: var(--sidebar);
+      min-width: 0;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      padding: 12px 28px;
+      border-bottom: 1px solid var(--border);
+      background: color-mix(in srgb, var(--bg) 94%, transparent);
+      backdrop-filter: blur(12px);
+    }
+
+    .search-wrap {
+      max-width: 720px;
+      position: relative;
+    }
+
+    .search {
+      width: 100%;
+      height: 42px;
+      padding: 0 14px 0 40px;
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      color: var(--text);
+      background: var(--surface);
+      outline: none;
+    }
+    .search:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent);
+    }
+    .search-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      width: 16px;
+      height: 16px;
+      transform: translateY(-50%);
+      color: var(--muted);
+      pointer-events: none;
+    }
+
+    .content {
+      width: min(calc(100% - 48px), var(--content));
+      margin: 0 auto;
+      padding: 52px 0 88px;
+    }
+
+    .hero {
+      padding-bottom: 32px;
+      border-bottom: 1px solid var(--border);
+    }
+    .eyebrow {
+      margin: 0 0 8px;
+      color: var(--accent);
+      font-size: 13px;
+      font-weight: 700;
+    }
+    h1 {
+      max-width: 760px;
+      margin: 0;
+      font-size: clamp(32px, 4vw, 46px);
+      line-height: 1.16;
+      letter-spacing: -.03em;
+    }
+    .lead {
+      max-width: 760px;
+      margin: 16px 0 0;
+      color: var(--muted);
+      font-size: 17px;
+    }
+
+    .priority {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 22px;
+    }
+    .priority span {
+      padding: 5px 9px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: var(--surface);
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .section { padding-top: 44px; scroll-margin-top: 88px; }
+    .section-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 18px;
+    }
+    .section h2 {
+      margin: 0;
+      font-size: 24px;
+      line-height: 1.3;
+      letter-spacing: -.015em;
+    }
+    .section-intro {
+      max-width: 700px;
+      margin: 7px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .count { color: var(--muted); font-size: 13px; white-space: nowrap; }
+
+    .route-list,
+    .feature-list {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .route,
+    .feature {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+
+    .route {
+      display: grid;
+      grid-template-columns: 40px 1fr;
+      gap: 12px;
+      padding: 18px;
+    }
+    .route-number {
+      display: grid;
+      place-items: center;
+      width: 34px;
+      height: 34px;
+      border-radius: 7px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .route h3,
+    .feature h3 { margin: 0; font-size: 16px; line-height: 1.35; }
+    .route p,
+    .feature p { margin: 7px 0 0; color: var(--muted); font-size: 14px; }
+    .route-links,
+    .feature-links { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+    .route-links a,
+    .feature-links a { font-size: 13px; font-weight: 600; }
+
+    .feature { padding: 18px; }
+    .feature-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .tag {
+      flex: 0 0 auto;
+      padding: 2px 7px;
+      border-radius: 999px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 650;
+    }
+    .feature ul {
+      margin: 12px 0 0;
+      padding-left: 20px;
+      color: var(--text);
+      font-size: 13px;
+    }
+    .feature li + li { margin-top: 4px; }
+
+    .principles {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: var(--surface);
+    }
+    .principle {
+      padding: 20px;
+      border-bottom: 1px solid var(--border);
+    }
+    .principle:nth-child(odd) { border-right: 1px solid var(--border); }
+    .principle:nth-last-child(-n+2) { border-bottom: 0; }
+    .principle strong { display: block; margin-bottom: 5px; font-size: 14px; }
+    .principle p { margin: 0; color: var(--muted); font-size: 13px; }
+
+    .owner-list {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+    }
+    .owner-list a {
+      display: block;
+      min-height: 100%;
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--surface);
+      color: var(--text);
+      text-decoration: none;
+      font-size: 13px;
+    }
+    .owner-list a:hover,
+    .owner-list a:focus-visible { border-color: var(--accent); }
+    .owner-id { color: var(--muted); font-weight: 700; margin-right: 6px; }
+
+    .empty {
+      display: none;
+      margin-top: 14px;
+      padding: 20px;
+      border: 1px dashed var(--border);
+      border-radius: var(--radius);
+      color: var(--muted);
+      background: var(--surface);
+      text-align: center;
+    }
+
+    .footer {
+      margin-top: 56px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    mark {
+      padding: 0;
+      color: inherit;
+      background: color-mix(in srgb, var(--accent) 25%, transparent);
+    }
+
+    @media (max-width: 900px) {
+      .sidebar {
+        position: static;
+        width: auto;
+        padding: 14px 18px;
+        border-right: 0;
+        border-bottom: 1px solid var(--border);
+      }
+      .brand { display: inline-block; margin-right: 10px; }
+      .version { display: inline; margin: 0; }
+      .nav-label, .side-nav, .sidebar-note { display: none; }
+      .main { margin-left: 0; }
+      .topbar { top: 0; padding: 10px 18px; }
+      .content { width: min(calc(100% - 32px), var(--content)); padding-top: 36px; }
+      .owner-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 680px) {
+      .route-list, .feature-list, .principles, .owner-list { grid-template-columns: 1fr; }
+      .principle,
+      .principle:nth-child(odd),
+      .principle:nth-last-child(-n+2) {
+        border-right: 0;
+        border-bottom: 1px solid var(--border);
+      }
+      .principle:last-child { border-bottom: 0; }
+      .section-head { align-items: start; flex-direction: column; gap: 4px; }
+      h1 { font-size: 34px; }
+      .lead { font-size: 15px; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">本文へ移動</a>
+
+  <div class="shell">
+    <aside class="sidebar" aria-label="ページ内ナビゲーション">
+      <a class="brand" href="#top">Web Project Guide</a>
+      <div class="version" id="guideVersion">最新版を参照</div>
+
+      <div class="nav-label">このページ</div>
+      <nav class="side-nav">
+        <a href="#start">何をしたい？</a>
+        <a href="#features">機能から探す</a>
+        <a href="#principles">迷ったときの基本</a>
+        <a href="#owners">原文一覧</a>
+      </nav>
+
+      <div class="nav-label">元のGuide</div>
+      <nav class="side-nav">
+        <a href="https://github.com/EliteMay/web-project-guide/blob/main/START_HERE.md">START_HERE.md</a>
+        <a href="https://github.com/EliteMay/web-project-guide/blob/main/README.md">README.md</a>
+        <a href="https://github.com/EliteMay/web-project-guide">GitHub Repository</a>
+      </nav>
+
+      <p class="sidebar-note">このHTMLは人間向けの案内ページです。細かい条件や正式なルールは、リンク先のOwner Docを正本として扱います。</p>
+    </aside>
+
+    <main class="main" id="main">
+      <div class="topbar">
+        <div class="search-wrap">
+          <svg class="search-icon" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M11.5 10.5a5.5 5.5 0 1 0-1 1l3.5 3.5 1-1-3.5-3.5ZM2 7a5 5 0 1 1 10 0A5 5 0 0 1 2 7Z"/></svg>
+          <input id="search" class="search" type="search" placeholder="例: 保存、API、学習、Browser、公開、ゲーム…" aria-label="ガイド内を検索">
+        </div>
+      </div>
+
+      <div class="content" id="top">
+        <header class="hero">
+          <p class="eyebrow">人が見るためのルール案内</p>
+          <h1>作りたい機能から、必要なルールを探す。</h1>
+          <p class="lead">難しい章番号を覚える必要はありません。「保存を付けたい」「検索を作りたい」「サイトが重い」など、やりたいことから確認できます。詳しい条件が必要なときだけ原文へ進んでください。</p>
+          <div class="priority" aria-label="基本優先順位">
+            <span>1 操作性</span><span>2 分かりやすさ</span><span>3 安定性</span><span>4 軽量化</span><span>5 保守しやすさ</span><span>6 見た目</span>
+          </div>
+        </header>
+
+        <section class="section" id="start">
+          <div class="section-head">
+            <div>
+              <h2>何をしたい？</h2>
+              <p class="section-intro">まず作業の種類で入口を決めます。全部のルールを読む必要はありません。</p>
+            </div>
+          </div>
+
+          <div class="route-list searchable-group">
+            <article class="route searchable" data-search="新しい サイト アプリ 新規 作る 要件 画面 機能 設計 UI">
+              <div class="route-number">01</div>
+              <div>
+                <h3>新しいサイト / アプリを作る</h3>
+                <p>目的と利用者を決め、必要な機能・導線・状態を考えてから画面へ落とします。</p>
+                <div class="route-links"><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/01-requirements.md">要件</a><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/22-task-first-structure-flow-research.md">構造・導線</a><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/07-testing-quality.md">完成確認</a></div>
+              </div>
+            </article>
+
+            <article class="route searchable" data-search="機能 追加 feature 新機能 ボタン 検索 保存 編集">
+              <div class="route-number">02</div>
+              <div>
+                <h3>機能を追加する</h3>
+                <p>「機能を置く」より先に、その機能がどの作業を助けるか、失敗時にどう戻れるかを確認します。</p>
+                <div class="route-links"><a href="#features">機能一覧を見る</a><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/22-task-first-structure-flow-research.md">構造・Flow原文</a></div>
+              </div>
+            </article>
+
+            <article class="route searchable" data-search="バグ 不具合 壊れた 直す 修正 bug fix エラー">
+              <div class="route-number">03</div>
+              <div>
+                <h3>不具合を直す</h3>
+                <p>現行コードと仕様を確認し、原因に関係する範囲だけを最小安全変更で直します。</p>
+                <div class="route-links"><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/10-project-management.md">作業管理</a><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/07-testing-quality.md">テスト</a></div>
+              </div>
+            </article>
+
+            <article class="route searchable" data-search="見た目 UI デザイン レイアウト ダサい 改善 redesign visual css">
+              <div class="route-number">04</div>
+              <div>
+                <h3>見た目を大きく直す</h3>
+                <p>いきなりCSSを足さず、今のUIと同じ用途の実例を見て、構造 → 文字 → 余白 → 色の順で組み直します。</p>
+                <div class="route-links"><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/18-domain-first-visual-research.md">見た目の調査</a><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/04-ui-ux-accessibility.md">UI / UX</a></div>
+              </div>
+            </article>
+
+            <article class="route searchable" data-search="公開 deploy deployment GitHub Pages 本番 URL release 配布 static hosting">
+              <div class="route-number">05</div>
+              <div>
+                <h3>公開・配布する</h3>
+                <p>Static / Serverless等のRuntimeを必要Capabilityから選び、実際の本番状態・公開URL・Rollbackまで確認します。</p>
+                <div class="route-links"><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/10-project-management.md">Web Deployment</a><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/08-github-pages.md">GitHub Pages</a><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/07-testing-quality.md">Deployment確認</a></div>
+              </div>
+            </article>
+
+            <article class="route searchable" data-search="ゲーム browser game save playtest core loop progression ゲーム制作">
+              <div class="route-number">06</div>
+              <div>
+                <h3>ゲームを作る・変える</h3>
+                <p>Core Loop、進行、Save、主要Flowを扱う変更は、実際のPlaytestまで含めて確認します。</p>
+                <div class="route-links"><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/19-game-development.md">ゲーム制作</a><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/03-data-storage.md">Save</a></div>
+              </div>
+            </article>
+
+            <article class="route searchable" data-route="learning" data-search="学習 解説 learning 教材 勉強 assessment practice 理解 学習サイト">
+              <div class="route-number">07</div>
+              <div>
+                <h3>学習・解説サイトを作る</h3>
+                <p>教材の量だけでなく、開始知識、学習目標、前提Concept、Practice、理解確認、Feedback、次のStepを設計します。</p>
+                <div class="route-links"><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/01-requirements.md">学習要件</a><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/12-project-profiles.md">Profile</a><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/22-task-first-structure-flow-research.md">学習Flow</a><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/07-testing-quality.md">理解確認</a></div>
+              </div>
+            </article>
+
+            <article class="route searchable" data-route="web-deployment" data-search="managed hosting serverless edge backend runtime environment staging preview production web deployment">
+              <div class="route-number">08</div>
+              <div>
+                <h3>WebのRuntime・公開方法を決める</h3>
+                <p>Provider名からではなく、Static file、Server実行、Secret、Background処理などPrimary Taskに必要なCapabilityから選びます。</p>
+                <div class="route-links"><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/10-project-management.md">Deployment / Runtime</a><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/09-maintenance.md">Release / Rollback</a><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/07-testing-quality.md">Environment確認</a></div>
+              </div>
+            </article>
+
+            <article class="route searchable" data-route="browser-compatibility" data-search="browser compatibility web platform api baseline polyfill transpile chrome firefox safari webview 対応">
+              <div class="route-number">09</div>
+              <div>
+                <h3>Browser互換性・新しいWeb APIを判断する</h3>
+                <p>対応表だけで決めず、Target User / Runtime / Primary TaskからSupport Contractと実確認範囲を決めます。</p>
+                <div class="route-links"><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/01-requirements.md">Support Contract</a><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/07-testing-quality.md">Compatibility確認</a><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/13-dependencies-assets.md">Polyfill / Dependencies</a><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/20-evidence-first-research.md">Current Evidence</a></div>
+              </div>
+            </article>
+
+            <article class="route searchable" data-route="external-integration" data-search="API webhook external Supabase SDK CDN integration provider auth retry 外部API 連携">
+              <div class="route-number">10</div>
+              <div>
+                <h3>外部API・Webhook・Supabaseと連携する</h3>
+                <p>接続成功だけで終わらず、責任境界、Authority、Auth、Retry / Duplicate、Provider failure、Version lifecycleまで確認します。</p>
+                <div class="route-links"><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/02-architecture.md">Architecture</a><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/05-performance-reliability.md">Reliability</a><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/06-security.md">Security</a><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/13-dependencies-assets.md">API lifecycle</a></div>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="section" id="features">
+          <div class="section-head">
+            <div>
+              <h2>機能から探す</h2>
+              <p class="section-intro">機能名か困っていることを検索すると、関係ない項目は自動で隠れます。</p>
+            </div>
+            <span class="count" id="featureCount"></span>
+          </div>
+
+          <div class="feature-list searchable-group" id="featureList">
+            <article class="feature searchable" data-search="保存 save データ storage localStorage IndexedDB JSON database database backup restore migration autosave sync cloud">
+              <div class="feature-top"><h3>保存・データ</h3><span class="tag">Data</span></div>
+              <p>ユーザーのデータを残す機能。既存データがある場合は壊さないことが最優先です。</p>
+              <ul><li>何を、どれくらい、いつ保存するか決める</li><li>既存形式を変えるなら移行・Backup・Rollbackを考える</li><li>Import / Restore後の失敗ケースも確認する</li></ul>
+              <div class="feature-links"><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/03-data-storage.md">03 Data / Storage</a><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/09-maintenance.md">09 Version / Maintenance</a></div>
+            </article>
+
+            <article class="feature searchable" data-search="検索 search filter sort 絞り込み 一覧 browse discovery category tag recent favorite no result 0件">
+              <div class="feature-top"><h3>検索・絞り込み・一覧</h3><span class="tag">Findability</span></div>
+              <p>「探す対象を知っている人」と「何があるか見たい人」の両方を考えます。</p>
+              <ul><li>検索だけを壊れた分類の逃げ道にしない</li><li>Category / Filter / Sort / Recentを必要に応じて組み合わせる</li><li>0件時に次の行動を出す</li></ul>
+              <div class="feature-links"><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/22-task-first-structure-flow-research.md">22 Structure / Flow</a><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/04-ui-ux-accessibility.md">04 UI / UX</a></div>
+            </article>
+
+            <article class="feature searchable" data-search="ログイン login auth authentication account permission 権限 secret token password session 認証">
+              <div class="feature-top"><h3>ログイン・認証・権限</h3><span class="tag">Security</span></div>
+              <p>誰が何をできるかを先に決め、秘密情報を公開コードへ置かないようにします。</p>
+              <ul><li>必要な権限だけを渡す</li><li>秘密鍵・Token・PasswordをGitHub Pagesへ置かない</li><li>拒否・期限切れ・未ログイン状態も作る</li></ul>
+              <div class="feature-links"><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/06-security.md">06 Security</a><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/07-testing-quality.md">07 Testing</a></div>
+            </article>
+
+            <article class="feature searchable" data-search="API webhook external 外部API Supabase CDN SDK integration retry timeout external service provider">
+              <div class="feature-top"><h3>外部API・Webhook・Supabase</h3><span class="tag">Integration</span></div>
+              <p>外部サービスが落ちる・遅い・仕様変更する前提で境界を作ります。</p>
+              <ul><li>自分側と外部側の責任範囲を分ける</li><li>Timeout / Retry / 重複Webhookを考える</li><li>SDKやAPIのVersion・廃止も確認する</li></ul>
+              <div class="feature-links"><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/02-architecture.md">02 Architecture</a><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/05-performance-reliability.md">05 Reliability</a><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/13-dependencies-assets.md">13 Dependencies</a></div>
+            </article>
+
+            <article class="feature searchable" data-search="学習 解説 learning 教材 assessment practice quiz review feedback objective prerequisite">
+              <div class="feature-top"><h3>学習・解説コンテンツ</h3><span class="tag">Learning</span></div>
+              <p>教材を並べるだけでなく、何を理解・適用できれば成功かを先に決めます。</p>
+              <ul><li>Starting KnowledgeとLearning Objectiveを分ける</li><li>説明だけでなく必要なPractice / Feedbackを設計する</li><li>理解・応用EvidenceとNext Stepを確認する</li></ul>
+              <div class="feature-links"><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/01-requirements.md">01 Requirements</a><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/12-project-profiles.md">12 Profiles</a><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/22-task-first-structure-flow-research.md">22 Learning Flow</a><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/07-testing-quality.md">07 Verification</a></div>
+            </article>
+
+            <article class="feature searchable" data-search="managed hosting serverless edge backend runtime environment preview staging production deploy web deployment">
+              <div class="feature-top"><h3>Web公開・Runtime・Environment</h3><span class="tag">Deploy</span></div>
+              <p>Static hostingで十分か、Server実行やSecret-backed処理が必要かをPrimary Taskから判断します。</p>
+              <ul><li>必要Runtime capabilityからHosting形態を選ぶ</li><li>Local / Preview / Staging / Productionを目的なく増やさない</li><li>Pipeline成功だけで本番動作確認済みにしない</li></ul>
+              <div class="feature-links"><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/10-project-management.md">10 Deployment</a><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/09-maintenance.md">09 Release / Rollback</a><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/07-testing-quality.md">07 Environment Verification</a></div>
+            </article>
+
+            <article class="feature searchable" data-search="browser compatibility web platform api baseline polyfill transpile chrome firefox safari webview mobile 対応">
+              <div class="feature-top"><h3>Browser・Web Platform互換性</h3><span class="tag">Browser</span></div>
+              <p>「対応と書かれている」ことと、実際のPrimary Taskが対象環境で動くことを分けます。</p>
+              <ul><li>Target User / RuntimeからSupport Contractを決める</li><li>差が出るBrowser / DeviceをRepresentativeに確認する</li><li>fallback / polyfillを使う場合はUnsupported pathも確認する</li></ul>
+              <div class="feature-links"><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/01-requirements.md">01 Support Contract</a><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/07-testing-quality.md">07 Compatibility Verification</a><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/13-dependencies-assets.md">13 Dependencies</a><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/20-evidence-first-research.md">20 Current Evidence</a></div>
+            </article>
+
+            <article class="feature searchable" data-search="作成 編集 削除 create edit delete CRUD undo restore draft autosave confirmation archive">
+              <div class="feature-top"><h3>作成・編集・削除</h3><span class="tag">Editing</span></div>
+              <p>成功時だけでなく、取消・戻る・Undo・復元まで含めて編集体験を作ります。</p>
+              <ul><li>頻繁で戻せる操作はUndo / Restoreを優先検討</li><li>戻せない重大操作は確認やBackupを入れる</li><li>編集中・未保存・保存中・失敗を区別する</li></ul>
+              <div class="feature-links"><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/22-task-first-structure-flow-research.md">22 Structure / Flow</a><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/03-data-storage.md">03 Data / Storage</a></div>
+            </article>
+
+            <article class="feature searchable" data-search="ナビゲーション navigation sidebar top nav tabs breadcrumb menu IA sitemap 導線 flow page state 戻る back">
+              <div class="feature-top"><h3>画面構成・ナビゲーション・導線</h3><span class="tag">Structure</span></div>
+              <p>Sidebarやページ数を先に決めず、ユーザーが何をしたいかから構造を作ります。</p>
+              <ul><li>Goal → Task → 必要情報 / 機能の順で考える</li><li>現在地と次に行ける場所を分かるようにする</li><li>Back / Cancel / Retry / ResumeもFlowに含める</li></ul>
+              <div class="feature-links"><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/22-task-first-structure-flow-research.md">22 Structure / Flow</a><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/04-ui-ux-accessibility.md">04 UI / UX</a></div>
+            </article>
+
+            <article class="feature searchable" data-search="UI UX 見た目 デザイン visual CSS layout typography spacing card table mobile responsive accessibility スマホ">
+              <div class="feature-top"><h3>UI・見た目・スマホ対応</h3><span class="tag">UI</span></div>
+              <p>装飾より、情報の関係・読みやすさ・操作の見つけやすさを先に整えます。</p>
+              <ul><li>構造 → Layout → 文字 → 余白 → 色 → Effectの順</li><li>全部をCard化・巨大Hero化しない</li><li>Loading / Empty / Error / Successも確認する</li></ul>
+              <div class="feature-links"><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/04-ui-ux-accessibility.md">04 UI / UX</a><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/17-visual-quality-baseline.md">17 Visual Baseline</a><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/18-domain-first-visual-research.md">18 Visual Research</a></div>
+            </article>
+
+            <article class="feature searchable" data-search="重い 遅い performance reliability loading skeleton timeout retry cancel offline memory large data huge slow device media third-party">
+              <div class="feature-top"><h3>重い・遅い・止まる</h3><span class="tag">Performance</span></div>
+              <p>速さだけでなく、遅い端末・大きなデータ・通信失敗時でも主要操作を続けられるようにします。</p>
+              <ul><li>主要Taskがいつ操作可能になるかを見る</li><li>Loading / Retry / Timeout / Cancelを考える</li><li>長時間利用や大量Dataでも確認する</li></ul>
+              <div class="feature-links"><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/05-performance-reliability.md">05 Performance / Reliability</a></div>
+            </article>
+
+            <article class="feature searchable" data-search="security セキュリティ secret XSS CSRF injection permission privacy 公開 鍵 token sanitize">
+              <div class="feature-top"><h3>セキュリティ</h3><span class="tag">Security</span></div>
+              <p>「個人サイトだから大丈夫」とせず、公開場所・入力・権限・秘密情報を確認します。</p>
+              <ul><li>公開Repository / Pagesに秘密情報を置かない</li><li>外部入力を信用しすぎない</li><li>権限は必要最小限にする</li></ul>
+              <div class="feature-links"><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/06-security.md">06 Security</a></div>
+            </article>
+
+            <article class="feature searchable" data-search="テスト test validation verify 完成 quality regression browser screenshot 実機 completion">
+              <div class="feature-top"><h3>テスト・完成確認</h3><span class="tag">Quality</span></div>
+              <p>「コードを書いた」「Commitした」だけでは完成ではありません。</p>
+              <ul><li>主要操作が実際に通るか確認する</li><li>変更した場所だけでなく影響範囲を見る</li><li>実機が必要な項目は未確認を明記する</li></ul>
+              <div class="feature-links"><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/07-testing-quality.md">07 Testing / Quality</a><a href="https://github.com/EliteMay/web-project-guide/blob/main/templates/QUALITY_CHECKLIST.md">Quality Checklist</a></div>
+            </article>
+
+            <article class="feature searchable" data-search="GitHub Pages pages 公開 deploy URL static site 404 base path action workflow">
+              <div class="feature-top"><h3>GitHub Pages</h3><span class="tag">Deploy</span></div>
+              <p>公開設定だけでなく、実際のURLで表示・リンク・Assetまで確認します。</p>
+              <ul><li>Base pathや404を確認する</li><li>公開URLを推測で完成扱いしない</li><li>秘密情報を静的配信へ含めない</li></ul>
+              <div class="feature-links"><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/08-github-pages.md">08 GitHub Pages</a></div>
+            </article>
+
+            <article class="feature searchable" data-search="Electron Windows setup exe installer auto update desktop 配布 実機 OS">
+              <div class="feature-top"><h3>Electron・Windows配布</h3><span class="tag">Desktop</span></div>
+              <p>InstallerやAuto UpdateはCI成功だけではなく、Windows実機での確認が必要になる場合があります。</p>
+              <ul><li>Setup.exe / Update / 権限を確認する</li><li>OS固有挙動をCIだけで確認済みにしない</li><li>配布後の更新・Rollbackも考える</li></ul>
+              <div class="feature-links"><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/11-electron-distribution.md">11 Electron / Distribution</a></div>
+            </article>
+
+            <article class="feature searchable" data-search="dependency dependencies asset CDN library package npm font image license version update dependency 依存 ライブラリ 素材">
+              <div class="feature-top"><h3>ライブラリ・CDN・素材</h3><span class="tag">Dependencies</span></div>
+              <p>外部依存を増やす前に、本当に必要か・更新や停止時にどうなるかを確認します。</p>
+              <ul><li>Versionと互換性を把握する</li><li>Assetの出典・Licenseを確認する</li><li>外部CDN停止時の影響を見る</li></ul>
+              <div class="feature-links"><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/13-dependencies-assets.md">13 Dependencies / Assets</a></div>
+            </article>
+
+            <article class="feature searchable" data-search="エラー ログ diagnostics observability debug report monitor 診断 再現 トラブルシュート">
+              <div class="feature-top"><h3>エラー調査・診断情報</h3><span class="tag">Diagnostics</span></div>
+              <p>「動かない」だけで終わらず、再現条件・状態・原因を追える情報を残します。</p>
+              <ul><li>必要なログだけを残す</li><li>個人情報や秘密情報をログへ出さない</li><li>再発時に追えるProject Learningへ繋げる</li></ul>
+              <div class="feature-links"><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/15-development-observability.md">15 Observability</a><a href="https://github.com/EliteMay/web-project-guide/blob/main/PROJECT_LEARNINGS.md">Project Learnings</a></div>
+            </article>
+
+            <article class="feature searchable" data-search="調査 research 比較 最新 仕様 evidence source 公式 情報 判断 decision">
+              <div class="feature-top"><h3>調査して方針を決める</h3><span class="tag">Research</span></div>
+              <p>重要で不確実なことは、思い込みではなくEvidenceを集めて判断します。</p>
+              <ul><li>公式・一次情報を優先する</li><li>都合の良い例だけで結論を作らない</li><li>調査結果をProject固有の判断へ変換する</li></ul>
+              <div class="feature-links"><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/20-evidence-first-research.md">20 Evidence-first Research</a></div>
+            </article>
+
+            <article class="feature searchable" data-search="会話 引き継ぎ handoff recovery chat stale checkpoint branch PR commit 続き 復元">
+              <div class="feature-top"><h3>会話を変える・作業を引き継ぐ</h3><span class="tag">Handoff</span></div>
+              <p>古い会話の記憶より、現在のGitHub・Requirements・Branch / PRを使って状態を復元します。</p>
+              <ul><li>Conversation summaryを第二の正本にしない</li><li>Current work refをGitHub Evidenceから探す</li><li>復元できない変更経路だけ未解決として止める</li></ul>
+              <div class="feature-links"><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/23-conversation-handoff-recovery.md">23 Conversation Handoff</a></div>
+            </article>
+          </div>
+          <div class="empty" id="emptyState">該当する項目がありません。別の言葉で検索するか、下の「原文一覧」から探してください。</div>
+        </section>
+
+        <section class="section" id="principles">
+          <div class="section-head">
+            <div>
+              <h2>迷ったときの基本</h2>
+              <p class="section-intro">細かいRuleを読む前に、Guide全体で共通している考え方です。</p>
+            </div>
+          </div>
+
+          <div class="principles">
+            <div class="principle"><strong>今のRepositoryを優先する</strong><p>古い会話・ZIP・記憶より、現在のコード・Requirements・正式仕様を基準にします。</p></div>
+            <div class="principle"><strong>全部のRuleを毎回読まない</strong><p>作業内容とRiskに関係するOwnerだけを読みます。小さなBugに大規模調査は不要です。</p></div>
+            <div class="principle"><strong>機能より先に目的を見る</strong><p>「検索画面を作る」ではなく「何を早く見つけたいか」から必要な機能を決めます。</p></div>
+            <div class="principle"><strong>壊す変更は戻せるようにする</strong><p>Save、Schema、公開、削除などはMigration・Backup・Undo・Rollbackを必要に応じて用意します。</p></div>
+            <div class="principle"><strong>未確認を完成扱いしない</strong><p>実機や本番で確認していないことは、そのまま未確認として残します。</p></div>
+            <div class="principle"><strong>人に聞く前に調べて決める</strong><p>RepositoryやEvidenceから合理的に決められることは、細かい承認待ちにせず安全な判断で進めます。</p></div>
+          </div>
+        </section>
+
+        <section class="section" id="owners">
+          <div class="section-head">
+            <div>
+              <h2>原文一覧</h2>
+              <p class="section-intro">正確な条件・例外・MUST / SHOULDを確認するときはこちら。HTMLの説明より原文が優先です。</p>
+            </div>
+          </div>
+
+          <div class="owner-list">
+            <a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/00-governance.md"><span class="owner-id">00</span>Guide運用・Ruleの置き方</a>
+            <a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/01-requirements.md"><span class="owner-id">01</span>要件・判断・保存</a>
+            <a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/02-architecture.md"><span class="owner-id">02</span>Architecture</a>
+            <a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/03-data-storage.md"><span class="owner-id">03</span>Data・Storage・Migration</a>
+            <a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/04-ui-ux-accessibility.md"><span class="owner-id">04</span>UI・UX・Accessibility</a>
+            <a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/05-performance-reliability.md"><span class="owner-id">05</span>Performance・Reliability</a>
+            <a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/06-security.md"><span class="owner-id">06</span>Security</a>
+            <a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/07-testing-quality.md"><span class="owner-id">07</span>Testing・Quality</a>
+            <a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/08-github-pages.md"><span class="owner-id">08</span>GitHub Pages</a>
+            <a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/09-maintenance.md"><span class="owner-id">09</span>Version・Maintenance</a>
+            <a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/10-project-management.md"><span class="owner-id">10</span>Project Management</a>
+            <a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/11-electron-distribution.md"><span class="owner-id">11</span>Electron・Distribution</a>
+            <a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/12-project-profiles.md"><span class="owner-id">12</span>Project Profiles</a>
+            <a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/13-dependencies-assets.md"><span class="owner-id">13</span>Dependencies・Assets</a>
+            <a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/14-continuous-improvement.md"><span class="owner-id">14</span>継続改善・Audit</a>
+            <a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/15-development-observability.md"><span class="owner-id">15</span>Observability・Project Memory</a>
+            <a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/16-cross-repository-github-infrastructure.md"><span class="owner-id">16</span>複数RepositoryのGitHub運用</a>
+            <a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/17-visual-quality-baseline.md"><span class="owner-id">17</span>見た目の最低品質</a>
+            <a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/18-domain-first-visual-research.md"><span class="owner-id">18</span>Visual Research・Redesign</a>
+            <a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/19-game-development.md"><span class="owner-id">19</span>Game Development</a>
+            <a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/20-evidence-first-research.md"><span class="owner-id">20</span>Evidence-first Research</a>
+            <a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/21-rule-routing-preflight.md"><span class="owner-id">21</span>Rule Routing・Preflight</a>
+            <a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/22-task-first-structure-flow-research.md"><span class="owner-id">22</span>Task-first Structure・Flow</a>
+            <a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/23-conversation-handoff-recovery.md"><span class="owner-id">23</span>Conversation Handoff・Recovery</a>
+          </div>
+        </section>
+
+        <footer class="footer">
+          <p>このページは読みやすさのためのSummaryです。Ruleの正式な意味・例外・優先関係は各Owner Doc、Routingは <a href="https://github.com/EliteMay/web-project-guide/blob/main/START_HERE.md">START_HERE.md</a> と <a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/21-rule-routing-preflight.md">21 Rule Routing / Preflight</a> を確認してください。</p>
+        </footer>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const searchInput = document.querySelector('#search');
+    const searchableItems = [...document.querySelectorAll('.searchable')];
+    const features = [...document.querySelectorAll('#featureList .feature')];
+    const featureCount = document.querySelector('#featureCount');
+    const emptyState = document.querySelector('#emptyState');
+
+    const normalize = (value) => value.toLowerCase().normalize('NFKC').trim();
+
+    function updateCount() {
+      const visible = features.filter((item) => item.hidden === false).length;
+      const anyVisible = searchableItems.some((item) => item.hidden === false);
+      featureCount.textContent = searchInput.value.trim() ? `${visible}件表示` : `${features.length}項目`;
+      emptyState.style.display = searchInput.value.trim() && !anyVisible ? 'block' : 'none';
+    }
+
+    function filterGuide() {
+      const query = normalize(searchInput.value);
+      const words = query.split(/\s+/).filter(Boolean);
+
+      searchableItems.forEach((item) => {
+        const haystack = normalize(`${item.dataset.search || ''} ${item.textContent}`);
+        item.hidden = words.length > 0 && !words.every((word) => haystack.includes(word));
+      });
+
+      updateCount();
+    }
+
+    searchInput.addEventListener('input', filterGuide);
+    updateCount();
+
+    fetch('./guide-version.json')
+      .then((response) => response.ok ? response.json() : Promise.reject())
+      .then((data) => {
+        const version = data.guideVersion ? `Guide v${data.guideVersion}` : '最新版';
+        const updated = data.updated ? ` · ${data.updated}` : '';
+        document.querySelector('#guideVersion').textContent = version + updated;
+      })
+      .catch(() => {});
+  </script>
+</body>
+</html>

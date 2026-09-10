@@ -1,0 +1,301 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A/B/C/D/I の担当、進捗、開始文を人間向けに確認する Web Project Guide の作業ダッシュボードです。">
+  <title>作業ダッシュボード | Web Project Guide</title>
+  <link rel="stylesheet" href="human-guide.css">
+  <link rel="stylesheet" href="mobile-fixes.css">
+</head>
+<body>
+  <header class="sitebar">
+    <div class="sitebar-inner">
+      <a class="brand" href="index.html">Web Project Guide</a>
+      <nav class="tabs" aria-label="Guide navigation">
+        <a href="work-dashboard.html" aria-current="page">作業ダッシュボード</a>
+        <a href="ai-workflow.html">AIの作業ルール</a>
+        <a href="rules.html">ルール検索</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">PARALLEL WORK</p>
+        <h1>今、誰が何をするかを一画面で見る。</h1>
+        <p class="lead">A/B/C/Dは調査・要件整理・修正案・完成ファイル・事前検証までを準備し、正式なData / Guideへの反映はIだけが行います。開始文もここからそのままコピーできます。</p>
+      </div>
+      <div class="hero-meta" aria-label="Run概要">
+        <div class="meta-row"><span>Run</span><strong id="runId">読み込み中</strong></div>
+        <div class="meta-row"><span>状態</span><strong id="runStatus">-</strong></div>
+        <div class="meta-row"><span>Assignment</span><strong id="revision">-</strong></div>
+        <div class="meta-row"><span>表示方式</span><strong>Worker即時更新</strong></div>
+      </div>
+    </header>
+
+    <section class="section" aria-labelledby="safety-title">
+      <div class="notice">
+        <strong id="safety-title">安全な分担の境界</strong>
+        A/B/C/Dは正式なGuide Ruleを変更しません。作業成果物は自分専用のData Branchへ保存し、Dashboard表示だけはWorker専用の公開Status Branchへ書きます。A/B/C/Dが同時終了しても書込先が別なので競合しません。
+      </div>
+      <div id="snapshotNotice" class="snapshot-note" role="status">Worker状態を確認しています…</div>
+    </section>
+
+    <section class="section" aria-labelledby="summary-title">
+      <div class="section-head">
+        <div>
+          <h2 id="summary-title">全体状況</h2>
+          <p class="section-intro">Private Dataの全内容は公開せず、Workerが明示的に公開した最小限の状態だけを表示します。</p>
+        </div>
+      </div>
+      <div class="summary-grid" id="summaryGrid">
+        <div class="summary"><div class="summary-label">準備Worker</div><div class="summary-value" id="prepCount">-</div><div class="summary-sub">A / B / C / D</div></div>
+        <div class="summary"><div class="summary-label">全作業数</div><div class="summary-value" id="totalCount">-</div><div class="summary-sub">現在Runの割当</div></div>
+        <div class="summary"><div class="summary-label">完了</div><div class="summary-value" id="doneCount">-</div><div class="summary-sub">準備済み項目</div></div>
+        <div class="summary"><div class="summary-label">Iへ渡せるWorker</div><div class="summary-value" id="readyCount">-</div><div class="summary-sub">ready_for_apply</div></div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="workers-title">
+      <div class="section-head">
+        <div>
+          <h2 id="workers-title">A / B / C / D</h2>
+          <p class="section-intro">各会話は自分の担当と専用Branchだけ進めます。状態変更後は自分専用の公開Statusだけを更新します。</p>
+        </div>
+      </div>
+      <div id="workerGrid" class="worker-grid">
+        <div class="loading">Dashboard Dataを読み込んでいます…</div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="integration-title">
+      <div class="section-head">
+        <div>
+          <h2 id="integration-title">Integration Worker I</h2>
+          <p class="section-intro">Iは各Worker Branchの完成成果物を現在のmainへ安全に適用する役です。Iの表示状態も専用Status Branchから取得します。</p>
+        </div>
+      </div>
+      <div id="integrationCard"></div>
+    </section>
+
+    <section class="section" aria-labelledby="flow-title">
+      <div class="section-head">
+        <div>
+          <h2 id="flow-title">このRunの流れ</h2>
+          <p class="section-intro">作業Branchと表示Branchを分離します。</p>
+        </div>
+      </div>
+      <div class="flow">
+        <div class="flow-step"><div class="step-no">1</div><div class="step-panel"><h3>A/B/C/Dを別会話で開始</h3><p>開始文をコピーして、それぞれ新しい会話へ貼ります。各Workerは自分のData Branchをclaimします。</p></div></div>
+        <div class="flow-step"><div class="step-no">2</div><div class="step-panel"><h3>各Workerが専用Data Branchで作業</h3><p>成果物・change-set・事前ValidationはPrivate Data側へ保存し、公開Statusには秘密情報を含めません。</p></div></div>
+        <div class="flow-step"><div class="step-no">3</div><div class="step-panel"><h3>状態変更後に自分のStatusだけ更新</h3><p>AならA専用、BならB専用の公開Branchにあるdashboard-worker.jsonだけを更新します。他WorkerのStatusを変更しません。</p></div></div>
+        <div class="flow-step"><div class="step-no">4</div><div class="step-panel"><h3>Dashboardが各Statusを合成表示</h3><p>ページは15秒ごとに各Workerの公開Statusを再取得します。読めないWorkerだけmain Snapshotへfallbackします。</p></div></div>
+        <div class="flow-step"><div class="step-no">5</div><div class="step-panel"><h3>Iが正式反映</h3><p>IはPrivate Data上の正式なWorker state/outputを再確認してから統合します。Dashboard表示だけを根拠に正式適用しません。</p></div></div>
+      </div>
+    </section>
+
+    <footer class="footer">Dashboardは公開用Statusだけを読みます。Private Data Repositoryや認証情報をブラウザから直接取得しません。</footer>
+  </main>
+
+  <script>
+    const STATUS_REFRESH_MS = 15000;
+    const PUBLIC_STATUS_FIELDS = ['status', 'completed', 'total', 'currentTask', 'readyForApply', 'workBranch', 'updatedAt'];
+    let dashboardBase = null;
+
+    const statusLabel = {
+      assigned: '開始待ち',
+      claimed: '取得済み',
+      working: '作業中',
+      active: '作業中',
+      ready_for_apply: '反映準備完了',
+      waiting: '待機中',
+      integrating: '統合中',
+      applied: '反映済み',
+      verified: '検証完了',
+      completed: '完了',
+      blocked: '停止中',
+      stale: '要再確認',
+      recovery_required: '復旧確認',
+      rejected: '却下',
+      superseded: '置換済み'
+    };
+
+    const statusTone = {
+      assigned: 'assigned', waiting: 'waiting', stale: 'waiting', superseded: 'waiting',
+      claimed: 'active', working: 'active', active: 'active', integrating: 'active',
+      ready_for_apply: 'completed', applied: 'completed', verified: 'completed', completed: 'completed',
+      blocked: 'blocked', recovery_required: 'blocked', rejected: 'blocked'
+    };
+
+    function escapeHtml(value) {
+      return String(value).replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+    }
+
+    function workerCard(worker, integration = false) {
+      const percent = worker.total ? Math.round((worker.completed / worker.total) * 100) : 0;
+      const prompt = escapeHtml(worker.startPrompt || '');
+      const branchRow = worker.workBranch ? `<dt>Branch</dt><dd><code>${escapeHtml(worker.workBranch)}</code></dd>` : '';
+      const updatedRow = worker.updatedAt ? `<dt>公開更新</dt><dd>${escapeHtml(formatTime(worker.updatedAt) || worker.updatedAt)}</dd>` : '';
+      const tone = statusTone[worker.status] || 'waiting';
+      return `
+        <article class="worker-card ${integration ? 'integration' : ''}">
+          <div class="worker-head">
+            <div class="worker-title-wrap">
+              <span class="worker-id">${escapeHtml(worker.id)}</span>
+              <div><h3 class="worker-title">${escapeHtml(worker.title)}</h3><div class="worker-role">${escapeHtml(worker.role)}</div></div>
+            </div>
+            <span class="badge ${escapeHtml(tone)}">${escapeHtml(statusLabel[worker.status] || worker.status)}</span>
+          </div>
+          <div class="worker-body">
+            <dl class="kv">
+              <dt>現在</dt><dd>${escapeHtml(worker.currentTask || '-')}</dd>
+              ${branchRow}
+              <dt>反映準備</dt><dd>${worker.readyForApply ? '完了' : '未完了'}</dd>
+              ${updatedRow}
+            </dl>
+            <div class="progress" aria-label="進捗 ${percent}%"><span style="width:${percent}%"></span></div>
+            <div class="progress-meta"><span>${worker.completed} / ${worker.total}</span><span>${percent}%</span></div>
+            <div class="prompt-box">
+              <div class="prompt-label"><span>新しい会話へ貼る開始文</span><button class="copy" type="button" data-prompt="${encodeURIComponent(worker.startPrompt || '')}">開始文をコピー</button></div>
+              <details class="prompt-details"><summary>開始文を表示</summary><pre class="prompt">${prompt}</pre></details>
+            </div>
+          </div>
+        </article>`;
+    }
+
+    function formatTime(value) {
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return null;
+      return new Intl.DateTimeFormat('ja-JP', {year:'numeric', month:'numeric', day:'numeric', hour:'2-digit', minute:'2-digit', second:'2-digit'}).format(date);
+    }
+
+    function statusUrl(runId, workerId) {
+      const ref = `dashboard/${runId}/${workerId}`;
+      return `https://raw.githubusercontent.com/EliteMay/web-project-guide/${ref}/dashboard-worker.json?t=${Date.now()}`;
+    }
+
+    function mergePublicStatus(baseWorker, live) {
+      if (!live || live.runId !== dashboardBase.runId || live.worker !== baseWorker.id) return baseWorker;
+      const merged = {...baseWorker};
+      for (const field of PUBLIC_STATUS_FIELDS) {
+        if (Object.prototype.hasOwnProperty.call(live, field)) merged[field] = live[field];
+      }
+      return merged;
+    }
+
+    async function fetchWorkerStatus(runId, workerId) {
+      const response = await fetch(statusUrl(runId, workerId), {cache: 'no-store', mode: 'cors'});
+      if (!response.ok) throw new Error(`${workerId}: HTTP ${response.status}`);
+      const live = await response.json();
+      if (live.schemaVersion !== 1) throw new Error(`${workerId}: unsupported schema`);
+      return live;
+    }
+
+    async function getWorkersWithLiveState(base) {
+      const results = await Promise.allSettled(base.workers.map(worker => fetchWorkerStatus(base.runId, worker.id)));
+      let liveCount = 0;
+      const workers = base.workers.map((worker, index) => {
+        const result = results[index];
+        if (result.status !== 'fulfilled') return worker;
+        const merged = mergePublicStatus(worker, result.value);
+        if (merged !== worker) liveCount += 1;
+        return merged;
+      });
+      return {workers, liveCount};
+    }
+
+    function render(data, liveCount) {
+      const prep = data.workers.filter(w => w.id !== 'I');
+      const integration = data.workers.find(w => w.id === 'I');
+      document.getElementById('runId').textContent = data.runId;
+      document.getElementById('runStatus').textContent = statusLabel[data.runStatus] || data.runStatus;
+      document.getElementById('revision').textContent = `rev ${data.assignmentRevision}`;
+      document.getElementById('prepCount').textContent = prep.length;
+      document.getElementById('totalCount').textContent = prep.reduce((n, w) => n + Number(w.total || 0), 0);
+      document.getElementById('doneCount').textContent = prep.reduce((n, w) => n + Number(w.completed || 0), 0);
+      document.getElementById('readyCount').textContent = prep.filter(w => w.readyForApply).length;
+      document.getElementById('workerGrid').innerHTML = prep.map(w => workerCard(w)).join('');
+      document.getElementById('integrationCard').innerHTML = integration ? workerCard(integration, true) : '<div class="error">Iの状態がありません。</div>';
+      const notice = document.getElementById('snapshotNotice');
+      notice.classList.toggle('stale', liveCount !== data.workers.length);
+      notice.innerHTML = liveCount === data.workers.length
+        ? `<strong>Worker即時Status</strong>${liveCount}/${data.workers.length} Workerを公開Status Branchから取得しました。15秒ごとに自動更新します。`
+        : `<strong>一部Snapshot表示</strong>${liveCount}/${data.workers.length} Workerを即時取得できました。取得できないWorkerだけmainのSnapshotを表示しています。`;
+      bindCopy();
+    }
+
+    async function refreshLiveStates() {
+      if (!dashboardBase) return;
+      const {workers, liveCount} = await getWorkersWithLiveState(dashboardBase);
+      render({...dashboardBase, workers}, liveCount);
+    }
+
+    async function loadDashboard() {
+      try {
+        const response = await fetch('dashboard-data.json', {cache: 'no-store'});
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        dashboardBase = await response.json();
+        await refreshLiveStates();
+      } catch (error) {
+        document.getElementById('workerGrid').innerHTML = `<div class="error">Dashboard Dataを読み込めませんでした。${escapeHtml(error.message)}</div>`;
+        const notice = document.getElementById('snapshotNotice');
+        notice.classList.add('stale');
+        notice.textContent = 'Dashboardの基本データを読み込めませんでした。';
+      }
+    }
+
+    function legacyCopy(text) {
+      const area = document.createElement('textarea');
+      area.value = text;
+      area.setAttribute('readonly', '');
+      area.style.position = 'fixed';
+      area.style.opacity = '0';
+      area.style.pointerEvents = 'none';
+      document.body.appendChild(area);
+      area.focus();
+      area.select();
+      area.setSelectionRange(0, text.length);
+      let copied = false;
+      try { copied = document.execCommand('copy'); } catch { copied = false; }
+      area.remove();
+      return copied;
+    }
+
+    function revealPrompt(button) {
+      const box = button.closest('.prompt-box');
+      const details = box?.querySelector('.prompt-details');
+      const prompt = box?.querySelector('.prompt');
+      if (details) details.open = true;
+      if (prompt && window.getSelection && document.createRange) {
+        const range = document.createRange();
+        range.selectNodeContents(prompt);
+        const selection = window.getSelection();
+        selection.removeAllRanges();
+        selection.addRange(range);
+      }
+    }
+
+    function bindCopy() {
+      document.querySelectorAll('.copy').forEach(button => {
+        button.addEventListener('click', async () => {
+          const text = decodeURIComponent(button.dataset.prompt || '');
+          let copied = false;
+          if (navigator.clipboard?.writeText) {
+            try { await navigator.clipboard.writeText(text); copied = true; } catch { copied = false; }
+          }
+          if (!copied) copied = legacyCopy(text);
+          const old = button.textContent;
+          if (copied) button.textContent = 'コピー済み';
+          else { revealPrompt(button); button.textContent = '開始文を選択しました'; }
+          setTimeout(() => button.textContent = old, 1800);
+        }, {once: true});
+      });
+    }
+
+    loadDashboard();
+    setInterval(refreshLiveStates, STATUS_REFRESH_MS);
+  </script>
+</body>
+</html>
