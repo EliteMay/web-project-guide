@@ -28,3 +28,6 @@ jobs:
 
       - name: Validate data storage contracts
         run: node tests/validate-data-storage-contract.mjs
+
+      - name: Validate human guide routes
+        run: node tests/validate-human-guide.mjs
