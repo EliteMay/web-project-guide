@@ -5,13 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="A/B/C/D/I の担当、進捗、開始文を人間向けに確認する Web Project Guide の作業ダッシュボードです。">
   <title>作業ダッシュボード | Web Project Guide</title>
-  <link rel="stylesheet" href="human-guide.css">
-  <link rel="stylesheet" href="mobile-fixes.css">
+  <link rel="stylesheet" href="../assets/human-guide.css">
+  <link rel="stylesheet" href="../assets/mobile-fixes.css">
 </head>
 <body>
   <header class="sitebar">
     <div class="sitebar-inner">
-      <a class="brand" href="index.html">Web Project Guide</a>
+      <a class="brand" href="../../index.html">Web Project Guide</a>
       <nav class="tabs" aria-label="Guide navigation">
         <a href="work-dashboard.html" aria-current="page">作業ダッシュボード</a>
         <a href="ai-workflow.html">AIの作業ルール</a>
@@ -234,7 +234,7 @@
 
     async function loadDashboard() {
       try {
-        const response = await fetch('dashboard-data.json', {cache: 'no-store'});
+        const response = await fetch('../data/dashboard-data.json', {cache: 'no-store'});
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         dashboardBase = await response.json();
         await refreshLiveStates();
