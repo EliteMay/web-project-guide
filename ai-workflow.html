@@ -6,6 +6,7 @@
   <meta name="description" content="Web Project Guide のルールを、人間向けに AI の分岐と作業手順として説明するページです。">
   <title>AIの作業ルール | Web Project Guide</title>
   <link rel="stylesheet" href="human-guide.css">
+  <link rel="stylesheet" href="mobile-fixes.css">
 </head>
 <body>
   <header class="sitebar">
@@ -14,7 +15,7 @@
       <nav class="tabs" aria-label="Guide navigation">
         <a href="work-dashboard.html">作業ダッシュボード</a>
         <a href="ai-workflow.html" aria-current="page">AIの作業ルール</a>
-        <a href="index.html">ルール検索</a>
+        <a href="rules.html">ルール検索</a>
       </nav>
     </div>
   </header>
@@ -47,18 +48,20 @@
           <p class="section-intro">依頼の種類で読むRuleが変わります。全部のGuideを毎回読むわけではありません。</p>
         </div>
       </div>
-      <table class="decision-table">
-        <thead><tr><th>依頼</th><th>AIが最初に見ること</th><th>主なRoute</th></tr></thead>
-        <tbody>
-          <tr><td>新しいサイト / アプリ / ゲーム</td><td>目的、利用者、主要Task、必要機能、保存、完成条件</td><td>Requirements → Structure / Flow → 専門Owner → Testing</td></tr>
-          <tr><td>バグ修正</td><td>現在の症状、再現条件、既存仕様、原因に関係する範囲</td><td>Current Repo → 専門Owner → Smallest Safe Change → Test</td></tr>
-          <tr><td>UIを大きく変える</td><td>今のTask / IAまで変えるか、見た目だけか</td><td>Structure / Flow → Visual Research → UI / UX → Visual Check</td></tr>
-          <tr><td>調査して方針を決める</td><td>何を知ればDecisionが良くなるか、不確実性は高いか</td><td>Evidence-first Research → Topic Owner → Decision → Validation</td></tr>
-          <tr><td>保存やSchema変更</td><td>既存データを壊さないか、Migration / Backup / Restoreが必要か</td><td>Data / Storage → Version → Testing</td></tr>
-          <tr><td>公開 / 配布</td><td>本番Runtime、公開URL、Release、Rollback、実機確認</td><td>Deployment / Pages → Maintenance → Testing</td></tr>
-          <tr><td>会話移行 / 並列作業</td><td>今のBranch / PR / Run / holder / checkpointが一意か</td><td>Conversation Recovery → Project Management → Parallel Run</td></tr>
-        </tbody>
-      </table>
+      <div class="table-scroll" tabindex="0" aria-label="依頼ごとのAI作業ルート。横にスクロールできます。">
+        <table class="decision-table">
+          <thead><tr><th>依頼</th><th>AIが最初に見ること</th><th>主なRoute</th></tr></thead>
+          <tbody>
+            <tr><td>新しいサイト / アプリ / ゲーム</td><td>目的、利用者、主要Task、必要機能、保存、完成条件</td><td>Requirements → Structure / Flow → 専門Owner → Testing</td></tr>
+            <tr><td>バグ修正</td><td>現在の症状、再現条件、既存仕様、原因に関係する範囲</td><td>Current Repo → 専門Owner → Smallest Safe Change → Test</td></tr>
+            <tr><td>UIを大きく変える</td><td>今のTask / IAまで変えるか、見た目だけか</td><td>Structure / Flow → Visual Research → UI / UX → Visual Check</td></tr>
+            <tr><td>調査して方針を決める</td><td>何を知ればDecisionが良くなるか、不確実性は高いか</td><td>Evidence-first Research → Topic Owner → Decision → Validation</td></tr>
+            <tr><td>保存やSchema変更</td><td>既存データを壊さないか、Migration / Backup / Restoreが必要か</td><td>Data / Storage → Version → Testing</td></tr>
+            <tr><td>公開 / 配布</td><td>本番Runtime、公開URL、Release、Rollback、実機確認</td><td>Deployment / Pages → Maintenance → Testing</td></tr>
+            <tr><td>会話移行 / 並列作業</td><td>今のBranch / PR / Run / holder / checkpointが一意か</td><td>Conversation Recovery → Project Management → Parallel Run</td></tr>
+          </tbody>
+        </table>
+      </div>
     </section>
 
     <section class="section" aria-labelledby="mainflow-title">
@@ -136,16 +139,18 @@
           <p class="section-intro">何でも確認待ちにするのでも、何でも勝手に決めるのでもありません。</p>
         </div>
       </div>
-      <table class="decision-table">
-        <thead><tr><th>状況</th><th>AIの動き</th></tr></thead>
-        <tbody>
-          <tr><td>Current Repoと既存Intentから合理的に決められる</td><td>Best Reasonable Decisionで進める。細かい確認を毎回返さない。</td></tr>
-          <tr><td>既存仕様を壊さず安全に直せる小変更</td><td>必要Ownerだけ確認し、Smallest Safe Changeで修正してValidation。</td></tr>
-          <tr><td>重大な仕様変更・削除・Normative Owner衝突</td><td>勝手に決めず、その変更経路を止めてUser Decisionへ。</td></tr>
-          <tr><td>Source / Branch / PR / Runが一意に復旧できない</td><td>推測で上書きせず、Recovery / unresolvedとして止める。</td></tr>
-          <tr><td>Validationが失敗した</td><td>完成扱いしない。原因を直すか、未確認として明示する。</td></tr>
-        </tbody>
-      </table>
+      <div class="table-scroll" tabindex="0" aria-label="AIが進める範囲と止まる範囲。横にスクロールできます。">
+        <table class="decision-table">
+          <thead><tr><th>状況</th><th>AIの動き</th></tr></thead>
+          <tbody>
+            <tr><td>Current Repoと既存Intentから合理的に決められる</td><td>Best Reasonable Decisionで進める。細かい確認を毎回返さない。</td></tr>
+            <tr><td>既存仕様を壊さず安全に直せる小変更</td><td>必要Ownerだけ確認し、Smallest Safe Changeで修正してValidation。</td></tr>
+            <tr><td>重大な仕様変更・削除・Normative Owner衝突</td><td>勝手に決めず、その変更経路を止めてUser Decisionへ。</td></tr>
+            <tr><td>Source / Branch / PR / Runが一意に復旧できない</td><td>推測で上書きせず、Recovery / unresolvedとして止める。</td></tr>
+            <tr><td>Validationが失敗した</td><td>完成扱いしない。原因を直すか、未確認として明示する。</td></tr>
+          </tbody>
+        </table>
+      </div>
     </section>
 
     <section class="section" aria-labelledby="parallel-title">
@@ -170,15 +175,15 @@
         </div>
       </div>
       <div class="route-strip">
-        <a href="docs/01-requirements.md">Requirements</a>
-        <a href="docs/04-ui-ux-accessibility.md">UI / UX</a>
-        <a href="docs/07-testing-quality.md">Testing</a>
-        <a href="docs/10-project-management.md">Project Management</a>
-        <a href="docs/18-domain-first-visual-research.md">Visual Research</a>
-        <a href="docs/20-evidence-first-research.md">Evidence-first Research</a>
-        <a href="docs/21-rule-routing-preflight.md">Rule Routing</a>
-        <a href="docs/22-task-first-structure-flow-research.md">Structure / Flow</a>
-        <a href="docs/23-conversation-handoff-recovery.md">Conversation Recovery</a>
+        <a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/01-requirements.md">Requirements</a>
+        <a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/04-ui-ux-accessibility.md">UI / UX</a>
+        <a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/07-testing-quality.md">Testing</a>
+        <a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/10-project-management.md">Project Management</a>
+        <a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/18-domain-first-visual-research.md">Visual Research</a>
+        <a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/20-evidence-first-research.md">Evidence-first Research</a>
+        <a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/21-rule-routing-preflight.md">Rule Routing</a>
+        <a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/22-task-first-structure-flow-research.md">Structure / Flow</a>
+        <a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/23-conversation-handoff-recovery.md">Conversation Recovery</a>
       </div>
     </section>
 
