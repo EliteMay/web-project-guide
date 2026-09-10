@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "runId": "RUN-20260910-001",
+  "worker": "A",
+  "status": "assigned",
+  "completed": 0,
+  "total": 26,
+  "currentTask": "Exact fragment fingerprintsを計算",
+  "readyForApply": false,
+  "workBranch": "parallel/RUN-20260910-001/A",
+  "updatedAt": null
+}
