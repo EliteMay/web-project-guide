@@ -12,6 +12,73 @@ GitHub上の変更手順・Branch / PR / final-state管理は [10 Project Manage
 - 同じ未完了作業を複数Conversationから並行書込みしない。
 - Handoffのためだけに新しい仕様正本を増やさない。
 
+## Development Conversation Persistence
+
+### CONDITIONAL MUST: Guide対象の開発会話をInteraction単位で保存する
+
+このGuideを読んで進めるProject関連の開発会話で、`EliteMay/web-project-data`へ書き込めるCapabilityがある場合、各完了Interactionをcompanion data repositoryの`conversations/`へ保存します。
+
+対象には、例えば次を含みます。
+
+- 要件定義 / 仕様整理
+- 実装 / Refactor / Architecture変更
+- UI / Visual / UX作業
+- Bug調査 / 修正
+- Project固有の技術調査 / 方針決定
+- GitHub / CI / Pages / Release等の開発運用
+- Game / Web / Electron等、このGuideを適用して進めるProject作業
+
+次は対象外です。
+
+- 雑談
+- 買い物相談
+- 健康相談
+- 一般知識の質問
+- 対象Projectと無関係な非開発会話
+
+同じChatGPT Account / Project内に存在することだけを理由に、非開発会話まで保存しません。
+
+### 保存契約
+
+保存形式・Schema・Secret取扱い・Validationの正本は`EliteMay/web-project-data/conversations/README.md`と`schemas/conversations/`です。
+
+Guide側では保存形式を重複定義しません。基本動作は次です。
+
+1. 1回のUser要求と、それに対するAssistantの完了応答を1 logical Interactionとして扱う
+2. 必要に応じてmeaningfulなprogress update、sanitized tool summary、repository effectを含める
+3. raw system / developer prompt、unrestricted raw tool payload、credential、token、cookie、secret、private key等は保存しない
+4. 明示的に`sensitive` / `secret-never-store`に分類されるInteractionは保存しない
+5. 同一Interactionのretryは重複を作らない既存Persistence Contractに従う
+6. 保存後もCurrent Repository / Requirements / Spec / Branch / PR / Commit等をCurrent Stateの正本として扱う
+
+対応する実装EntryはData repositoryの`tools/conversations/save-interaction.mjs`です。Agent / Client / Gateway等が直接そのToolを実行できない場合でも、同じSchema / Secret Contractを満たす同等の書込み経路を使用できます。
+
+### MUST: 保存成功を推測しない
+
+Persistenceを実行した場合は、書込み成功を確認してから「保存済み」と扱います。
+
+- write accessがない
+- Data repositoryへ到達できない
+- Validationが失敗した
+- Secret / sensitivity ruleで拒否された
+- Conflict / write failureが起きた
+
+場合は保存成功と報告しません。
+
+Persistence失敗だけを理由に、Current Repositoryから安全に継続できる通常の開発作業まで必ず停止する必要はありません。ただし、そのInteractionは未保存として扱い、Recovery上重要なCheckpointが失われる場合はWork Report / Branch / PR等のAuthoritativeなCheckpointを優先して残します。
+
+### MUST: Public RepositoryへFallbackしない
+
+`web-project-data`へ保存できない場合、会話本文を`web-project-guide`や対象ProjectのPublic Repositoryへ代替保存しません。
+
+Conversation PersistenceはRecovery Evidenceであり、公開Code / Requirements / Rule本文へ会話ログを混ぜる理由にはなりません。
+
+### Platform boundary
+
+通常のChatGPT Conversation自体にはRepository側から強制できるpost-response hookがないため、Platform全体で100%自動保存されるとは表現しません。
+
+このRuleが要求するのは、**Guideを適用しているAgent / Conversationが保存Capabilityを持つ場合、その開発Interactionを保存経路へ通すこと**です。保存Capabilityがない環境では、保存済みと偽らず、Current GitHubからRecovery可能な状態を維持します。
+
 ## 会話を分けるタイミング
 
 ### SHOULD: 固定Thresholdを使わない
