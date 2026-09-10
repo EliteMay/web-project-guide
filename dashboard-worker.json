@@ -2,11 +2,11 @@
   "schemaVersion": 1,
   "runId": "RUN-20260910-001",
   "worker": "B",
-  "status": "blocked",
-  "completed": 0,
+  "status": "ready_for_apply",
+  "completed": 26,
   "total": 26,
-  "currentTask": "Paused by user request",
-  "readyForApply": false,
+  "currentTask": "Preparation complete; awaiting Coordinator/Integration Worker apply",
+  "readyForApply": true,
   "workBranch": "parallel/RUN-20260910-001/B",
-  "updatedAt": "2026-09-10T14:49:00+09:00"
+  "updatedAt": "2026-09-10T15:31:18+09:00"
 }
