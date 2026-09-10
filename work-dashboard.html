@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A/B/C/D/I の担当、進捗、開始文を人間向けに確認する Web Project Guide の作業ダッシュボードです。">
+  <title>作業ダッシュボード | Web Project Guide</title>
+  <link rel="stylesheet" href="human-guide.css">
+</head>
+<body>
+  <header class="sitebar">
+    <div class="sitebar-inner">
+      <a class="brand" href="index.html">Web Project Guide</a>
+      <nav class="tabs" aria-label="Guide navigation">
+        <a href="work-dashboard.html" aria-current="page">作業ダッシュボード</a>
+        <a href="ai-workflow.html">AIの作業ルール</a>
+        <a href="index.html">ルール検索</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">PARALLEL WORK</p>
+        <h1>今、誰が何をするかを一画面で見る。</h1>
+        <p class="lead">A/B/C/Dは調査・要件整理・修正案・完成ファイル・事前検証までを準備し、正式なData / Guideへの反映はIだけが行います。開始文もここからそのままコピーできます。</p>
+      </div>
+      <div class="hero-meta" aria-label="Run概要">
+        <div class="meta-row"><span>Run</span><strong id="runId">読み込み中</strong></div>
+        <div class="meta-row"><span>状態</span><strong id="runStatus">-</strong></div>
+        <div class="meta-row"><span>Assignment</span><strong id="revision">-</strong></div>
+      </div>
+    </header>
+
+    <section class="section" aria-labelledby="safety-title">
+      <div class="notice">
+        <strong id="safety-title">安全な分担の境界</strong>
+        A/B/C/DはGuideを読むだけです。さらに正式なDataファイルも直接変更せず、自分のRunフォルダへ完成成果物を置きます。Iだけが現在のmainと再照合して正式位置へ適用します。
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="summary-title">
+      <div class="section-head">
+        <div>
+          <h2 id="summary-title">全体状況</h2>
+          <p class="section-intro">Private Dataの全内容を公開せず、作業判断に必要な最小限の状態だけを表示します。</p>
+        </div>
+      </div>
+      <div class="summary-grid" id="summaryGrid">
+        <div class="summary"><div class="summary-label">準備Worker</div><div class="summary-value" id="prepCount">-</div><div class="summary-sub">A / B / C / D</div></div>
+        <div class="summary"><div class="summary-label">全作業数</div><div class="summary-value" id="totalCount">-</div><div class="summary-sub">現在Runの割当</div></div>
+        <div class="summary"><div class="summary-label">完了</div><div class="summary-value" id="doneCount">-</div><div class="summary-sub">準備済み項目</div></div>
+        <div class="summary"><div class="summary-label">Iへ渡せるWorker</div><div class="summary-value" id="readyCount">-</div><div class="summary-sub">ready_for_apply</div></div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="workers-title">
+      <div class="section-head">
+        <div>
+          <h2 id="workers-title">A / B / C / D</h2>
+          <p class="section-intro">各会話は自分の担当だけ進めます。別Workerの範囲へ勝手に広げません。</p>
+        </div>
+      </div>
+      <div id="workerGrid" class="worker-grid">
+        <div class="loading">Dashboard Dataを読み込んでいます…</div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="integration-title">
+      <div class="section-head">
+        <div>
+          <h2 id="integration-title">Integration Worker I</h2>
+          <p class="section-intro">Iは準備作業をやり直す役ではなく、完成した成果物を現在のmainへ安全に適用する役です。</p>
+        </div>
+      </div>
+      <div id="integrationCard"></div>
+    </section>
+
+    <section class="section" aria-labelledby="flow-title">
+      <div class="section-head">
+        <div>
+          <h2 id="flow-title">このRunの流れ</h2>
+          <p class="section-intro">並列にするのは準備まで。正式反映は直列にします。</p>
+        </div>
+      </div>
+      <div class="flow">
+        <div class="flow-step"><div class="step-no">1</div><div class="step-panel"><h3>A/B/C/Dを別会話で開始</h3><p>上の開始文をコピーして、それぞれ新しい会話へ貼ります。</p></div></div>
+        <div class="flow-step"><div class="step-no">2</div><div class="step-panel"><h3>各WorkerがData内で完成させる</h3><p>調査、重複確認、判断、完成版ファイル、change-set、事前Validationまでを自分のRunフォルダへ保存します。</p></div></div>
+        <div class="flow-step"><div class="step-no">3</div><div class="step-panel"><h3>ready_for_applyへ</h3><p>「考えてください」ではなく、Iが設計し直さなくても適用できる状態まで仕上げます。</p></div></div>
+        <div class="flow-step"><div class="step-no">4</div><div class="step-panel"><h3>Iが現在mainと再照合</h3><p>古いGuide/Dataを前提にしていないか、他Workerと意味的にぶつからないかを確認します。</p></div></div>
+        <div class="flow-step"><div class="step-no">5</div><div class="step-panel"><h3>正式反映 → Validation → PR → Merge</h3><p>Iが1つずつ適用し、最終状態で検証してから完了にします。</p></div></div>
+      </div>
+    </section>
+
+    <footer class="footer">表示元は公開用の要約データです。Private Data Repositoryの詳細内容そのものをブラウザから直接取得しません。</footer>
+  </main>
+
+  <script>
+    const statusLabel = {
+      assigned: '開始待ち', waiting: '待機中', working: '作業中', active: '作業中',
+      ready_for_apply: '反映準備完了', completed: '完了', blocked: '停止中', recovery_required: '復旧確認'
+    };
+
+    function workerCard(worker, integration = false) {
+      const percent = worker.total ? Math.round((worker.completed / worker.total) * 100) : 0;
+      const prompt = escapeHtml(worker.startPrompt || '');
+      return `
+        <article class="worker-card ${integration ? 'integration' : ''}">
+          <div class="worker-head">
+            <div style="display:flex;gap:12px;align-items:flex-start">
+              <span class="worker-id">${escapeHtml(worker.id)}</span>
+              <div>
+                <h3 class="worker-title">${escapeHtml(worker.title)}</h3>
+                <div class="worker-role">${escapeHtml(worker.role)}</div>
+              </div>
+            </div>
+            <span class="badge ${escapeHtml(worker.status)}">${escapeHtml(statusLabel[worker.status] || worker.status)}</span>
+          </div>
+          <div class="worker-body">
+            <dl class="kv">
+              <dt>現在</dt><dd>${escapeHtml(worker.currentTask || '-')}</dd>
+              <dt>反映準備</dt><dd>${worker.readyForApply ? '完了' : '未完了'}</dd>
+            </dl>
+            <div class="progress" aria-label="進捗 ${percent}%"><span style="width:${percent}%"></span></div>
+            <div class="progress-meta"><span>${worker.completed} / ${worker.total}</span><span>${percent}%</span></div>
+            <div class="prompt-box">
+              <div class="prompt-label"><span>新しい会話へ貼る開始文</span><button class="copy" type="button" data-prompt="${encodeURIComponent(worker.startPrompt || '')}">コピー</button></div>
+              <pre class="prompt">${prompt}</pre>
+            </div>
+          </div>
+        </article>`;
+    }
+
+    function escapeHtml(value) {
+      return String(value).replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+    }
+
+    async function loadDashboard() {
+      try {
+        const response = await fetch('dashboard-data.json', { cache: 'no-store' });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const data = await response.json();
+        const prep = data.workers.filter(w => w.id !== 'I');
+        const integration = data.workers.find(w => w.id === 'I');
+        document.getElementById('runId').textContent = data.runId;
+        document.getElementById('runStatus').textContent = statusLabel[data.runStatus] || data.runStatus;
+        document.getElementById('revision').textContent = `rev ${data.assignmentRevision}`;
+        document.getElementById('prepCount').textContent = prep.length;
+        document.getElementById('totalCount').textContent = prep.reduce((n, w) => n + w.total, 0);
+        document.getElementById('doneCount').textContent = prep.reduce((n, w) => n + w.completed, 0);
+        document.getElementById('readyCount').textContent = prep.filter(w => w.readyForApply).length;
+        document.getElementById('workerGrid').innerHTML = prep.map(w => workerCard(w)).join('');
+        document.getElementById('integrationCard').innerHTML = integration ? workerCard(integration, true) : '<div class="error">Iの状態がありません。</div>';
+        bindCopy();
+      } catch (error) {
+        document.getElementById('workerGrid').innerHTML = `<div class="error">Dashboard Dataを読み込めませんでした。${escapeHtml(error.message)}</div>`;
+      }
+    }
+
+    function bindCopy() {
+      document.querySelectorAll('.copy').forEach(button => {
+        button.addEventListener('click', async () => {
+          const text = decodeURIComponent(button.dataset.prompt || '');
+          try {
+            await navigator.clipboard.writeText(text);
+            const old = button.textContent;
+            button.textContent = 'コピー済み';
+            setTimeout(() => button.textContent = old, 1400);
+          } catch {
+            button.textContent = '選択してコピー';
+          }
+        });
+      });
+    }
+
+    loadDashboard();
+  </script>
+</body>
+</html>
