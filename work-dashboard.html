@@ -101,14 +101,46 @@
 
   <script>
     const statusLabel = {
-      assigned: '開始待ち', waiting: '待機中', working: '作業中', active: '作業中', claimed: '取得済み',
-      ready_for_apply: '反映準備完了', completed: '完了', blocked: '停止中', recovery_required: '復旧確認'
+      assigned: '開始待ち',
+      claimed: '取得済み',
+      working: '作業中',
+      active: '作業中',
+      ready_for_apply: '反映準備完了',
+      waiting: '待機中',
+      integrating: '統合中',
+      applied: '反映済み',
+      verified: '検証完了',
+      completed: '完了',
+      blocked: '停止中',
+      stale: '要再確認',
+      recovery_required: '復旧確認',
+      rejected: '却下',
+      superseded: '置換済み'
+    };
+
+    const statusTone = {
+      assigned: 'assigned',
+      waiting: 'waiting',
+      stale: 'waiting',
+      superseded: 'waiting',
+      claimed: 'active',
+      working: 'active',
+      active: 'active',
+      integrating: 'active',
+      ready_for_apply: 'completed',
+      applied: 'completed',
+      verified: 'completed',
+      completed: 'completed',
+      blocked: 'blocked',
+      recovery_required: 'blocked',
+      rejected: 'blocked'
     };
 
     function workerCard(worker, integration = false) {
       const percent = worker.total ? Math.round((worker.completed / worker.total) * 100) : 0;
       const prompt = escapeHtml(worker.startPrompt || '');
       const branchRow = worker.workBranch ? `<dt>Branch</dt><dd><code>${escapeHtml(worker.workBranch)}</code></dd>` : '';
+      const tone = statusTone[worker.status] || 'waiting';
       return `
         <article class="worker-card ${integration ? 'integration' : ''}">
           <div class="worker-head">
@@ -119,7 +151,7 @@
                 <div class="worker-role">${escapeHtml(worker.role)}</div>
               </div>
             </div>
-            <span class="badge ${escapeHtml(worker.status)}">${escapeHtml(statusLabel[worker.status] || worker.status)}</span>
+            <span class="badge ${escapeHtml(tone)}">${escapeHtml(statusLabel[worker.status] || worker.status)}</span>
           </div>
           <div class="worker-body">
             <dl class="kv">
