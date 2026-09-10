@@ -53,11 +53,16 @@
           <thead><tr><th>依頼</th><th>AIが最初に見ること</th><th>主なRoute</th></tr></thead>
           <tbody>
             <tr><td>新しいサイト / アプリ / ゲーム</td><td>目的、利用者、主要Task、必要機能、保存、完成条件</td><td>Requirements → Structure / Flow → 専門Owner → Testing</td></tr>
+            <tr data-route="learning"><td>学習・解説サイト</td><td>Starting Knowledge、Learning Objective、前提Concept、Practice、理解確認、次のStep</td><td>Requirements → Profile → Structure / Flow → Learning Verification → UI</td></tr>
             <tr><td>バグ修正</td><td>現在の症状、再現条件、既存仕様、原因に関係する範囲</td><td>Current Repo → 専門Owner → Smallest Safe Change → Test</td></tr>
             <tr><td>UIを大きく変える</td><td>今のTask / IAまで変えるか、見た目だけか</td><td>Structure / Flow → Visual Research → UI / UX → Visual Check</td></tr>
             <tr><td>調査して方針を決める</td><td>何を知ればDecisionが良くなるか、不確実性は高いか</td><td>Evidence-first Research → Topic Owner → Decision → Validation</td></tr>
             <tr><td>保存やSchema変更</td><td>既存データを壊さないか、Migration / Backup / Restoreが必要か</td><td>Data / Storage → Version → Testing</td></tr>
-            <tr><td>公開 / 配布</td><td>本番Runtime、公開URL、Release、Rollback、実機確認</td><td>Deployment / Pages → Maintenance → Testing</td></tr>
+            <tr data-route="web-deployment"><td>一般Web公開 / Runtime変更</td><td>Staticで足りるか、Server実行・Secret・Background処理が必要か、Environment差分は何か</td><td>Project Management → Maintenance → Testing → Reliability / Security</td></tr>
+            <tr><td>GitHub Pagesで公開</td><td>Publishing Source、subpath、404 / direct-open、公開Revision、実URL</td><td>GitHub Pages → Project Management → Testing</td></tr>
+            <tr data-route="browser-compatibility"><td>Browser互換性 / 新Web API</td><td>対象User / Runtime、必要Feature、fallback、実際に差が出るBrowser / Device</td><td>Requirements → Testing → Dependencies → Current Evidence</td></tr>
+            <tr data-route="external-integration"><td>外部API / Webhook / Supabase</td><td>Integration境界、外部Authority、失敗・Retry、Auth、Version / Deprecation</td><td>Architecture → Reliability → Security → Testing → Dependencies</td></tr>
+            <tr><td>Electron / Windows配布</td><td>Installer、Auto Update、OS固有機能、Security、実機確認</td><td>Electron → Security → Testing → Observability</td></tr>
             <tr><td>会話移行 / 並列作業</td><td>今のBranch / PR / Run / holder / checkpointが一意か</td><td>Conversation Recovery → Project Management → Parallel Run</td></tr>
           </tbody>
         </table>
@@ -78,6 +83,21 @@
         <div class="flow-step"><div class="step-no">4</div><div class="step-panel"><h3>Research Gate</h3><p>重要で不確実な判断なら調査へ。原因と正解が明確な小規模修正ならDeep Researchを挟まず進みます。</p></div></div>
         <div class="flow-step"><div class="step-no">5</div><div class="step-panel"><h3>構造 → 実装</h3><p>大きなUIではGoal → Task → Information / Function → IA → Navigation / Flow → State → Pageの順に考え、見た目だけ先に固定しません。</p></div></div>
         <div class="flow-step"><div class="step-no">6</div><div class="step-panel"><h3>Validation</h3><p>実装したファイルだけではなく、最終Commit / 本番 / Browser / 実機など、必要な最終状態で確認します。</p></div></div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="current-routes-title">
+      <div class="section-head">
+        <div>
+          <h2 id="current-routes-title">最近追加・強化された専門Route</h2>
+          <p class="section-intro">同じ「Web制作」でも、学習、Runtime、Browser、外部連携では確認する事実と失敗条件が違います。</p>
+        </div>
+      </div>
+      <div class="branch-grid">
+        <div class="branch"><strong>学習・解説</strong><p>教材があるだけで完成にせず、開始知識、学習目標、前提、説明 / Practice、理解・応用Evidence、Feedback、Next Stepを確認します。</p></div>
+        <div class="branch"><strong>Web Deployment / Runtime</strong><p>Provider名を先に決めず、Static files、Server execution、Secret、Background workなど必要Capabilityから形を選びます。</p></div>
+        <div class="branch"><strong>Browser互換性</strong><p>Compatibility表だけで完成扱いせず、Target User / Runtimeに合うRepresentative Browser / DeviceでPrimary Taskを確認します。</p></div>
+        <div class="branch"><strong>外部Integration</strong><p>HTTP成功だけをOracleにせず、Auth、Authority、Retry、Duplicate、Provider failure、Version lifecycleまでProduct behaviorとして確認します。</p></div>
       </div>
     </section>
 
@@ -176,9 +196,13 @@
       </div>
       <div class="route-strip">
         <a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/01-requirements.md">Requirements</a>
+        <a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/02-architecture.md">Architecture</a>
         <a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/04-ui-ux-accessibility.md">UI / UX</a>
         <a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/07-testing-quality.md">Testing</a>
+        <a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/08-github-pages.md">GitHub Pages</a>
         <a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/10-project-management.md">Project Management</a>
+        <a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/12-project-profiles.md">Profiles</a>
+        <a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/13-dependencies-assets.md">Dependencies</a>
         <a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/18-domain-first-visual-research.md">Visual Research</a>
         <a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/20-evidence-first-research.md">Evidence-first Research</a>
         <a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/21-rule-routing-preflight.md">Rule Routing</a>

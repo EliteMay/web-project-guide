@@ -8,8 +8,8 @@ Common Rule本文は`docs/`の各Owner Docを正本とし、このFileへ詳細R
 
 - Guide Versionの正本: `guide-version.json`
 - Primary Profile: `TOOL`
-- User-facing UI: No
-- Visual Quality Baseline: Not applicable
+- User-facing UI: Yes
+- Visual Quality Baseline: Applicable to the public human-facing Guide surfaces
 
 Current Guide VersionをこのFileへ固定値で重複記録しません。
 
@@ -28,6 +28,7 @@ Current Guide VersionをこのFileへ固定値で重複記録しません。
 - implementationだけでなくrequired validationまで完成条件に含める
 - Current Repository / Evidenceで解ける判断を不必要にUserへ返さない
 - 会話が変わってもGitHubからCurrent Stateを復元できる
+- 人間向けWeb版からCurrent Ruleの主要Routeへ分かりやすく到達できる
 
 ## 2. 使用者 / 利用環境
 
@@ -41,7 +42,7 @@ Secondary:
 - collaborators
 - future repository review
 
-主入口はGitHub Repositoryです。Current GitHub状態をold conversation / ZIP / memoryより優先します。
+Rule本文・Machine Routing・Current ContractのSource of TruthはGitHub Repositoryです。人間が作業内容からRuleを探す入口として公開Web版を利用できます。Current GitHub状態をold conversation / ZIP / memoryより優先します。
 
 ## 3. Repository Scope
 
@@ -58,6 +59,8 @@ Secondary:
 - Catalog / References
 - Project Feedback / Continuous Improvement / Deep Audit
 - Validator / Guide version / release history
+- 人間向けWeb Guide / Rule Finder
+- 公開可能な最小Statusだけを扱うParallel Work Dashboard
 
 ### 原則担当しない
 
@@ -70,6 +73,7 @@ Secondary:
 - project-specific bug history
 - all repositoriesのautomatic rewrite / continuous monitoring
 - fixed visual style / fixed Navigation Patternの全Project強制
+- Private `web-project-data`の内容を公開Webへ直接露出すること
 
 Project固有情報はTarget RepositoryをSource of Truthとします。
 
@@ -88,6 +92,9 @@ Project固有情報はTarget RepositoryをSource of Truthとします。
 | `templates/` | Project input / handoff / execution templates |
 | `catalog/` | Failure / Success / Anti-pattern / visual evidence |
 | `references/` | Non-normative research / project-specific evidence |
+| `index.html` / `rules.html` / `ai-workflow.html` | Public human-facing Guide entry / Rule summary / AI workflow explanation |
+| `work-dashboard.html` / `dashboard-data.json` | Public-safe parallel work status UI / snapshot |
+| `human-guide.css` / `mobile-fixes.css` | Human-facing Guide presentation / responsive support |
 | `tests/` | Guide validators |
 | `guide-version.json` | Current Guide Version |
 | `CHANGELOG.md` | Release history |
@@ -208,6 +215,7 @@ Rule moveはDestination + Source cleanupを1つのCompletion Conditionにしま�
 - local bugへFull Guide / Deep Researchを強制しない
 - Structure / Flowは`docs/22`
 - conversation handoff / stale checkpointは`docs/23`
+- 公開Human GuideはCurrent `START_HERE.md`の主要Routeを人間向けに要約し、独自の第二Rule本文を作らない
 
 Router infrastructureは必要以上に巨大化しません。
 
@@ -269,6 +277,7 @@ Validatorは機械化可能なStructural Contractを優先します。
 - template routing
 - clear owner leakage marker
 - current workflow self-application（例: external Action SHA pin）
+- public Human Guideの主要Route / Surface存在
 
 Prose wordingを大量固定しません。
 
@@ -310,6 +319,8 @@ Task-first Structure / Flow Researchは既に`docs/22`へPromotion済みのた�
 
 - [ ] README / START_HEREから必要Ownerへ短く辿れる
 - [ ] Machine RouterとHuman Routerの重要Routeが一致
+- [ ] Public Human GuideがCurrent Human Routerの主要Routeと矛盾しない
+- [ ] Public Human Guideの主要導線・Responsive・AccessibilityにBlocking Issueがない
 - [ ] Registered Ownerがreachable
 - [ ] same normative decisionの競合Ownerがない
 - [ ] Root RequirementsがRule本文 / audit backlog / research notebook化していない

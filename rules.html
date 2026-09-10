@@ -427,7 +427,7 @@
       <div class="topbar">
         <div class="search-wrap">
           <svg class="search-icon" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M11.5 10.5a5.5 5.5 0 1 0-1 1l3.5 3.5 1-1-3.5-3.5ZM2 7a5 5 0 1 1 10 0A5 5 0 0 1 2 7Z"/></svg>
-          <input id="search" class="search" type="search" placeholder="例: 保存、ログイン、重い、スマホ、ゲーム、公開…" aria-label="ガイド内を検索">
+          <input id="search" class="search" type="search" placeholder="例: 保存、API、学習、Browser、公開、ゲーム…" aria-label="ガイド内を検索">
         </div>
       </div>
 
@@ -486,12 +486,12 @@
               </div>
             </article>
 
-            <article class="route searchable" data-search="公開 deploy deployment GitHub Pages 本番 URL release 配布">
+            <article class="route searchable" data-search="公開 deploy deployment GitHub Pages 本番 URL release 配布 static hosting">
               <div class="route-number">05</div>
               <div>
                 <h3>公開・配布する</h3>
-                <p>コードが動くだけで終わらず、本番環境・公開URL・失敗時の戻し方まで確認します。</p>
-                <div class="route-links"><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/08-github-pages.md">GitHub Pages</a><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/09-maintenance.md">Release / Rollback</a></div>
+                <p>Static / Serverless等のRuntimeを必要Capabilityから選び、実際の本番状態・公開URL・Rollbackまで確認します。</p>
+                <div class="route-links"><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/10-project-management.md">Web Deployment</a><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/08-github-pages.md">GitHub Pages</a><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/07-testing-quality.md">Deployment確認</a></div>
               </div>
             </article>
 
@@ -501,6 +501,42 @@
                 <h3>ゲームを作る・変える</h3>
                 <p>Core Loop、進行、Save、主要Flowを扱う変更は、実際のPlaytestまで含めて確認します。</p>
                 <div class="route-links"><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/19-game-development.md">ゲーム制作</a><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/03-data-storage.md">Save</a></div>
+              </div>
+            </article>
+
+            <article class="route searchable" data-route="learning" data-search="学習 解説 learning 教材 勉強 assessment practice 理解 学習サイト">
+              <div class="route-number">07</div>
+              <div>
+                <h3>学習・解説サイトを作る</h3>
+                <p>教材の量だけでなく、開始知識、学習目標、前提Concept、Practice、理解確認、Feedback、次のStepを設計します。</p>
+                <div class="route-links"><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/01-requirements.md">学習要件</a><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/12-project-profiles.md">Profile</a><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/22-task-first-structure-flow-research.md">学習Flow</a><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/07-testing-quality.md">理解確認</a></div>
+              </div>
+            </article>
+
+            <article class="route searchable" data-route="web-deployment" data-search="managed hosting serverless edge backend runtime environment staging preview production web deployment">
+              <div class="route-number">08</div>
+              <div>
+                <h3>WebのRuntime・公開方法を決める</h3>
+                <p>Provider名からではなく、Static file、Server実行、Secret、Background処理などPrimary Taskに必要なCapabilityから選びます。</p>
+                <div class="route-links"><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/10-project-management.md">Deployment / Runtime</a><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/09-maintenance.md">Release / Rollback</a><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/07-testing-quality.md">Environment確認</a></div>
+              </div>
+            </article>
+
+            <article class="route searchable" data-route="browser-compatibility" data-search="browser compatibility web platform api baseline polyfill transpile chrome firefox safari webview 対応">
+              <div class="route-number">09</div>
+              <div>
+                <h3>Browser互換性・新しいWeb APIを判断する</h3>
+                <p>対応表だけで決めず、Target User / Runtime / Primary TaskからSupport Contractと実確認範囲を決めます。</p>
+                <div class="route-links"><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/01-requirements.md">Support Contract</a><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/07-testing-quality.md">Compatibility確認</a><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/13-dependencies-assets.md">Polyfill / Dependencies</a><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/20-evidence-first-research.md">Current Evidence</a></div>
+              </div>
+            </article>
+
+            <article class="route searchable" data-route="external-integration" data-search="API webhook external Supabase SDK CDN integration provider auth retry 外部API 連携">
+              <div class="route-number">10</div>
+              <div>
+                <h3>外部API・Webhook・Supabaseと連携する</h3>
+                <p>接続成功だけで終わらず、責任境界、Authority、Auth、Retry / Duplicate、Provider failure、Version lifecycleまで確認します。</p>
+                <div class="route-links"><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/02-architecture.md">Architecture</a><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/05-performance-reliability.md">Reliability</a><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/06-security.md">Security</a><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/13-dependencies-assets.md">API lifecycle</a></div>
               </div>
             </article>
           </div>
@@ -542,6 +578,27 @@
               <p>外部サービスが落ちる・遅い・仕様変更する前提で境界を作ります。</p>
               <ul><li>自分側と外部側の責任範囲を分ける</li><li>Timeout / Retry / 重複Webhookを考える</li><li>SDKやAPIのVersion・廃止も確認する</li></ul>
               <div class="feature-links"><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/02-architecture.md">02 Architecture</a><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/05-performance-reliability.md">05 Reliability</a><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/13-dependencies-assets.md">13 Dependencies</a></div>
+            </article>
+
+            <article class="feature searchable" data-search="学習 解説 learning 教材 assessment practice quiz review feedback objective prerequisite">
+              <div class="feature-top"><h3>学習・解説コンテンツ</h3><span class="tag">Learning</span></div>
+              <p>教材を並べるだけでなく、何を理解・適用できれば成功かを先に決めます。</p>
+              <ul><li>Starting KnowledgeとLearning Objectiveを分ける</li><li>説明だけでなく必要なPractice / Feedbackを設計する</li><li>理解・応用EvidenceとNext Stepを確認する</li></ul>
+              <div class="feature-links"><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/01-requirements.md">01 Requirements</a><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/12-project-profiles.md">12 Profiles</a><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/22-task-first-structure-flow-research.md">22 Learning Flow</a><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/07-testing-quality.md">07 Verification</a></div>
+            </article>
+
+            <article class="feature searchable" data-search="managed hosting serverless edge backend runtime environment preview staging production deploy web deployment">
+              <div class="feature-top"><h3>Web公開・Runtime・Environment</h3><span class="tag">Deploy</span></div>
+              <p>Static hostingで十分か、Server実行やSecret-backed処理が必要かをPrimary Taskから判断します。</p>
+              <ul><li>必要Runtime capabilityからHosting形態を選ぶ</li><li>Local / Preview / Staging / Productionを目的なく増やさない</li><li>Pipeline成功だけで本番動作確認済みにしない</li></ul>
+              <div class="feature-links"><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/10-project-management.md">10 Deployment</a><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/09-maintenance.md">09 Release / Rollback</a><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/07-testing-quality.md">07 Environment Verification</a></div>
+            </article>
+
+            <article class="feature searchable" data-search="browser compatibility web platform api baseline polyfill transpile chrome firefox safari webview mobile 対応">
+              <div class="feature-top"><h3>Browser・Web Platform互換性</h3><span class="tag">Browser</span></div>
+              <p>「対応と書かれている」ことと、実際のPrimary Taskが対象環境で動くことを分けます。</p>
+              <ul><li>Target User / RuntimeからSupport Contractを決める</li><li>差が出るBrowser / DeviceをRepresentativeに確認する</li><li>fallback / polyfillを使う場合はUnsupported pathも確認する</li></ul>
+              <div class="feature-links"><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/01-requirements.md">01 Support Contract</a><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/07-testing-quality.md">07 Compatibility Verification</a><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/13-dependencies-assets.md">13 Dependencies</a><a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/20-evidence-first-research.md">20 Current Evidence</a></div>
             </article>
 
             <article class="feature searchable" data-search="作成 編集 削除 create edit delete CRUD undo restore draft autosave confirmation archive">
@@ -703,8 +760,9 @@
 
     function updateCount() {
       const visible = features.filter((item) => item.hidden === false).length;
+      const anyVisible = searchableItems.some((item) => item.hidden === false);
       featureCount.textContent = searchInput.value.trim() ? `${visible}件表示` : `${features.length}項目`;
-      emptyState.style.display = searchInput.value.trim() && visible === 0 ? 'block' : 'none';
+      emptyState.style.display = searchInput.value.trim() && !anyVisible ? 'block' : 'none';
     }
 
     function filterGuide() {
