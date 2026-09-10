@@ -7,6 +7,8 @@
 機能や作業内容からルールを分かりやすく探したい場合は、まずWeb版を使います。
 
 - 公開サイト: <https://elitemay.github.io/web-project-guide/>
+- Human Guideの実体は `site/` にまとめ、Repository rootの `index.html` は公開Entryとして維持します。
+- Rootの `ai-workflow.html` / `rules.html` / `work-dashboard.html` は既存URL互換のAdapterで、実ページは `site/pages/` が正本です。
 - 正式なRule本文の正本は、引き続きこのRepositoryの `docs/` と各Owner Docです。
 
 最初から全章を読む必要はありません。
