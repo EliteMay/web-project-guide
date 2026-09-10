@@ -6,6 +6,7 @@
   <meta name="description" content="A/B/C/D/I の担当、進捗、開始文を人間向けに確認する Web Project Guide の作業ダッシュボードです。">
   <title>作業ダッシュボード | Web Project Guide</title>
   <link rel="stylesheet" href="human-guide.css">
+  <link rel="stylesheet" href="mobile-fixes.css">
 </head>
 <body>
   <header class="sitebar">
@@ -14,7 +15,7 @@
       <nav class="tabs" aria-label="Guide navigation">
         <a href="work-dashboard.html" aria-current="page">作業ダッシュボード</a>
         <a href="ai-workflow.html">AIの作業ルール</a>
-        <a href="index.html">ルール検索</a>
+        <a href="rules.html">ルール検索</a>
       </nav>
     </div>
   </header>
@@ -30,6 +31,7 @@
         <div class="meta-row"><span>Run</span><strong id="runId">読み込み中</strong></div>
         <div class="meta-row"><span>状態</span><strong id="runStatus">-</strong></div>
         <div class="meta-row"><span>Assignment</span><strong id="revision">-</strong></div>
+        <div class="meta-row"><span>表示方式</span><strong>公開Snapshot</strong></div>
       </div>
     </header>
 
@@ -38,6 +40,7 @@
         <strong id="safety-title">安全な分担の境界</strong>
         A/B/C/DはGuideを読むだけです。さらに正式なDataファイルも直接変更せず、自分のRunフォルダへ完成成果物を置きます。Iだけが現在のmainと再照合して正式位置へ適用します。
       </div>
+      <div id="snapshotNotice" class="snapshot-note" role="status">公開Snapshotの同期時刻を確認しています…</div>
     </section>
 
     <section class="section" aria-labelledby="summary-title">
@@ -108,7 +111,7 @@
       return `
         <article class="worker-card ${integration ? 'integration' : ''}">
           <div class="worker-head">
-            <div style="display:flex;gap:12px;align-items:flex-start">
+            <div class="worker-title-wrap">
               <span class="worker-id">${escapeHtml(worker.id)}</span>
               <div>
                 <h3 class="worker-title">${escapeHtml(worker.title)}</h3>
@@ -125,8 +128,11 @@
             <div class="progress" aria-label="進捗 ${percent}%"><span style="width:${percent}%"></span></div>
             <div class="progress-meta"><span>${worker.completed} / ${worker.total}</span><span>${percent}%</span></div>
             <div class="prompt-box">
-              <div class="prompt-label"><span>新しい会話へ貼る開始文</span><button class="copy" type="button" data-prompt="${encodeURIComponent(worker.startPrompt || '')}">コピー</button></div>
-              <pre class="prompt">${prompt}</pre>
+              <div class="prompt-label"><span>新しい会話へ貼る開始文</span><button class="copy" type="button" data-prompt="${encodeURIComponent(worker.startPrompt || '')}">開始文をコピー</button></div>
+              <details class="prompt-details">
+                <summary>開始文を表示</summary>
+                <pre class="prompt">${prompt}</pre>
+              </details>
             </div>
           </div>
         </article>`;
@@ -134,6 +140,28 @@
 
     function escapeHtml(value) {
       return String(value).replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+    }
+
+    function formatSnapshotTime(value) {
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return null;
+      return new Intl.DateTimeFormat('ja-JP', {
+        year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit'
+      }).format(date);
+    }
+
+    function updateSnapshotNotice(data) {
+      const notice = document.getElementById('snapshotNotice');
+      const formatted = formatSnapshotTime(data.snapshotUpdatedAt);
+      if (!formatted) {
+        notice.classList.add('stale');
+        notice.innerHTML = '<strong>同期時刻不明</strong> この画面はPrivate Dataのリアルタイム表示ではありません。作業開始前はData側のstateも確認してください。';
+        return;
+      }
+      const ageMinutes = Math.max(0, Math.floor((Date.now() - new Date(data.snapshotUpdatedAt).getTime()) / 60000));
+      const stale = ageMinutes > 30;
+      notice.classList.toggle('stale', stale);
+      notice.innerHTML = `<strong>${stale ? '表示が古い可能性があります' : '公開Snapshot'}</strong>${escapeHtml(formatted)} に同期された要約です。Private Dataとはリアルタイム同期していません${stale ? '。開始前に最新stateを再確認してください。' : '。'}`;
     }
 
     async function loadDashboard() {
@@ -152,9 +180,44 @@
         document.getElementById('readyCount').textContent = prep.filter(w => w.readyForApply).length;
         document.getElementById('workerGrid').innerHTML = prep.map(w => workerCard(w)).join('');
         document.getElementById('integrationCard').innerHTML = integration ? workerCard(integration, true) : '<div class="error">Iの状態がありません。</div>';
+        updateSnapshotNotice(data);
         bindCopy();
       } catch (error) {
         document.getElementById('workerGrid').innerHTML = `<div class="error">Dashboard Dataを読み込めませんでした。${escapeHtml(error.message)}</div>`;
+        const notice = document.getElementById('snapshotNotice');
+        notice.classList.add('stale');
+        notice.textContent = '公開Snapshotを読み込めませんでした。開始文や進捗を最新情報として扱わないでください。';
+      }
+    }
+
+    function legacyCopy(text) {
+      const area = document.createElement('textarea');
+      area.value = text;
+      area.setAttribute('readonly', '');
+      area.style.position = 'fixed';
+      area.style.opacity = '0';
+      area.style.pointerEvents = 'none';
+      document.body.appendChild(area);
+      area.focus();
+      area.select();
+      area.setSelectionRange(0, text.length);
+      let copied = false;
+      try { copied = document.execCommand('copy'); } catch { copied = false; }
+      area.remove();
+      return copied;
+    }
+
+    function revealPrompt(button) {
+      const box = button.closest('.prompt-box');
+      const details = box?.querySelector('.prompt-details');
+      const prompt = box?.querySelector('.prompt');
+      if (details) details.open = true;
+      if (prompt && window.getSelection && document.createRange) {
+        const range = document.createRange();
+        range.selectNodeContents(prompt);
+        const selection = window.getSelection();
+        selection.removeAllRanges();
+        selection.addRange(range);
       }
     }
 
@@ -162,14 +225,25 @@
       document.querySelectorAll('.copy').forEach(button => {
         button.addEventListener('click', async () => {
           const text = decodeURIComponent(button.dataset.prompt || '');
-          try {
-            await navigator.clipboard.writeText(text);
-            const old = button.textContent;
-            button.textContent = 'コピー済み';
-            setTimeout(() => button.textContent = old, 1400);
-          } catch {
-            button.textContent = '選択してコピー';
+          let copied = false;
+          if (navigator.clipboard?.writeText) {
+            try {
+              await navigator.clipboard.writeText(text);
+              copied = true;
+            } catch {
+              copied = false;
+            }
           }
+          if (!copied) copied = legacyCopy(text);
+
+          const old = button.textContent;
+          if (copied) {
+            button.textContent = 'コピー済み';
+          } else {
+            revealPrompt(button);
+            button.textContent = '開始文を選択しました';
+          }
+          setTimeout(() => button.textContent = old, 1800);
         });
       });
     }
