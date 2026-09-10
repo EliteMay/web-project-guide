@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-09-10T15:17:42+09:00",
+  "projects": [
+    {"slug":"lyrictube","repository":"EliteMay/lyrictube","name":"LyricTube"},
+    {"slug":"valorant-lineup","repository":"EliteMay/valorant-lineup","name":"VALORANT Lineup"},
+    {"slug":"ar","repository":"EliteMay/ar","name":"AR"},
+    {"slug":"valorant-review","repository":"EliteMay/valorant-review","name":"VALORANT Review"},
+    {"slug":"ap-study-guide","repository":"EliteMay/ap-study-guide","name":"AP Study Guide"},
+    {"slug":"design-shelf","repository":"EliteMay/design-shelf","name":"DesignShelf"},
+    {"slug":"english-study","repository":"EliteMay/english-study","name":"English Study"},
+    {"slug":"osu-hub","repository":"EliteMay/osu-hub","name":"osu! Hub"},
+    {"slug":"home-workout-guide","repository":"EliteMay/home-workout-guide","name":"Home Workout Guide"},
+    {"slug":"github-guide","repository":"EliteMay/github-guide","name":"GitHub Guide"},
+    {"slug":"buylens","repository":"EliteMay/BuyLens","name":"BuyLens"},
+    {"slug":"tarkov-field-manual","repository":"EliteMay/Tarkov-Field-Manual","name":"Tarkov Field Manual"},
+    {"slug":"aws-study-guide","repository":"EliteMay/aws-study-guide","name":"AWS Study Guide"},
+    {"slug":"type-tower","repository":"EliteMay/type-tower","name":"Type Tower"},
+    {"slug":"type-tower-a","repository":"EliteMay/type-tower-a","name":"Type Tower A"},
+    {"slug":"game","repository":"EliteMay/game","name":"game"}
+  ]
+}
