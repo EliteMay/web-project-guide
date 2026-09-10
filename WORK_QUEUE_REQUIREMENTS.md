@@ -1,12 +1,28 @@
 # Work Queue Orchestration 要件定義
 
-Status: Requirements complete / implementation not started
+Status: Requirements complete / core orchestration implemented / Dashboard V2 task execution in progress
 Target: `EliteMay/web-project-guide` parallel-work orchestration
 Related UI contract: `DASHBOARD_REQUIREMENTS.md`
 
 この文書は、要件定義が正式に完了した後、実装すべき内容をRepository単位の作業Queueへ自動登録し、A/B/C/D等のWorker枠へ安全に割り当てるためのCurrent Product Contractです。
 
 DashboardはQueueとWorker状態を人間向けに表示しますが、QueueそのものをRequirementsの第二Source of Truthにはしません。実装意図の正本はTarget RepositoryのCurrent Requirementsです。
+
+## Current Runtime Status
+
+2026-09-11時点で、以下の共通基盤は実装済みです。
+
+- Requirements revisionに紐づくRepository専用Queue生成 / idempotent sync
+- Queue schema / dependency / lane整合Validation
+- sanitize済みPublic Queue ProjectionとRepository Dashboard表示
+- guarded formal assignment (`queued → assigned`)
+- conversation Claim Gate (`assigned → working`)
+- verified completion後のHistory確定とsame-lane advance
+- Dashboardのassigned Laneに対する開始文handoff
+
+実装済みであっても、Public DashboardはAuthorityではありません。Current AssignmentとClaimのAuthorityは`EliteMay/web-project-data/work-queues/`のCurrent Queueです。
+
+ChatGPTから新しい別会話を自動生成することはこのContractの実装済み機能に含めません。assigned LaneはDashboardの開始文を新しい会話へ渡し、その会話がCurrent Queueを再取得してClaimに成功した後に作業を始めます。
 
 ## 1. Product Goal
 
@@ -27,7 +43,11 @@ Requirements Complete / Ready for implementation
 ↓
 Repository専用Work Queueへ自動登録
 ↓
-依存関係を満たすTaskを空きWorkerへ割当
+依存関係を満たすTaskを空きWorkerへ正式割当
+↓
+新しいWorker会話がCurrent AssignmentをClaim
+↓
+Claim後の再取得 / holder一致確認
 ↓
 Worker作業
 ↓
@@ -197,15 +217,32 @@ A: Dashboard Renderer実装   0/8 未開始
 
 次Taskが存在しない場合は、Aを`次の割当待ち`として表示します。
 
-## 12. Queue自動投入と自動実行を分離する
+## 12. Queue自動投入とWorker開始を分離する
 
 **Requirements Complete → Queue追加は自動**を標準とします。
 
 ただし、**Queueへ追加された = 即座にWorkerが勝手に実行開始する**とは定義しません。
 
-実行開始はCurrent Run / Worker policyに従います。たとえば新しいChatへStart Promptを貼る方式なら、Dashboardは割当済みTaskと開始文を表示します。
+実行開始はCurrent Run / Worker policyに従います。新しいChatへStart Promptを貼る方式では、Dashboardは割当済みTaskの公開Summaryと開始文を表示します。
 
-将来Worker自動起動を追加する場合は、別の明示Contractとして扱い、Queue投入仕様へ暗黙に混ぜません。
+### Claim Gate
+
+`assigned`はLaneへの正式割当であり、まだ特定会話の作業開始を保証しません。
+
+新しいWorker会話は次を行います。
+
+1. Current Queueの`control.json` / `lanes/<LANE>.json` / Current Itemを再取得
+2. Current Requirements / generation / assignment revisionを確認
+3. 会話専用の一意なprivate `holderId`を生成
+4. Current Item blob SHAをcompare-and-swap境界としてClaim
+5. 保存後にItem / Laneを再取得
+6. 自分のholderIdで`working`になったことを確認してから実装開始
+
+別holderが既にClaim済み、SHA/revisionがstale、Requirements不一致の場合はTarget Repositoryを編集せず停止します。他holderのClaimを上書きまたは削除して奪いません。
+
+`claimHolderId` / `claimedAt` / private Task IDはPublic Dashboardへ公開しません。
+
+Dashboardに表示する開始文はPrivate Task本文やTask IDを埋め込まず、Repository + Worker Laneを入口としてCurrent Assignmentを再取得させます。
 
 ## 13. Integration Worker Iとの関係
 
@@ -225,11 +262,14 @@ Repository DashboardではQueueについて最低限以下を人間向けに確�
 - Queue内の未処理Task数
 - 現在実行可能なTask数
 - WorkerごとのCurrent Assignment
+- assigned Workerを開始するための開始文
 - 次の割当待ちかどうか
 - Queue生成 / 同期が正常か
 - Requirements revisionとの不一致があるか
 
 Queue詳細を全部First Viewへ並べず、Primary UIでは「今の仕事」と「次に何が起きるか」を優先します。
+
+開始文は`assigned`なLaneだけに表示し、`working`へClaim済みなら開始Actionを消します。
 
 ## 15. Queue Sync Failure
 
@@ -270,15 +310,16 @@ Public Dashboardに出すQueue情報はsanitize済みの最小項目だけとし
 - current assignment summary
 - human-facing status
 - next action
+- Repository + Laneから構築できる汎用Start Prompt
 
 公開禁止候補:
 
-- Private Requirements本文
-- Private TASK全文
-- internal evidence
+- Private Requirements本文 / immutable revision
+- Private TASK全文 / Task ID
+- internal evidence / completion criteria / validation detail
 - secret / credential / token
-- private repository path/content
-- holder identity等の内部coordination情報
+- private repository content
+- claim holder identity / claimedAt等の内部coordination情報
 
 ## 18. Completion Contract
 
@@ -289,12 +330,17 @@ Public Dashboardに出すQueue情報はsanitize済みの最小項目だけとし
 - Requirements DraftやBlocking Decision状態から実行Taskを投入しない
 - Taskがsource Requirements revisionを追跡できる
 - dependencies未完了TaskをWorkerへ誤割当しない
+- formal assignmentとconversation Claimを分離する
+- 同一Assignmentを別holderが二重Claimできない
+- stale generation / assignment revisionからClaimを開始しない
+- Claim前のWorkerがTarget Repositoryを編集しない
 - A/B/C/Dの完了後、History確定前に次Taskへ上書きしない
 - History確定後、次のeligible Taskがある場合は同じWorker Laneへ切替可能
 - 次TaskがないWorkerは`次の割当待ち`になる
 - Requirements変更時、working Taskをsilent rewriteしない
 - Queue同期失敗を正常な空Queueとして表示しない
 - 別RepositoryのTaskが混線しない
+- Public Dashboardへprivate claim metadataを公開しない
 - Queue投入だけでWorker自動実行を開始した扱いにしない
 
 ## 19. Non-goals
@@ -305,18 +351,20 @@ Public Dashboardに出すQueue情報はsanitize済みの最小項目だけとし
 - Current Taskの成果物 / Validation保存前にLaneを再利用する
 - すべてのTaskをFIFOだけで割り当てる
 - Requirement変更時に進行中Taskを無通知で書き換える
-- Public DashboardへPrivate Queueデータを直接公開する
+- Public DashboardへPrivate Queue / Claimデータを直接公開する
+- DashboardからChatGPTの別会話を自動生成したと偽る
 
-## 20. Implementation Gate
+## 20. Runtime References
 
-実装開始前に以下をCurrent Repositoryから再確認します。
+Current implementationの主な正本:
 
-- `DASHBOARD_REQUIREMENTS.md`
-- Current Requirements Persistence Contract
-- Current parallel-run / assignment / Integration Gate contract
-- Repository-specific Dashboard control model
-- Worker self-publish model
-- Queue保存先 / Authority / Schema候補
-- Current Runを壊さないmigration / compatibility方針
+- Queue contract: `EliteMay/web-project-data/work-queues/README.md`
+- Claim contract: `EliteMay/web-project-data/work-queues/CLAIM_CONTRACT.md`
+- Queue sync: `tools/sync-work-queue.mjs`
+- Formal assignment: `tools/assign-work-queue.mjs`
+- Conversation claim: `tools/claim-work-queue.mjs`
+- Completion / same-lane advance: `tools/advance-work-queue.mjs`
+- Public projection: `tools/build-public-work-queue-projection.mjs`
+- Project Dashboard renderer: `project-dashboards/project-dashboard-queue.mjs`
 
-この文書の確定はQueue機能の実装完了を意味しません。
+この文書はCurrent Product Contractであり、実装済み範囲を未実装として扱いません。残るDashboard V2本体Taskは`DASHBOARD_REQUIREMENTS.md`に紐づくCurrent Work Queueで追跡します。
