@@ -38,7 +38,7 @@
     <section class="section" aria-labelledby="safety-title">
       <div class="notice">
         <strong id="safety-title">安全な分担の境界</strong>
-        A/B/C/DはGuideを読むだけです。さらに正式なDataファイルも直接変更せず、自分のRunフォルダへ完成成果物を置きます。Iだけが現在のmainと再照合して正式位置へ適用します。
+        A/B/C/DはGuideを読むだけです。正式なDataファイルも直接変更せず、自分専用のData Branch上で自分のRunフォルダへ完成成果物を置きます。Iだけが現在のmainと再照合して正式位置へ適用します。
       </div>
       <div id="snapshotNotice" class="snapshot-note" role="status">公開Snapshotの同期時刻を確認しています…</div>
     </section>
@@ -62,7 +62,7 @@
       <div class="section-head">
         <div>
           <h2 id="workers-title">A / B / C / D</h2>
-          <p class="section-intro">各会話は自分の担当だけ進めます。別Workerの範囲へ勝手に広げません。</p>
+          <p class="section-intro">各会話は自分の担当と専用Branchだけ進めます。別Workerの範囲へ勝手に広げません。</p>
         </div>
       </div>
       <div id="workerGrid" class="worker-grid">
@@ -74,7 +74,7 @@
       <div class="section-head">
         <div>
           <h2 id="integration-title">Integration Worker I</h2>
-          <p class="section-intro">Iは準備作業をやり直す役ではなく、完成した成果物を現在のmainへ安全に適用する役です。</p>
+          <p class="section-intro">Iは準備作業をやり直す役ではなく、各Worker Branchの完成成果物を現在のmainへ安全に適用する役です。</p>
         </div>
       </div>
       <div id="integrationCard"></div>
@@ -88,11 +88,11 @@
         </div>
       </div>
       <div class="flow">
-        <div class="flow-step"><div class="step-no">1</div><div class="step-panel"><h3>A/B/C/Dを別会話で開始</h3><p>上の開始文をコピーして、それぞれ新しい会話へ貼ります。</p></div></div>
-        <div class="flow-step"><div class="step-no">2</div><div class="step-panel"><h3>各WorkerがData内で完成させる</h3><p>調査、重複確認、判断、完成版ファイル、change-set、事前Validationまでを自分のRunフォルダへ保存します。</p></div></div>
+        <div class="flow-step"><div class="step-no">1</div><div class="step-panel"><h3>A/B/C/Dを別会話で開始</h3><p>上の開始文をコピーして、それぞれ新しい会話へ貼ります。各Workerは専用Branchをclaimします。</p></div></div>
+        <div class="flow-step"><div class="step-no">2</div><div class="step-panel"><h3>各Workerが専用Branchで完成させる</h3><p>調査、重複確認、判断、完成版ファイル、change-set、事前Validationまでを自分のRunフォルダへ保存します。Data mainへ直接書きません。</p></div></div>
         <div class="flow-step"><div class="step-no">3</div><div class="step-panel"><h3>ready_for_applyへ</h3><p>「考えてください」ではなく、Iが設計し直さなくても適用できる状態まで仕上げます。</p></div></div>
-        <div class="flow-step"><div class="step-no">4</div><div class="step-panel"><h3>Iが現在mainと再照合</h3><p>古いGuide/Dataを前提にしていないか、他Workerと意味的にぶつからないかを確認します。</p></div></div>
-        <div class="flow-step"><div class="step-no">5</div><div class="step-panel"><h3>正式反映 → Validation → PR → Merge</h3><p>Iが1つずつ適用し、最終状態で検証してから完了にします。</p></div></div>
+        <div class="flow-step"><div class="step-no">4</div><div class="step-panel"><h3>IがWorker Branchと現在mainを再照合</h3><p>古いGuide/Dataを前提にしていないか、他Workerと意味的にぶつからないかを確認します。</p></div></div>
+        <div class="flow-step"><div class="step-no">5</div><div class="step-panel"><h3>正式反映 → Validation → PR → Merge</h3><p>Iがintegration branchへ1つずつ適用し、最終状態で検証してから完了にします。Worker Branch自体はmainへ直接mergeしません。</p></div></div>
       </div>
     </section>
 
@@ -101,13 +101,14 @@
 
   <script>
     const statusLabel = {
-      assigned: '開始待ち', waiting: '待機中', working: '作業中', active: '作業中',
+      assigned: '開始待ち', waiting: '待機中', working: '作業中', active: '作業中', claimed: '取得済み',
       ready_for_apply: '反映準備完了', completed: '完了', blocked: '停止中', recovery_required: '復旧確認'
     };
 
     function workerCard(worker, integration = false) {
       const percent = worker.total ? Math.round((worker.completed / worker.total) * 100) : 0;
       const prompt = escapeHtml(worker.startPrompt || '');
+      const branchRow = worker.workBranch ? `<dt>Branch</dt><dd><code>${escapeHtml(worker.workBranch)}</code></dd>` : '';
       return `
         <article class="worker-card ${integration ? 'integration' : ''}">
           <div class="worker-head">
@@ -123,6 +124,7 @@
           <div class="worker-body">
             <dl class="kv">
               <dt>現在</dt><dd>${escapeHtml(worker.currentTask || '-')}</dd>
+              ${branchRow}
               <dt>反映準備</dt><dd>${worker.readyForApply ? '完了' : '未完了'}</dd>
             </dl>
             <div class="progress" aria-label="進捗 ${percent}%"><span style="width:${percent}%"></span></div>
