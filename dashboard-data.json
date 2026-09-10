@@ -5,11 +5,12 @@
   "runId": "RUN-20260910-001",
   "runStatus": "active",
   "assignmentRevision": 1,
-  "snapshotUpdatedAt": "2026-09-10T13:15:00+09:00",
-  "snapshotAutoRefresh": false,
-  "dataMainAtSnapshot": "67aab122ec689f20c18ff7f1e5e302227f8329ee",
+  "snapshotUpdatedAt": "2026-09-10T14:35:00+09:00",
+  "snapshotAutoRefresh": true,
+  "syncCadence": "hourly",
+  "dataMainAtSnapshot": "e3d02d43d2dc0d97d8a28717d487cdd6ce0374c3",
   "guideCommitAtPlanning": "afdddbb440b18ec4980a3e9e635fc4ae6236bd55",
-  "note": "This file contains only public-safe dashboard fields. Private Data remains canonical and this snapshot is not real-time.",
+  "note": "This file contains only public-safe dashboard fields. Private Data remains canonical. A scheduled sync refreshes this snapshot hourly and does not expose private work artifacts.",
   "workers": [
     {
       "id": "A",
