@@ -1,11 +1,58 @@
 {
   "schemaVersion": 1,
-  "controlTemplate": true,
-  "projectSlug": null,
-  "repository": null,
-  "status": "idle",
+  "controlTemplate": false,
+  "projectSlug": "web-project-guide",
+  "repository": "EliteMay/web-project-guide",
+  "status": "assigned",
   "activeRunId": null,
   "workers": [],
-  "queue": null,
-  "updatedAt": "2026-09-10T15:17:42+09:00"
+  "queue": {
+    "schemaVersion": 1,
+    "repository": "EliteMay/web-project-guide",
+    "syncState": "synced",
+    "counts": {
+      "pending": 6,
+      "runnable": 0,
+      "active": 1,
+      "blocked": 0,
+      "needsReconcile": 0,
+      "completed": 0
+    },
+    "lanes": [
+      {
+        "lane": "A",
+        "state": "assigned",
+        "currentAssignment": {
+          "summary": "進捗率と停止・要対応・反映可能を正しく分ける状態モデルを実装します。",
+          "status": "assigned"
+        },
+        "nextCandidate": null,
+        "nextState": "after_current"
+      },
+      {
+        "lane": "B",
+        "state": "idle",
+        "currentAssignment": null,
+        "nextCandidate": null,
+        "nextState": "dependency_wait"
+      },
+      {
+        "lane": "C",
+        "state": "idle",
+        "currentAssignment": null,
+        "nextCandidate": null,
+        "nextState": "dependency_wait"
+      },
+      {
+        "lane": "D",
+        "state": "idle",
+        "currentAssignment": null,
+        "nextCandidate": null,
+        "nextState": "dependency_wait"
+      }
+    ],
+    "nextTasks": [],
+    "updatedAt": "2026-09-10T14:45:15Z"
+  },
+  "updatedAt": "2026-09-10T23:50:00+09:00"
 }
