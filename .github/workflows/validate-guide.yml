@@ -32,5 +32,8 @@ jobs:
       - name: Validate human guide routes
         run: node tests/validate-human-guide.mjs
 
+      - name: Validate development conversation persistence
+        run: node tests/validate-development-conversation-persistence.mjs
+
       - name: Validate project dashboard queue rendering
         run: node tests/validate-project-dashboard-queue.mjs
