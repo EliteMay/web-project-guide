@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Web Project Guide の人間向け入口です。Repository別の作業ダッシュボード、AIの作業ルール、従来のルール検索へ進めます。">
   <title>Web Project Guide</title>
-  <link rel="stylesheet" href="human-guide.css">
-  <link rel="stylesheet" href="mobile-fixes.css">
+  <link rel="stylesheet" href="site/assets/human-guide.css">
+  <link rel="stylesheet" href="site/assets/mobile-fixes.css">
   <style>
     .home-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:28px}.home-card{display:flex;flex-direction:column;min-height:220px;padding:22px;border:1px solid var(--border);border-radius:10px;background:var(--surface);color:var(--text);text-decoration:none}.home-card:hover,.home-card:focus-visible{border-color:var(--accent);transform:translateY(-1px)}.home-kicker{color:var(--muted);font-size:12px;font-weight:700}.home-card h2{margin:12px 0 8px;font-size:20px}.home-card p{margin:0;color:var(--muted);font-size:14px}.home-arrow{margin-top:auto;padding-top:24px;color:var(--accent);font-size:13px;font-weight:700}.home-note{max-width:760px;margin-top:28px;color:var(--muted);font-size:13px}@media(max-width:800px){.home-grid{grid-template-columns:1fr}.home-card{min-height:0}}
   </style>
@@ -17,9 +17,9 @@
       <a class="brand" href="index.html">Web Project Guide</a>
       <nav class="tabs" aria-label="Guide navigation">
         <a href="project-dashboards/">Project Dashboards</a>
-        <a href="work-dashboard.html">Guide Migration</a>
-        <a href="ai-workflow.html">AIの作業ルール</a>
-        <a href="rules.html">ルール検索</a>
+        <a href="site/pages/work-dashboard.html">Guide Migration</a>
+        <a href="site/pages/ai-workflow.html">AIの作業ルール</a>
+        <a href="site/pages/rules.html">ルール検索</a>
       </nav>
     </div>
   </header>
@@ -46,21 +46,21 @@
         <span class="home-arrow">Repositoryを選ぶ →</span>
       </a>
 
-      <a class="home-card" href="work-dashboard.html">
+      <a class="home-card" href="site/pages/work-dashboard.html">
         <span class="home-kicker">GUIDE MIGRATION</span>
         <h2>Guide Migration Dashboard</h2>
         <p>web-project-guide / data 自体のMigration Runについて、A/B/C/D/Iの進捗と状態を確認します。</p>
         <span class="home-arrow">Guide作業を見る →</span>
       </a>
 
-      <a class="home-card" href="ai-workflow.html">
+      <a class="home-card" href="site/pages/ai-workflow.html">
         <span class="home-kicker">HOW THE AI WORKS</span>
         <h2>AIの作業ルール</h2>
         <p>AIがどの条件で調査するか、論文や公式資料をいつ見るか、UI・要件・実装・Validationへどう分岐するかを確認します。</p>
         <span class="home-arrow">判断フローを見る →</span>
       </a>
 
-      <a class="home-card" href="rules.html">
+      <a class="home-card" href="site/pages/rules.html">
         <span class="home-kicker">RULE FINDER</span>
         <h2>ルール検索</h2>
         <p>「保存」「ゲーム」「重い」「公開」など、やりたい機能や困りごとから関連ルールを探します。</p>
