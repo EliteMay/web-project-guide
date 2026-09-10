@@ -5,7 +5,7 @@
   "status": "blocked",
   "completed": 27,
   "total": 27,
-  "currentTask": "Paused; completed output preserved",
+  "currentTask": "Paused by user request; completed output preserved",
   "readyForApply": true,
   "workBranch": "parallel/RUN-20260910-001/D",
   "updatedAt": "2026-09-10T14:49:00+09:00"
