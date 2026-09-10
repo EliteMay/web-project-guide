@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { normalizeQueueProjection, renderQueueBoard } from '../project-dashboards/project-dashboard-queue.mjs';
+import { buildWorkerStartPrompt, normalizeQueueProjection, renderQueueBoard } from '../project-dashboards/project-dashboard-queue.mjs';
 
 const project = { slug: 'game', repository: 'EliteMay/game', name: 'game' };
 const projection = {
@@ -10,8 +10,8 @@ const projection = {
   lanes: [
     {
       lane: 'A',
-      state: 'working',
-      currentAssignment: { summary: '現在の実装を進めています。', status: 'working' },
+      state: 'assigned',
+      currentAssignment: { summary: '現在の実装を開始できます。', status: 'assigned' },
       nextCandidate: null,
       nextState: 'after_current'
     },
@@ -30,7 +30,7 @@ const projection = {
 const normalized = normalizeQueueProjection(projection, project.repository);
 assert.equal(normalized.state, 'ready');
 assert.equal(normalized.counts.runnable, 1);
-assert.equal(normalized.lanes[0].currentAssignment.status, 'working');
+assert.equal(normalized.lanes[0].currentAssignment.status, 'assigned');
 assert.equal(normalized.lanes[1].nextState, 'candidate');
 
 const html = renderQueueBoard(projection, project);
@@ -38,9 +38,24 @@ assert.match(html, /作業Queue/);
 assert.match(html, /現在の仕事/);
 assert.match(html, /次の仕事/);
 assert.match(html, /正式割当前の候補/);
+assert.match(html, /Aの開始文をコピー/);
 assert.equal(html.includes('<script>alert(1)</script>'), false, 'task summary must be escaped');
 assert.equal(html.includes('<b>公開候補</b>'), false, 'next task summary must be escaped');
 assert.match(html, /&lt;script&gt;alert\(1\)&lt;\/script&gt;/);
+
+const prompt = buildWorkerStartPrompt(project, 'A');
+assert.match(prompt, /Worker A/);
+assert.match(prompt, /EliteMay\/game/);
+assert.match(prompt, /work-queues\/EliteMay--game/);
+assert.match(prompt, /CLAIM_CONTRACT\.md/);
+assert.match(prompt, /holderId/);
+assert.doesNotMatch(prompt, /task-alpha|currentTaskId:/, 'start prompt must not embed a private task id');
+
+const workingProjection = {
+  ...projection,
+  lanes: [{ ...projection.lanes[0], state: 'working', currentAssignment: { summary: '作業中', status: 'working' } }]
+};
+assert.doesNotMatch(renderQueueBoard(workingProjection, project), /開始文をコピー/);
 
 const missing = renderQueueBoard(null, project);
 assert.match(missing, /未登録/);
