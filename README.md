@@ -22,6 +22,12 @@
 
 Guide Versionの正本は [`guide-version.json`](guide-version.json)、変更履歴は [`CHANGELOG.md`](CHANGELOG.md) です。
 
+## 開発会話の保存
+
+このGuideを適用して進めるProject関連の開発会話は、`EliteMay/web-project-data`へ書き込めるCapabilityがある場合、Interaction単位でConversation Persistence対象にします。雑談・買い物・健康相談・一般知識等の非開発会話は対象外です。
+
+保存成功を確認できないInteractionを「保存済み」と扱わず、Conversation historyをProjectの第二Source of Truthにも使いません。詳細条件・Secret取扱い・Platform boundaryは [23 Conversation Handoff / Recovery](docs/23-conversation-handoff-recovery.md#development-conversation-persistence) を正本とします。
+
 ## 基本優先順位
 
 Trade-off時は原則として次を優先します。
