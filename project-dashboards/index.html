@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Repositoryごとの並列作業Dashboard一覧です。">
+  <title>Project Dashboards | Web Project Guide</title>
+  <link rel="stylesheet" href="../human-guide.css">
+  <link rel="stylesheet" href="../mobile-fixes.css">
+  <style>
+    .repo-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:20px}
+    .repo-card{display:flex;flex-direction:column;gap:10px;padding:18px;border:1px solid var(--border);border-radius:10px;background:var(--surface);color:var(--text);text-decoration:none}
+    .repo-card:hover,.repo-card:focus-visible{border-color:var(--accent);transform:translateY(-1px)}
+    .repo-name{font-size:18px;font-weight:750}.repo-path{font-size:12px;color:var(--muted);word-break:break-all}
+    .repo-status{margin-top:auto;font-size:13px;color:var(--muted)}.repo-status strong{color:var(--text)}
+    .error{padding:16px;border:1px solid var(--border);border-radius:10px}
+    @media(max-width:900px){.repo-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media(max-width:640px){.repo-grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <header class="sitebar">
+    <div class="sitebar-inner">
+      <a class="brand" href="../index.html">Web Project Guide</a>
+      <nav class="tabs" aria-label="Guide navigation">
+        <a href="../work-dashboard.html">Guide Migration</a>
+        <a href="./" aria-current="page">Project Dashboards</a>
+        <a href="../rules.html">ルール検索</a>
+      </nav>
+    </div>
+  </header>
+  <main class="container">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">PROJECT DASHBOARDS</p>
+        <h1>Repositoryごとに作業を分離して見る。</h1>
+        <p class="lead">各Projectは専用Control BranchとWorker Status Branchを持ちます。別Repositoryの作業状態は混ざりません。</p>
+      </div>
+      <div class="hero-meta">
+        <div class="meta-row"><span>表示</span><strong id="projectCount">-</strong></div>
+        <div class="meta-row"><span>更新</span><strong>15秒</strong></div>
+        <div class="meta-row"><span>状態</span><strong>Repo別</strong></div>
+      </div>
+    </header>
+    <section class="section">
+      <div id="repoGrid" class="repo-grid"><div class="loading">Repository一覧を読み込んでいます…</div></div>
+    </section>
+  </main>
+<script>
+const ROOT = new URL('./', location.href);
+let projects = [];
+const escapeHtml = v => String(v).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+function controlUrl(slug){ return `https://raw.githubusercontent.com/EliteMay/web-project-guide/dashboard/${slug}/control/project-dashboard.json?t=${Date.now()}`; }
+async function getControl(project){
+  try{
+    const r=await fetch(controlUrl(project.slug),{cache:'no-store',mode:'cors'});
+    if(!r.ok) throw new Error(`HTTP ${r.status}`);
+    const data=await r.json();
+    if(data.projectSlug!==project.slug || data.repository!==project.repository) throw new Error('identity mismatch');
+    return data;
+  }catch{return null;}
+}
+async function render(){
+  const results=await Promise.all(projects.map(getControl));
+  document.getElementById('repoGrid').innerHTML=projects.map((p,i)=>{
+    const c=results[i];
+    const status=c ? (c.activeRunId ? `Run: ${escapeHtml(c.activeRunId)} / ${escapeHtml(c.status||'active')}` : escapeHtml(c.status||'idle')) : 'Control取得失敗';
+    return `<a class="repo-card" href="${encodeURIComponent(p.slug)}/"><span class="repo-name">${escapeHtml(p.name)}</span><span class="repo-path">${escapeHtml(p.repository)}</span><span class="repo-status"><strong>${status}</strong></span></a>`;
+  }).join('');
+}
+async function load(){
+  try{
+    const r=await fetch(new URL('projects.json',ROOT),{cache:'no-store'});
+    if(!r.ok) throw new Error(`HTTP ${r.status}`);
+    const data=await r.json(); projects=data.projects||[];
+    document.getElementById('projectCount').textContent=`${projects.length} repos`;
+    await render();
+    setInterval(render,15000);
+  }catch(e){document.getElementById('repoGrid').innerHTML=`<div class="error">一覧を読み込めませんでした。${escapeHtml(e.message)}</div>`;}
+}
+load();
+</script>
+</body>
+</html>
