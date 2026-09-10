@@ -2,11 +2,11 @@
   "schemaVersion": 1,
   "runId": "RUN-20260910-001",
   "worker": "D",
-  "status": "assigned",
-  "completed": 0,
+  "status": "blocked",
+  "completed": 27,
   "total": 27,
-  "currentTask": "Exact fragment fingerprintsを計算",
-  "readyForApply": false,
+  "currentTask": "Paused; completed output preserved",
+  "readyForApply": true,
   "workBranch": "parallel/RUN-20260910-001/D",
-  "updatedAt": null
+  "updatedAt": "2026-09-10T14:49:00+09:00"
 }
