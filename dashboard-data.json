@@ -5,8 +5,10 @@
   "runId": "RUN-20260910-001",
   "runStatus": "active",
   "assignmentRevision": 1,
+  "snapshotUpdatedAt": "2026-09-10T12:28:00+09:00",
+  "snapshotAutoRefresh": false,
   "guideCommitAtPlanning": "afdddbb440b18ec4980a3e9e635fc4ae6236bd55",
-  "note": "This file contains only public-safe dashboard fields. Private Data remains canonical.",
+  "note": "This file contains only public-safe dashboard fields. Private Data remains canonical and this snapshot is not real-time.",
   "workers": [
     {
       "id": "A",
@@ -17,7 +19,7 @@
       "total": 26,
       "currentTask": "Exact fragment fingerprintsを計算",
       "readyForApply": false,
-      "startPrompt": "あなたは会話Aです。\nRun: RUN-20260910-001\nweb-project-data の migrations/2026/MIG-20260908-GUIDE-V1-TO-V2/parallel-runs/RUN-20260910-001/A/TASK.md と A/state.json を読み、担当範囲だけ進めてください。GuideはREAD ONLY、正式なData/Guideも直接変更せず、完成成果物はAのRunフォルダへ保存してください。"
+      "startPrompt": "あなたは会話Aです。\nRun: RUN-20260910-001\nまず最新の web-project-guide の README.md / START_HERE.md を読み、GuideはREAD ONLYとして扱ってください。次に web-project-data の migrations/2026/MIG-20260908-GUIDE-V1-TO-V2/parallel-runs/RUN-20260910-001/A/TASK.md と migrations/2026/MIG-20260908-GUIDE-V1-TO-V2/parallel-runs/RUN-20260910-001/A/state.json を読み、担当範囲だけ進めてください。正式なData/Guideは直接変更せず、完成成果物はAのRunフォルダへ保存してください。"
     },
     {
       "id": "B",
@@ -28,7 +30,7 @@
       "total": 26,
       "currentTask": "Exact fragment fingerprintsを計算",
       "readyForApply": false,
-      "startPrompt": "あなたは会話Bです。\nRun: RUN-20260910-001\nweb-project-data の migrations/2026/MIG-20260908-GUIDE-V1-TO-V2/parallel-runs/RUN-20260910-001/B/TASK.md と B/state.json を読み、担当範囲だけ進めてください。GuideはREAD ONLY、正式なData/Guideも直接変更せず、完成成果物はBのRunフォルダへ保存してください。"
+      "startPrompt": "あなたは会話Bです。\nRun: RUN-20260910-001\nまず最新の web-project-guide の README.md / START_HERE.md を読み、GuideはREAD ONLYとして扱ってください。次に web-project-data の migrations/2026/MIG-20260908-GUIDE-V1-TO-V2/parallel-runs/RUN-20260910-001/B/TASK.md と migrations/2026/MIG-20260908-GUIDE-V1-TO-V2/parallel-runs/RUN-20260910-001/B/state.json を読み、担当範囲だけ進めてください。正式なData/Guideは直接変更せず、完成成果物はBのRunフォルダへ保存してください。"
     },
     {
       "id": "C",
@@ -39,7 +41,7 @@
       "total": 26,
       "currentTask": "Exact fragment fingerprintsを計算",
       "readyForApply": false,
-      "startPrompt": "あなたは会話Cです。\nRun: RUN-20260910-001\nweb-project-data の migrations/2026/MIG-20260908-GUIDE-V1-TO-V2/parallel-runs/RUN-20260910-001/C/TASK.md と C/state.json を読み、担当範囲だけ進めてください。GuideはREAD ONLY、正式なData/Guideも直接変更せず、完成成果物はCのRunフォルダへ保存してください。"
+      "startPrompt": "あなたは会話Cです。\nRun: RUN-20260910-001\nまず最新の web-project-guide の README.md / START_HERE.md を読み、GuideはREAD ONLYとして扱ってください。次に web-project-data の migrations/2026/MIG-20260908-GUIDE-V1-TO-V2/parallel-runs/RUN-20260910-001/C/TASK.md と migrations/2026/MIG-20260908-GUIDE-V1-TO-V2/parallel-runs/RUN-20260910-001/C/state.json を読み、担当範囲だけ進めてください。正式なData/Guideは直接変更せず、完成成果物はCのRunフォルダへ保存してください。"
     },
     {
       "id": "D",
@@ -50,7 +52,7 @@
       "total": 27,
       "currentTask": "Exact fragment fingerprintsを計算",
       "readyForApply": false,
-      "startPrompt": "あなたは会話Dです。\nRun: RUN-20260910-001\nweb-project-data の migrations/2026/MIG-20260908-GUIDE-V1-TO-V2/parallel-runs/RUN-20260910-001/D/TASK.md と D/state.json を読み、担当範囲だけ進めてください。GuideはREAD ONLY、正式なData/Guideも直接変更せず、完成成果物はDのRunフォルダへ保存してください。"
+      "startPrompt": "あなたは会話Dです。\nRun: RUN-20260910-001\nまず最新の web-project-guide の README.md / START_HERE.md を読み、GuideはREAD ONLYとして扱ってください。次に web-project-data の migrations/2026/MIG-20260908-GUIDE-V1-TO-V2/parallel-runs/RUN-20260910-001/D/TASK.md と migrations/2026/MIG-20260908-GUIDE-V1-TO-V2/parallel-runs/RUN-20260910-001/D/state.json を読み、担当範囲だけ進めてください。正式なData/Guideは直接変更せず、完成成果物はDのRunフォルダへ保存してください。"
     },
     {
       "id": "I",
@@ -61,7 +63,7 @@
       "total": 4,
       "currentTask": "A/B/C/Dのready_for_apply待ち",
       "readyForApply": false,
-      "startPrompt": "あなたは会話Iです。\nRun: RUN-20260910-001\nweb-project-data の migrations/2026/MIG-20260908-GUIDE-V1-TO-V2/parallel-runs/RUN-20260910-001/I/TASK.md と A/B/C/D の state.json・change-set.json・validation.json・proposed成果物を読み、ready_for_applyになったものだけをcurrent mainと再照合して正式Data/Guideへ直列適用してください。"
+      "startPrompt": "あなたは会話Iです。\nRun: RUN-20260910-001\nまず最新の web-project-guide の README.md / START_HERE.md と current Guide/Data main を確認してください。次に web-project-data の migrations/2026/MIG-20260908-GUIDE-V1-TO-V2/parallel-runs/RUN-20260910-001/I/TASK.md および同Runの A/B/C/D の state.json・change-set.json・validation.json・proposed成果物を読み、ready_for_applyになったものだけをcurrent mainと再照合して正式Data/Guideへ直列適用してください。"
     }
   ]
 }
