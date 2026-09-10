@@ -93,7 +93,8 @@ Project固有情報はTarget RepositoryをSource of Truthとします。
 | `catalog/` | Failure / Success / Anti-pattern / visual evidence |
 | `references/` | Non-normative research / project-specific evidence |
 | `index.html` / `rules.html` / `ai-workflow.html` | Public human-facing Guide entry / Rule summary / AI workflow explanation |
-| `work-dashboard.html` / `dashboard-data.json` | Public-safe parallel work status UI / snapshot |
+| `work-dashboard.html` / `project-dashboards/` / `dashboard-data.json` | Public-safe parallel work status UI / repository-specific dashboard surfaces |
+| `DASHBOARD_REQUIREMENTS.md` | Parallel Work DashboardのHuman-facing Current Product Contract |
 | `human-guide.css` / `mobile-fixes.css` | Human-facing Guide presentation / responsive support |
 | `tests/` | Guide validators |
 | `guide-version.json` | Current Guide Version |
@@ -313,6 +314,24 @@ Task-first Structure / Flow Researchは既に`docs/22`へPromotion済みのた�
 - Research Assets — open / historical research evidence and contract
 - Git / PR — detailed archive
 
+## 18A. Parallel Work Dashboard Contract
+
+Parallel Work DashboardのHuman-facing Current Product Contractは [`DASHBOARD_REQUIREMENTS.md`](DASHBOARD_REQUIREMENTS.md) を正本とします。
+
+最低限、Dashboardは次を満たします。
+
+- Progress / Operational State / Handoff State / Freshnessを混同しない
+- Run-level pauseとWorker-level issueを同じ状態として表示しない
+- ready countだけでIntegration Worker開始可否を推測せずCurrent Run ContractのIntegration Gateを表示する
+- Repository / active Run / Next Action / issueをHuman-firstな優先順で表示する
+- Raw status / Branch / technical detailをPrimary UIへ過剰露出しない
+- fallback / stale情報をCurrentとしてsilent表示しない
+- Public-safe allowlistを維持しPrivate DataをBrowserへ直接露出しない
+- RepositoryごとのDashboard stateを分離し、同名Workerの並列更新で混線しない
+- Desktop / Mobile双方でPrimary statusとNext Actionを短時間で理解できる
+
+Visual Research evidenceは `references/parallel-dashboard-v2-domain-research.md` に置き、Current Requirementsの第二Copyにしません。
+
 ## 19. Completion Contract
 
 このGuideはCurrent scopeで少なくとも次を満たす状態を目標とします。
@@ -321,6 +340,8 @@ Task-first Structure / Flow Researchは既に`docs/22`へPromotion済みのた�
 - [ ] Machine RouterとHuman Routerの重要Routeが一致
 - [ ] Public Human GuideがCurrent Human Routerの主要Routeと矛盾しない
 - [ ] Public Human Guideの主要導線・Responsive・AccessibilityにBlocking Issueがない
+- [ ] Parallel Work DashboardでProgress / State / Handoff / Freshnessを人間が誤解なく区別できる
+- [ ] Parallel Work DashboardでNext Action / Integration Gate / fallback状態を短時間で判断できる
 - [ ] Registered Ownerがreachable
 - [ ] same normative decisionの競合Ownerがない
 - [ ] Root RequirementsがRule本文 / audit backlog / research notebook化していない
@@ -362,6 +383,7 @@ Task-first Structure / Flow Researchは既に`docs/22`へPromotion済みのた�
 - Data / Storage Decision System Phase 4: Implemented in current `docs/03` / `docs/07` / Quality Checklist
 - Performance / Reliability Decision System Phase 5: Implemented in current `docs/05` / Quality Checklist
 - Requirements Decision System Research: Open
+- Parallel Work Dashboard V2 Human-facing Requirements: Complete; implementation not started
 - Blocking Decisions: None
 
 Current auditの一時Finding / score /修正Statusは`maintenance/audits/`を参照します。
