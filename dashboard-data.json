@@ -5,11 +5,12 @@
   "runId": "RUN-20260910-001",
   "runStatus": "active",
   "assignmentRevision": 1,
-  "snapshotUpdatedAt": "2026-09-10T13:15:00+09:00",
-  "snapshotAutoRefresh": false,
-  "dataMainAtSnapshot": "67aab122ec689f20c18ff7f1e5e302227f8329ee",
+  "snapshotUpdatedAt": "2026-09-10T14:30:00+09:00",
+  "snapshotAutoRefresh": true,
+  "syncCadence": "worker-immediate-with-hourly-backup",
+  "dataMainAtSnapshot": "e3d02d43d2dc0d97d8a28717d487cdd6ce0374c3",
   "guideCommitAtPlanning": "afdddbb440b18ec4980a3e9e635fc4ae6236bd55",
-  "note": "This file contains only public-safe dashboard fields. Private Data remains canonical and this snapshot is not real-time.",
+  "note": "Public-safe dashboard snapshot only. Private Data remains canonical. Each worker updates only its own dashboard entry immediately after important state transitions; the hourly sync is recovery backup.",
   "workers": [
     {
       "id": "A",
@@ -21,7 +22,7 @@
       "currentTask": "Exact fragment fingerprintsを計算",
       "readyForApply": false,
       "workBranch": "parallel/RUN-20260910-001/A",
-      "startPrompt": "あなたは会話Aです。\nRun: RUN-20260910-001\nまず最新の web-project-guide の README.md / START_HERE.md を読み、GuideはREAD ONLYとして扱ってください。次に web-project-data の migrations/2026/MIG-20260908-GUIDE-V1-TO-V2/parallel-runs/RUN-20260910-001/run.json と A/TASK.md・A/state.json を読み、workBranch=parallel/RUN-20260910-001/A を確認してください。Data mainへは書かず、その専用Branch上でA/state.jsonをSHA付きでclaimしてから担当範囲だけ進めてください。完成成果物はAのRunフォルダへ保存し、自分でWorker branchをmergeしないでください。"
+      "startPrompt": "あなたは会話Aです。\nRun: RUN-20260910-001\nまず最新の web-project-guide の README.md / START_HERE.md を読み、GuideのRule本文はREAD ONLYとして扱ってください。次に web-project-data の migrations/2026/MIG-20260908-GUIDE-V1-TO-V2/parallel-runs/RUN-20260910-001/run.json と A/TASK.md・A/state.json を読み、workBranch=parallel/RUN-20260910-001/A を確認してください。Data mainへは書かず、その専用Branch上でA/state.jsonをSHA付きでclaimしてから担当範囲だけ進めてください。作業開始・blocked/recovery・ready_for_applyなど重要な状態遷移を確定した直後は、web-project-guide main の dashboard-data.json を最新SHAで取得し、Aのworkerオブジェクトの status/completed/total/currentTask/readyForApply/workBranch と snapshotUpdatedAt だけを更新してください。他Worker欄・開始文・Guide Rule本文は変更禁止です。SHA競合時は最新dashboard-data.jsonを再取得し、他Workerの更新を保持したままA欄だけ再適用してください。完成成果物はAのRunフォルダへ保存し、自分でWorker branchをmergeしないでください。"
     },
     {
       "id": "B",
@@ -33,7 +34,7 @@
       "currentTask": "Exact fragment fingerprintsを計算",
       "readyForApply": false,
       "workBranch": "parallel/RUN-20260910-001/B",
-      "startPrompt": "あなたは会話Bです。\nRun: RUN-20260910-001\nまず最新の web-project-guide の README.md / START_HERE.md を読み、GuideはREAD ONLYとして扱ってください。次に web-project-data の migrations/2026/MIG-20260908-GUIDE-V1-TO-V2/parallel-runs/RUN-20260910-001/run.json と B/TASK.md・B/state.json を読み、workBranch=parallel/RUN-20260910-001/B を確認してください。Data mainへは書かず、その専用Branch上でB/state.jsonをSHA付きでclaimしてから担当範囲だけ進めてください。完成成果物はBのRunフォルダへ保存し、自分でWorker branchをmergeしないでください。"
+      "startPrompt": "あなたは会話Bです。\nRun: RUN-20260910-001\nまず最新の web-project-guide の README.md / START_HERE.md を読み、GuideのRule本文はREAD ONLYとして扱ってください。次に web-project-data の migrations/2026/MIG-20260908-GUIDE-V1-TO-V2/parallel-runs/RUN-20260910-001/run.json と B/TASK.md・B/state.json を読み、workBranch=parallel/RUN-20260910-001/B を確認してください。Data mainへは書かず、その専用Branch上でB/state.jsonをSHA付きでclaimしてから担当範囲だけ進めてください。作業開始・blocked/recovery・ready_for_applyなど重要な状態遷移を確定した直後は、web-project-guide main の dashboard-data.json を最新SHAで取得し、Bのworkerオブジェクトの status/completed/total/currentTask/readyForApply/workBranch と snapshotUpdatedAt だけを更新してください。他Worker欄・開始文・Guide Rule本文は変更禁止です。SHA競合時は最新dashboard-data.jsonを再取得し、他Workerの更新を保持したままB欄だけ再適用してください。完成成果物はBのRunフォルダへ保存し、自分でWorker branchをmergeしないでください。"
     },
     {
       "id": "C",
@@ -45,7 +46,7 @@
       "currentTask": "Exact fragment fingerprintsを計算",
       "readyForApply": false,
       "workBranch": "parallel/RUN-20260910-001/C",
-      "startPrompt": "あなたは会話Cです。\nRun: RUN-20260910-001\nまず最新の web-project-guide の README.md / START_HERE.md を読み、GuideはREAD ONLYとして扱ってください。次に web-project-data の migrations/2026/MIG-20260908-GUIDE-V1-TO-V2/parallel-runs/RUN-20260910-001/run.json と C/TASK.md・C/state.json を読み、workBranch=parallel/RUN-20260910-001/C を確認してください。Data mainへは書かず、その専用Branch上でC/state.jsonをSHA付きでclaimしてから担当範囲だけ進めてください。完成成果物はCのRunフォルダへ保存し、自分でWorker branchをmergeしないでください。"
+      "startPrompt": "あなたは会話Cです。\nRun: RUN-20260910-001\nまず最新の web-project-guide の README.md / START_HERE.md を読み、GuideのRule本文はREAD ONLYとして扱ってください。次に web-project-data の migrations/2026/MIG-20260908-GUIDE-V1-TO-V2/parallel-runs/RUN-20260910-001/run.json と C/TASK.md・C/state.json を読み、workBranch=parallel/RUN-20260910-001/C を確認してください。Data mainへは書かず、その専用Branch上でC/state.jsonをSHA付きでclaimしてから担当範囲だけ進めてください。作業開始・blocked/recovery・ready_for_applyなど重要な状態遷移を確定した直後は、web-project-guide main の dashboard-data.json を最新SHAで取得し、Cのworkerオブジェクトの status/completed/total/currentTask/readyForApply/workBranch と snapshotUpdatedAt だけを更新してください。他Worker欄・開始文・Guide Rule本文は変更禁止です。SHA競合時は最新dashboard-data.jsonを再取得し、他Workerの更新を保持したままC欄だけ再適用してください。完成成果物はCのRunフォルダへ保存し、自分でWorker branchをmergeしないでください。"
     },
     {
       "id": "D",
@@ -57,7 +58,7 @@
       "currentTask": "Exact fragment fingerprintsを計算",
       "readyForApply": false,
       "workBranch": "parallel/RUN-20260910-001/D",
-      "startPrompt": "あなたは会話Dです。\nRun: RUN-20260910-001\nまず最新の web-project-guide の README.md / START_HERE.md を読み、GuideはREAD ONLYとして扱ってください。次に web-project-data の migrations/2026/MIG-20260908-GUIDE-V1-TO-V2/parallel-runs/RUN-20260910-001/run.json と D/TASK.md・D/state.json を読み、workBranch=parallel/RUN-20260910-001/D を確認してください。Data mainへは書かず、その専用Branch上でD/state.jsonをSHA付きでclaimしてから担当範囲だけ進めてください。完成成果物はDのRunフォルダへ保存し、自分でWorker branchをmergeしないでください。"
+      "startPrompt": "あなたは会話Dです。\nRun: RUN-20260910-001\nまず最新の web-project-guide の README.md / START_HERE.md を読み、GuideのRule本文はREAD ONLYとして扱ってください。次に web-project-data の migrations/2026/MIG-20260908-GUIDE-V1-TO-V2/parallel-runs/RUN-20260910-001/run.json と D/TASK.md・D/state.json を読み、workBranch=parallel/RUN-20260910-001/D を確認してください。Data mainへは書かず、その専用Branch上でD/state.jsonをSHA付きでclaimしてから担当範囲だけ進めてください。作業開始・blocked/recovery・ready_for_applyなど重要な状態遷移を確定した直後は、web-project-guide main の dashboard-data.json を最新SHAで取得し、Dのworkerオブジェクトの status/completed/total/currentTask/readyForApply/workBranch と snapshotUpdatedAt だけを更新してください。他Worker欄・開始文・Guide Rule本文は変更禁止です。SHA競合時は最新dashboard-data.jsonを再取得し、他Workerの更新を保持したままD欄だけ再適用してください。完成成果物はDのRunフォルダへ保存し、自分でWorker branchをmergeしないでください。"
     },
     {
       "id": "I",
@@ -69,7 +70,7 @@
       "currentTask": "A/B/C/Dのready_for_apply待ち",
       "readyForApply": false,
       "workBranch": null,
-      "startPrompt": "あなたは会話Iです。\nRun: RUN-20260910-001\nまず最新の web-project-guide の README.md / START_HERE.md と current Guide/Data main を確認してください。次に web-project-data の同Runの run.json と I/TASK.md を読み、A/B/C/Dそれぞれの workBranch 上の state.json・change-set.json・validation.json・result.md・proposed成果物を確認してください。ready_for_applyになった成果物だけをcurrent mainと再照合し、I専用のintegration branchで正式Data/Guideへ直列適用してください。Worker branch自体はmainへ直接mergeしないでください。"
+      "startPrompt": "あなたは会話Iです。\nRun: RUN-20260910-001\nまず最新の web-project-guide の README.md / START_HERE.md と current Guide/Data main を確認してください。次に web-project-data の同Runの run.json と I/TASK.md を読み、A/B/C/Dそれぞれの workBranch 上の state.json・change-set.json・validation.json・result.md・proposed成果物を確認してください。ready_for_applyになった成果物だけをcurrent mainと再照合し、I専用のintegration branchで正式Data/Guideへ直列適用してください。重要な状態遷移を確定した直後はweb-project-guide mainのdashboard-data.jsonでI欄だけをSHA付き更新し、他Worker欄とGuide Rule本文は変更しないでください。Worker branch自体はmainへ直接mergeしないでください。"
     }
   ]
 }
