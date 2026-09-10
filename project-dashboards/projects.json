@@ -1,7 +1,8 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-09-10T15:17:42+09:00",
+  "updatedAt": "2026-09-10T23:48:00+09:00",
   "projects": [
+    {"slug":"web-project-guide","repository":"EliteMay/web-project-guide","name":"Web Project Guide"},
     {"slug":"lyrictube","repository":"EliteMay/lyrictube","name":"LyricTube"},
     {"slug":"valorant-lineup","repository":"EliteMay/valorant-lineup","name":"VALORANT Lineup"},
     {"slug":"ar","repository":"EliteMay/ar","name":"AR"},
