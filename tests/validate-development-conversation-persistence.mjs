@@ -4,6 +4,7 @@ const errors = [];
 const read = (file) => fs.readFileSync(file, 'utf8');
 
 const readme = read('README.md');
+const startHere = read('START_HERE.md');
 const conversationOwner = read('docs/23-conversation-handoff-recovery.md');
 
 if (!/^## 開発会話の保存$/m.test(readme)) {
@@ -11,6 +12,18 @@ if (!/^## 開発会話の保存$/m.test(readme)) {
 }
 if (!readme.includes('docs/23-conversation-handoff-recovery.md#development-conversation-persistence')) {
   errors.push('README.md: missing route to Conversation Persistence normative owner');
+}
+if (!readme.includes('各完了InteractionのCompletion Gate')) {
+  errors.push('README.md: conversation persistence must be surfaced as an Interaction completion gate');
+}
+if (!readme.includes('最終応答を完了する前')) {
+  errors.push('README.md: missing pre-final-response persistence timing');
+}
+if (!startHere.includes('docs/23-conversation-handoff-recovery.md#development-conversation-persistence')) {
+  errors.push('START_HERE.md: completion route must link to Conversation Persistence owner');
+}
+if (!startHere.includes('保存と必要なCheckpoint更新の成功を確認する')) {
+  errors.push('START_HERE.md: completion route must require persistence/checkpoint success verification');
 }
 
 for (const required of [
