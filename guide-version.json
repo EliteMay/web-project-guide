@@ -1,5 +1,7 @@
 {
   "guideVersion": "1.22.0",
   "updated": "2026-09-07",
-  "status": "active"
+  "status": "unreleased-changes",
+  "releaseCommit": "fd9cc77ff5284906784ca827d4c21caa2950d08d",
+  "unreleasedLog": "UNRELEASED.md"
 }
