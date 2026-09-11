@@ -108,6 +108,32 @@ Deployment / Installer
 
 Release NoteやCHANGELOGへ実装履歴を全部書かず、User / maintainerがCompatibility・Migration・主要変更を判断できる粒度を優先します。
 
+## Released BaselineとUnreleased Current Stateを分ける
+
+RepositoryのCurrent HEADが、最後にReleaseしたVersionより先へ進んでいることがあります。この状態を「Version metadataが古い」と「未Release変更が存在する」を区別せず扱いません。
+
+```text
+Last Released Version / Release Commit
+↓
+Current Repository
+↓
+Release-affecting diffあり?
+├─ No  → released
+└─ Yes → unreleased-changes + CHANGELOG Unreleased
+```
+
+MUST:
+
+- Version metadataは、最後にReleaseしたVersionだけでなく、そのReleaseに対応するSource Commitを追跡できるようにする。
+- Release baselineより後にNormative Rule、Router、Template、Public Guide、Validator等のRelease-affecting変更がある場合、Current stateを`released`相当として見せない。
+- 未Release変更は`CHANGELOG.md`の`Unreleased`等、Current Releaseとの差分が分かる場所へ記録する。
+- Release-affecting変更を行うPR / pushでは、同じ変更単位でUnreleased historyも更新する。後からまとめて思い出して書く運用をDefaultにしない。
+- Validatorが使えるRepositoryでは、Release CommitがCurrent HEADの祖先であること、Release後の変更有無とstatus、Unreleased記録の整合を機械的に確認する。
+
+`updated`等のRelease日と、Current HEADの最終Commit日時を同じ値として扱う必要はありません。最後のRelease情報を保持したままCurrent stateだけが`unreleased-changes`になるのは正常です。
+
+Research / Work Report / Project Learning等の非Release履歴だけが増えた場合まで機械的に新Releaseを要求しません。何をRelease-affectingとするかはProjectのSource of Truth / public behavior / maintenance contractに合わせます。
+
 ## Release Artifactの追跡性
 
 Release Artifactは、どのSource / Commitから生成されたか追えることを優先します。
