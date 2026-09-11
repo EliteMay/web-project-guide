@@ -182,13 +182,13 @@ Setup.exe / Auto Update / Windows固有機能をCIだけで実機確認済み扱
 
 Memoryや古い会話だけでCurrent Repositoryを推測しません。
 
-## 会話移行 / stale checkpoint / duplicate active conversation
+## 会話移行 / Automatic Resume / stale checkpoint / duplicate active conversation
 
 - [23 Conversation Handoff / Recovery](docs/23-conversation-handoff-recovery.md)
 - GitHub変更・Branch / PR → [10 Project Management](docs/10-project-management.md)
 - Requirements Draft / Persistence → [01 Requirements](docs/01-requirements.md)
 
-Conversation SummaryだけをCheckpointにせず、Current Repository / Requirements / Branch / PR / Commit等から復元します。Current work refが一意に復元できない場合だけ、その変更経路を止めて`unresolved`として扱います。
+利用可能なProject / Agent / Clientでは、Conversationが変わっても通常の続きの発言からAutomatic Resumeを試みます。Userへ毎回Handoff説明を要求しません。Workstream / Conversation CheckpointはRecovery Evidenceであり、Current Repository / Requirements / Branch / PR / Commit等を再取得して現在地を確認します。Workstreamを特定できてもCurrent write targetが一意でなければ、その変更だけ停止します。
 
 ## 複数RepositoryのGitHub運用
 
