@@ -1,20 +1,38 @@
-# Guide Research Contracts
+# Guide Research Compatibility / Execution Assets
 
-`web-project-guide`自身の**Current / Pending Research Contract**と、Promotion後にhistorical non-normative evidenceとして保持するResearch Assetを保存します。
+このDirectoryは `web-project-guide` 自身のResearchで使う**Current execution protocol / benchmark asset**と、過去Link互換のPointerを置きます。
 
-- Current Project Requirementの存在・優先度はRoot [`REQUIREMENTS.md`](../../REQUIREMENTS.md) を正本とする。
-- 一般Research Methodは [`docs/20-evidence-first-research.md`](../../docs/20-evidence-first-research.md) を正本とする。
-- Research結果からCommon Ruleへ昇格する運用は [`docs/14-continuous-improvement.md`](../../docs/14-continuous-improvement.md) を正本とする。
-- このDirectoryへCommon Rule本文を作らない。
-- Research完了・実装済みになったContractは、必要な恒久RuleをOwnerへ移した後、Current Requirementから退役させる。
+Researchの保存先は役割で分けます。
 
-## Current / Pending
+## Guideへ残す
 
-- [`content-depth-reinforcement.md`](content-depth-reinforcement.md) — 現在壊れてはいないが、次回要件定義で内容を厚くする価値がある領域の候補。Defect / 修正Findingとは分けて扱う。
+- Current Common Ruleへ直接関係するPublicで再利用可能なCurated Research → `references/`
+- Researchをどう行うかというNormative Method → `docs/20-evidence-first-research.md`
+- Guide改善 / Promotion method → `docs/14-continuous-improvement.md`
+- 現在実行中のResearch Protocol / Benchmark設計でGuide自身の作業に必要なもの → このDirectory
 
-## Historical / Promoted
+## Dataへ置く
 
-- [`requirements-decision-system.md`](requirements-decision-system.md) — Phase 1 Requirements Decision System。Current Ruleは`docs/01-requirements.md`へPromotion済み。
-- [`external-integration-decision-system.md`](external-integration-decision-system.md) — Phase 19 External Integration Decision System。Current Ruleは既存OwnerへPromotion済み。
+`EliteMay/web-project-data`へ書込み可能な場合、次の本体はData側へ置きます。
 
-次回のGuide要件定義・補強では、Current Ownerを再確認したうえで`content-depth-reinforcement.md`も読み、既に解消済みの項目をそのまま再要件化しない。
+- Promotion済みHistorical Research Contract / Record
+- point-in-time Research State / Backlog
+- Project-specific Research
+- 詳細な内部Evidence / 作業履歴
+
+標準配置:
+
+- Research record: `research/studies/web-project-guide/`
+- Point-in-time evidence: `evidence/YYYY/web-project-guide/`
+
+このDirectoryに残る旧Research fileはCompatibility Pointerであり、第二Normative Ownerではありません。
+
+## Current execution asset
+
+- `ai-ui-diversity-benchmark-v0.1/` — AI生成UIの構造的同質化を比較検証するCurrent benchmark protocol。Protocol自体がGuideの改善作業で直接必要なためGuide側へ残します。実際のrun result / snapshotを保存する場合はData側を優先します。
+
+## Current contractとの関係
+
+Research結果がGuideのCurrent behaviorへ昇格した場合は、必ず各`docs/*` Owner / Router / Validator等へ反映します。Research RecordだけをCurrent Ruleとして扱いません。
+
+Active Researchの存在・優先度がCurrent Guide Contractへ影響する場合はRoot `REQUIREMENTS.md`へ**必要なCurrent Contractだけ**を残し、Research notebook全文を戻しません。

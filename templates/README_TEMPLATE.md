@@ -23,7 +23,7 @@
 必要なCommandまたは利用方法
 ```
 
-## 正本
+## 正本 / Source of Truth
 
 Projectに存在するものだけ残します。READMEへ詳細仕様を複製しません。
 

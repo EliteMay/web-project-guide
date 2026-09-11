@@ -4,7 +4,8 @@
 
 - Machine-readable review policy: [`maintenance/review-policy.json`](../maintenance/review-policy.json)
 - Deep Audit execution checklist: [`maintenance/DEEP_SYSTEM_AUDIT.md`](../maintenance/DEEP_SYSTEM_AUDIT.md)
-- Audit result history: `maintenance/audits/`
+- Audit result data: `EliteMay/web-project-data/evidence/YYYY/web-project-guide/audits/`（書込みCapabilityがある場合）
+- Guide-side audit compatibility index: [`maintenance/audits/`](../maintenance/audits/)
 - General research method: [20 Evidence-first Research](20-evidence-first-research.md)
 - Rule ownership / budget: [00 Governance](00-governance.md)
 
@@ -85,6 +86,31 @@ Domain transfer前は [18 Domain-first Visual Research](18-domain-first-visual-r
 
 Research結果を自動的にMUSTへ変換せず、Applicability / Severity / Reversibility / Project variabilityを見ます。
 
+## Research / Evidence Storage Boundary
+
+### MUST: Current Ruleと保存データを分離する
+
+`web-project-guide`はCurrent Common Rule / Procedure / Routing / Validationを担当します。`EliteMay/web-project-data`へ書込みCapabilityがある場合、次の保存データ本体はData側へ置きます。
+
+- point-in-time Audit Report / Finding / Resolution
+- Project-specific / time-specific Evidence
+- Promotion済みHistorical Research Contract / Record
+- 詳細なResearch backlog / working state
+- Current Ruleへ直接置く必要がない内部Research Evidence
+
+一方、次はGuide側へ残せます。
+
+- 複数Projectで直接再利用するPublic Curated Reference
+- Current Common Ruleの理解・検証に長期的に必要な公開Research
+- Current Research execution protocol / benchmark設計
+- Normative Research Method
+
+`research`や`evidence`という名前だけで機械的にDataへ移しません。**Current Public Guideとして再利用するか、時点・作業・履歴データとして保存するか**で判断します。
+
+Data側のResearch / EvidenceもCurrent Common RuleやProject Stateの第二Source of Truthにはしません。利用時はCurrent Repository / Owner Docs / Requirements / official evidenceを再確認します。
+
+Data Repositoryへ書けない場合、Public GuideへPrivate / raw dataをFallback保存しません。保存不能は保存済みと扱わず、必要なCurrent work checkpointはWork Report / Branch / PR等へ残します。
+
 ## Rule Hygiene
 
 ### MUST: Rule追加時にConsolidationも探す
@@ -109,6 +135,8 @@ DestinationにCurrent Ruleを置く
 ```
 
 Destinationだけ確認して終えません。
+
+Research / EvidenceをGuideからDataへ移す場合も、必要なCurrent Rule / Public Reference / Compatibility Pointerが失われていないか確認します。
 
 ## Deep System Audit Contract
 
@@ -208,7 +236,7 @@ Deep Auditは次を満たすまで完了扱いにしません。
 
 ## Audit Output
 
-Deep Audit結果は`maintenance/audits/`等へ保存します。
+`EliteMay/web-project-data`へ書込みCapabilityがある場合、Deep Auditのpoint-in-time結果本体は `evidence/YYYY/web-project-guide/audits/` へ保存します。Guide側 `maintenance/audits/` はCompatibility Pointer / Indexとして使えますが、Audit result historyの本体を増やし続けません。
 
 最低限:
 
@@ -268,7 +296,9 @@ Project由来Rule候補:
 - Guideを守っても防げなかったgap
 - user feedbackからgeneralizable causeを抽出できた
 
-まず既存Owner / Project Learnings / Catalog / Checklist / Referenceへ統合できないか確認し、新Common Ownerは最後の選択肢にします。
+まず既存Owner / Project Learnings / Catalog / Checklist / Public Curated Referenceへ統合できないか確認し、新Common Ownerは最後の選択肢にします。
+
+Project-specific / time-specific EvidenceそのものはData側へ保存し、GuideへPromotionするのは再利用可能なRule / Curated Referenceだけにします。
 
 ## Change Path
 
@@ -313,5 +343,7 @@ Meaningful common behavior changeでは必要に応じて:
 ## Validation / No-change
 
 Final CommitでGuide Validatorを通します。
+
+Research / Evidence moveでは、Guide側のCurrent Rule・Public Reference・Compatibility LinkとData側の保存先が両方確認できることもValidationへ含めます。
 
 新しい知見がなければ空Commitを作りません。削除 /統合だけのReviewも有効です。
