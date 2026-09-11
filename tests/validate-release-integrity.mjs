@@ -5,6 +5,13 @@ import { execFileSync } from 'node:child_process';
 const root = process.cwd();
 const errors = [];
 
+const RELEASE_BOOKKEEPING = new Set([
+  'guide-version.json',
+  'CHANGELOG.md',
+  'UNRELEASED.md',
+  '作業報告書.md'
+]);
+
 function read(rel) {
   return fs.readFileSync(path.join(root, rel), 'utf8');
 }
@@ -47,13 +54,14 @@ function listDiff(base, head = 'HEAD', threeDot = false) {
 }
 
 function isReleaseAffecting(rel) {
+  if (RELEASE_BOOKKEEPING.has(rel)) return false;
+
   if ([
     'README.md',
     'START_HERE.md',
     'REQUIREMENTS.md',
     'DASHBOARD_REQUIREMENTS.md',
     'WORK_QUEUE_REQUIREMENTS.md',
-    'guide-version.json',
     'index.html',
     'project-dashboard.json'
   ].includes(rel)) return true;
