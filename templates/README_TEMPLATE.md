@@ -1,8 +1,8 @@
-# Project Name
+# プロジェクト名
 
-> Live Site: <https://example.com/>
+> 公開サイト: <https://example.com/>
 
-公開Web SiteがないProjectではこの行を削除します。公開Siteがある場合のRepository導線は`web-project-guide`のGitHub Pages Ruleに従います。
+公開WebサイトがないProjectではこの行を削除します。公開Siteがある場合のRepository導線は`web-project-guide`のGitHub Pages Ruleに従います。
 
 ## 目的
 
@@ -23,26 +23,26 @@
 必要なCommandまたは利用方法
 ```
 
-## Source of Truth
+## 正本
 
 Projectに存在するものだけ残します。READMEへ詳細仕様を複製しません。
 
 | 内容 | 正本 |
 |---|---|
-| Current Requirements | `REQUIREMENTS.md` |
-| Technical Specification | `SPEC.md` / `docs/` |
-| Project-specific Rules | `PROJECT_RULES.md` |
-| Agent Router | `AGENTS.md` |
-| Long-term Learnings | `PROJECT_LEARNINGS.md` |
-| Recent Work / Unverified | `作業報告書.md` |
-| Change History | `CHANGELOG.md` / Git history |
+| 現在の要件 | `REQUIREMENTS.md` |
+| 技術仕様 | `SPEC.md` / `docs/` |
+| Project固有ルール | `PROJECT_RULES.md` |
+| AI / Agent向け入口 | `AGENTS.md` |
+| 長期的な学び | `PROJECT_LEARNINGS.md` |
+| 直近作業 / 未確認事項 | `作業報告書.md` |
+| 変更履歴 | `CHANGELOG.md` / Git history |
 
-## Guide / Profile
+## Guide / Project種別
 
-- Adopted web-project-guide Version:
-- Profiles:
+- 採用しているweb-project-guide Version:
+- Project種別:
 
-## Repository Structure
+## ファイル・フォルダ構成
 
 主要File / Folderだけを説明します。
 
@@ -53,22 +53,29 @@ Projectに存在するものだけ残します。READMEへ詳細仕様を複製�
 | `index.html` | 例: サイトの入口となるHTML |
 | `src/` | 例: 実装コードを置くフォルダ |
 
-## Validation
+## 人が見る文章の言語
 
-- Main test / validation command:
-- Browser / Runtime validation:
-- Release / Pages validation:
+- Project Ownerや日本語利用者が見るREADME、管理画面、説明画面、操作案内は**日本語を基本**にします。
+- File名、変数名、関数名、Schema名など、技術上英語が自然な内部識別子は英語のままで構いません。
+- UIや説明で英語の専門用語を使う場合は、日本語だけでも意味を理解できるようにします。必要なら `Work Queue（作業待ち一覧）` のように併記します。
+- End User向け画面はProjectの対象利用者・言語要件を優先します。海外向けなど英語が必要なProjectまで日本語へ固定しません。
 
-## Deployment / Distribution
+## 検証
 
-- Method: GitHub Pages / Electron / Other
-- Primary URL / Release:
-- Important deployment note:
+- 主なTest / 検証Command:
+- Browser / Runtime確認:
+- Release / Pages確認:
 
-## Known Issues / Limitations
+## 公開 / 配布
+
+- 方法: GitHub Pages / Electron / その他
+- 公開URL / Release:
+- 重要な公開・配布上の注意:
+
+## 既知の問題 / 制限
 
 - 
 
-## Unverified
+## 未確認
 
 - 
