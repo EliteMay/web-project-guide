@@ -3,7 +3,7 @@
 このファイルは、最後にReleaseしたGuide VersionとCurrent `main`の間にある**未Release変更**の短い要約です。
 
 - Released baseline: `1.22.0` / 2026-09-07
-- Release commit: `7c2a1245b9a745069f22a9d96ce4afda21cce253`
+- Release commit: `fd9cc77ff5284906784ca827d4c21caa2950d08d`
 - Current state: `unreleased-changes`
 
 正式Release時は、この内容を`CHANGELOG.md`の新しいVersion entryへ統合し、`guide-version.json`のVersion / date / releaseCommit / statusを同時更新します。
