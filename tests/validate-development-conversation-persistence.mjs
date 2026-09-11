@@ -6,6 +6,7 @@ const read = (file) => fs.readFileSync(file, 'utf8');
 const readme = read('README.md');
 const startHere = read('START_HERE.md');
 const conversationOwner = read('docs/23-conversation-handoff-recovery.md');
+const router = JSON.parse(read('maintenance/rule-router.json'));
 
 if (!/^## 開発会話の保存$/m.test(readme)) {
   errors.push('README.md: missing development conversation persistence summary');
@@ -72,6 +73,13 @@ if (conversationOwner.includes('→ Silent Resume可能。')) {
 
 if (!startHere.includes('会話移行 / Automatic Resume / stale checkpoint / duplicate active conversation')) {
   errors.push('START_HERE.md: missing Automatic Resume route');
+}
+
+const persistenceOwner = 'docs/23-conversation-handoff-recovery.md';
+for (const [workType, docs] of Object.entries(router.workTypes || {})) {
+  if (!Array.isArray(docs) || !docs.includes(persistenceOwner)) {
+    errors.push(`rule-router.json: ${workType} must route through Conversation Persistence owner before completion`);
+  }
 }
 
 if (errors.length) {
