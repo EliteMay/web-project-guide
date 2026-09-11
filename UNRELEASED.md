@@ -28,17 +28,18 @@
 - Work Queue contractを現在のruntime / Claim Gate / public projectionへ同期
 - Conversation Persistenceの通常Entryを`web-project-data/tools/conversations/persist-interaction.mjs`へ合わせ、Current Repository再取得境界を明確化
 - Conversation PersistenceをGuide-scoped InteractionのCompletion Gateへ接続
-- Conversation Handoff / Recovery OwnerをWorkstream候補解決、High / Medium / Low Confidence、Silent Resume、User Override、Write Target分離へ拡張
+- Conversation Handoff / Recovery OwnerをWorkstream候補解決、High / Medium / Low Candidate Resolution、one-time Resume Confirmation Gate、User Override、Write Target分離へ拡張
+- Automatic Resume候補をUserが否定した場合、別候補へ即切替せずRoot Cause / Failure Mechanism確認と必要な再発防止を先に行うFlowへ変更
 - `docs/10-project-management.md`へRoot-Cause-first Failure / Bug Workflowを追加
 - `guide-version.json`へReleased baseline commitとCurrent release stateを追加
 - `docs/09-maintenance.md`へReleased baseline / Unreleased current stateの分離Contractを追加
 - `Validate Guide`をfull git historyで実行し、Release-affecting変更とUnreleased recordの整合を検証
 - `releaseCommit`以後の差分判定からVersion / CHANGELOG / Unreleased / Work Report等のRelease bookkeepingを除外し、Release内容Commitの後にMetadata commitを安全に置けるよう修正
-- READMEとREADME Templateで、英語のFile / Folder名はそのまま維持しつつ役割を日本語で説明する形へ統一。Codeや各File本文への日本語説明追加は必須にしない
 
 ## Fixed
 
 - Persistence Ruleが存在していても通常Interactionの終了経路から適用されず、保存漏れが起こり得たCompletion Routing failure
+- Automatic ResumeのHigh Confidence候補をUser確認なしでResume可能としていた誤復帰経路と、User否定後にRoot Cause確認なしで別候補へ進めたFailure path
 - `guide-version.json`とCHANGELOGが両方同時に古い場合、Current GuideがRelease baselineより進んでいてもCIが検出できなかったRelease metadata drift
 - `releaseCommit`を`guide-version.json`自身へ記録する設計で、Metadata変更自体をRelease-affecting差分として数えると`status: released`へ戻せない自己参照問題
 
