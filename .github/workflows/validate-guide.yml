@@ -25,6 +25,9 @@ jobs:
       - name: Validate guide structure and links
         run: node tests/validate-guide.mjs
 
+      - name: Test release lifecycle integrity
+        run: node tests/test-release-integrity.mjs
+
       - name: Validate release current-state integrity
         env:
           RELEASE_BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
