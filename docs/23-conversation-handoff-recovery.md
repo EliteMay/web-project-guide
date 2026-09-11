@@ -170,7 +170,9 @@ Guide対象の開発作業でConversationが変わっても、Userへ毎回次�
 
 同じChatGPT Project内では、Workstream Persistence / Search Capabilityが利用できる場合、通常の続きのUser Messageから既存WorkstreamのRecoveryを試みます。
 
-Project外の新しいConversationでも、Repository・作業内容・Workstream等から十分高い確信で一意に特定できる場合はAutomatic Resumeを許可します。一意に決められない場合は勝手に選択しません。
+Project外の新しいConversationでも、Repository・作業内容・Workstream等から十分高い確信で一意に特定できる場合はAutomatic Resume候補として扱えます。一意に決められない場合は勝手に選択しません。
+
+Automatic Resumeで候補を一意にできても、**候補特定とResume開始は別段階**です。新しいConversationで既存WorkstreamをAutomatic Resumeする場合は、後述のConfirmation Gateを通るまで作業再開済みとして扱いません。
 
 ### Workstreamの責務
 
@@ -266,6 +268,12 @@ Current Repository / Requirements / Work Report等を再取得
 ↓
 Confidence判定
 ↓
+Resume候補を1つへ絞る
+↓
+Automatic Resume Confirmation Gate
+↓
+Userが候補を確認
+↓
 安全ならResume
 ↓
 今回Interactionを正しいWorkstreamへ関連付ける
@@ -315,6 +323,7 @@ Current Repository
 - Userが「新規」「別件」「前の続きじゃない」と明示 → 自動Continuationを解除
 - `superseded` Workstream → 原則Automatic Resume候補外
 - Current Repositoryと明確に矛盾 → 候補外またはRecovery対象
+- Userが直前のResume候補を「違う」と否定 → その候補を除外し、別候補へ進む前にFailure Reviewを完了
 - 書込み対象を一意に復元できない → 書込み禁止
 
 Soft ScoreはHard Rule通過後の候補順位付けにだけ使います。
@@ -325,28 +334,59 @@ Soft ScoreはHard Rule通過後の候補順位付けにだけ使います。
 
 Project / Repository / Workstream / Current Stateが十分一意。
 
-→ Silent Resume可能。
+→ **候補として提示可能。High ConfidenceだけではResumeを開始しない。** Automatic Resume Confirmation Gateへ進みます。
 
 #### Medium Confidence
 
 有力候補はあるが追加Evidenceが必要。
 
-→ Workstream Checkpoint / Conversation Checkpoint / Current GitHub等を追加確認し、一意になればそのままResume。
+→ Workstream Checkpoint / Conversation Checkpoint / Current GitHub等を追加確認します。候補を十分具体的に提示できる状態なら、User確認をIdentity確定Evidenceとして使えます。
 
 #### Low Confidence
 
 複数候補が同程度、またはEvidence不足。
 
-→ 書込みせず、Read-only Investigationで一意化を試み、それでも解けない場合だけ必要最小限Userへ確認。
+→ 書込みせず、Read-only Investigationで一意化を試み、それでも候補を具体化できない場合だけ必要最小限Userへ確認します。
 
-### MUST: Workstream Resolution ConfidenceとWrite Target Resolutionを分離する
+### MUST: Automatic Resume前に1回だけUser確認する
 
-「どのWorkstreamの続きか」をHigh Confidenceで特定できても、「どのBranch / PR / Commit / write pathへ書くか」が一意とは限りません。
+新しいConversationで既存Workstreamを**Automatic Resume**する場合、Resolver / Recovery Evidenceから候補を1つに絞れても、その候補をResume済みとして扱う前にUserへ1回だけ確認します。
+
+確認は対象が判別できる短い形にします。
+
+例:
+
+> 前回の「Type Tower / 難易度設定」の続きとして復帰します。合ってる？
+
+Userが`ok` / `うん` / `続けて`等で、その直前に提示された具体的候補を承認した場合はConfirmation成立です。
+
+ConfirmationのScopeは**現在のConversation + 確認したWorkstream**です。
+
+- 確認後、同じConversation / 同じWorkstreamの通常継続で毎Turn確認しない
+- Target Workstreamが変わった場合は以前のConfirmationを流用しない
+- Userが候補を否定した場合はConfirmationを無効化する
+- 新しいConversationで再びAutomatic Resumeする場合は新しいConfirmationを要求する
+- staleな候補ID / Repository矛盾 / Hard Rule違反へ過去Confirmationを流用しない
+
+UserがCurrent Message内でRepository / Workstreamを明示して直接作業を指定しており、Automatic Resume Resolverに依存せずTargetが確定している場合は、このGateを「自動推定への確認」として重複適用する必要はありません。ただし、曖昧な`続きやろ`等から過去Workstreamを推定した場合はHigh Confidenceでも省略しません。
+
+### MUST: Workstream Resolution Confidence / Confirmation / Write Target Resolutionを分離する
+
+「どのWorkstreamの続きか」をHigh Confidenceで特定できても、User Confirmation前はResume許可ではありません。また、Confirmation済みでも「どのBranch / PR / Commit / write pathへ書くか」が一意とは限りません。
 
 したがって:
 
 ```text
-Workstream特定 High
+Workstream候補 High
++
+Confirmation未成立
+=
+Read-only Recoveryは可
+Resume開始 / Repository writeは禁止
+```
+
+```text
+Workstream Confirmation成立
 +
 Write target unresolved
 =
@@ -354,11 +394,11 @@ Context Resume / Read-only Recoveryは可
 Repository writeは禁止
 ```
 
-Workstream ResolverのHigh Confidenceだけを根拠にCode / Requirementsへ書き込みません。書込み前にはCurrent Repository / Branch / PR / Commit / Requirements等を再取得し、既存のCurrent work ref Recovery Ruleを通します。
+Workstream ResolverのHigh ConfidenceやUser Confirmationだけを根拠にCode / Requirementsへ書き込みません。書込み前にはCurrent Repository / Branch / PR / Commit / Requirements等を再取得し、既存のCurrent work ref Recovery Ruleを通します。
 
-### Silent Resume
+### Confirmation後の通常継続
 
-正常なAutomatic Resumeでは、毎回:
+Confirmationが成立して安全にResumeした後は、毎回:
 
 - 「Checkpointを読みました」
 - 「前回Conversationを復旧しました」
@@ -366,13 +406,13 @@ Workstream ResolverのHigh Confidenceだけを根拠にCode / Requirementsへ書
 
 等を表示しません。
 
-通常の会話としてそのまま続行します。異常・競合・重要な状態変更・User確認が必要な場合だけ通知します。
+通常の会話としてそのまま続行します。異常・競合・重要な状態変更・新しいUser確認が必要な場合だけ通知します。
 
 ### User Override
 
 Current User Instructionを常に最優先します。
 
-次のような短い訂正で即座に切替できることを要求します。
+次のような短い訂正で切替できます。
 
 - 「違う、農場の方」
 - 「これは新規」
@@ -380,9 +420,51 @@ Current User Instructionを常に最優先します。
 - 「○○の続き」
 - 「これは一旦保留」
 
+ただし、**誤ったResume候補をUserが否定したときは、その場で次点候補へ即ジャンプしません。** まず下記Failure Reviewを通してから再解決します。
+
 誤ったAutomatic Resumeを正しい履歴として固定しません。
 
 Persisted Interactionが既に誤ったWorkstreamへ関連付いた場合、Interaction immutabilityを壊して書き換えず、Data側Current Contractのappend-only correction経路で関連を訂正します。
+
+### MUST: Resume誤判定はRoot-Cause-firstで処理する
+
+Automatic Resume候補または実際のResume先をUserから「違う」と指摘された場合、それは単なる会話上の言い直しではなく、**Candidate Resolution / Confirmation / Recovery PathのFailure Evidence**として扱います。
+
+別候補を提示する前に、必要範囲で [10 Project Management - Failure / Bug Root Cause Workflow](10-project-management.md#failure--bug-root-cause-workflow) を適用します。
+
+最低限:
+
+1. 何を正しい続きだと誤判定したか
+2. どのEvidence / Score / recency / Project情報がその候補を上位にしたか
+3. なぜ既存のHard Rule / Confirmation / Recovery Ruleで防げなかったか
+4. 今回だけの候補除外で十分か、Resolver / Rule / Test / Persistenceへ再発防止が必要か
+5. 修正または最も狭いFailure Mechanismの対処を行ったか
+
+を確認します。
+
+Candidateを提示しただけでRepository変更等がまだ起きていない場合も、Failure Mechanismを軽量に確認してから次候補へ進みます。実際に誤ったWorkstreamへ書込み・Persistence・仕様判断等を行った場合は、docs/10の通常Root Cause / Recurrence Guard Contractを省略しません。
+
+順序は:
+
+```text
+User rejects candidate / resume
+↓
+その候補のConfirmationを無効化
+↓
+誤候補を以後の候補から除外
+↓
+Root Cause / Failure Mechanism確認
+↓
+必要なRule / Resolver / Test / Recovery Guard修正
+↓
+候補を再解決
+↓
+新しい候補をUserへ提示
+↓
+新しいConfirmation成立後にResume
+```
+
+`違う` → `じゃあ次は○○だね` と原因確認なしで候補だけ切り替える挙動をCompletion扱いにしません。
 
 ### Current State Verification
 
@@ -598,6 +680,8 @@ Current work refや正式状態の把握が不安定になり、Conversation his
 
 Conversation移行・Recovery・Automatic Resumeでも、Repository / Evidenceで解決できる内容をUserへ質問しません。
 
+ただし**新しいConversationでのAutomatic Resume Confirmation Gateは明示的な例外**です。候補がHigh Confidenceでも、曖昧なContinuation Messageから自動推定したWorkstreamは最初の1回だけUser確認を通します。これはProduct preferenceをUserへ返すためではなく、誤Workstreamへ復帰するCostを抑えるSafety Gateです。
+
 User Decisionが必要なのは、Current Stateを復元した上でも:
 
 - non-inferable Product preference
@@ -614,8 +698,10 @@ Handoff / Recovery / Automatic Resume作業は該当範囲で次を満たして�
 
 - Target Repositoryが一意
 - Continuationの場合はTarget Workstreamが一意、またはLow Confidenceとして書込み停止
+- Automatic ResumeではTarget Workstream候補をUserが1回確認してからResumeしている
+- UserがResume候補を否定した場合、別候補へ進む前にRoot Cause / Failure Mechanismを確認している
 - Current work refが一意、または`unresolved`を明示
-- Workstream ResolutionとWrite Target Resolutionを混同していない
+- Workstream Resolution / Confirmation / Write Target Resolutionを混同していない
 - 正式Requirements / Draftの役割を混同していない
 - 未完成を完成扱いしていない
 - 必要なCheckpointがGitHub / Data repositoryから再取得できる
