@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Web Project Guide で実際に研究した分野と、深く要件定義・設計した分野を一覧で確認するページです。">
+  <title>研究・要件定義の分野 | Web Project Guide</title>
+  <link rel="stylesheet" href="../assets/human-guide.css">
+  <link rel="stylesheet" href="../assets/mobile-fixes.css">
+  <style>
+    .summary-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}.summary-chip{padding:6px 9px;border:1px solid var(--border);border-radius:999px;background:var(--surface);font-size:12px}.jump{display:flex;flex-wrap:wrap;gap:8px;margin:26px 0 0}.jump a{padding:7px 10px;border:1px solid var(--border);border-radius:7px;background:var(--surface);color:var(--text);font-size:12px;text-decoration:none}.inventory-group{margin-top:18px}.inventory-group h3{margin:0 0 10px;font-size:17px}.inventory-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.inventory-item{display:flex;justify-content:space-between;gap:14px;padding:12px 14px;border:1px solid var(--border);border-radius:8px;background:var(--surface);font-size:13px}.inventory-item strong{font-weight:650}.inventory-item a{flex:0 0 auto;font-size:12px;font-weight:700;text-decoration:none}.note{margin-top:12px;color:var(--muted);font-size:12px}.contract-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.contract{padding:16px;border:1px solid var(--border);border-radius:9px;background:var(--surface)}.contract h3{margin:0;font-size:15px}.contract p{margin:7px 0 0;color:var(--muted);font-size:12px}.contract a{display:inline-block;margin-top:10px;font-size:12px;font-weight:700}.footer-note{margin-top:44px;padding-top:20px;border-top:1px solid var(--border);color:var(--muted);font-size:12px}@media(max-width:780px){.inventory-list,.contract-grid{grid-template-columns:1fr}.inventory-item{align-items:flex-start;flex-direction:column;gap:6px}}
+  </style>
+</head>
+<body>
+  <header class="sitebar">
+    <div class="sitebar-inner">
+      <a class="brand" href="../../index.html">Web Project Guide</a>
+      <nav class="tabs" aria-label="Guide navigation">
+        <a href="../../project-dashboards/">Project Dashboards</a>
+        <a href="work-dashboard.html">Guide Migration</a>
+        <a href="ai-workflow.html">AIの作業ルール</a>
+        <a href="rules.html">ルール検索</a>
+        <a href="all-rules.html">全ルール</a>
+        <a href="research-requirements.html" aria-current="page">研究・要件</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">RESEARCH & REQUIREMENTS INVENTORY</p>
+        <h1>研究した分野と、深く要件定義した分野。</h1>
+        <p class="lead">Current RepositoryにResearch / Evidence / Requirements / Owner Contractとして残っているものだけを一覧化しています。会話だけで考えた内容や根拠のない推測は含めません。</p>
+        <div class="summary-row"><span class="summary-chip">研究・Evidence: 43分野</span><span class="summary-chip">深い要件・Contract: 32分野</span><span class="summary-chip">正式な原文はGitHubが正本</span></div>
+      </div>
+    </header>
+
+    <nav class="jump" aria-label="ページ内リンク"><a href="#research">研究した分野</a><a href="#requirements">深く要件定義した分野</a><a href="#sources">判定基準</a></nav>
+
+    <section class="section" id="research">
+      <div class="section-head"><div><h2>研究した分野</h2><p class="section-intro">`references/` と `maintenance/research/` に実際のResearch / Evidenceが残っている分野です。同じテーマのhistorical copyは1分野にまとめています。</p></div></div>
+
+      <div class="inventory-group">
+        <h3>AI / LLM / Agent Reliability</h3>
+        <div class="inventory-list">
+          <div class="inventory-item"><strong>AI生成UIの均質化・AIテンプレ感</strong><a href="../../references/ai-generated-ui-homogenization-research.md">Evidence →</a></div>
+          <div class="inventory-item"><strong>AI UIの多様性Benchmark</strong><a href="../../maintenance/research/ai-ui-diversity-benchmark-v0.1/README.md">Benchmark →</a></div>
+          <div class="inventory-item"><strong>LLMの階層Instruction衝突</strong><a href="../../references/llm-conflicting-hierarchical-instruction-research.md">Evidence →</a></div>
+          <div class="inventory-item"><strong>LLMの複数Constraint遵守</strong><a href="../../references/llm-multi-constraint-instruction-following-research.md">Evidence →</a></div>
+          <div class="inventory-item"><strong>LLMのLong Context Instruction遵守</strong><a href="../../references/llm-long-context-instruction-following-research.md">Evidence →</a></div>
+          <div class="inventory-item"><strong>Repository Coding AgentのInstruction遵守</strong><a href="../../references/llm-repository-coding-agent-instruction-adherence-research.md">Evidence →</a></div>
+          <div class="inventory-item"><strong>Retrieval / Routing / Structured Memory</strong><a href="../../references/llm-retrieval-routing-structured-memory-research.md">Evidence →</a></div>
+          <div class="inventory-item"><strong>Self-review / Self-critique</strong><a href="../../references/llm-self-review-self-critique-research.md">Evidence →</a></div>
+          <div class="inventory-item"><strong>Independent Verifier / Judge</strong><a href="../../references/llm-independent-verifier-judge-research.md">Evidence →</a></div>
+          <div class="inventory-item"><strong>Multi-agent Verification / Debate</strong><a href="../../references/llm-multi-agent-verification-debate-research.md">Evidence →</a></div>
+          <div class="inventory-item"><strong>Tool-assisted Deterministic Verification</strong><a href="../../references/llm-tool-assisted-deterministic-verification-research.md">Evidence →</a></div>
+          <div class="inventory-item"><strong>Evidence Receipt / False Completion / Stale Evidence</strong><a href="../../references/llm-evidence-receipts-false-completion-stale-evidence-research.md">Evidence →</a></div>
+          <div class="inventory-item"><strong>Rule Application Reliability</strong><a href="../../references/rule-application-reliability-research.md">Evidence →</a></div>
+        </div>
+      </div>
+
+      <div class="inventory-group">
+        <h3>Software Assurance / Process / Compliance</h3>
+        <div class="inventory-list">
+          <div class="inventory-item"><strong>Academic Compliance / Traceability Automation</strong><a href="../../references/academic-compliance-traceability-automation-research.md">Evidence →</a></div>
+          <div class="inventory-item"><strong>Assurance Case / Safety Case</strong><a href="../../references/assurance-case-safety-case-research.md">Evidence →</a></div>
+          <div class="inventory-item"><strong>CMMI Process Capability / Appraisal</strong><a href="../../references/cmmi-process-capability-appraisal-research.md">Evidence →</a></div>
+          <div class="inventory-item"><strong>Human Factors / Checklist Reliability</strong><a href="../../references/human-factors-checklist-reliability-research.md">Evidence →</a></div>
+          <div class="inventory-item"><strong>ISO / IEC Applicability / Audit Process</strong><a href="../../references/iso-iec-applicability-audit-process-research.md">Evidence →</a></div>
+          <div class="inventory-item"><strong>大規模Software組織のDevelopment Control</strong><a href="../../references/large-software-organization-development-controls-research.md">Evidence →</a></div>
+          <div class="inventory-item"><strong>NIST Control Selection / Assessment Automation</strong><a href="../../references/nist-control-selection-assessment-automation-research.md">Evidence →</a></div>
+          <div class="inventory-item"><strong>Policy-as-Code / Compliance-as-Code</strong><a href="../../references/policy-as-code-compliance-as-code-research.md">Evidence →</a></div>
+          <div class="inventory-item"><strong>Safety-critical Rule Assurance</strong><a href="../../references/safety-critical-rule-assurance-research.md">Evidence →</a></div>
+          <div class="inventory-item"><strong>SRE Incident / Postmortem / Learning</strong><a href="../../references/sre-incident-postmortem-learning-research.md">Evidence →</a></div>
+          <div class="inventory-item"><strong>NASA Requirement Evolution</strong><a href="../../references/nasa-requirement-evolution-examples.md">Evidence →</a></div>
+          <div class="inventory-item"><strong>NASA Rule Defect vs Execution Failure</strong><a href="../../references/nasa-rule-defect-vs-execution-research.md">Evidence →</a></div>
+          <div class="inventory-item"><strong>NASA Software Assurance Review</strong><a href="../../references/nasa-software-assurance-review-research.md">Evidence →</a></div>
+          <div class="inventory-item"><strong>NASA Software Process Improvement</strong><a href="../../references/nasa-software-process-improvement-research.md">Evidence →</a></div>
+        </div>
+      </div>
+
+      <div class="inventory-group">
+        <h3>Product / Architecture / Web / Game</h3>
+        <div class="inventory-list">
+          <div class="inventory-item"><strong>Architecture Decision System</strong><a href="../../references/architecture-decision-system-research.md">Evidence →</a></div>
+          <div class="inventory-item"><strong>Requirements Decision System</strong><a href="../../references/requirements-decision-system-research.md">Evidence →</a></div>
+          <div class="inventory-item"><strong>Data / Storage Decision System</strong><a href="../../maintenance/research/data-storage-decision-system.md">Evidence →</a></div>
+          <div class="inventory-item"><strong>Performance / Reliability Decision System</strong><a href="../../maintenance/research/performance-reliability-decision-system.md">Evidence →</a></div>
+          <div class="inventory-item"><strong>External Integration Decision System</strong><a href="../../maintenance/research/external-integration-decision-system.md">Evidence →</a></div>
+          <div class="inventory-item"><strong>Game Experience Design</strong><a href="../../references/game-experience-design-research.md">Evidence →</a></div>
+          <div class="inventory-item"><strong>Learning Product Decision</strong><a href="../../references/learning-product-decision-research.md">Evidence →</a></div>
+          <div class="inventory-item"><strong>GitHub Pages / Static Delivery</strong><a href="../../references/github-pages-static-delivery-research.md">Evidence →</a></div>
+          <div class="inventory-item"><strong>Web Deployment / Runtime</strong><a href="../../references/web-deployment-runtime-research.md">Evidence →</a></div>
+          <div class="inventory-item"><strong>Web Platform Compatibility</strong><a href="../../references/web-platform-compatibility-research.md">Evidence →</a></div>
+          <div class="inventory-item"><strong>Web Standards</strong><a href="../../references/web-standards.md">Evidence →</a></div>
+          <div class="inventory-item"><strong>Parallel Dashboard V2 Domain Research</strong><a href="../../references/parallel-dashboard-v2-domain-research.md">Evidence →</a></div>
+          <div class="inventory-item"><strong>Cross-Repository GitHub Pilot</strong><a href="../../references/cross-repository-github-pilot-evidence.md">Evidence →</a></div>
+          <div class="inventory-item"><strong>DesignShelf Companion Tool Pilot</strong><a href="../../references/designshelf-companion-tool-evidence.md">Evidence →</a></div>
+          <div class="inventory-item"><strong>Guide Content Depth Reinforcement</strong><a href="../../maintenance/research/content-depth-reinforcement.md">Evidence →</a></div>
+          <div class="inventory-item"><strong>Research Capture / Promotion Method</strong><a href="../../references/research-capture-policy.md">Policy →</a></div>
+        </div>
+      </div>
+      <p class="note">`maintenance/research/requirements-decision-system.md` はRequirements Decision SystemのPromotion後historical contractなので、同じ分野としてまとめています。</p>
+    </section>
+
+    <section class="section" id="requirements">
+      <div class="section-head"><div><h2>深く要件定義・設計した分野</h2><p class="section-intro">Formal Requirements、Owner Contract、Decision Systemとして現在のGuideへ統合されている分野です。</p></div></div>
+      <div class="contract-grid">
+        <article class="contract"><h3>Guide全体のProduct Contract</h3><p>目的、Scope、Source of Truth、Agent autonomy、Persistence、Routing、Audit、Validatorまで定義。</p><a href="../../REQUIREMENTS.md">REQUIREMENTS.md →</a></article>
+        <article class="contract"><h3>Parallel Work Dashboard V2</h3><p>Progress・Operational State・Handoff・Freshness、Next Action、Mobile、Fallback、Repository isolationを定義。</p><a href="../../DASHBOARD_REQUIREMENTS.md">Dashboard Requirements →</a></article>
+        <article class="contract"><h3>Work Queue Orchestration</h3><p>Requirements完了からTask生成、Dependency、Worker Lane、Claim、Completion、再割当まで定義。</p><a href="../../WORK_QUEUE_REQUIREMENTS.md">Work Queue Requirements →</a></article>
+        <article class="contract"><h3>Requirements / Decision / Persistence</h3><p>Problem→Outcome→Solution、Now/Later/Reject、MVP、変更分類、保存、User Decision条件を定義。</p><a href="../../docs/01-requirements.md">01 Requirements →</a></article>
+        <article class="contract"><h3>Agent Autonomy / User Decision</h3><p>何をAIが判断し、何だけUser確認へ戻すかを分離。</p><a href="../../docs/01-requirements.md">01 Requirements →</a></article>
+        <article class="contract"><h3>Automatic Resume / Conversation Handoff</h3><p>会話変更、Workstream解決、Confirmation Gate、Write Target、stale/duplicate recoveryを定義。</p><a href="../../docs/23-conversation-handoff-recovery.md">23 Handoff / Recovery →</a></article>
+        <article class="contract"><h3>Conversation Persistence</h3><p>Interaction保存、Checkpoint、Evidence、保存失敗時のCompletion Gateを定義。</p><a href="../../docs/23-conversation-handoff-recovery.md">23 Handoff / Recovery →</a></article>
+        <article class="contract"><h3>Task-first Structure / Flow</h3><p>Goal→Task→Information/Function→IA→Navigation/Flow→State→Pageの設計順を定義。</p><a href="../../docs/22-task-first-structure-flow-research.md">22 Structure / Flow →</a></article>
+        <article class="contract"><h3>Rule Routing / Preflight</h3><p>Work Type・Profile・Riskから必要Ownerだけ読むRoutingを定義。</p><a href="../../docs/21-rule-routing-preflight.md">21 Routing / Preflight →</a></article>
+        <article class="contract"><h3>Governance / Rule Budget</h3><p>Source of Truth、MUST/SHOULD、Owner、重複防止、CommonとProject固有の境界を定義。</p><a href="../../docs/00-governance.md">00 Governance →</a></article>
+        <article class="contract"><h3>Architecture</h3><p>責務分離、正式Runtime、Patch整理、外部Boundary、Smallest Useful Systemを定義。</p><a href="../../docs/02-architecture.md">02 Architecture →</a></article>
+        <article class="contract"><h3>Data / Storage / Migration</h3><p>Schema、Save、Autosave、Offline、Sync、Conflict、Migration、Backup、Restoreを定義。</p><a href="../../docs/03-data-storage.md">03 Data / Storage →</a></article>
+        <article class="contract"><h3>UI / UX / Accessibility</h3><p>Task達成、State、Keyboard、Focus、Contrast、Mobile、Error/Empty/Loadingを定義。</p><a href="../../docs/04-ui-ux-accessibility.md">04 UI / UX →</a></article>
+        <article class="contract"><h3>Visual Quality Baseline</h3><p>User-facing UIの最低品質、Typography、Spacing、Hierarchy、Responsive確認を定義。</p><a href="../../docs/17-visual-quality-baseline.md">17 Visual Baseline →</a></article>
+        <article class="contract"><h3>Domain-first Visual Research</h3><p>Meaningful UI変更で候補固定前にResearchし、AIテンプレ感を避ける判断Flowを定義。</p><a href="../../docs/18-domain-first-visual-research.md">18 Visual Research →</a></article>
+        <article class="contract"><h3>Performance / Reliability</h3><p>Primary Task Readiness、Loading、Failure Isolation、Retry、Offline、Slow Device、Huge Dataを定義。</p><a href="../../docs/05-performance-reliability.md">05 Performance →</a></article>
+        <article class="contract"><h3>Security</h3><p>Secret、Input、Permission、Auth、Webhook、Public Repository境界を定義。</p><a href="../../docs/06-security.md">06 Security →</a></article>
+        <article class="contract"><h3>Testing / Quality / Completion</h3><p>Static、Unit、E2E、Browser、Storage、Migration、Regression、Final-state validationを定義。</p><a href="../../docs/07-testing-quality.md">07 Testing →</a></article>
+        <article class="contract"><h3>GitHub Pages / Static公開</h3><p>Publishing source、SPA direct-open、Custom Domain、HTTPS、Cache、公開確認を定義。</p><a href="../../docs/08-github-pages.md">08 GitHub Pages →</a></article>
+        <article class="contract"><h3>Web Deployment / Runtime</h3><p>Static / Managed App / Serverless / Edge / Backendを必要Capabilityから選ぶ条件を定義。</p><a href="../../docs/10-project-management.md">10 Project Management →</a></article>
+        <article class="contract"><h3>Browser / Web Platform Compatibility</h3><p>Support Contract、Representative Browser、Fallback、Polyfill、Current Evidenceの使い方を定義。</p><a href="../../START_HERE.md">START_HERE Route →</a></article>
+        <article class="contract"><h3>Version / Release / Rollback</h3><p>App/Build/Schema version、Release baseline、Unreleased、Rollback/Recoveryを定義。</p><a href="../../docs/09-maintenance.md">09 Maintenance →</a></article>
+        <article class="contract"><h3>Project Management / Root Cause</h3><p>GitHub中心Workflow、Smallest Safe Change、Failure時のRoot CauseとRecurrence Guardを定義。</p><a href="../../docs/10-project-management.md">10 Project Management →</a></article>
+        <article class="contract"><h3>Electron / Windows Distribution</h3><p>Installer、Auto Update、Windows実機、権限、配布後Update/Recoveryを定義。</p><a href="../../docs/11-electron-distribution.md">11 Electron →</a></article>
+        <article class="contract"><h3>Project Profiles</h3><p>STATIC / DATA / LEARNING / GAME / MEDIA / AI-HANDOFF / CLOUD / ELECTRON等の補助分類を定義。</p><a href="../../docs/12-project-profiles.md">12 Profiles →</a></article>
+        <article class="contract"><h3>Dependencies / Assets</h3><p>Library、CDN、Version、License、Deprecation、Supply-chain、Asset利用条件を定義。</p><a href="../../docs/13-dependencies-assets.md">13 Dependencies →</a></article>
+        <article class="contract"><h3>Continuous Improvement / Deep Audit</h3><p>Failure/Success学習、Audit、Rule昇格、重複整理、Score依存しないCompletionを定義。</p><a href="../../docs/14-continuous-improvement.md">14 Improvement →</a></article>
+        <article class="contract"><h3>Observability / Project Memory</h3><p>Runtime Log、Diagnostics、Remote failure、Project Learningとの境界を定義。</p><a href="../../docs/15-development-observability.md">15 Observability →</a></article>
+        <article class="contract"><h3>Cross-Repository GitHub Infrastructure</h3><p>共通Workflow、Ruleset、Dependabot、Issue Form、Repository間責務を定義。</p><a href="../../docs/16-cross-repository-github-infrastructure.md">16 Cross-Repo →</a></article>
+        <article class="contract"><h3>Game Development / Playtest</h3><p>Core Loop、Progression、Challenge、Reward、Save、Game Feel、Actual Playtestを定義。</p><a href="../../docs/19-game-development.md">19 Game Development →</a></article>
+        <article class="contract"><h3>Learning Product / Assessment</h3><p>Starting Knowledge、Learning Objective、Practice、Understanding/Application Evidence、Feedbackを定義。</p><a href="../../templates/requirements/LEARNING.md">Learning Pack →</a></article>
+        <article class="contract"><h3>Evidence-first Research</h3><p>Research Question、Source quality、Evidence Map、反対Evidence、Saturation、Decisionへの落とし込みを定義。</p><a href="../../docs/20-evidence-first-research.md">20 Research →</a></article>
+        <article class="contract"><h3>External API / Webhook / Supabase Integration</h3><p>Integration boundary、Authority、Retry、Duplicate、Auth、Lifecycle、Diagnosticsを複数Ownerで定義。</p><a href="../../START_HERE.md">Integration Route →</a></article>
+      </div>
+    </section>
+
+    <section class="section" id="sources">
+      <div class="section-head"><div><h2>この一覧に入れる基準</h2><p class="section-intro">「考えたこと全部」ではなく、後から検証できる記録があるものだけです。</p></div></div>
+      <div class="contract-grid">
+        <article class="contract"><h3>研究済み</h3><p>`references/` または `maintenance/research/` にResearch / Evidence / Benchmark / Pilotが保存されている。</p></article>
+        <article class="contract"><h3>深く要件定義済み</h3><p>Formal Requirements、Owner Doc、Decision System、Template Pack等へCurrent Contractとして落ちている。</p></article>
+      </div>
+    </section>
+
+    <p class="footer-note">このページは人間向けInventoryです。Researchはnon-normative Evidence、正式なRule / Requirementは各Owner Doc・Requirements文書を正本とします。</p>
+  </main>
+</body>
+</html>
