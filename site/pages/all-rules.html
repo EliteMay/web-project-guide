@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Web Project Guide の現在のルールを、分野ごとに短くまとめた人間向け一覧です。">
+  <title>全ルール短縮版 | Web Project Guide</title>
+  <link rel="stylesheet" href="../assets/human-guide.css">
+  <link rel="stylesheet" href="../assets/mobile-fixes.css">
+  <style>
+    .quick-nav{display:flex;flex-wrap:wrap;gap:7px;margin-top:22px}.quick-nav a{padding:6px 9px;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--text);font-size:12px;text-decoration:none}.quick-nav a:hover,.quick-nav a:focus-visible{border-color:var(--accent)}
+    .rule-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.rule-card{padding:18px;border:1px solid var(--border);border-radius:10px;background:var(--surface);scroll-margin-top:76px}.rule-card h2{margin:0;font-size:17px;line-height:1.35}.rule-card ul{margin:12px 0 0;padding-left:20px;font-size:13px}.rule-card li+li{margin-top:4px}.rule-owner{display:inline-block;margin-top:13px;font-size:12px;font-weight:700}.rule-note{margin:10px 0 0;color:var(--muted);font-size:12px}.priority-line{display:flex;flex-wrap:wrap;gap:7px;margin-top:18px}.priority-line span{padding:5px 8px;border:1px solid var(--border);border-radius:999px;background:var(--surface);font-size:12px}.footer-note{margin-top:44px;padding-top:20px;border-top:1px solid var(--border);color:var(--muted);font-size:12px}@media(max-width:760px){.rule-grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <header class="sitebar">
+    <div class="sitebar-inner">
+      <a class="brand" href="../../index.html">Web Project Guide</a>
+      <nav class="tabs" aria-label="Guide navigation">
+        <a href="../../project-dashboards/">Project Dashboards</a>
+        <a href="work-dashboard.html">Guide Migration</a>
+        <a href="ai-workflow.html">AIの作業ルール</a>
+        <a href="rules.html">ルール検索</a>
+        <a href="all-rules.html" aria-current="page">全ルール</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">ALL RULES · SHORT VERSION</p>
+        <h1>今あるルールを、短く全部見る。</h1>
+        <p class="lead">現在の <code>web-project-guide</code> を人が確認しやすいように圧縮した一覧です。細かい例外・MUST / SHOULD・正式な意味は各Owner Docを正本とします。</p>
+        <div class="priority-line" aria-label="基本優先順位">
+          <span>1 操作性</span><span>2 分かりやすさ</span><span>3 安定性</span><span>4 軽量化</span><span>5 保守性</span><span>6 見た目</span>
+        </div>
+      </div>
+    </header>
+
+    <nav class="quick-nav" aria-label="全ルールの目次">
+      <a href="#common">共通</a><a href="#requirements">要件</a><a href="#architecture">Architecture</a><a href="#data">Data</a><a href="#ui">UI</a><a href="#visual">Visual</a><a href="#flow">Flow</a><a href="#performance">性能</a><a href="#security">Security</a><a href="#testing">Testing</a><a href="#github">GitHub</a><a href="#conversation">会話復帰</a><a href="#completion">完成</a>
+    </nav>
+
+    <section class="section">
+      <div class="section-head"><div><h2>全ルール短縮版</h2><p class="section-intro">重複する内容はまとめています。正式な原文を読む必要があるときは各カード下のOwnerへ進んでください。</p></div></div>
+      <div class="rule-grid">
+        <article class="rule-card" id="common"><h2>0. 共通・基本</h2><ul><li>最新GitHubをSource of Truthにする</li><li>古い会話・ZIP・Memoryを基準にしない</li><li>必要なRuleだけ読む</li><li>同じRuleの正本を複数作らない</li><li>Project固有仕様はProject側へ置く</li><li>現在のUser指示を優先する</li><li>既存仕様を勝手に壊さない</li><li>未確認・未実装を完成扱いしない</li><li>合理的に決められることはAgent側で決める</li><li>Meaningfulな作業はPreflightと最終Validationを行う</li></ul><a class="rule-owner" href="https://github.com/EliteMay/web-project-guide/blob/main/docs/00-governance.md">00 Governance →</a></article>
+
+        <article class="rule-card" id="requirements"><h2>1. 要件定義</h2><ul><li>目的・対象User・Main Taskを決める</li><li>必要機能・非対象・保存・崩せない仕様を決める</li><li>完成条件を決める</li><li>今やる / 後でやる / やらないを分ける</li><li>実装済み履歴をRequirementsへ積まない</li><li>要件変更時は関連文書も合わせる</li></ul><a class="rule-owner" href="https://github.com/EliteMay/web-project-guide/blob/main/docs/01-requirements.md">01 Requirements →</a></article>
+
+        <article class="rule-card" id="architecture"><h2>2. Architecture</h2><ul><li>責務を明確に分ける</li><li>同じ処理を複数箇所へ増やさない</li><li>後付けPatchを増殖させず正式経路へ統合する</li><li>Provider名より必要Capabilityから技術を選ぶ</li><li>外部APIとの責任境界を明確にする</li><li>Smallest Useful Systemから始める</li></ul><a class="rule-owner" href="https://github.com/EliteMay/web-project-guide/blob/main/docs/02-architecture.md">02 Architecture →</a></article>
+
+        <article class="rule-card" id="data"><h2>3. Data / Storage</h2><ul><li>大量DataはHTML直書きを避けJSON等へ分離する</li><li>SchemaとSave形式を明確にする</li><li>既存Saveを壊さない</li><li>Schema変更はMigration / Backup / Restore / Rollbackを考える</li><li>Import・Sync・Storage failureを想定する</li><li>保存成功を確認する</li></ul><a class="rule-owner" href="https://github.com/EliteMay/web-project-guide/blob/main/docs/03-data-storage.md">03 Data / Storage →</a></article>
+
+        <article class="rule-card" id="ui"><h2>4. UI / UX / Accessibility</h2><ul><li>User GoalとTask達成を優先する</li><li>情報の優先順位と操作を分かりやすくする</li><li>Loading / Empty / Error / Disabled状態を作る</li><li>Keyboard / Focus / Contrast / 文字サイズを確認する</li><li>Mobile / overflowを確認する</li><li>User-facing UIを未調整のまま完成にしない</li></ul><a class="rule-owner" href="https://github.com/EliteMay/web-project-guide/blob/main/docs/04-ui-ux-accessibility.md">04 UI / UX →</a></article>
+
+        <article class="rule-card" id="visual"><h2>5. Visual / デザイン</h2><ul><li>AIテンプレ感を避ける</li><li>巨大Hero・過剰Gradient・Glass・角丸Card・CTAを乱用しない</li><li>Typography・余白・情報密度・Visual hierarchyを整える</li><li>MeaningfulなVisual変更はResearchしてから決める</li><li>別サイトの成功Designをそのまま流用しない</li><li>改善しない場合はFoundationから見直す</li><li>実装後はBrowser / Screenshotで確認する</li></ul><a class="rule-owner" href="https://github.com/EliteMay/web-project-guide/blob/main/docs/18-domain-first-visual-research.md">18 Visual Research →</a></article>
+
+        <article class="rule-card" id="flow"><h2>6. Structure / Navigation / Flow</h2><ul><li>PageやSidebarから先に決めない</li><li>Goal → Task → Information / Function → IA → Navigation / Flow → State → Pageの順で考える</li><li>Back / Cancel / Retry / ResumeもFlowに含める</li><li>Project固有FlowはProject側へ保存する</li><li>Visual設計とStructure設計を分ける</li></ul><a class="rule-owner" href="https://github.com/EliteMay/web-project-guide/blob/main/docs/22-task-first-structure-flow-research.md">22 Structure / Flow →</a></article>
+
+        <article class="rule-card" id="performance"><h2>7. Performance / Reliability</h2><ul><li>Main Taskが早く使えるようにする</li><li>不要な処理・一括描画を減らす</li><li>Retry / Timeout / Cancel / Offlineを考える</li><li>Slow device・Long session・大量Dataを確認する</li><li>Third-party failureを全体へ波及させない</li><li>数値だけで最適化しすぎない</li></ul><a class="rule-owner" href="https://github.com/EliteMay/web-project-guide/blob/main/docs/05-performance-reliability.md">05 Performance / Reliability →</a></article>
+
+        <article class="rule-card" id="security"><h2>8. Security</h2><ul><li>SecretをGitHubやFrontendへ置かない</li><li>最小権限にする</li><li>Input / External dataを信用しない</li><li>Auth境界・Webhook署名を確認する</li><li>SecretをLogへ出さない</li><li>Dependency由来Riskも確認する</li></ul><a class="rule-owner" href="https://github.com/EliteMay/web-project-guide/blob/main/docs/06-security.md">06 Security →</a></article>
+
+        <article class="rule-card" id="testing"><h2>9. Testing / Quality</h2><ul><li>コードを書いただけで完成にしない</li><li>Main Flow / Error Flow / Boundary / Regressionを確認する</li><li>保存変更はSave / Reload / Restore等を確認する</li><li>Browser・必要なら実機で確認する</li><li>Static TestだけでPlaytestを代用しない</li><li>Cleanup後のFinal Stateを確認する</li><li>重大Known Issueが残るなら完成にしない</li></ul><a class="rule-owner" href="https://github.com/EliteMay/web-project-guide/blob/main/docs/07-testing-quality.md">07 Testing / Quality →</a></article>
+
+        <article class="rule-card"><h2>10. GitHub Pages / 公開</h2><ul><li>Publishing Sourceと公開Branchを確認する</li><li>SPA direct-open / Base path / HTTPS / Domainを確認する</li><li>Cache / Service Worker問題を考える</li><li>公開URLを推測しない</li><li>実際に確認できたURLだけ案内する</li></ul><a class="rule-owner" href="https://github.com/EliteMay/web-project-guide/blob/main/docs/08-github-pages.md">08 GitHub Pages →</a></article>
+
+        <article class="rule-card"><h2>11. Version / Maintenance</h2><ul><li>Versionの正本を1つにする</li><li>ReleasedとUnreleasedを分ける</li><li>App / Build / Schema Versionを混同しない</li><li>Compatibility / Upgrade / Rollbackを考える</li><li>古いRuntimeやVersion付きCopyを増やし続けない</li><li>Release変更はUnreleased historyも同時更新する</li></ul><a class="rule-owner" href="https://github.com/EliteMay/web-project-guide/blob/main/docs/09-maintenance.md">09 Version / Maintenance →</a></article>
+
+        <article class="rule-card" id="github"><h2>12. Project Management / GitHub変更</h2><ul><li>変更前にCurrent Repositoryを確認する</li><li>Smallest Safe Changeを優先する</li><li>複数File・高Risk変更はBranch / PRを優先する</li><li>Merge前に最新mainとの差とCIを確認する</li><li>Merge後mainもValidationする</li><li>問題発生時は原因 → Guardが効かなかった理由 → 修正 → 再発防止の順で進める</li><li>完了報告では終わったこと・残件・次Actionを明示する</li></ul><a class="rule-owner" href="https://github.com/EliteMay/web-project-guide/blob/main/docs/10-project-management.md">10 Project Management →</a></article>
+
+        <article class="rule-card"><h2>13. Electron</h2><ul><li>Webで十分か先に判断する</li><li>Renderer / Node / IPC境界を安全にする</li><li>Installer / Auto Update / Rollbackを確認する</li><li>Windows固有機能は必要に応じて実機確認する</li><li>CI成功だけで実機確認済みにしない</li></ul><a class="rule-owner" href="https://github.com/EliteMay/web-project-guide/blob/main/docs/11-electron-distribution.md">11 Electron / Distribution →</a></article>
+
+        <article class="rule-card"><h2>14. Project Profiles</h2><ul><li><code>STATIC / DATA / LEARNING / GAME / MEDIA / AI-HANDOFF / CLOUD / ELECTRON / TOOL / PUBLIC-CONTENT</code> を必要に応じて使う</li><li>ProfileだけでRuleを決めず、変更内容・Runtime・Riskも見る</li></ul><a class="rule-owner" href="https://github.com/EliteMay/web-project-guide/blob/main/docs/12-project-profiles.md">12 Project Profiles →</a></article>
+
+        <article class="rule-card"><h2>15. Dependencies / Assets</h2><ul><li>Dependencyを必要以上に増やさない</li><li>Version / Compatibility / Deprecationを確認する</li><li>License・Asset利用条件を確認する</li><li>CDN停止やSupply-chain Riskを考える</li><li>GitHub Actions等は可能なら固定参照を使う</li></ul><a class="rule-owner" href="https://github.com/EliteMay/web-project-guide/blob/main/docs/13-dependencies-assets.md">13 Dependencies / Assets →</a></article>
+
+        <article class="rule-card"><h2>16. Continuous Improvement</h2><ul><li>同じ失敗を繰り返さない</li><li>Failure / Success / Anti-patternを記録する</li><li>Root Causeを一般化し必要ならCommon Ruleへ昇格する</li><li>新Rule追加前に既存Ownerへ統合できないか確認する</li><li>Ruleを増やすだけでなく重複・不要Ruleも整理する</li><li>点数だけでAuditを終わらせない</li></ul><a class="rule-owner" href="https://github.com/EliteMay/web-project-guide/blob/main/docs/14-continuous-improvement.md">14 Continuous Improvement →</a></article>
+
+        <article class="rule-card"><h2>17. Observability / Diagnostics</h2><ul><li>Error原因を追える情報を残す</li><li>必要なLogだけ残しSecretを出さない</li><li>Runtime状態やRemote failureを調査できるようにする</li><li>Diagnosticsを構造化する</li><li>Debug処理を本番へ無秩序に残さない</li></ul><a class="rule-owner" href="https://github.com/EliteMay/web-project-guide/blob/main/docs/15-development-observability.md">15 Observability →</a></article>
+
+        <article class="rule-card"><h2>18. Cross-Repository GitHub</h2><ul><li>共通GitHub設定は共通Repositoryへ置く</li><li>Project固有設定を共通化しすぎない</li><li>Reusable Workflow等は使える範囲で再利用する</li><li>Repository間の責務を明確にする</li><li>Guideの判断基準とGitHub実装を分離する</li></ul><a class="rule-owner" href="https://github.com/EliteMay/web-project-guide/blob/main/docs/16-cross-repository-github-infrastructure.md">16 Cross-Repository GitHub →</a></article>
+
+        <article class="rule-card"><h2>19. Game Development</h2><ul><li>Core Loop / Goal / Progression / Challenge / Rewardを明確にする</li><li>Failure / Recovery / Save / Tutorial / Feedbackを考える</li><li>数値やContent量だけで面白さを判断しない</li><li>Main Flow変更はActual Playtestする</li><li>HUD等のMeaningful UIはVisual Researchする</li></ul><a class="rule-owner" href="https://github.com/EliteMay/web-project-guide/blob/main/docs/19-game-development.md">19 Game Development →</a></article>
+
+        <article class="rule-card"><h2>20. Learning Site</h2><ul><li>Starting KnowledgeとLearning Objectiveを決める</li><li>前提Conceptを説明する</li><li>説明だけでなくPracticeを入れる</li><li>理解・応用を確認する</li><li>FeedbackとNext Stepを出す</li><li>教材が存在するだけで完成扱いしない</li></ul><a class="rule-owner" href="https://github.com/EliteMay/web-project-guide/blob/main/docs/01-requirements.md">01 Requirements →</a></article>
+
+        <article class="rule-card"><h2>21. Research</h2><ul><li>重要かつ不確実な内容を調査する</li><li>一次情報を優先する</li><li>複数Sourceと反対Evidenceも見る</li><li>Source数をGoalにしない</li><li>Decision Coverage / Saturationで止める</li><li>Research結果をProject Decisionへ落とす</li></ul><a class="rule-owner" href="https://github.com/EliteMay/web-project-guide/blob/main/docs/20-evidence-first-research.md">20 Evidence-first Research →</a></article>
+
+        <article class="rule-card"><h2>22. Rule Routing / Preflight</h2><ul><li>Meaningful / Systemic workではPreflightする</li><li>Work Type / Profile / Risk Signalから必要Ownerを決める</li><li>全Guideを毎回読まない</li><li>Scopeが変わったら再Routingする</li><li>Human RouterとMachine Routerを合わせる</li></ul><a class="rule-owner" href="https://github.com/EliteMay/web-project-guide/blob/main/docs/21-rule-routing-preflight.md">21 Rule Routing / Preflight →</a></article>
+
+        <article class="rule-card" id="conversation"><h2>23. Conversation Persistence / Recovery</h2><ul><li>Guide対象の開発Interactionは可能なら保存する</li><li>保存成功を確認し、失敗を保存済み扱いしない</li><li>Conversation historyをProjectの第二Source of Truthにしない</li><li>Workstream候補を特定しても自動で作業開始しない</li><li>自動推定したResume先は最初にUser確認する</li><li>確認後は同じ会話・同じWorkstreamで毎回聞かない</li><li>Confidence / Confirmation / Write Targetを別Gateにする</li><li>Userが「違う」と言ったら別候補へ即移動せず、先にRoot Causeと再発防止を処理する</li></ul><a class="rule-owner" href="https://github.com/EliteMay/web-project-guide/blob/main/docs/23-conversation-handoff-recovery.md">23 Conversation Handoff / Recovery →</a></article>
+
+        <article class="rule-card"><h2>24. 会話名</h2><ul><li><code>Repository名（実装）</code></li><li><code>Repository名（UI・見た目）</code></li><li><code>Repository名（不具合・改善）</code></li><li><code>Repository名（相談・調査）</code></li><li>必要時だけ <code>データ・コンテンツ</code> / <code>GitHub・公開</code></li></ul><a class="rule-owner" href="https://github.com/EliteMay/web-project-guide/blob/main/README.md">README →</a></article>
+
+        <article class="rule-card" id="completion"><h2>25. 完成条件</h2><ul><li>Requirements / Specと一致している</li><li>保存互換性・Security・Main Flow・Regressionを確認した</li><li>Browser / UIを確認した</li><li>必要なら実機確認、未確認なら明記した</li><li>CI / 公開状態を確認した</li><li>Documentation / Learningsを必要に応じて更新した</li><li>開発InteractionのPersistenceが必要なら保存成功を確認した</li><li>重大Known Issueが残っていない</li></ul><a class="rule-owner" href="https://github.com/EliteMay/web-project-guide/blob/main/docs/07-testing-quality.md">07 Testing / Quality →</a></article>
+      </div>
+    </section>
+
+    <p class="footer-note">このページは人間向けの短縮版です。正式なRule本文・例外・優先関係はOwner Docs、今回読むべきRuleのRoutingは <a href="https://github.com/EliteMay/web-project-guide/blob/main/START_HERE.md">START_HERE.md</a> と <a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/21-rule-routing-preflight.md">21 Rule Routing / Preflight</a> を正本とします。</p>
+  </main>
+</body>
+</html>
