@@ -23,6 +23,36 @@
 
 Guide Versionの正本は [`guide-version.json`](guide-version.json)、変更履歴は [`CHANGELOG.md`](CHANGELOG.md) です。`guideVersion` / `updated` は最後にReleaseしたBaselineを表し、`status: unreleased-changes` の場合はCurrent `main`にそのRelease以後の未Release変更があることを表します。Current Ruleを判断するときはVersion番号だけでなくRepositoryの現在状態を優先します。
 
+## 主要ファイル・フォルダの意味
+
+英語のFile名・Folder名はそのまま使いますが、何のためのものか分かりやすいようにREADMEで日本語説明します。**Codeや各File本文の中まで日本語説明を追加する必要はありません。**
+
+| File / Folder | 日本語での役割 |
+|---|---|
+| `README.md` | このRepository全体の入口・概要 |
+| `START_HERE.md` | 今回の作業でどのRuleを読むか決める人間向け入口 |
+| `REQUIREMENTS.md` | 現在のGuideで守る要件・Contract |
+| `REQUIREMENTS_DRAFT.md` | まだ正式確定していない要件案 |
+| `PROJECT_LEARNINGS.md` | 今後も再利用する長期的な学び・失敗/成功知識 |
+| `CHANGELOG.md` | 正式Releaseごとの変更履歴 |
+| `UNRELEASED.md` | 次の正式Release前に入っている未Release変更の要約 |
+| `DASHBOARD_REQUIREMENTS.md` | Dashboard機能の要件 |
+| `WORK_QUEUE_REQUIREMENTS.md` | Work Queue機能の要件 |
+| `guide-version.json` | Guide VersionとRelease状態の機械可読情報 |
+| `project-dashboard.json` | このRepository用Dashboardの設定情報 |
+| `docs/` | 正式なRule本文を置く場所 |
+| `templates/` | 新しいProjectや文書を作るときのひな形 |
+| `catalog/` | 失敗例・成功例・Anti-pattern等の再利用Catalog |
+| `references/` | Research・外部Evidence・参考資料 |
+| `maintenance/` | Audit、Router、Review設定などGuide保守用の資料 |
+| `tests/` | Guide構造や整合性を確認するValidation / Test |
+| `site/` | 人間向けWeb版Guideの実ページ |
+| `project-dashboards/` | Project別Dashboard設定 |
+| `.github/` | GitHub ActionsなどGitHub側の設定 |
+| `index.html` | GitHub Pages公開サイトの入口 |
+| `ai-workflow.html` / `rules.html` / `work-dashboard.html` | 旧URL互換用の入口。実ページは`site/`側が正本 |
+| `作業報告書.md` | 直近作業・Validation・未確認事項の記録 |
+
 ## 開発会話の保存
 
 このGuideを適用して進めるProject関連の開発会話は、`EliteMay/web-project-data`へ書き込めるCapabilityがある場合、Interaction単位でConversation Persistence対象にします。雑談・買い物・健康相談・一般知識等の非開発会話は対象外です。
