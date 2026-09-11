@@ -53,6 +53,17 @@ Guide Versionの正本は [`guide-version.json`](guide-version.json)、変更履
 | `ai-workflow.html` / `rules.html` / `work-dashboard.html` | 旧URL互換用の入口。実ページは`site/`側が正本 |
 | `作業報告書.md` | 直近作業・Validation・未確認事項の記録 |
 
+## 人が見る文章の言語
+
+Project Ownerや日本語利用者が直接見る場所は、**日本語を基本**にします。
+
+- サイトの画面、管理画面、Dashboard、README、操作説明、作業報告、AIからUserへの説明は、日本語だけでも意味を理解できる文章を優先します。
+- File名、Folder名、変数名、関数名、Schema名、API名など、技術上英語が自然な内部識別子は英語のままで構いません。
+- 人が見る場所で英語の専門用語が必要な場合は、`Work Queue（作業待ち一覧）` のように日本語の意味を添えるか、周囲の日本語だけで役割が理解できるようにします。
+- 英語の専門語を短い文の中へ連続して並べ、英語を理解しないと機能や状態が分からない表現を避けます。
+- End User向け画面はProjectの対象利用者と言語要件を優先します。海外向け・英語学習向けなど、英語表示自体が目的に合う場合まで日本語へ固定しません。
+- Owner向け画面とEnd User向け画面の対象言語が異なる場合は、Owner向け説明を日本語、Product本体を対象利用者の言語に分けられます。
+
 ## 開発会話の保存
 
 このGuideを適用して進めるProject関連の開発会話は、`EliteMay/web-project-data`へ書き込めるCapabilityがある場合、Interaction単位でConversation Persistence対象にします。雑談・買い物・健康相談・一般知識等の非開発会話は対象外です。
