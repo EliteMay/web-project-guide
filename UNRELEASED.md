@@ -19,6 +19,7 @@
 - Conversation境界を越えて同じ作業系列を復旧するAutomatic Conversation Resume / Workstream Contract
 - AI-generated UI homogenization等のnon-normative Research assets
 - Release baseline / Current unreleased stateを検証する`tests/validate-release-integrity.mjs`
+- 正式Release状態を自己参照なしで構築できることを検証する`tests/test-release-integrity.mjs`
 
 ## Changed
 
@@ -32,15 +33,17 @@
 - `guide-version.json`へReleased baseline commitとCurrent release stateを追加
 - `docs/09-maintenance.md`へReleased baseline / Unreleased current stateの分離Contractを追加
 - `Validate Guide`をfull git historyで実行し、Release-affecting変更とUnreleased recordの整合を検証
+- `releaseCommit`以後の差分判定からVersion / CHANGELOG / Unreleased / Work Report等のRelease bookkeepingを除外し、Release内容Commitの後にMetadata commitを安全に置けるよう修正
 
 ## Fixed
 
 - Persistence Ruleが存在していても通常Interactionの終了経路から適用されず、保存漏れが起こり得たCompletion Routing failure
 - `guide-version.json`とCHANGELOGが両方同時に古い場合、Current GuideがRelease baselineより進んでいてもCIが検出できなかったRelease metadata drift
+- `releaseCommit`を`guide-version.json`自身へ記録する設計で、Metadata変更自体をRelease-affecting差分として数えると`status: released`へ戻せない自己参照問題
 
 ## Compatibility
 
 - 新しい正式Releaseはまだ切らず、Released baselineは`1.22.0 / 2026-09-07`のまま維持
 - Product RepositoryのRuntime / Storage / Schema / Deploymentを自動変更しない
 - Automatic Resume Capabilityがない通常ChatGPT環境へPlatform-level new-Conversation hookが存在すると仮定しない
-- non-normative Research / Work Report / Project Learningだけの変更まで機械的に新Releaseへ昇格させない
+- non-normative Research / Work Report / Project Learning / Release bookkeepingだけの変更まで機械的に新Releaseへ昇格させない
