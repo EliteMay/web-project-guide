@@ -277,6 +277,15 @@ CardでなくSection / List / Table / Divider / Background differenceの方が�
 
 AIがVisualだけ整えても、GenericなMarketing Copyが大量に入るとTemplate感が残ります。
 
+### SHOULD: 人が見る文章は対象利用者が理解できる言語を優先する
+
+- Project Ownerや日本語利用者向けの画面、管理UI、Dashboard、README、操作説明、作業報告、AIからUserへの説明は、日本語だけでも役割や状態が理解できる表現を基本にする。
+- File名、Folder名、変数名、関数名、Schema名、API名など、内部識別子は英語のままでよい。内部名まで無理に日本語化しない。
+- 人が見る場所で英語の専門用語が必要な場合は、`Work Queue（作業待ち一覧）` のように日本語の意味を添えるか、周囲の日本語で意味を説明する。
+- 英語の専門語を連続して並べ、英語を理解しないと機能・状態・次の操作が分からないUIや説明を避ける。
+- End User向け画面はProjectの対象利用者・言語要件を優先する。海外向け、英語教材など、英語表示がProduct目的に合う場合は英語を使用できる。
+- Owner向け画面とEnd User向け画面で対象言語が異なる場合、Owner向け説明は日本語、Product本体は対象利用者の言語というように分離してよい。
+
 - Userが認識する語彙を優先する。
 - Action labelは可能な限り具体的な動詞にする。
 - 同じActionを画面ごとに別の言葉で呼ばない。
