@@ -41,8 +41,20 @@ for (const required of [
   }
 }
 
-if (!conversationOwner.includes('通常のChatGPT Conversation自体にはRepository側から強制できるpost-response hookがない')) {
+if (!conversationOwner.includes('通常のChatGPT Conversation自体にはRepository側から強制できるpost-response hook')) {
   errors.push('docs/23: platform automatic-capture boundary must remain explicit');
+}
+if (!conversationOwner.includes('new-Conversation hook')) {
+  errors.push('docs/23: platform automatic-resume boundary must remain explicit');
+}
+if (!conversationOwner.includes('## Automatic Conversation Resume / Workstream')) {
+  errors.push('docs/23: missing Automatic Conversation Resume / Workstream contract');
+}
+if (!conversationOwner.includes('MUST: Workstream Resolution ConfidenceとWrite Target Resolutionを分離する')) {
+  errors.push('docs/23: automatic resume must keep workstream resolution separate from write-target safety');
+}
+if (!startHere.includes('会話移行 / Automatic Resume / stale checkpoint / duplicate active conversation')) {
+  errors.push('START_HERE.md: missing Automatic Resume route');
 }
 
 if (errors.length) {
