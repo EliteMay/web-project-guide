@@ -30,6 +30,7 @@
 - Work Queue contractを現在のruntime / Claim Gate / public projectionへ同期
 - Conversation Persistenceの通常Entryを`web-project-data/tools/conversations/persist-interaction.mjs`へ合わせ、Current Repository再取得境界を明確化
 - Conversation PersistenceをGuide-scoped InteractionのCompletion Gateへ接続
+- 全Development Work TypeをConversation Persistence OwnerへRoutingし、通常の実装・調査・公開作業でも保存確認がCompletion経路から外れないように強化
 - Conversation Handoff / Recovery OwnerをWorkstream候補解決、High / Medium / Low Candidate Resolution、one-time Resume Confirmation Gate、User Override、Write Target分離へ拡張
 - Automatic Resume候補をUserが否定した場合、別候補へ即切替せずRoot Cause / Failure Mechanism確認と必要な再発防止を先に行うFlowへ変更
 - `docs/10-project-management.md`へRoot-Cause-first Failure / Bug Workflowを追加
@@ -41,6 +42,7 @@
 ## Fixed
 
 - Persistence Ruleが存在していても通常Interactionの終了経路から適用されず、保存漏れが起こり得たCompletion Routing failure
+- Persistenceの文章Validatorは通っていてもMachine Routerの通常Work Typeが`docs/23`へ到達せず、実際のConversation保存が再度抜けたRule Application failure
 - Automatic ResumeのHigh Confidence候補をUser確認なしでResume可能としていた誤復帰経路と、User否定後にRoot Cause確認なしで別候補へ進めたFailure path
 - `guide-version.json`とCHANGELOGが両方同時に古い場合、Current GuideがRelease baselineより進んでいてもCIが検出できなかったRelease metadata drift
 - `releaseCommit`を`guide-version.json`自身へ記録する設計で、Metadata変更自体をRelease-affecting差分として数えると`status: released`へ戻せない自己参照問題
