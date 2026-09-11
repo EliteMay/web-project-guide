@@ -25,6 +25,8 @@
 
 ## Changed
 
+- 人が見るサイトUI、README、Dashboard、操作説明、作業報告、AIからUserへの説明は対象利用者が理解できる言語を優先し、Project Owner / 日本語利用者向けSurfaceでは日本語を基本にするRuleを追加
+- 内部のFile名・変数名・関数名等は英語のまま維持でき、User-facingな英語専門用語には必要に応じて日本語の意味を添える方針をREADME Templateへ反映
 - Human Guideを`site/`配下へ責務別に整理し、既存Root URLはCompatibility Adapterとして維持
 - Human Guideのmobile usability、dashboard freshness、isolated worker status、current routing parityを改善
 - Work Queue contractを現在のruntime / Claim Gate / public projectionへ同期
