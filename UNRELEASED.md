@@ -15,6 +15,7 @@
 - Manual conversation / scheduled workerが同じ未完了作業へ書き得る場合のexclusive work lease coordination
 - Human-facing AI Workflow / Work Dashboard / Rule Finder、repository-specific project dashboards、sanitized Work Queue表示、guarded worker start handoff
 - Human Guideに現在のCommon Ruleを短い箇条書きで横断確認できる「全ルール短縮版」ページ
+- Human GuideにResearch / Evidenceが残る分野と深く要件定義・Contract化した分野を横断確認できる「研究・要件定義」ページ
 - Dashboard V2とautomatic Requirements-to-Work-Queue handoffのRequirements
 - Guide-scoped development conversation persistenceと専用Regression Guard
 - Conversation境界を越えて同じ作業系列を復旧するAutomatic Conversation Resume / Workstream Contract
