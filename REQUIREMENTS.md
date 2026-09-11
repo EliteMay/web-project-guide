@@ -2,7 +2,7 @@
 
 この文書は `EliteMay/web-project-guide` 自身の**Current Project Contract**です。
 
-Common Rule本文は`docs/`の各Owner Docを正本とし、このFileへ詳細Ruleを複製しません。Version履歴は`CHANGELOG.md`、直近作業は`作業報告書.md`、再発防止知識は`PROJECT_LEARNINGS.md`、point-in-time監査は`maintenance/audits/`、詳細差分はGit history / PRを参照します。
+Common Rule本文は`docs/`の各Owner Docを正本とし、このFileへ詳細Ruleを複製しません。Version履歴は`CHANGELOG.md`、直近作業は`作業報告書.md`、再発防止知識は`PROJECT_LEARNINGS.md`、point-in-time Audit / Project-specific Evidence / Historical Researchは書込み可能なら`EliteMay/web-project-data`、詳細差分はGit history / PRを参照します。
 
 ## 0. Guide / Profile
 
@@ -29,6 +29,7 @@ Current Guide VersionをこのFileへ固定値で重複記録しません。
 - Current Repository / Evidenceで解ける判断を不必要にUserへ返さない
 - 会話が変わってもGitHubからCurrent Stateを復元できる
 - 人間向けWeb版からCurrent Ruleの主要Routeへ分かりやすく到達できる
+- Current Ruleと保存データを分離し、Public Guideを履歴Repository化しない
 
 ## 2. 使用者 / 利用環境
 
@@ -51,13 +52,13 @@ Rule本文・Machine Routing・Current ContractのSource of TruthはGitHub Repos
 - Governance / Rule Budget
 - Requirements / Decision / Persistence
 - Architecture / Data / UI / Performance / Security / Testing
-- GitHub Pages / Electron / Game / Research
+- GitHub Pages / Electron / Game / Research Method
 - Task-first Structure / Flow Research
 - Project Management / Conversation Handoff
 - Routing / Preflight
 - Templates / Checklist
-- Catalog / References
-- Project Feedback / Continuous Improvement / Deep Audit
+- Catalog / Curated Public References
+- Project Feedback / Continuous Improvement / Deep Audit Method
 - Validator / Guide version / release history
 - 人間向けWeb Guide / Rule Finder
 - 公開可能な最小Statusだけを扱うParallel Work Dashboard
@@ -71,11 +72,14 @@ Rule本文・Machine Routing・Current ContractのSource of TruthはGitHub Repos
 - project-specific visual direction
 - project-specific Sitemap / Navigation / User Flow / State Matrix
 - project-specific bug history
+- point-in-time Audit Result / Snapshotの本体
+- Project-specific / time-specific Evidenceの本体
+- Promotion済みHistorical Research Record / detailed research working stateの本体
 - all repositoriesのautomatic rewrite / continuous monitoring
 - fixed visual style / fixed Navigation Patternの全Project強制
 - Private `web-project-data`の内容を公開Webへ直接露出すること
 
-Project固有情報はTarget RepositoryをSource of Truthとします。
+Project固有情報はTarget RepositoryをSource of Truthとします。保存データは必要に応じて`EliteMay/web-project-data`へ置きますが、Data RepositoryをCurrent Guide / Project Contractの第二Source of Truthにはしません。
 
 ## 4. Current Structure
 
@@ -87,11 +91,11 @@ Project固有情報はTarget RepositoryをSource of Truthとします。
 | `maintenance/rule-router.json` | Machine-readable routing |
 | `maintenance/review-policy.json` | Review metadata |
 | `maintenance/DEEP_SYSTEM_AUDIT.md` | Deep audit execution procedure |
-| `maintenance/audits/` | Non-normative audit result history |
-| `maintenance/research/` | Open / historical Guide research assets |
+| `maintenance/audits/` | Audit result本体ではなく旧Path互換Pointer / index |
+| `maintenance/research/` | Current research execution asset + historical path compatibility pointer |
 | `templates/` | Project input / handoff / execution templates |
-| `catalog/` | Failure / Success / Anti-pattern / visual evidence |
-| `references/` | Non-normative research / project-specific evidence |
+| `catalog/` | Failure / Success / Anti-pattern / reusable visual evidence |
+| `references/` | Common Guideを支えるPublic Curated Research / Reference |
 | `index.html` / `rules.html` / `ai-workflow.html` | Public human-facing Guide entry / Rule summary / AI workflow explanation |
 | `work-dashboard.html` / `project-dashboards/` / `dashboard-data.json` | Public-safe parallel work status UI / repository-specific dashboard surfaces |
 | `DASHBOARD_REQUIREMENTS.md` | Parallel Work DashboardのHuman-facing Current Product Contract |
@@ -101,6 +105,8 @@ Project固有情報はTarget RepositoryをSource of Truthとします。
 | `CHANGELOG.md` | Release history |
 | `作業報告書.md` | Current / recent work state |
 | `PROJECT_LEARNINGS.md` | Accumulated recurrence knowledge |
+| `EliteMay/web-project-data/evidence/` | Audit / Project-specific / time-specific point-in-time evidence |
+| `EliteMay/web-project-data/research/` | Historical / working research data |
 | Git / PR | Detailed change archive |
 
 ## 5. Main Workflow
@@ -137,7 +143,7 @@ Routing behaviorは`docs/21-rule-routing-preflight.md`、Machine Routeは`mainte
 2. Non-breakable Project Contract / Current Requirements
 3. Current Runtime / Code / Data / formal Spec
 4. Common Guide
-5. old conversation / ZIP / Work Report / memory
+5. old conversation / ZIP / Work Report / Data-side historical evidence / memory
 
 Current RequestがExisting Data / important compatibility / irreversible behaviorへ影響する場合も、単にUserへ投げ返すのではなくCurrent Contract / Evidence / safe alternativeを先に確認します。
 
@@ -198,11 +204,14 @@ Rule整理で意味を失いません。
 削除 /移動は少なくとも次のどれかに根拠を持ちます。
 
 - same meaningのNormative Ownerへ統合
-- HistoryをCHANGELOG / Work Report / Gitへ移動
-- project-specific evidenceをReference / Project Learningsへ移動
+- HistoryをCHANGELOG / Work Report / Git / companion Dataへ移動
+- project-specific / time-specific evidenceをcompanion Dataへ移動
+- reusable public evidenceをCurated Referenceへ統合
 - duplicate / obsolete / incorrect / overdesigned ruleを理由付きで退役
 
 Rule moveはDestination + Source cleanupを1つのCompletion Conditionにします。
+
+DataへのEvidence / Research移動では、Current RuleやPublic Referenceまで一緒に消さず、必要な旧Path互換Pointerを残せます。
 
 単なる文字数ではなく**複数Normative responsibility**がある場合にOwner splitを検討します。
 
@@ -235,11 +244,15 @@ Router infrastructureは必要以上に巨大化しません。
 
 ### Catalog
 
-Generalizable Failure / Success / Anti-pattern / visual evidenceを保存します。Normative RuleはOwnerへ置きます。
+Generalizable Failure / Success / Anti-pattern / reusable visual evidenceを保存します。Normative RuleはOwnerへ置きます。
 
-### Reference
+### Public Curated Reference
 
-Research / named project pilot / time-specific snapshot等のnon-normative evidenceを保存できます。Current Project Stateの代用にはしません。
+`references/`には、Common Guideを支え、Publicで複数Projectへ直接再利用する価値があるResearch / Standards / Working Hypothesisを置けます。
+
+Project-specific / time-specific Evidence、point-in-time Audit、Promotion済みHistorical Research、詳細なworking research stateは、`EliteMay/web-project-data`へ書込み可能な場合はData側へ保存します。
+
+`research` / `evidence`という名前だけで置き場所を決めず、**Current Public Guideとして再利用するか、保存データか**で分けます。
 
 ### PROJECT_LEARNINGS
 
@@ -263,7 +276,7 @@ Deep AuditではCurrent RouterからOwnerを動的取得し、Owner coverage / d
 
 **Score targetを終了条件にしません。** Current scopeとEvidenceでknown actionable findingを意図的に残さないことをCompletion Conditionとします。
 
-Audit resultは`maintenance/audits/`へ保存し、このRoot Requirementsへ一時Backlog / score tableを積みません。
+`EliteMay/web-project-data`へ書込み可能な場合、Audit result本体は`evidence/YYYY/web-project-guide/audits/`へ保存します。Guide側`maintenance/audits/`は旧Path互換Pointer / Indexとして維持できます。このRoot Requirementsへ一時Backlog / score tableを積みません。
 
 ## 16. Validator / Self-application
 
@@ -279,39 +292,55 @@ Validatorは機械化可能なStructural Contractを優先します。
 - clear owner leakage marker
 - current workflow self-application（例: external Action SHA pin）
 - public Human Guideの主要Route / Surface存在
+- moved historical pathがCompatibility Pointerとして壊れていないこと
 
 Prose wordingを大量固定しません。
 
 Guide自身も自分のRuleを可能な範囲でself-applyします。
 
-## 17. Research Assets / Promotion State
+## 17. Research / Evidence Storage Boundary
 
-Requirements Decision SystemのPhase 1 Researchは実装済みです。Current Common Ruleは [`docs/01-requirements.md`](docs/01-requirements.md)、Research Evidenceは [`references/requirements-decision-system-research.md`](references/requirements-decision-system-research.md) を正本とし、[`maintenance/research/requirements-decision-system.md`](maintenance/research/requirements-decision-system.md) はPromotion後のhistorical non-normative contractとして保持します。
+Current Common Rule / Contractと、Research / Evidenceの保存履歴を分けます。
 
-Phase 1で確定したProblem → Outcome → Solution separation、`Now / Later / Reject`、MVP Boundary、Prototype / Cheap Test Trigger、Requirement Change Classification、Observable Completion / proportionate traceabilityは、Agent Autonomy / Requirements Persistenceを第二Copyにせず`docs/01`へ統合します。
+### Guide側
 
-External Integration Decision SystemのPhase 19 Decisionは実装済みです。Integration boundaryは [`docs/02-architecture.md`](docs/02-architecture.md)、External authority / reconciliationは [`docs/03-data-storage.md`](docs/03-data-storage.md)、Webhook / retryは [`docs/05-performance-reliability.md`](docs/05-performance-reliability.md)、Validationは [`docs/07-testing-quality.md`](docs/07-testing-quality.md)、API / SDK / Webhook lifecycleは [`docs/13-dependencies-assets.md`](docs/13-dependencies-assets.md)、Diagnosticsは [`docs/15-development-observability.md`](docs/15-development-observability.md) を正本とします。Security boundaryは既存 [`docs/06-security.md`](docs/06-security.md) を再利用し、[`maintenance/research/external-integration-decision-system.md`](maintenance/research/external-integration-decision-system.md) はhistorical non-normative checkpointとして保持します。
+- Current Common Rule → `docs/`
+- Current Guide Contract → `REQUIREMENTS.md`
+- Current routing / validation / execution procedure → `maintenance/` / `tests/`
+- Publicで複数Projectへ再利用するCurated Research → `references/`
+- Current research execution protocol / benchmark asset → 必要な場合のみ`maintenance/research/`
 
-Performance / Reliability Decision SystemのPhase 5 Researchは実装済みです。Current Common Ruleは [`docs/05-performance-reliability.md`](docs/05-performance-reliability.md)、実行時の短いVerificationは [`templates/QUALITY_CHECKLIST.md`](templates/QUALITY_CHECKLIST.md) を正本とし、[`maintenance/research/performance-reliability-decision-system.md`](maintenance/research/performance-reliability-decision-system.md) はPromotion後のhistorical non-normative evidenceとして保持します。
+### Data側
 
-Phase 5で確定したPrimary Task Readiness、Loading / Skeleton / Progressive Rendering、Failure Isolation、Retry / Timeout / Cancel、Offline Degradation、Slow Device、Memory / Long Session、Huge Data、Media、Third-party、Lab / Field Measurement、Optimization Stop Conditionは、Research Assetを第二の正本にせず各専門Ownerへ統合します。
+`EliteMay/web-project-data`へ書込み可能な場合:
 
-Data / Storage Decision SystemのPhase 4 Researchは実装済みです。Current Common Ruleは [`docs/03-data-storage.md`](docs/03-data-storage.md)、Verification Strategyは [`docs/07-testing-quality.md`](docs/07-testing-quality.md) を正本とし、[`maintenance/research/data-storage-decision-system.md`](maintenance/research/data-storage-decision-system.md) はPromotion後のhistorical non-normative evidenceとして保持します。
+- Audit result / point-in-time finding → `evidence/`
+- Project-specific / time-specific evidence → `evidence/`
+- Promotion済みHistorical Research Record → `research/studies/`
+- Research backlog / detailed working research state → `research/studies/`
 
-Phase 4で確定したLocal-first / Offline / Cloud Sync / Conflict / Autosave / History / Optimistic Update / Large Data / Search Index / Cache / UGC / Corruption / Backup / Advanced Sync境界は、Research Assetを第二の正本にせず各専門Ownerへ統合します。
+Data側の記録はCurrent Common Rule / Current Project Stateの第二Source of Truthではありません。
 
-Root RequirementsへResearch Domain一覧・調査手順・一時Findingを積みません。ResearchがCommon Ruleへ昇格する場合は各専門Owner / `docs/20` / `docs/14`等の既存Owner責務を維持し、Current Contractへ必要な恒久結果だけ反映します。
+過去Link互換のため、次の旧Guide PathはPointerとして残せます。
 
-Task-first Structure / Flow Researchは既に`docs/22`へPromotion済みのため、Phase履歴はCHANGELOG / Git / Work Reportへ置きます。
+- `maintenance/research/requirements-decision-system.md`
+- `maintenance/research/data-storage-decision-system.md`
+- `maintenance/research/performance-reliability-decision-system.md`
+- `maintenance/research/external-integration-decision-system.md`
+- `maintenance/research/content-depth-reinforcement.md`
+- `maintenance/audits/`
 
-## 18. History Contract
+Root RequirementsへPhase単位のResearch Domain一覧・調査Notebook・Audit tableを積みません。ResearchがCurrent Common Ruleへ昇格する場合は各専門Owner / `docs/20` / `docs/14`等の既存Owner責務を維持し、Current Contractへ必要な恒久結果だけ反映します。
+
+## 18. History / Data Contract
 
 - Requirements — Current Contract
 - CHANGELOG — release history
 - Work Report — current/recent work + validation + unverified
 - Project Learnings — accumulated recurrence knowledge
-- Audit Reports — point-in-time audit evidence / gap resolution
-- Research Assets — open / historical research evidence and contract
+- Data `evidence/` — point-in-time Audit / Project-specific / time-specific Evidence
+- Data `research/` — Historical / working Research Data
+- Guide compatibility pointer — old public Guide pathsを壊さないための最小Pointer
 - Git / PR — detailed archive
 
 ## 18A. Parallel Work Dashboard Contract
@@ -330,7 +359,7 @@ Parallel Work DashboardのHuman-facing Current Product Contractは [`DASHBOARD_R
 - RepositoryごとのDashboard stateを分離し、同名Workerの並列更新で混線しない
 - Desktop / Mobile双方でPrimary statusとNext Actionを短時間で理解できる
 
-Visual Research evidenceは `references/parallel-dashboard-v2-domain-research.md` に置き、Current Requirementsの第二Copyにしません。
+Dashboard固有のpoint-in-time Visual Research本体はData側 `research/studies/web-project-guide/parallel-dashboard-v2-domain-research.md`へ保存します。旧 [`references/parallel-dashboard-v2-domain-research.md`](references/parallel-dashboard-v2-domain-research.md) はCompatibility Pointerで、Current Requirementsの第二Copyにしません。
 
 ## 19. Completion Contract
 
@@ -351,7 +380,8 @@ Visual Research evidenceは `references/parallel-dashboard-v2-domain-research.md
 - [ ] Structure / FlowとVisualのOwner境界が一貫
 - [ ] Conversation Handoff / RecoveryがProject Managementと分離されている
 - [ ] Security / Electron等high-risk Ownerに重大Known Gapがない
-- [ ] Project-specific evidenceがCommon Ownerへ混入していない
+- [ ] Project-specific / time-specific evidenceがCommon Ownerへ混入していない
+- [ ] Current RuleとHistorical / point-in-time Dataの保存責務が分離されている
 - [ ] PROJECT_LEARNINGSへrecurrence knowledgeを蓄積できる
 - [ ] Guide workflowが自分のsupply-chain ruleを可能な範囲でself-apply
 - [ ] Validatorが重大Structural driftを検出
@@ -366,7 +396,7 @@ Visual Research evidenceは `references/parallel-dashboard-v2-domain-research.md
 - 全作業へ全章適用
 - 全Projectをsame architecture / visual / storage / navigationへ統一
 - Rule Engine自体をProduct化
-- Common Guideへindividual project historyを集積
+- Common Guideへindividual project history / raw Audit history / research notebookを集積
 - CI successだけでQuality保証
 - 「90点」等のarbitrary scoreだけでDeep Audit終了
 
@@ -379,11 +409,12 @@ Visual Research evidenceは `references/parallel-dashboard-v2-domain-research.md
 - Deep System Audit method: Implemented
 - Agent autonomy / User Decision exception: Implemented
 - Conversation Handoff / Recovery owner: Implemented
-- Exhaustive owner audit / remediation: Implemented and validated in v1.20.0 audit
-- Data / Storage Decision System Phase 4: Implemented in current `docs/03` / `docs/07` / Quality Checklist
-- Performance / Reliability Decision System Phase 5: Implemented in current `docs/05` / Quality Checklist
-- Requirements Decision System Research: Open
-- Parallel Work Dashboard V2 Human-facing Requirements: Complete; implementation not started
-- Blocking Decisions: None
+- Exhaustive owner audit / remediation: Historical result archived in companion Data
+- Data / Storage Decision System Phase 4: Current decisions implemented in `docs/03` / `docs/07` / Quality Checklist; historical research archived in Data
+- Performance / Reliability Decision System Phase 5: Current decisions implemented in `docs/05` / Quality Checklist; historical research archived in Data
+- Requirements Decision System: Current decisions implemented in `docs/01`; historical research archived in Data
+- Guide / Data research-evidence responsibility split: Implemented in current contract
+- Parallel Work Dashboard V2 Human-facing Requirements: Current statusは`DASHBOARD_REQUIREMENTS.md`を再確認
+- Blocking Decisions: None known in this contract
 
-Current auditの一時Finding / score /修正Statusは`maintenance/audits/`を参照します。
+Current Auditの一時Finding / score /修正Statusは、Data accessがある場合 `EliteMay/web-project-data/evidence/` を参照し、Current Guide状態は必ずCurrent Repositoryから再確認します。
