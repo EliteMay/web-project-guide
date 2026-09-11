@@ -31,452 +31,223 @@
   "gates": {
     "RULE-PREFLIGHT-GATE": {
       "owner": "docs/21-rule-routing-preflight.md",
-      "when": [
-        "MEANINGFUL",
-        "SYSTEMIC"
-      ]
+      "when": ["MEANINGFUL", "SYSTEMIC"]
     },
     "VISUAL-RESEARCH-GATE": {
       "owner": "docs/18-domain-first-visual-research.md",
-      "when": [
-        "MEANINGFUL_VISUAL_CHANGE"
-      ]
+      "when": ["MEANINGFUL_VISUAL_CHANGE"]
     },
     "RESEARCHABLE-QUESTION-GATE": {
       "owner": "docs/20-evidence-first-research.md",
-      "when": [
-        "RESEARCHABLE_QUESTION"
-      ]
+      "when": ["RESEARCHABLE_QUESTION"]
     },
     "STORAGE-MIGRATION-GATE": {
       "owner": "docs/03-data-storage.md",
-      "when": [
-        "EXISTING_SAVE",
-        "SCHEMA_CHANGE",
-        "MIGRATION"
-      ]
+      "when": ["EXISTING_SAVE", "SCHEMA_CHANGE", "MIGRATION"]
     },
     "GAME-PLAYTEST-GATE": {
       "owner": "docs/19-game-development.md",
-      "when": [
-        "GAME_PRIMARY_FLOW_CHANGE",
-        "GAME_COMPLETION_CHANGE"
-      ]
+      "when": ["GAME_PRIMARY_FLOW_CHANGE", "GAME_COMPLETION_CHANGE"]
     }
   },
   "workTypes": {
     "REQUIREMENTS": [
       "docs/01-requirements.md",
-      "docs/12-project-profiles.md"
+      "docs/12-project-profiles.md",
+      "docs/23-conversation-handoff-recovery.md"
     ],
     "RESEARCH": [
-      "docs/20-evidence-first-research.md"
+      "docs/20-evidence-first-research.md",
+      "docs/23-conversation-handoff-recovery.md"
     ],
     "IMPLEMENTATION": [
       "docs/10-project-management.md",
-      "docs/07-testing-quality.md"
+      "docs/07-testing-quality.md",
+      "docs/23-conversation-handoff-recovery.md"
     ],
     "BUG_FIX": [
       "docs/10-project-management.md",
-      "docs/07-testing-quality.md"
+      "docs/07-testing-quality.md",
+      "docs/23-conversation-handoff-recovery.md"
     ],
     "REVIEW": [
-      "docs/07-testing-quality.md"
+      "docs/07-testing-quality.md",
+      "docs/23-conversation-handoff-recovery.md"
     ],
     "DATA_CONTENT": [
-      "docs/03-data-storage.md"
+      "docs/03-data-storage.md",
+      "docs/23-conversation-handoff-recovery.md"
     ],
     "DEPLOYMENT": [
       "docs/10-project-management.md",
       "docs/09-maintenance.md",
-      "docs/07-testing-quality.md"
+      "docs/07-testing-quality.md",
+      "docs/23-conversation-handoff-recovery.md"
     ],
     "MAINTENANCE": [
       "docs/09-maintenance.md",
-      "docs/10-project-management.md"
+      "docs/10-project-management.md",
+      "docs/23-conversation-handoff-recovery.md"
     ]
   },
   "domains": {
-    "ARCHITECTURE": [
-      "docs/02-architecture.md"
-    ],
-    "DATA_STORAGE": [
-      "docs/03-data-storage.md"
-    ],
-    "UI_UX": [
-      "docs/04-ui-ux-accessibility.md",
-      "docs/17-visual-quality-baseline.md"
-    ],
-    "STRUCTURE_FLOW": [
-      "docs/22-task-first-structure-flow-research.md",
-      "docs/04-ui-ux-accessibility.md"
-    ],
-    "VISUAL": [
-      "docs/04-ui-ux-accessibility.md",
-      "docs/17-visual-quality-baseline.md"
-    ],
-    "PERFORMANCE_RELIABILITY": [
-      "docs/05-performance-reliability.md"
-    ],
-    "SECURITY": [
-      "docs/06-security.md"
-    ],
-    "TESTING_QUALITY": [
-      "docs/07-testing-quality.md"
-    ],
-    "GITHUB_PAGES": [
-      "docs/08-github-pages.md"
-    ],
-    "MAINTENANCE": [
-      "docs/09-maintenance.md"
-    ],
-    "PROJECT_MANAGEMENT": [
-      "docs/10-project-management.md"
-    ],
-    "ELECTRON": [
-      "docs/11-electron-distribution.md"
-    ],
-    "DISTRIBUTION": [
-      "docs/11-electron-distribution.md"
-    ],
-    "DEPENDENCIES_ASSETS": [
-      "docs/13-dependencies-assets.md"
-    ],
-    "CONTINUOUS_IMPROVEMENT": [
-      "docs/14-continuous-improvement.md"
-    ],
-    "OBSERVABILITY": [
-      "docs/15-development-observability.md"
-    ],
-    "CROSS_REPOSITORY_GITHUB": [
-      "docs/16-cross-repository-github-infrastructure.md"
-    ],
-    "CONVERSATION_HANDOFF": [
-      "docs/23-conversation-handoff-recovery.md",
-      "docs/10-project-management.md"
-    ],
-    "GAME_DESIGN": [
-      "docs/19-game-development.md"
-    ],
-    "LEARNING_CONTENT": [
-      "docs/01-requirements.md",
-      "docs/12-project-profiles.md",
-      "docs/22-task-first-structure-flow-research.md",
-      "docs/07-testing-quality.md"
-    ],
-    "RESEARCH": [
-      "docs/20-evidence-first-research.md"
-    ],
-    "GOVERNANCE_ROUTING": [
-      "docs/00-governance.md",
-      "docs/21-rule-routing-preflight.md"
-    ]
+    "ARCHITECTURE": ["docs/02-architecture.md"],
+    "DATA_STORAGE": ["docs/03-data-storage.md"],
+    "UI_UX": ["docs/04-ui-ux-accessibility.md", "docs/17-visual-quality-baseline.md"],
+    "STRUCTURE_FLOW": ["docs/22-task-first-structure-flow-research.md", "docs/04-ui-ux-accessibility.md"],
+    "VISUAL": ["docs/04-ui-ux-accessibility.md", "docs/17-visual-quality-baseline.md"],
+    "PERFORMANCE_RELIABILITY": ["docs/05-performance-reliability.md"],
+    "SECURITY": ["docs/06-security.md"],
+    "TESTING_QUALITY": ["docs/07-testing-quality.md"],
+    "GITHUB_PAGES": ["docs/08-github-pages.md"],
+    "MAINTENANCE": ["docs/09-maintenance.md"],
+    "PROJECT_MANAGEMENT": ["docs/10-project-management.md"],
+    "ELECTRON": ["docs/11-electron-distribution.md"],
+    "DISTRIBUTION": ["docs/11-electron-distribution.md"],
+    "DEPENDENCIES_ASSETS": ["docs/13-dependencies-assets.md"],
+    "CONTINUOUS_IMPROVEMENT": ["docs/14-continuous-improvement.md"],
+    "OBSERVABILITY": ["docs/15-development-observability.md"],
+    "CROSS_REPOSITORY_GITHUB": ["docs/16-cross-repository-github-infrastructure.md"],
+    "CONVERSATION_HANDOFF": ["docs/23-conversation-handoff-recovery.md", "docs/10-project-management.md"],
+    "GAME_DESIGN": ["docs/19-game-development.md"],
+    "LEARNING_CONTENT": ["docs/01-requirements.md", "docs/12-project-profiles.md", "docs/22-task-first-structure-flow-research.md", "docs/07-testing-quality.md"],
+    "RESEARCH": ["docs/20-evidence-first-research.md"],
+    "GOVERNANCE_ROUTING": ["docs/00-governance.md", "docs/21-rule-routing-preflight.md"]
   },
   "signals": {
     "MEANINGFUL_VISUAL_CHANGE": {
-      "docs": [
-        "docs/18-domain-first-visual-research.md",
-        "docs/04-ui-ux-accessibility.md",
-        "docs/17-visual-quality-baseline.md"
-      ],
-      "gates": [
-        "VISUAL-RESEARCH-GATE"
-      ]
+      "docs": ["docs/18-domain-first-visual-research.md", "docs/04-ui-ux-accessibility.md", "docs/17-visual-quality-baseline.md"],
+      "gates": ["VISUAL-RESEARCH-GATE"]
     },
     "RESEARCHABLE_QUESTION": {
-      "docs": [
-        "docs/20-evidence-first-research.md"
-      ],
-      "gates": [
-        "RESEARCHABLE-QUESTION-GATE"
-      ]
+      "docs": ["docs/20-evidence-first-research.md"],
+      "gates": ["RESEARCHABLE-QUESTION-GATE"]
     },
     "EXISTING_SAVE": {
-      "docs": [
-        "docs/03-data-storage.md"
-      ],
-      "gates": [
-        "STORAGE-MIGRATION-GATE"
-      ]
+      "docs": ["docs/03-data-storage.md"],
+      "gates": ["STORAGE-MIGRATION-GATE"]
     },
     "SCHEMA_CHANGE": {
-      "docs": [
-        "docs/03-data-storage.md",
-        "docs/09-maintenance.md"
-      ],
-      "gates": [
-        "STORAGE-MIGRATION-GATE"
-      ]
+      "docs": ["docs/03-data-storage.md", "docs/09-maintenance.md"],
+      "gates": ["STORAGE-MIGRATION-GATE"]
     },
     "MIGRATION": {
-      "docs": [
-        "docs/03-data-storage.md",
-        "docs/07-testing-quality.md"
-      ],
-      "gates": [
-        "STORAGE-MIGRATION-GATE"
-      ]
+      "docs": ["docs/03-data-storage.md", "docs/07-testing-quality.md"],
+      "gates": ["STORAGE-MIGRATION-GATE"]
     },
     "AUTH_REQUIRED": {
-      "docs": [
-        "docs/06-security.md",
-        "docs/13-dependencies-assets.md"
-      ]
+      "docs": ["docs/06-security.md", "docs/13-dependencies-assets.md"]
     },
     "EXTERNAL_API": {
-      "docs": [
-        "docs/02-architecture.md",
-        "docs/05-performance-reliability.md",
-        "docs/06-security.md",
-        "docs/07-testing-quality.md",
-        "docs/13-dependencies-assets.md"
-      ]
+      "docs": ["docs/02-architecture.md", "docs/05-performance-reliability.md", "docs/06-security.md", "docs/07-testing-quality.md", "docs/13-dependencies-assets.md"]
     },
     "PUBLIC_RELEASE": {
-      "docs": [
-        "docs/10-project-management.md",
-        "docs/07-testing-quality.md"
-      ]
+      "docs": ["docs/10-project-management.md", "docs/07-testing-quality.md"]
     },
     "REAL_DEVICE_REQUIRED": {
-      "docs": [
-        "docs/07-testing-quality.md"
-      ]
+      "docs": ["docs/07-testing-quality.md"]
     },
     "GAME_PRIMARY_FLOW_CHANGE": {
-      "docs": [
-        "docs/19-game-development.md",
-        "docs/07-testing-quality.md"
-      ],
-      "gates": [
-        "GAME-PLAYTEST-GATE"
-      ]
+      "docs": ["docs/19-game-development.md", "docs/07-testing-quality.md"],
+      "gates": ["GAME-PLAYTEST-GATE"]
     },
     "GAME_COMPLETION_CHANGE": {
-      "docs": [
-        "docs/19-game-development.md",
-        "docs/07-testing-quality.md"
-      ],
-      "gates": [
-        "GAME-PLAYTEST-GATE"
-      ]
+      "docs": ["docs/19-game-development.md", "docs/07-testing-quality.md"],
+      "gates": ["GAME-PLAYTEST-GATE"]
     },
     "CONVERSATION_STATE_RECOVERY": {
-      "docs": [
-        "docs/23-conversation-handoff-recovery.md",
-        "docs/10-project-management.md"
-      ]
+      "docs": ["docs/23-conversation-handoff-recovery.md", "docs/10-project-management.md"]
     }
   },
   "goldenCases": [
     {
       "id": "meaningful-game-ui-requirements",
       "workType": "REQUIREMENTS",
-      "domains": [
-        "UI_UX",
-        "VISUAL",
-        "GAME_DESIGN"
-      ],
-      "signals": [
-        "MEANINGFUL_VISUAL_CHANGE",
-        "RESEARCHABLE_QUESTION"
-      ],
-      "mustInclude": [
-        "docs/01-requirements.md",
-        "docs/04-ui-ux-accessibility.md",
-        "docs/17-visual-quality-baseline.md",
-        "docs/18-domain-first-visual-research.md",
-        "docs/19-game-development.md",
-        "docs/20-evidence-first-research.md"
-      ]
+      "domains": ["UI_UX", "VISUAL", "GAME_DESIGN"],
+      "signals": ["MEANINGFUL_VISUAL_CHANGE", "RESEARCHABLE_QUESTION"],
+      "mustInclude": ["docs/01-requirements.md", "docs/04-ui-ux-accessibility.md", "docs/17-visual-quality-baseline.md", "docs/18-domain-first-visual-research.md", "docs/19-game-development.md", "docs/20-evidence-first-research.md"]
     },
     {
       "id": "meaningful-structure-flow-requirements",
       "workType": "REQUIREMENTS",
-      "domains": [
-        "STRUCTURE_FLOW"
-      ],
-      "signals": [
-        "RESEARCHABLE_QUESTION"
-      ],
-      "mustInclude": [
-        "docs/01-requirements.md",
-        "docs/12-project-profiles.md",
-        "docs/04-ui-ux-accessibility.md",
-        "docs/20-evidence-first-research.md",
-        "docs/22-task-first-structure-flow-research.md"
-      ],
-      "mustNotRequire": [
-        "docs/18-domain-first-visual-research.md"
-      ]
+      "domains": ["STRUCTURE_FLOW"],
+      "signals": ["RESEARCHABLE_QUESTION"],
+      "mustInclude": ["docs/01-requirements.md", "docs/12-project-profiles.md", "docs/04-ui-ux-accessibility.md", "docs/20-evidence-first-research.md", "docs/22-task-first-structure-flow-research.md"],
+      "mustNotRequire": ["docs/18-domain-first-visual-research.md"]
     },
     {
       "id": "learning-product-requirements",
       "workType": "REQUIREMENTS",
-      "domains": [
-        "LEARNING_CONTENT"
-      ],
+      "domains": ["LEARNING_CONTENT"],
       "signals": [],
-      "mustInclude": [
-        "docs/01-requirements.md",
-        "docs/07-testing-quality.md",
-        "docs/12-project-profiles.md",
-        "docs/22-task-first-structure-flow-research.md"
-      ]
+      "mustInclude": ["docs/01-requirements.md", "docs/07-testing-quality.md", "docs/12-project-profiles.md", "docs/22-task-first-structure-flow-research.md"]
     },
     {
       "id": "local-ui-bug",
       "workType": "BUG_FIX",
-      "domains": [
-        "UI_UX"
-      ],
+      "domains": ["UI_UX"],
       "signals": [],
-      "mustInclude": [
-        "docs/04-ui-ux-accessibility.md",
-        "docs/17-visual-quality-baseline.md",
-        "docs/07-testing-quality.md"
-      ],
-      "mustNotRequire": [
-        "docs/18-domain-first-visual-research.md",
-        "docs/20-evidence-first-research.md"
-      ]
+      "mustInclude": ["docs/04-ui-ux-accessibility.md", "docs/17-visual-quality-baseline.md", "docs/07-testing-quality.md"],
+      "mustNotRequire": ["docs/18-domain-first-visual-research.md", "docs/20-evidence-first-research.md"]
     },
     {
       "id": "schema-migration",
       "workType": "IMPLEMENTATION",
-      "domains": [
-        "DATA_STORAGE"
-      ],
-      "signals": [
-        "EXISTING_SAVE",
-        "SCHEMA_CHANGE",
-        "MIGRATION"
-      ],
-      "mustInclude": [
-        "docs/03-data-storage.md",
-        "docs/07-testing-quality.md",
-        "docs/09-maintenance.md"
-      ]
+      "domains": ["DATA_STORAGE"],
+      "signals": ["EXISTING_SAVE", "SCHEMA_CHANGE", "MIGRATION"],
+      "mustInclude": ["docs/03-data-storage.md", "docs/07-testing-quality.md", "docs/09-maintenance.md"]
     },
     {
       "id": "general-web-deployment",
       "workType": "DEPLOYMENT",
-      "domains": [
-        "PROJECT_MANAGEMENT"
-      ],
-      "signals": [
-        "PUBLIC_RELEASE"
-      ],
-      "mustInclude": [
-        "docs/07-testing-quality.md",
-        "docs/09-maintenance.md",
-        "docs/10-project-management.md"
-      ],
-      "mustNotRequire": [
-        "docs/08-github-pages.md"
-      ]
+      "domains": ["PROJECT_MANAGEMENT"],
+      "signals": ["PUBLIC_RELEASE"],
+      "mustInclude": ["docs/07-testing-quality.md", "docs/09-maintenance.md", "docs/10-project-management.md"],
+      "mustNotRequire": ["docs/08-github-pages.md"]
     },
     {
       "id": "guide-deep-system-review",
       "workType": "MAINTENANCE",
-      "domains": [
-        "GOVERNANCE_ROUTING",
-        "CONTINUOUS_IMPROVEMENT"
-      ],
+      "domains": ["GOVERNANCE_ROUTING", "CONTINUOUS_IMPROVEMENT"],
       "signals": [],
-      "mustInclude": [
-        "docs/00-governance.md",
-        "docs/09-maintenance.md",
-        "docs/10-project-management.md",
-        "docs/14-continuous-improvement.md",
-        "docs/21-rule-routing-preflight.md"
-      ],
-      "mustNotRequire": [
-        "docs/18-domain-first-visual-research.md",
-        "docs/19-game-development.md"
-      ]
+      "mustInclude": ["docs/00-governance.md", "docs/09-maintenance.md", "docs/10-project-management.md", "docs/14-continuous-improvement.md", "docs/21-rule-routing-preflight.md"],
+      "mustNotRequire": ["docs/18-domain-first-visual-research.md", "docs/19-game-development.md"]
     },
     {
       "id": "cross-repository-github-maintenance",
       "workType": "MAINTENANCE",
-      "domains": [
-        "CROSS_REPOSITORY_GITHUB"
-      ],
+      "domains": ["CROSS_REPOSITORY_GITHUB"],
       "signals": [],
-      "mustInclude": [
-        "docs/09-maintenance.md",
-        "docs/10-project-management.md",
-        "docs/16-cross-repository-github-infrastructure.md"
-      ]
+      "mustInclude": ["docs/09-maintenance.md", "docs/10-project-management.md", "docs/16-cross-repository-github-infrastructure.md"]
     },
     {
       "id": "conversation-handoff-recovery",
       "workType": "MAINTENANCE",
-      "domains": [
-        "CONVERSATION_HANDOFF"
-      ],
-      "signals": [
-        "CONVERSATION_STATE_RECOVERY"
-      ],
-      "mustInclude": [
-        "docs/09-maintenance.md",
-        "docs/10-project-management.md",
-        "docs/23-conversation-handoff-recovery.md"
-      ],
-      "mustNotRequire": [
-        "docs/18-domain-first-visual-research.md",
-        "docs/19-game-development.md"
-      ]
+      "domains": ["CONVERSATION_HANDOFF"],
+      "signals": ["CONVERSATION_STATE_RECOVERY"],
+      "mustInclude": ["docs/09-maintenance.md", "docs/10-project-management.md", "docs/23-conversation-handoff-recovery.md"],
+      "mustNotRequire": ["docs/18-domain-first-visual-research.md", "docs/19-game-development.md"]
     },
     {
       "id": "external-api-integration",
       "workType": "IMPLEMENTATION",
-      "domains": [
-        "ARCHITECTURE",
-        "DEPENDENCIES_ASSETS"
-      ],
-      "signals": [
-        "EXTERNAL_API"
-      ],
-      "mustInclude": [
-        "docs/02-architecture.md",
-        "docs/05-performance-reliability.md",
-        "docs/06-security.md",
-        "docs/07-testing-quality.md",
-        "docs/13-dependencies-assets.md"
-      ]
+      "domains": ["ARCHITECTURE", "DEPENDENCIES_ASSETS"],
+      "signals": ["EXTERNAL_API"],
+      "mustInclude": ["docs/02-architecture.md", "docs/05-performance-reliability.md", "docs/06-security.md", "docs/07-testing-quality.md", "docs/13-dependencies-assets.md"]
     },
     {
       "id": "github-pages-static-delivery",
       "workType": "DEPLOYMENT",
-      "domains": [
-        "GITHUB_PAGES"
-      ],
+      "domains": ["GITHUB_PAGES"],
       "signals": [],
-      "mustInclude": [
-        "docs/08-github-pages.md",
-        "docs/10-project-management.md",
-        "docs/09-maintenance.md",
-        "docs/07-testing-quality.md"
-      ]
+      "mustInclude": ["docs/08-github-pages.md", "docs/10-project-management.md", "docs/09-maintenance.md", "docs/07-testing-quality.md"]
     },
     {
       "id": "browser-web-platform-compatibility",
       "workType": "REQUIREMENTS",
-      "domains": [
-        "TESTING_QUALITY",
-        "DEPENDENCIES_ASSETS"
-      ],
-      "signals": [
-        "RESEARCHABLE_QUESTION"
-      ],
-      "mustInclude": [
-        "docs/01-requirements.md",
-        "docs/12-project-profiles.md",
-        "docs/07-testing-quality.md",
-        "docs/13-dependencies-assets.md",
-        "docs/20-evidence-first-research.md"
-      ]
+      "domains": ["TESTING_QUALITY", "DEPENDENCIES_ASSETS"],
+      "signals": ["RESEARCHABLE_QUESTION"],
+      "mustInclude": ["docs/01-requirements.md", "docs/12-project-profiles.md", "docs/07-testing-quality.md", "docs/13-dependencies-assets.md", "docs/20-evidence-first-research.md"]
     }
   ]
 }
