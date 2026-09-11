@@ -180,6 +180,19 @@ Common Rule本文は`docs/`、一般化済みのFailure / Success / Anti-Pattern
 - Prevention: 継続のためだけに`ok` / `進めて`を要求しない。未完了なら未完了、完了なら完了を最初に明示する。
 - Guide candidate: yes — `docs/10`へ反映済み。
 
+### PL-F-015 Automatic ResumeのConfidenceをResume許可として扱った
+
+- Date: 2026-09-11
+- Status: resolved
+- Severity: high
+- Symptom: 新しいConversationで`続きやろ`のような曖昧な発言から誤ったWorkstreamをHigh Confidence候補として選び、そのまま正しい続きだと扱った。Userが`そっちじゃない`と訂正した後も、原因を確認せず次候補へ即切替しようとした。
+- Root Cause: Candidate confidenceとResume authorizationを分離しておらず、High Confidenceを`Silent Resume可能`としていた。またUser Overrideはあっても、誤Resume候補をFailure Evidenceとしてdocs/10のRoot-Cause-first workflowへRoutingするGateがなかった。
+- Final Fix: `docs/23`でAutomatic Resume候補を特定した後に1回だけUser Confirmationを必須化し、Confidence / Confirmation / Write Target Resolutionを分離した。Userが候補を否定した場合は、その候補を除外したうえでRoot Cause / Failure Mechanismを確認し、必要なResolver / Rule / Testを直してから候補を再解決するFlowへ変更。`web-project-data` Resolverにも同じGateを実装した。
+- Detection method: 曖昧Continuation Message + 複数Workstream候補 + User rejectionのScenario Test。
+- Regression Guard: `web-project-data`のWorkstream testsで未確認Resume、stale confirmation、rejected candidate、Failure Review Gate、次候補の再Confirmationを検証し、Guide側ValidatorでHigh Confidence単独のSilent Resume復活とConfidence / Confirmation / Write Target分離の欠落を検出する。
+- Prevention: Recovery Evidenceが強くても「候補を特定できる」と「Userがその作業を続けたい」が同義とは扱わない。誤判定を指摘されたら代替候補を先に出さず、既存Failure Workflowを先に適用する。
+- Guide candidate: yes — `docs/23` / `docs/10`連携へ反映済み。
+
 ## Success
 
 ### PL-S-001 Ruleを消さず責務を戻す整理
@@ -231,7 +244,7 @@ Common Rule本文は`docs/`、一般化済みのFailure / Success / Anti-Pattern
 - Date: 2026-09-07
 - Goal: 長い監査が途中で切れても「何を見た / 何が残る / どう直した」をGitHubだけから復元する。
 - Adopted Pattern: `maintenance/audits/`へbaseline / owner matrix / finding / severity / action / final statusを保存し、修正時にResolvedへ更新する。
-- Why it worked: Conversation Summaryに依存せず、監査進捗と未解決FindingをCurrent Repositoryから追跡できる。
+- Why it worked: Conversation Summaryに依存せず、監査進捗と未解決FindingをCurrent Repositoryから追跡できた。
 - Trade-off: ReportをCommon Rule本文にしないよう、次回AuditではCurrent Ownerを再読する必要がある。
 - Reuse when: 多数Owner /複数PRにまたがるSystem audit。
 - Avoid when: 単一Fileの小修正。
