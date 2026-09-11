@@ -34,6 +34,7 @@
 - `docs/09-maintenance.md`へReleased baseline / Unreleased current stateの分離Contractを追加
 - `Validate Guide`をfull git historyで実行し、Release-affecting変更とUnreleased recordの整合を検証
 - `releaseCommit`以後の差分判定からVersion / CHANGELOG / Unreleased / Work Report等のRelease bookkeepingを除外し、Release内容Commitの後にMetadata commitを安全に置けるよう修正
+- READMEとREADME Templateで、英語のFile / Folder名はそのまま維持しつつ役割を日本語で説明する形へ統一。Codeや各File本文への日本語説明追加は必須にしない
 
 ## Fixed
 
