@@ -40,6 +40,56 @@ Current Repository確認
 → 未確認事項を記録
 ```
 
+## Failure / Bug Root Cause Workflow
+
+### MUST: 症状だけを直して完成扱いにしない
+
+Bug、保存漏れ、Regression、CI failure、公開事故、繰り返すUI不具合等の**問題が実際に発生した場合**は、目の前の症状を消すPatchだけで作業を閉じません。まず「なぜその問題が起き、なぜ既存のRule / Test / Validation / Workflowで防げなかったか」を必要範囲で確認し、再発経路を直してからCompletionを判断します。
+
+基本Flow:
+
+```text
+Observed Failure / Symptom
+↓
+Immediate Risk / Containmentが必要か確認
+↓
+Current Evidence / Runtime / Diff / Logs / Existing Learnings確認
+↓
+Root Causeまたは最も狭いFailure Mechanismを特定
+↓
+既存Guardが効かなかった理由を確認
+↓
+Root Cause / Rule Application / Workflow / Regression Guardを修正
+↓
+目の前の症状を修正
+↓
+再発Scenarioを含めてValidation
+↓
+必要ならProject Learningへ保存
+```
+
+特に次を区別します。
+
+- **Symptom Fix** — 今見えている不具合だけを消す変更
+- **Root Cause Fix** — 問題を発生させた原因・責務・状態・契約を直す変更
+- **Recurrence Guard** — Test / Validator / Rule Routing / Monitoring / Migration / Recovery等で同じFailureを再検出・予防する仕組み
+
+既にRule / Test / Project Learningが存在していたのに同じFailureが起きた場合は、Rule本文を追加するだけで終えず、**なぜそのRuleが実際の作業経路へ届かなかったか**を確認します。必要に応じてRouter、Checklist、Completion Gate、Validator、AGENTS、Project Rule等の実行経路を修正します。
+
+Security incident、Data loss進行中、Production outage等でImmediate containmentが必要な場合は、安全化を遅らせません。この場合も、同じ作業の中で可能な範囲までRoot Causeと再発防止を閉じ、外部権限やEvidence不足で残るものだけを明示します。
+
+Root CauseをEvidenceから特定できない場合、推測を事実として固定しません。Hypothesisを分離し、必要なDiagnostics / Reproduction / Measurementを追加して次の検証可能な状態へ進めます。
+
+Completionでは原則として次を確認します。
+
+- 発生した症状が解消している
+- Root CauseまたはFailure Mechanismが説明できる
+- 同じ原因から再発する経路を修正した、または修正不能な理由が明確
+- 既存Guardが効かなかった場合、その適用経路も改善した
+- 再発Scenarioを含むValidation / Regression GuardがRiskに応じて存在する
+
+Testing / Regression Verificationは [07](07-testing-quality.md)、Runtime Evidenceは [15](15-development-observability.md)、既知FailureのPreflight再利用は [21](21-rule-routing-preflight.md) を使います。
+
 ## GitHubへの変更経路
 
 ### SHOULD: 小規模で変更箇所が明確

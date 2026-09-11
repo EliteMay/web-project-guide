@@ -35,5 +35,8 @@ jobs:
       - name: Validate development conversation persistence
         run: node tests/validate-development-conversation-persistence.mjs
 
+      - name: Validate root-cause failure workflow
+        run: node tests/validate-root-cause-workflow.mjs
+
       - name: Validate project dashboard queue rendering
         run: node tests/validate-project-dashboard-queue.mjs
