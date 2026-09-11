@@ -51,7 +51,9 @@ Guide側では保存形式を重複定義しません。基本動作は次です
 5. 同一Interactionのretryは重複を作らない既存Persistence Contractに従う
 6. 保存後もCurrent Repository / Requirements / Spec / Branch / PR / Commit等をCurrent Stateの正本として扱う
 
-対応する実装EntryはData repositoryの`tools/conversations/save-interaction.mjs`です。Agent / Client / Gateway等が直接そのToolを実行できない場合でも、同じSchema / Secret Contractを満たす同等の書込み経路を使用できます。
+通常の正式な実装EntryはData repositoryの`tools/conversations/persist-interaction.mjs`です。これはInteraction保存、metadata ownershipの正規化、conversation-level checkpoint更新を一つのPersistence経路として扱います。`tools/conversations/save-interaction.mjs`はInteractionだけを書き込む低レベルPrimitiveであり、通常のGuide対象会話では単独成功だけをConversation Persistence完了扱いにしません。
+
+Agent / Client / Gateway等が`persist-interaction.mjs`を直接実行できない場合でも、Data repository側のCurrent Schema / Secret Contract / checkpoint consistencyを満たす同等の書込み経路を使用できます。
 
 ### MUST: 保存成功を推測しない
 
@@ -154,6 +156,10 @@ Handoff Promptは便利なRouterですが必須条件ではありません。
 Repositoryを一意に特定できない場合だけ、URLまたは`owner/repo`を確認します。
 
 ## Current work ref Recovery
+
+Conversation checkpointの`workSnapshotRefs`や過去Interactionの`currentWorkRef`は、**そのInteraction時点のRecovery Evidenceであり、現在のLive HEADを保証する値ではありません。** Conversation Persistence自体が同じData repositoryへ新しいCommitを追加する場合もあるため、Snapshot SHAと現在のBranch HEADが異なることだけで破損扱いにしません。
+
+Recovery時はSnapshotを開始点として使い、必ずCurrent Repository / PR / Branch / Commitを再取得して現在地を確認します。
 
 記録されたBranch / PR / Commitが削除・Merge等でそのまま見つからない場合、推測でmainを選びません。
 
