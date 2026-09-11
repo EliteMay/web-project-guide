@@ -19,12 +19,15 @@
 4. 対象ProjectのCurrent Repository / Requirements / Spec / Rules / Learningsを必要範囲で確認
 5. Current Repository / Evidenceで解ける判断はBest Reasonable Decisionで進める
 6. 実装・調査・要件整理後、必要なValidationを行う
+7. Guide対象の開発InteractionでConversation Persistenceの書込み経路がある場合、最終応答を完了する前に保存と必要なCheckpoint更新を実行し、成功を確認する
 
 Guide Versionの正本は [`guide-version.json`](guide-version.json)、変更履歴は [`CHANGELOG.md`](CHANGELOG.md) です。
 
 ## 開発会話の保存
 
 このGuideを適用して進めるProject関連の開発会話は、`EliteMay/web-project-data`へ書き込めるCapabilityがある場合、Interaction単位でConversation Persistence対象にします。雑談・買い物・健康相談・一般知識等の非開発会話は対象外です。
+
+Conversation Persistenceは「あとでまとめて保存する任意作業」ではなく、**各完了InteractionのCompletion Gate**です。書込み可能な経路がある場合は、最終応答を完了する前に現在のInteractionを正式Persistence経路へ通し、保存と必要なCheckpoint更新の成功を確認してから完了扱いにします。
 
 保存成功を確認できないInteractionを「保存済み」と扱わず、Conversation historyをProjectの第二Source of Truthにも使いません。詳細条件・Secret取扱い・Platform boundaryは [23 Conversation Handoff / Recovery](docs/23-conversation-handoff-recovery.md#development-conversation-persistence) を正本とします。
 

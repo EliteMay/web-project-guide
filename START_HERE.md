@@ -217,4 +217,5 @@ Conversation SummaryだけをCheckpointにせず、Current Repository / Requirem
 - CI / Pages / Regression
 - User-facing UIならVisual確認
 - 実機が必要ならReal-device確認または未確認明記
+- Guide対象の開発会話で`EliteMay/web-project-data`への書込み経路がある場合、そのInteractionを [23 Conversation Handoff / Recovery](docs/23-conversation-handoff-recovery.md#development-conversation-persistence) の正式Persistence経路へ通し、保存と必要なCheckpoint更新の成功を確認する
 - 重大Known Issueが残る場合は完成扱いにしない
