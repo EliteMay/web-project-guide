@@ -67,33 +67,41 @@
   "workTypes": {
     "REQUIREMENTS": [
       "docs/01-requirements.md",
-      "docs/12-project-profiles.md"
+      "docs/12-project-profiles.md",
+      "docs/23-conversation-handoff-recovery.md"
     ],
     "RESEARCH": [
-      "docs/20-evidence-first-research.md"
+      "docs/20-evidence-first-research.md",
+      "docs/23-conversation-handoff-recovery.md"
     ],
     "IMPLEMENTATION": [
       "docs/10-project-management.md",
-      "docs/07-testing-quality.md"
+      "docs/07-testing-quality.md",
+      "docs/23-conversation-handoff-recovery.md"
     ],
     "BUG_FIX": [
       "docs/10-project-management.md",
-      "docs/07-testing-quality.md"
+      "docs/07-testing-quality.md",
+      "docs/23-conversation-handoff-recovery.md"
     ],
     "REVIEW": [
-      "docs/07-testing-quality.md"
+      "docs/07-testing-quality.md",
+      "docs/23-conversation-handoff-recovery.md"
     ],
     "DATA_CONTENT": [
-      "docs/03-data-storage.md"
+      "docs/03-data-storage.md",
+      "docs/23-conversation-handoff-recovery.md"
     ],
     "DEPLOYMENT": [
       "docs/10-project-management.md",
       "docs/09-maintenance.md",
-      "docs/07-testing-quality.md"
+      "docs/07-testing-quality.md",
+      "docs/23-conversation-handoff-recovery.md"
     ],
     "MAINTENANCE": [
       "docs/09-maintenance.md",
-      "docs/10-project-management.md"
+      "docs/10-project-management.md",
+      "docs/23-conversation-handoff-recovery.md"
     ]
   },
   "domains": {
