@@ -43,8 +43,8 @@ Guide Versionの正本は [`guide-version.json`](guide-version.json)、変更履
 | `docs/` | 正式なRule本文を置く場所 |
 | `templates/` | 新しいProjectや文書を作るときのひな形 |
 | `catalog/` | 失敗例・成功例・Anti-pattern等の再利用Catalog |
-| `references/` | Research・外部Evidence・参考資料 |
-| `maintenance/` | Audit、Router、Review設定などGuide保守用の資料 |
+| `references/` | Common Guideを支えるPublicで再利用可能なCurated Research / Reference |
+| `maintenance/` | Router / Review設定 / Audit Checklist / Current Research Protocol / 旧Path互換Pointer |
 | `tests/` | Guide構造や整合性を確認するValidation / Test |
 | `site/` | 人間向けWeb版Guideの実ページ |
 | `project-dashboards/` | Project別Dashboard設定 |
@@ -71,6 +71,22 @@ Project Ownerや日本語利用者が直接見る場所は、**日本語を基�
 Conversation Persistenceは「あとでまとめて保存する任意作業」ではなく、**各完了InteractionのCompletion Gate**です。書込み可能な経路がある場合は、最終応答を完了する前に現在のInteractionを正式Persistence経路へ通し、保存と必要なCheckpoint更新の成功を確認してから完了扱いにします。
 
 保存成功を確認できないInteractionを「保存済み」と扱わず、Conversation historyをProjectの第二Source of Truthにも使いません。詳細条件・Secret取扱い・Platform boundaryは [23 Conversation Handoff / Recovery](docs/23-conversation-handoff-recovery.md#development-conversation-persistence) を正本とします。
+
+## Guide / Dataの保存境界
+
+`EliteMay/web-project-data`へ書込み可能な場合、**作業データ・時点記録・履歴Evidence**はData側へ保存し、PublicなCommon Guideへ蓄積しません。
+
+主な境界:
+
+- Current Common Rule / Procedure / Routing / Validation → `web-project-guide`
+- Publicで複数Projectへ直接再利用するCurated Research / Reference → `web-project-guide/references/`
+- point-in-time Audit Result / Finding / Resolution → `web-project-data/evidence/`
+- Project-specific / time-specific Evidence → `web-project-data/evidence/`
+- Promotion済みHistorical Research Record / Research backlog / detailed working research → `web-project-data/research/`
+- Conversation / Workstream / Work Queue等の開発状態 → `web-project-data`
+- Project固有のCurrent Requirements / Code / Data → 対象Project Repository
+
+Data側の記録もCurrent Common RuleやProject Stateの第二Source of Truthにはしません。詳細な境界は [14 Continuous Improvement / Guide Audit](docs/14-continuous-improvement.md#research--evidence-storage-boundary) を参照します。
 
 ## 基本優先順位
 
@@ -133,6 +149,7 @@ Machine-readable Routingは [`maintenance/rule-router.json`](maintenance/rule-ro
 - 新しいCommon Ruleを追加する前に、既存Owner / Catalog / Checklist / Project側へ統合できないか確認する。
 - Requirementsへ実装済み改善履歴を積み続けない。
 - Conversation historyをProjectの第二Source of Truthにしない。
+- Project-specific / time-specific EvidenceやAudit結果をCommon GuideのCurrent Ruleと混在させない。
 
 詳細は各Owner Docを正本とします。
 
@@ -153,7 +170,11 @@ CatalogはRule本文ではなく、実例・Evidence・再利用条件です。
 - [Anti-Pattern Catalog](catalog/anti-patterns.md)
 - [Validated Visual Direction Catalog](catalog/validated-visual-directions.md)
 
-Research / Standards / Working Hypothesisは `references/` に置きます。Project固有の最終RequirementはCommon Referenceだけに残しません。
+`references/`には、Common Guideを支え、Publicで複数Projectへ直接再利用する価値があるCurated Research / Standards / Working Hypothesisを置けます。
+
+一方、Project-specific / time-specific Evidence、Audit Snapshot、Promotion済みHistorical Research、詳細なResearch working stateは、`EliteMay/web-project-data`へ書込み可能な場合はData側へ保存します。File名に`research`や`evidence`が付くだけで機械的にどちらかへ固定せず、**Current Public Guideとして再利用するか、保存データか**で分けます。
+
+Project固有の最終RequirementはCommon ReferenceやData Recordだけに残しません。
 
 ## Templates
 
@@ -205,13 +226,15 @@ Validator成功は文章品質や実Projectの完成を自動保証するもの�
 
 Account共通GitHub実装は [`EliteMay/.github`](https://github.com/EliteMay/.github) が担当し、このRepositoryは判断基準を担当します。
 
-## 履歴の置き場所
+## 履歴・データの置き場所
 
-- `REQUIREMENTS.md` — 現在のProject Contract
+- `REQUIREMENTS.md` — 現在のGuide Project Contract
 - `CHANGELOG.md` — Version単位の変更概要
 - `作業報告書.md` — 直近作業 / Validation / 未確認
 - `PROJECT_LEARNINGS.md` — 再発価値のある長期知識
-- `maintenance/audits/` — point-in-time監査Evidence
+- `EliteMay/web-project-data/evidence/` — point-in-time Audit / Project-specific / time-specific Evidence
+- `EliteMay/web-project-data/research/` — Historical / working Research Data
+- `maintenance/audits/` / moved `maintenance/research/*` / moved `references/*` — 必要な旧Path互換Pointer
 - Git history / PR — 詳細差分
 
-Current RequirementsとHistoryを同じファイルへ積み上げません。
+Current RequirementsとHistory、Current Ruleと保存データを同じ役割へ積み上げません。
