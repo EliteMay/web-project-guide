@@ -50,9 +50,26 @@ if (!conversationOwner.includes('new-Conversation hook')) {
 if (!conversationOwner.includes('## Automatic Conversation Resume / Workstream')) {
   errors.push('docs/23: missing Automatic Conversation Resume / Workstream contract');
 }
-if (!conversationOwner.includes('MUST: Workstream Resolution ConfidenceとWrite Target Resolutionを分離する')) {
-  errors.push('docs/23: automatic resume must keep workstream resolution separate from write-target safety');
+
+for (const required of [
+  'MUST: Automatic Resume前に1回だけUser確認する',
+  'MUST: Workstream Resolution Confidence / Confirmation / Write Target Resolutionを分離する',
+  'Workstream候補 High',
+  'Confirmation未成立',
+  'Resume開始 / Repository writeは禁止',
+  'Workstream Confirmation成立',
+  'Write target unresolved',
+  'Repository writeは禁止'
+]) {
+  if (!conversationOwner.includes(required)) {
+    errors.push(`docs/23: automatic resume must preserve confidence/confirmation/write-target separation -> ${required}`);
+  }
 }
+
+if (conversationOwner.includes('→ Silent Resume可能。')) {
+  errors.push('docs/23: candidate confidence must not authorize silent resume before confirmation');
+}
+
 if (!startHere.includes('会話移行 / Automatic Resume / stale checkpoint / duplicate active conversation')) {
   errors.push('START_HERE.md: missing Automatic Resume route');
 }
