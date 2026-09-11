@@ -25,6 +25,10 @@
 
 ## Changed
 
+- Guide / Dataの責任境界を整理し、point-in-time Audit、Project-specific / time-specific Evidence、Promotion済みHistorical Research、Research working stateの本体を`EliteMay/web-project-data`へ保存するContractへ変更
+- `maintenance/audits/`、移動対象`maintenance/research/*`、Project-specific `references/*`の旧Pathを削除せずCompatibility Pointer化し、過去Linkを維持
+- Publicで複数Projectへ直接再利用するCurated Research / ReferenceとCurrent Research execution protocolはGuide側へ残す境界を明文化
+- Root `REQUIREMENTS.md`からPhase単位のResearch履歴本文を外し、Current Contract + Guide/Data storage boundaryへ整理
 - 人が見るサイトUI、README、Dashboard、操作説明、作業報告、AIからUserへの説明は対象利用者が理解できる言語を優先し、Project Owner / 日本語利用者向けSurfaceでは日本語を基本にするRuleを追加
 - 内部のFile名・変数名・関数名等は英語のまま維持でき、User-facingな英語専門用語には必要に応じて日本語の意味を添える方針をREADME Templateへ反映
 - Human Guideを`site/`配下へ責務別に整理し、既存Root URLはCompatibility Adapterとして維持
@@ -43,6 +47,7 @@
 
 ## Fixed
 
+- Current Rule / Procedureとpoint-in-time Research / Evidenceの保存場所がGuide内で重複し、Public Guideが作業履歴Repository化し得た責任境界の曖昧さ
 - Persistence Ruleが存在していても通常Interactionの終了経路から適用されず、保存漏れが起こり得たCompletion Routing failure
 - Persistenceの文章Validatorは通っていてもMachine Routerの通常Work Typeが`docs/23`へ到達せず、実際のConversation保存が再度抜けたRule Application failure
 - Automatic ResumeのHigh Confidence候補をUser確認なしでResume可能としていた誤復帰経路と、User否定後にRoot Cause確認なしで別候補へ進めたFailure path
@@ -51,6 +56,9 @@
 
 ## Compatibility
 
+- 移動したGuideの旧Research / Evidence / Audit PathはCompatibility Pointerとして維持し、既存の相対Linkを壊さない
+- Data側RecordはCurrent Guide / Project Stateの第二Source of Truthとして扱わない
+- Private Data内容をPublic Guideへ直接露出しない
 - 新しい正式Releaseはまだ切らず、Released baselineは`1.22.0 / 2026-09-07`のまま維持
 - Product RepositoryのRuntime / Storage / Schema / Deploymentを自動変更しない
 - Automatic Resume Capabilityがない通常ChatGPT環境へPlatform-level new-Conversation hookが存在すると仮定しない
