@@ -21,7 +21,7 @@
 6. 実装・調査・要件整理後、必要なValidationを行う
 7. Guide対象の開発InteractionでConversation Persistenceの書込み経路がある場合、最終応答を完了する前に保存と必要なCheckpoint更新を実行し、成功を確認する
 
-Guide Versionの正本は [`guide-version.json`](guide-version.json)、変更履歴は [`CHANGELOG.md`](CHANGELOG.md) です。
+Guide Versionの正本は [`guide-version.json`](guide-version.json)、変更履歴は [`CHANGELOG.md`](CHANGELOG.md) です。`guideVersion` / `updated` は最後にReleaseしたBaselineを表し、`status: unreleased-changes` の場合はCurrent `main`にそのRelease以後の未Release変更があることを表します。Current Ruleを判断するときはVersion番号だけでなくRepositoryの現在状態を優先します。
 
 ## 開発会話の保存
 
@@ -155,6 +155,7 @@ push / pull request時に [`tests/validate-guide.mjs`](tests/validate-guide.mjs)
 - 必須Docs / Templates / Routerの存在
 - Markdown相対Link
 - Guide Version / CHANGELOG整合
+- Release baseline / Current unreleased state整合
 - Catalog ID整合
 - Owner / Gate / Router参照整合
 - 代表Golden Routing Case
