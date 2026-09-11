@@ -11,6 +11,7 @@ GitHub上の変更手順・Branch / PR / final-state管理は [10 Project Manage
 - Message数・経過日数だけで会話を分けない。
 - 同じ未完了作業を複数Conversationから並行書込みしない。
 - Handoffのためだけに新しい仕様正本を増やさない。
+- Conversationの境界をUserの作業上の負担にしない。利用可能なRecovery Capabilityがある場合は、UserへHandoff説明を要求する前にAutomatic Resumeを試みる。
 
 ## Development Conversation Persistence
 
@@ -40,7 +41,7 @@ GitHub上の変更手順・Branch / PR / final-state管理は [10 Project Manage
 
 ### 保存契約
 
-保存形式・Schema・Secret取扱い・Validationの正本は`EliteMay/web-project-data/conversations/README.md`と`schemas/conversations/`です。
+保存形式・Schema・Secret取扱い・Validationの正本は`EliteMay/web-project-data/conversations/README.md`、Cross-Conversation Workstream保存の正本は`EliteMay/web-project-data/workstreams/README.md`と各Schemaです。
 
 Guide側では保存形式を重複定義しません。基本動作は次です。
 
@@ -50,8 +51,9 @@ Guide側では保存形式を重複定義しません。基本動作は次です
 4. 明示的に`sensitive` / `secret-never-store`に分類されるInteractionは保存しない
 5. 同一Interactionのretryは重複を作らない既存Persistence Contractに従う
 6. 保存後もCurrent Repository / Requirements / Spec / Branch / PR / Commit等をCurrent Stateの正本として扱う
+7. Workstreamが一意に解決できるInteractionでは、Data側Current Contractに従ってその関連を保存する
 
-通常の正式な実装EntryはData repositoryの`tools/conversations/persist-interaction.mjs`です。これはInteraction保存、metadata ownershipの正規化、conversation-level checkpoint更新を一つのPersistence経路として扱います。`tools/conversations/save-interaction.mjs`はInteractionだけを書き込む低レベルPrimitiveであり、通常のGuide対象会話では単独成功だけをConversation Persistence完了扱いにしません。
+通常の正式な実装EntryはData repositoryの`tools/conversations/persist-interaction.mjs`です。これはInteraction保存、metadata ownershipの正規化、conversation-level checkpoint更新、および参照されたWorkstreamのRecovery更新を一つの正式Persistence経路として扱います。`tools/conversations/save-interaction.mjs`はInteractionだけを書き込む低レベルPrimitiveであり、通常のGuide対象会話では単独成功だけをConversation Persistence完了扱いにしません。
 
 Agent / Client / Gateway等が`persist-interaction.mjs`を直接実行できない場合でも、Data repository側のCurrent Schema / Secret Contract / checkpoint consistencyを満たす同等の書込み経路を使用できます。
 
@@ -77,9 +79,9 @@ Conversation PersistenceはRecovery Evidenceであり、公開Code / Requirement
 
 ### Platform boundary
 
-通常のChatGPT Conversation自体にはRepository側から強制できるpost-response hookがないため、Platform全体で100%自動保存されるとは表現しません。
+通常のChatGPT Conversation自体にはRepository側から強制できるpost-response hookやnew-Conversation hookがないため、Platform全体で100%自動保存・自動復帰されるとは表現しません。
 
-このRuleが要求するのは、**Guideを適用しているAgent / Conversationが保存Capabilityを持つ場合、その開発Interactionを保存経路へ通すこと**です。保存Capabilityがない環境では、保存済みと偽らず、Current GitHubからRecovery可能な状態を維持します。
+このRuleが要求するのは、**Guideを適用しているAgent / Project / Clientが必要な保存・検索Capabilityを持つ場合、その開発Interactionを正式Persistence経路へ通し、新しい開発InteractionではAutomatic Resumeを試みること**です。Capabilityがない環境では、保存済み・自動復帰済みと偽らず、Current GitHubからRecovery可能な状態を維持します。
 
 ## 会話を分けるタイミング
 
@@ -155,9 +157,292 @@ Handoff Promptは便利なRouterですが必須条件ではありません。
 
 Repositoryを一意に特定できない場合だけ、URLまたは`owner/repo`を確認します。
 
+## Automatic Conversation Resume / Workstream
+
+### SHOULD: 利用可能な環境では新しい開発InteractionでAutomatic Resumeを標準動作にする
+
+Guide対象の開発作業でConversationが変わっても、Userへ毎回次のような説明を要求しません。
+
+- 「前の会話の続き」
+- 「会話変えた」
+- 「前回のCheckpointを読んで」
+- 「このRepositoryの続きをやって」
+
+同じChatGPT Project内では、Workstream Persistence / Search Capabilityが利用できる場合、通常の続きのUser Messageから既存WorkstreamのRecoveryを試みます。
+
+Project外の新しいConversationでも、Repository・作業内容・Workstream等から十分高い確信で一意に特定できる場合はAutomatic Resumeを許可します。一意に決められない場合は勝手に選択しません。
+
+### Workstreamの責務
+
+WorkstreamはConversationとは独立した「同じ作業の系列」です。
+
+```text
+Conversation
+↓
+Interaction
+↓
+Workstream Reference
+↓
+Workstream Layer
+↓
+Current Repository Verification
+```
+
+例:
+
+```text
+Type Tower / 難易度設定
+- Conversation A: 要件定義
+- Conversation B: 実装
+- Conversation C: Bug修正
+```
+
+目的が同じ系列ならConversationが変わっても同一Workstreamとして扱えます。
+
+Conversationの`checkpoint.json`はそのConversationのRecoveryを担当し、Workstream全体のCurrent StateをConversation Checkpointへ無理に統合しません。Workstream保存形式・ID・Index・Correction Schema等の詳細は`web-project-data`を正本とし、Guideへ複製しません。
+
+### Interaction completionとWorkstream lifecycleを分離する
+
+Interactionの`completion: completed`は1回の要求が完了したことを意味し、Workstream全体の完了を意味しません。
+
+Workstream lifecycleは概念上次を持てます。
+
+- `active`
+- `paused`
+- `blocked`
+- `completed`
+- `superseded`
+
+代表的な遷移:
+
+- 作業継続 → `active`
+- 「一旦保留」 → `paused`
+- 外部要因等で進行不能 → `blocked`
+- 作業系列全体のCompletion Contractを満たした → `completed`
+- 別Workstreamへ正式に置き換え → `superseded`
+
+`completed`でも追加修正が同じ目的の延長なら同じWorkstreamを再開できます。別目的の独立機能なら新規Workstreamを作ります。
+
+### 新しいWorkstreamを作る条件
+
+原則として次では新規Workstreamです。
+
+- 明確な別目的
+- 独立して完了可能な機能
+- Userが「新規」「別件」と明示
+- 既存Workstreamとは別の主要成果物
+
+次だけでは新規Workstreamにしません。
+
+- Conversation変更
+- 要件定義 → 実装
+- 実装 → Bug修正
+- `paused` → 再開
+
+### Automatic Resume Flow
+
+利用可能なCapabilityがある場合、原則として次の順で解決します。
+
+```text
+Current User Message
+↓
+新規作業かContinuationか判定
+↓
+明示Project / Repository確認
+↓
+軽量Workstream Indexから候補抽出
+↓
+Hard Ruleで不正候補を除外
+↓
+候補順位を計算
+↓
+Candidate Workstream Checkpoint取得
+↓
+必要な場合だけConversation Checkpoint / Interactionを追加取得
+↓
+Current Repository / Requirements / Work Report等を再取得
+↓
+保存状態とCurrent Stateを照合
+↓
+Confidence判定
+↓
+安全ならResume
+↓
+今回Interactionを正しいWorkstreamへ関連付ける
+```
+
+毎回すべてのConversation / Interactionを全文検索しません。
+
+基本順序は:
+
+```text
+Lightweight Workstream Index
+↓
+Workstream候補
+↓
+Workstream Checkpoint
+↓
+Conversation Checkpoint
+↓
+必要Interaction
+↓
+Current Repository
+```
+
+とし、保存件数増加に比例してRecovery Costが極端に増える構造を避けます。
+
+### Candidate Resolution
+
+候補選定では必要範囲で次を見ます。
+
+- ChatGPT Project
+- Repository
+- Work Type
+- Topics
+- Workstream Status
+- Primary / Related Workstream
+- Last Meaningful Activity
+- Current GitHubとの整合性
+- User Messageとの意味的関連
+
+単純な「最新Conversation順」だけで決めません。
+
+### MUST: Hard RuleはSoft Scoreより優先する
+
+次は候補Scoreではなく強制Ruleとして扱います。
+
+- Userが別Repositoryを明示 → 旧Repository候補を除外
+- Userが「新規」「別件」「前の続きじゃない」と明示 → 自動Continuationを解除
+- `superseded` Workstream → 原則Automatic Resume候補外
+- Current Repositoryと明確に矛盾 → 候補外またはRecovery対象
+- 書込み対象を一意に復元できない → 書込み禁止
+
+Soft ScoreはHard Rule通過後の候補順位付けにだけ使います。
+
+### Confidence
+
+#### High Confidence
+
+Project / Repository / Workstream / Current Stateが十分一意。
+
+→ Silent Resume可能。
+
+#### Medium Confidence
+
+有力候補はあるが追加Evidenceが必要。
+
+→ Workstream Checkpoint / Conversation Checkpoint / Current GitHub等を追加確認し、一意になればそのままResume。
+
+#### Low Confidence
+
+複数候補が同程度、またはEvidence不足。
+
+→ 書込みせず、Read-only Investigationで一意化を試み、それでも解けない場合だけ必要最小限Userへ確認。
+
+### MUST: Workstream Resolution ConfidenceとWrite Target Resolutionを分離する
+
+「どのWorkstreamの続きか」をHigh Confidenceで特定できても、「どのBranch / PR / Commit / write pathへ書くか」が一意とは限りません。
+
+したがって:
+
+```text
+Workstream特定 High
++
+Write target unresolved
+=
+Context Resume / Read-only Recoveryは可
+Repository writeは禁止
+```
+
+Workstream ResolverのHigh Confidenceだけを根拠にCode / Requirementsへ書き込みません。書込み前にはCurrent Repository / Branch / PR / Commit / Requirements等を再取得し、既存のCurrent work ref Recovery Ruleを通します。
+
+### Silent Resume
+
+正常なAutomatic Resumeでは、毎回:
+
+- 「Checkpointを読みました」
+- 「前回Conversationを復旧しました」
+- 「Workstreamを特定しました」
+
+等を表示しません。
+
+通常の会話としてそのまま続行します。異常・競合・重要な状態変更・User確認が必要な場合だけ通知します。
+
+### User Override
+
+Current User Instructionを常に最優先します。
+
+次のような短い訂正で即座に切替できることを要求します。
+
+- 「違う、農場の方」
+- 「これは新規」
+- 「前の続きじゃない」
+- 「○○の続き」
+- 「これは一旦保留」
+
+誤ったAutomatic Resumeを正しい履歴として固定しません。
+
+Persisted Interactionが既に誤ったWorkstreamへ関連付いた場合、Interaction immutabilityを壊して書き換えず、Data側Current Contractのappend-only correction経路で関連を訂正します。
+
+### Current State Verification
+
+保存されたBranch / Commit / PR / Requirements / Work Snapshot / Workstream CheckpointはHistorical Recovery Evidenceです。
+
+Automatic Resume時にはCurrent Repositoryを再取得します。古いCheckpointとCurrent GitHubが違うだけで破損扱いにせず、現在位置を再解決します。
+
+### Recovery Failure
+
+Automatic ResumeのEvidenceが不足する場合:
+
+```text
+Workstream Persistence / Conversation Persistenceから復帰不能
+↓
+Current RepositoryからRecovery
+↓
+それでも不足
+↓
+安全なRead-only Investigation
+↓
+それでも書込み先を特定不能
+↓
+その変更のみ停止
+```
+
+完全に一意化できない場合だけUserへ確認します。
+
+### Concurrent Work
+
+同じRepositoryに複数Active Workstreamが存在すること自体は許可します。
+
+ただし同一Scopeへ複数Conversation / Workerが同時書込みする場合は競合として扱い、下記のRepository-backed Lease / Atomic Coordination等の既存排他Ruleを継承します。
+
+### Security
+
+Automatic ResumeのためにSecurity Boundaryを弱めません。
+
+以下をWorkstream / Interaction / Indexへ保存しません。
+
+- API Key / Token / Cookie / Credential / Private Key
+- raw system / developer prompt
+- unrestricted raw tool payload
+- `secret-never-store` Interaction
+
+権限を失ったRepositoryを過去Checkpointだけを根拠に利用しません。
+
+### Non-goals / Platform Boundary
+
+Automatic Resumeは:
+
+- Conversation historyをProject Source of Truthにする機能ではない
+- Userの最新指示を過去履歴で上書きする機能ではない
+- 古いCommitをCurrent Stateとみなす機能ではない
+- 全ChatGPT環境でPlatform-level new-Conversation hookを保証する機能ではない
+
+Repository側へWorkstream Persistence / Resolverを実装しただけで、通常ChatGPT全体が自動的に新規Conversation開始時に必ずそれを呼ぶとは表現しません。利用できるAgent / Project / ClientではこのContractを実行し、利用できない環境では自動復帰済みと偽りません。
+
 ## Current work ref Recovery
 
-Conversation checkpointの`workSnapshotRefs`や過去Interactionの`currentWorkRef`は、**そのInteraction時点のRecovery Evidenceであり、現在のLive HEADを保証する値ではありません。** Conversation Persistence自体が同じData repositoryへ新しいCommitを追加する場合もあるため、Snapshot SHAと現在のBranch HEADが異なることだけで破損扱いにしません。
+Conversation checkpointの`workSnapshotRefs`、Workstream Checkpoint、過去Interactionの`currentWorkRef`は、**そのInteraction / Checkpoint時点のRecovery Evidenceであり、現在のLive HEADを保証する値ではありません。** Conversation Persistence自体が同じData repositoryへ新しいCommitを追加する場合もあるため、Snapshot SHAと現在のBranch HEADが異なることだけで破損扱いにしません。
 
 Recovery時はSnapshotを開始点として使い、必ずCurrent Repository / PR / Branch / Commitを再取得して現在地を確認します。
 
@@ -177,7 +462,7 @@ Merge済みでCurrent default branchに同じ変更が含まれることを確�
 
 ### MUST: 復元不能なら変更を止める
 
-`Current work ref: unresolved`として扱い、古いConversationから「たぶんこの続き」でCode / Requirementsを書きません。
+`Current work ref: unresolved`として扱い、古いConversation / Workstreamから「たぶんこの続き」でCode / Requirementsを書きません。
 
 停止理由は**User承認待ちではなく、Current Stateを一意に復元できないため**です。
 
@@ -191,7 +476,7 @@ Current Repository / Requirements / Work Report / Current work refを再取得�
 - より新しいCheckpointあり → 最新Stateへ同期してから継続
 - Current work ref不明 → Recovery Rule
 
-「新しい会話へ戻ってください」と案内するだけで止めるより、Current GitHubから安全に同期できるなら同期を優先します。
+「新しい会話へ戻ってください」と案内するだけで止めるより、Current GitHub / Workstreamから安全に同期できるなら同期を優先します。
 
 ## 同じ固定会話が複数Active
 
@@ -206,6 +491,7 @@ Current Repository / Requirements / Work Report / Current work refを再取得�
 - current default branch
 - Work Report
 - Current Requirements
+- Workstream association / status
 
 ### 一方が他方を包含
 
@@ -226,7 +512,7 @@ Parallel Work Conflictとして:
 
 ## Autonomous / Scheduled Worker Coordination
 
-同じ未完了作業を、手動ConversationとScheduled Automation、または複数のAutonomous Agentが同時に再開できる構成では、Conversationの注意喚起だけで排他制御したことにしません。
+同じ未完了作業を、手動ConversationとScheduled Automation、または複数のAutonomous Agentが同時に再開できる構成では、Conversation / Workstreamの注意喚起だけで排他制御したことにしません。
 
 ### CONDITIONAL MUST: 同じWrite Pathへ複数Workerが入り得る場合はExclusive Leaseまたは同等のAtomic Coordinationを使う
 
@@ -236,6 +522,7 @@ Parallel Work Conflictとして:
 - User操作なしでScheduled Automationが起動する
 - Handoff後の旧Conversationが引き続き書込み可能
 - 複数Agentが同じCurrent work refを独立に復元できる
+- 複数Conversationが同じWorkstreamを同時にResumeし同一Scopeへ書込み得る
 
 この場合、書込み開始前に**Repository-backed lease / compare-and-swap lock / 同等のAtomic Coordination**でActive writerを1つへ収束させます。
 
@@ -305,11 +592,11 @@ Git conflictがないこととsemantic conflictがないことを同一視しま
 
 Current work refや正式状態の把握が不安定になり、Conversation historyを追うこと自体が誤変更Riskになった場合は、対応会話への移行を短く提案できます。
 
-ただしUserが移行しなくてもCurrent GitHubから安全に作業できるなら継続できます。
+ただしUserが移行しなくてもCurrent GitHub / Workstreamから安全に作業できるなら継続できます。
 
 ## Agent Autonomy
 
-Conversation移行・Recoveryでも、Repository / Evidenceで解決できる内容をUserへ質問しません。
+Conversation移行・Recovery・Automatic Resumeでも、Repository / Evidenceで解決できる内容をUserへ質問しません。
 
 User Decisionが必要なのは、Current Stateを復元した上でも:
 
@@ -323,12 +610,15 @@ User Decisionが必要なのは、Current Stateを復元した上でも:
 
 ## Completion
 
-Handoff / Recovery作業は次を満たして完了です。
+Handoff / Recovery / Automatic Resume作業は該当範囲で次を満たして完了です。
 
 - Target Repositoryが一意
+- Continuationの場合はTarget Workstreamが一意、またはLow Confidenceとして書込み停止
 - Current work refが一意、または`unresolved`を明示
+- Workstream ResolutionとWrite Target Resolutionを混同していない
 - 正式Requirements / Draftの役割を混同していない
 - 未完成を完成扱いしていない
-- 必要なCheckpointがGitHubから再取得できる
+- 必要なCheckpointがGitHub / Data repositoryから再取得できる
 - Parallel Active write pathを1つへ収束した
-- Prompt / Summaryを第二Source of Truthにしていない
+- User correctionがある場合、誤Associationを正しい履歴として固定していない
+- Prompt / Summary / Conversation history / Workstream checkpointをProjectの第二Source of Truthにしていない
