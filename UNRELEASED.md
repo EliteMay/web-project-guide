@@ -28,7 +28,8 @@
 
 ## Changed
 
-- Development System IntegrityのCurrent ContractをPhase 0-3実装済み / Phase 4 Trusted Recovery Phase 2次工程へ同期し、`web-project-data`側Persistence Gap Detector V1、Development Traceability V1、Development System Health V1の最終Validation済み状態を記録
+- Development System IntegrityのCurrent ContractをPhase 0-4実装済み / Phase 5 Data Retention・Archive次工程へ同期し、`web-project-data`側Persistence Gap Detector V1、Development Traceability V1、Development System Health V1、Trusted Recovery Phase 2の最終Validation済み状態を記録
+- Trusted Recovery Phase 2の検証済みBaselineとして`web-project-data` PR #134 / merge `740c2fcdacaeda77e1b48430fab681bc0bf89e1f`、merge後`Validate Data` / Windows PowerShell Compatibility PASSをCurrent Contractへ反映
 - Dashboard V2のWork Queue状態表記をCurrent Queue Evidenceへ合わせ、Task生成済みだが`activeRunId: null`・idle lanes・queued tasksでtask execution未開始であることを明確化
 - Guide / Dataの責任境界を整理し、point-in-time Audit、Project-specific / time-specific Evidence、Promotion済みHistorical Research、Research working stateの本体を`EliteMay/web-project-data`へ保存するContractへ変更
 - `maintenance/audits/`、移動対象`maintenance/research/*`、Project-specific `references/*`の旧Pathを削除せずCompatibility Pointer化し、過去Linkを維持
