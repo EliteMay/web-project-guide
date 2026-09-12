@@ -1,6 +1,6 @@
 # Work Queue Orchestration 要件定義
 
-Status: Requirements complete / core orchestration implemented / Dashboard V2 task execution in progress
+Status: Requirements complete / core orchestration implemented / Dashboard V2 tasks generated; task execution not started
 Target: `EliteMay/web-project-guide` parallel-work orchestration
 Related UI contract: `DASHBOARD_REQUIREMENTS.md`
 
@@ -19,6 +19,8 @@ DashboardはQueueとWorker状態を人間向けに表示しますが、Queueそ�
 - conversation Claim Gate (`assigned → working`)
 - verified completion後のHistory確定とsame-lane advance
 - Dashboardのassigned Laneに対する開始文handoff
+
+2026-09-13時点のDashboard V2用Current Queue Evidenceでは、Queueは`synced`ですが`activeRunId`は`null`、Worker Laneはidle、先頭Taskはqueuedです。したがってDashboard V2は**実装Task生成済み / task execution未開始**として扱います。
 
 実装済みであっても、Public DashboardはAuthorityではありません。Current AssignmentとClaimのAuthorityは`EliteMay/web-project-data/work-queues/`のCurrent Queueです。
 
