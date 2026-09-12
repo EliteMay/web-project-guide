@@ -1,6 +1,6 @@
 # Development System Integrity 要件定義
 
-Status: Requirements complete / Phase 0-3 implemented / Phase 4 next
+Status: Requirements complete / Phase 0-4 implemented / Phase 5 next
 Target: `EliteMay/web-project-guide` + companion runtime/data changes in `EliteMay/web-project-data`
 Scope: Conversation Persistence integrity / Development Traceability / System Health / Trusted Recovery Phase 2 / Data Retention
 
@@ -63,7 +63,7 @@ retain enough evidence to prevent recurrence
 
 > Dashboard V2: Requirements complete / implementation tasks generated / task execution not started
 
-Development System Integrity側は、Phase 0 Shared Integrity primitives、Phase 1 Persistence Gap Detector V1、Phase 2 Development Traceability V1、Phase 3 Development System Health V1まで`EliteMay/web-project-data`の`main`へ実装済みです。Phase 1のMerge Commitは`d84e701d9ed12c3584b2448d4b4111588cb2069d`、Phase 2は`40db109c2bd24027a3249e66443ff56a0cff8a8b`、Phase 3は`ea6be2daab4b35df2d67a49a75c1dc688dad7b56`です。各PhaseのMerge後`Validate Data`とWindows PowerShell Compatibility validationはいずれもPASSしています。次の実装対象はPhase 4 Trusted Recovery Phase 2です。
+Development System Integrity側は、Phase 0 Shared Integrity primitives、Phase 1 Persistence Gap Detector V1、Phase 2 Development Traceability V1、Phase 3 Development System Health V1、Phase 4 Trusted Recovery Phase 2まで`EliteMay/web-project-data`の`main`へ実装済みです。Phase 1のMerge Commitは`d84e701d9ed12c3584b2448d4b4111588cb2069d`、Phase 2は`40db109c2bd24027a3249e66443ff56a0cff8a8b`、Phase 3は`ea6be2daab4b35df2d67a49a75c1dc688dad7b56`、Phase 4は`740c2fcdacaeda77e1b48430fab681bc0bf89e1f`です。各PhaseのMerge後`Validate Data`とWindows PowerShell Compatibility validationはいずれもPASSしています。Phase 4ではRecovery Readiness、trust-critical change freshness、Recovery Drill evidence、安全なSystem Health projection、trust-critical manifest拡張まで実装済みです。次の実装対象はPhase 5 Data Retention / Archiveです。
 
 `WORK_QUEUE_REQUIREMENTS.md`等に「task execution in progress」と読める古い状態表記が残る場合は、Current Queue Evidenceへ同期します。
 
@@ -667,10 +667,11 @@ Privateに保持:
 
 ## Implementation Handoff
 
-- Status: Ready for implementation
+- Status: Ready for Phase 5 implementation
 - Requirements updated: 2026-09-13
-- Current implementation: Phase 0 Shared Integrity primitives + Phase 1 Persistence Gap Detector V1 + Phase 2 Development Traceability V1 + Phase 3 Development System Health V1 complete
+- Current implementation: Phase 0 Shared Integrity primitives + Phase 1 Persistence Gap Detector V1 + Phase 2 Development Traceability V1 + Phase 3 Development System Health V1 + Phase 4 Trusted Recovery Phase 2 complete
+- Phase 4 validated baseline: `EliteMay/web-project-data` PR #134 / merge `740c2fcdacaeda77e1b48430fab681bc0bf89e1f`; merge後`Validate Data` PASS / Windows PowerShell Compatibility PASS
 - Blocking Decisions: None
 - Important Assumptions: Permanent Delete automationはRetention V1の最後まで有効化しない
-- Next implementation target: Phase 4 Trusted Recovery Phase 2
+- Next implementation target: Phase 5 Data Retention / Archive
 - Related current contracts: `REQUIREMENTS.md`, `DASHBOARD_REQUIREMENTS.md`, `WORK_QUEUE_REQUIREMENTS.md`, `docs/03-data-storage.md`, `docs/09-maintenance.md`, `docs/15-development-observability.md`, `docs/23-conversation-handoff-recovery.md`
