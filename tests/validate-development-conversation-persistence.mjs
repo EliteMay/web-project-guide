@@ -2,6 +2,7 @@ import fs from 'node:fs';
 
 const errors = [];
 const read = (file) => fs.readFileSync(file, 'utf8');
+const includesAny = (text, values) => values.some((value) => text.includes(value));
 
 const readme = read('README.md');
 const startHere = read('START_HERE.md');
@@ -33,7 +34,7 @@ for (const required of [
   'EliteMay/web-project-data',
   '雑談',
   '対象外',
-  'MUST: 保存成功を推測しない',
+  'MUST: Persistence Receiptを確認する',
   'MUST: Public RepositoryへFallbackしない',
   'Conversation historyをProject Source of Truthにしない'
 ]) {
@@ -42,11 +43,14 @@ for (const required of [
   }
 }
 
-if (!conversationOwner.includes('通常のChatGPT Conversation自体にはRepository側から強制できるpost-response hook')) {
-  errors.push('docs/23: platform automatic-capture boundary must remain explicit');
+if (!includesAny(conversationOwner, [
+  '通常のChatGPT Conversation自体にはRepository側から強制できるpre-response / post-response / new-Conversation hookがない',
+  '通常のChatGPT Conversation自体にはRepository側から強制できるpost-response hookやnew-Conversation hookがない'
+])) {
+  errors.push('docs/23: platform automatic capture/resume boundary must remain explicit');
 }
-if (!conversationOwner.includes('new-Conversation hook')) {
-  errors.push('docs/23: platform automatic-resume boundary must remain explicit');
+if (!conversationOwner.includes('Platform全体で100%自動保存・自動復帰されるとは表現しません')) {
+  errors.push('docs/23: platform-wide automatic capture/resume must not be claimed');
 }
 if (!conversationOwner.includes('## Automatic Conversation Resume / Workstream')) {
   errors.push('docs/23: missing Automatic Conversation Resume / Workstream contract');
@@ -54,19 +58,37 @@ if (!conversationOwner.includes('## Automatic Conversation Resume / Workstream')
 
 for (const required of [
   'MUST: Automatic Resume前に1回だけUser確認する',
-  'MUST: Workstream Resolution Confidence / Confirmation / Write Target Resolutionを分離する',
+  'MUST: Workstream Resolution / Confirmation / Write Target / Guardを分離する',
   'Workstream候補 High',
   'Confirmation未成立',
-  'Resume開始 / Repository writeは禁止',
-  'Workstream Confirmation成立',
+  'mutation禁止',
   'Write target unresolved',
-  'Repository writeは禁止'
+  'Live Guard未確立'
 ]) {
   if (!conversationOwner.includes(required)) {
-    errors.push(`docs/23: automatic resume must preserve confidence/confirmation/write-target separation -> ${required}`);
+    errors.push(`docs/23: automatic resume must preserve identity/write/guard separation -> ${required}`);
   }
 }
 
+for (const required of [
+  '## Live Interaction Guard',
+  'CONDITIONAL MUST: 重要Interactionは作業開始側でもRecovery markerを残す',
+  'MUST: Unsettled Guardを上書きしない',
+  'recovery-live',
+  'fast-forward-only',
+  'Degraded Mode'
+]) {
+  if (!conversationOwner.includes(required)) {
+    errors.push(`docs/23: missing live recovery guard contract -> ${required}`);
+  }
+}
+
+if (!conversationOwner.includes('Proposalが無い`ok`はResume Confirmationにしない')) {
+  errors.push('docs/23: bare acknowledgement must not become resume confirmation without a proposal');
+}
+if (!conversationOwner.includes('stateEffect')) {
+  errors.push('docs/23: historical/current state-effect boundary must remain explicit');
+}
 if (conversationOwner.includes('→ Silent Resume可能。')) {
   errors.push('docs/23: candidate confidence must not authorize silent resume before confirmation');
 }
