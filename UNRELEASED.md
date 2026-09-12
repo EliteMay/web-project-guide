@@ -28,6 +28,8 @@
 
 ## Changed
 
+- Development System IntegrityのCurrent ContractをPhase 0-1実装済み / Phase 2 Development Traceability次工程へ同期し、`web-project-data`側Persistence Gap Detector V1の最終Validation済み状態を記録
+- Dashboard V2のWork Queue状態表記をCurrent Queue Evidenceへ合わせ、Task生成済みだが`activeRunId: null`・idle lanes・queued tasksでtask execution未開始であることを明確化
 - Guide / Dataの責任境界を整理し、point-in-time Audit、Project-specific / time-specific Evidence、Promotion済みHistorical Research、Research working stateの本体を`EliteMay/web-project-data`へ保存するContractへ変更
 - `maintenance/audits/`、移動対象`maintenance/research/*`、Project-specific `references/*`の旧Pathを削除せずCompatibility Pointer化し、過去Linkを維持
 - Publicで複数Projectへ直接再利用するCurated Research / ReferenceとCurrent Research execution protocolはGuide側へ残す境界を明文化
