@@ -1,6 +1,6 @@
 # Development System Integrity 要件定義
 
-Status: Requirements complete / implementation not started
+Status: Requirements complete / Phase 0-1 implemented / Phase 2 next
 Target: `EliteMay/web-project-guide` + companion runtime/data changes in `EliteMay/web-project-data`
 Scope: Conversation Persistence integrity / Development Traceability / System Health / Trusted Recovery Phase 2 / Data Retention
 
@@ -63,7 +63,9 @@ retain enough evidence to prevent recurrence
 
 > Dashboard V2: Requirements complete / implementation tasks generated / task execution not started
 
-`WORK_QUEUE_REQUIREMENTS.md`等に「task execution in progress」と読める古い状態表記が残る場合は、実装着手時にCurrent Queue Evidenceへ同期します。
+Development System Integrity側は、Phase 0のShared Integrity primitivesとPhase 1のPersistence Gap Detector V1が`EliteMay/web-project-data`の`main`へ実装済みです。最終Merge Commitは`d84e701d9ed12c3584b2448d4b4111588cb2069d`で、Merge後の`Validate Data`とWindows PowerShell Compatibility validationはいずれもPASSしています。次の実装対象はPhase 2 Development Traceabilityです。
+
+`WORK_QUEUE_REQUIREMENTS.md`等に「task execution in progress」と読める古い状態表記が残る場合は、Current Queue Evidenceへ同期します。
 
 ---
 
@@ -667,7 +669,8 @@ Privateに保持:
 
 - Status: Ready for implementation
 - Requirements updated: 2026-09-13
+- Current implementation: Phase 0 Shared Integrity primitives + Phase 1 Persistence Gap Detector V1 complete
 - Blocking Decisions: None
 - Important Assumptions: Permanent Delete automationはRetention V1の最後まで有効化しない
-- First implementation target: Shared Integrity Model + Persistence Gap Detector
+- Next implementation target: Phase 2 Development Traceability
 - Related current contracts: `REQUIREMENTS.md`, `DASHBOARD_REQUIREMENTS.md`, `WORK_QUEUE_REQUIREMENTS.md`, `docs/03-data-storage.md`, `docs/09-maintenance.md`, `docs/15-development-observability.md`, `docs/23-conversation-handoff-recovery.md`
