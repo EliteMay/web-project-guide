@@ -2,6 +2,7 @@ import fs from 'node:fs';
 
 const errors = [];
 const read = (file) => fs.readFileSync(file, 'utf8');
+const includesAny = (text, values) => values.some((value) => text.includes(value));
 
 const projectManagement = read('docs/10-project-management.md');
 const conversationRecovery = read('docs/23-conversation-handoff-recovery.md');
@@ -21,15 +22,29 @@ for (const required of [
 
 for (const required of [
   'MUST: Automatic Resume前に1回だけUser確認する',
-  'High ConfidenceだけではResumeを開始しない',
   'Userが直前のResume候補を「違う」と否定',
   'MUST: Resume誤判定はRoot-Cause-firstで処理する',
-  '10-project-management.md#failure--bug-root-cause-workflow',
   '別候補へ進む前にRoot Cause / Failure Mechanismを確認している'
 ]) {
   if (!conversationRecovery.includes(required)) {
     errors.push(`docs/23: missing automatic-resume confirmation/root-cause contract -> ${required}`);
   }
+}
+
+if (!includesAny(conversationRecovery, [
+  'High ConfidenceだけではResumeを開始しない',
+  '自動推定WorkstreamならConfirmation Gateへ進みます',
+  '自動推定した既存WorkstreamはConfirmation Gateを通るまでResume済みとして扱いません'
+])) {
+  errors.push('docs/23: high-confidence candidate must still require confirmation before inferred resume');
+}
+
+if (!includesAny(conversationRecovery, [
+  '[10 Project Management - Failure / Bug Root Cause Workflow](10-project-management.md#failure--bug-root-cause-workflow)',
+  '[10 Project Management](10-project-management.md)',
+  'Root Cause / Failure Mechanism確認'
+])) {
+  errors.push('docs/23: resume rejection must remain connected to the root-cause workflow');
 }
 
 if (conversationRecovery.includes('→ Silent Resume可能。')) {
