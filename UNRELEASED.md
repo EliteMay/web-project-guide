@@ -19,6 +19,9 @@
 - Dashboard V2とautomatic Requirements-to-Work-Queue handoffのRequirements
 - Guide-scoped development conversation persistenceと専用Regression Guard
 - Conversation境界を越えて同じ作業系列を復旧するAutomatic Conversation Resume / Workstream Contract
+- Meaningful / checkpoint / repository mutation前に未完了Interactionを保護するLive Interaction Guard Contract
+- Typed Resume Proposal / Confirmation / Rejection / Failure Review evidenceとconversation-scoped Confirmation Contract
+- Historical BackfillがCurrent Stateを巻き戻さない`stateEffect` ContractとFuture timestamp integrity rule
 - AI-generated UI homogenization等のnon-normative Research assets
 - Release baseline / Current unreleased stateを検証する`tests/validate-release-integrity.mjs`
 - 正式Release状態を自己参照なしで構築できることを検証する`tests/test-release-integrity.mjs`
@@ -37,8 +40,10 @@
 - Conversation Persistenceの通常Entryを`web-project-data/tools/conversations/persist-interaction.mjs`へ合わせ、Current Repository再取得境界を明確化
 - Conversation PersistenceをGuide-scoped InteractionのCompletion Gateへ接続
 - 全Development Work TypeをConversation Persistence OwnerへRoutingし、通常の実装・調査・公開作業でも保存確認がCompletion経路から外れないように強化
-- Conversation Handoff / Recovery OwnerをWorkstream候補解決、High / Medium / Low Candidate Resolution、one-time Resume Confirmation Gate、User Override、Write Target分離へ拡張
+- Conversation Handoff / Recovery OwnerをWorkstream候補解決、semantic candidate interpretation、one-time Resume Confirmation Gate、User Override、Write Target / Live Guard分離へ拡張
 - Automatic Resume候補をUserが否定した場合、別候補へ即切替せずRoot Cause / Failure Mechanism確認と必要な再発防止を先に行うFlowへ変更
+- Live coordination churnをCanonical `main`から分離し、dedicated `recovery-live` coordination branchとCAS / fast-forward-only publicationを使うContractへ変更
+- Persistence成功条件をInteraction file存在だけでなくConversation checkpoint / Workstream association / Correction / generated indexの整合へ強化
 - `docs/10-project-management.md`へRoot-Cause-first Failure / Bug Workflowを追加
 - `guide-version.json`へReleased baseline commitとCurrent release stateを追加
 - `docs/09-maintenance.md`へReleased baseline / Unreleased current stateの分離Contractを追加
@@ -51,6 +56,8 @@
 - Persistence Ruleが存在していても通常Interactionの終了経路から適用されず、保存漏れが起こり得たCompletion Routing failure
 - Persistenceの文章Validatorは通っていてもMachine Routerの通常Work Typeが`docs/23`へ到達せず、実際のConversation保存が再度抜けたRule Application failure
 - Automatic ResumeのHigh Confidence候補をUser確認なしでResume可能としていた誤復帰経路と、User否定後にRoot Cause確認なしで別候補へ進めたFailure path
+- Caller-supplied Confirmation / write-safety assertion、historical backfill、future timestamp、stale topic accumulationがRecovery Current Stateを誤らせ得る経路
+- Correction Interactionのsource Workstreamで新Interaction IDを直接参照しない正当なContractをPersistence Receiptがfailure扱いするRegression
 - `guide-version.json`とCHANGELOGが両方同時に古い場合、Current GuideがRelease baselineより進んでいてもCIが検出できなかったRelease metadata drift
 - `releaseCommit`を`guide-version.json`自身へ記録する設計で、Metadata変更自体をRelease-affecting差分として数えると`status: released`へ戻せない自己参照問題
 
@@ -61,5 +68,6 @@
 - Private Data内容をPublic Guideへ直接露出しない
 - 新しい正式Releaseはまだ切らず、Released baselineは`1.22.0 / 2026-09-07`のまま維持
 - Product RepositoryのRuntime / Storage / Schema / Deploymentを自動変更しない
-- Automatic Resume Capabilityがない通常ChatGPT環境へPlatform-level new-Conversation hookが存在すると仮定しない
+- Automatic Resume Capabilityがない通常ChatGPT環境へPlatform-level lifecycle hookが存在すると仮定しない
+- Existing Interaction / Workstream recordsは`stateEffect`未指定をCurrent-compatibleとして扱い、破壊的rewritingを要求しない
 - non-normative Research / Work Report / Project Learning / Release bookkeepingだけの変更まで機械的に新Releaseへ昇格させない
