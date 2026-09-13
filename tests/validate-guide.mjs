@@ -35,6 +35,8 @@ const requiredFiles = [
   'docs/21-rule-routing-preflight.md',
   'docs/22-task-first-structure-flow-research.md',
   'docs/23-conversation-handoff-recovery.md',
+  'references/task-based-usability-testing-research.md',
+  'references/browser-powerful-feature-permission-research.md',
   'maintenance/README.md',
   'maintenance/DEEP_SYSTEM_AUDIT.md',
   'maintenance/review-policy.json',
@@ -151,11 +153,15 @@ const readme = read('README.md');
 const startHere = read('START_HERE.md');
 const governance = read('docs/00-governance.md');
 const uiUx = read('docs/04-ui-ux-accessibility.md');
+const security = read('docs/06-security.md');
+const testingQuality = read('docs/07-testing-quality.md');
 const visualResearch = read('docs/18-domain-first-visual-research.md');
 const routingGuide = read('docs/21-rule-routing-preflight.md');
 const structureFlowResearch = read('docs/22-task-first-structure-flow-research.md');
 const continuousImprovement = read('docs/14-continuous-improvement.md');
 const deepAudit = read('maintenance/DEEP_SYSTEM_AUDIT.md');
+const usabilityResearch = read('references/task-based-usability-testing-research.md');
+const browserPermissionResearch = read('references/browser-powerful-feature-permission-research.md');
 
 for (const requiredLink of [
   'docs/21-rule-routing-preflight.md',
@@ -182,6 +188,48 @@ if (!/^## Visual Directionとの責務境界$/m.test(uiUx)) {
 for (const forbiddenHeading of ['## Design Direction', '## Wireframe Before Visual Polish']) {
   if (uiUx.includes(forbiddenHeading)) {
     errors.push(`docs/04: visual research workflow leaked back into UI quality owner -> ${forbiddenHeading}`);
+  }
+}
+if (!/^## Task-based Usability Validation$/m.test(testingQuality)) {
+  errors.push('docs/07: missing Task-based Usability Validation section');
+}
+for (const requiredMarker of ['Unassisted Success', 'Assisted Success', 'False Success', 'Blocked', 'Abandoned']) {
+  if (!testingQuality.includes(requiredMarker)) {
+    errors.push(`docs/07: usability outcome contract lost marker -> ${requiredMarker}`);
+  }
+}
+if (!testingQuality.includes('../references/task-based-usability-testing-research.md')) {
+  errors.push('docs/07: missing task-based usability research link');
+}
+if (!/^## Browser Powerful Feature Permission \/ Capability Access$/m.test(security)) {
+  errors.push('docs/06: missing Browser Powerful Feature Permission / Capability Access section');
+}
+for (const requiredMarker of ['Secure Context', 'Permissions Policy', 'User permission state', 'User activation / per-use requirement', 'Device / OS availability']) {
+  if (!security.includes(requiredMarker)) {
+    errors.push(`docs/06: browser permission lifecycle lost layer -> ${requiredMarker}`);
+  }
+}
+if (!security.includes('../references/browser-powerful-feature-permission-research.md')) {
+  errors.push('docs/06: missing browser permission research link');
+}
+if (!/^## Browser Capability \/ Permission Verification$/m.test(testingQuality)) {
+  errors.push('docs/07: missing Browser Capability / Permission Verification section');
+}
+if (!testingQuality.includes('06-security.md#browser-powerful-feature-permission--capability-access')) {
+  errors.push('docs/07: missing browser permission security owner route');
+}
+if (!testingQuality.includes('../references/browser-powerful-feature-permission-research.md')) {
+  errors.push('docs/07: missing browser permission evidence link');
+}
+for (const [rel, evidence] of [
+  ['references/task-based-usability-testing-research.md', usabilityResearch],
+  ['references/browser-powerful-feature-permission-research.md', browserPermissionResearch]
+]) {
+  if (!evidence.includes('Status: **current non-normative evidence**')) {
+    errors.push(`${rel}: must identify itself as non-normative evidence`);
+  }
+  if (!evidence.includes('## Promotion decision')) {
+    errors.push(`${rel}: missing Promotion decision boundary`);
   }
 }
 if (!/^## Responsibility Boundary$/m.test(visualResearch)) {
