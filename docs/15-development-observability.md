@@ -525,6 +525,104 @@ Productionで残す場合も、秘密情報・容量上限・Performanceへの�
 
 ---
 
+## CONDITIONAL MUST: Production Runtime Observability / Operational Readiness
+
+Managed Hosting / Serverless / Edge / Backend / Worker / Queue / long-running process等で、**Production Runtimeの失敗がUserへMaterialな影響を与え、Local reproductionやDeploy成功だけではCurrent healthを判断できない場合**、Production Observabilityを必要範囲で持ちます。
+
+単純なStatic Site、Local-only Tool、短命PrototypeへRemote Observability stackを機械的に追加しません。
+
+Current evidence: [Production Runtime Observability Research](../references/production-runtime-observability-research.md)。このReferenceは非Normativeで、特定Vendor / SDKを必須化しません。
+
+### MUST: User-visible healthを確認できるSignalを持つ
+
+`process is running`、`deploy succeeded`、`HTTP 200`等だけでPrimary Taskの健康性を断定しません。
+
+Project Riskに応じて、少なくともUser-visible outcomeを判断できるSignalを選びます。
+
+例:
+
+- request / operation success-failure
+- latency / timeout
+- queue lag / scheduled job missed run
+- background processing completion
+- external provider failure
+- critical storage / database error
+- authentication / permission failure rate
+
+固定Metric setを全Projectへ要求しません。Primary TaskとFailure Modeを説明できるSignalを優先します。
+
+### SHOULD: Metrics / Logs / Tracesを目的から選ぶ
+
+ObservabilityのためにMetrics / Logs / Tracesを全部導入することをCompletion Conditionにしません。
+
+```text
+Trend / rate / saturation / aggregate health
+→ Metrics候補
+
+Discrete failure / state transition / bounded context
+→ Structured Log候補
+
+複数Service / Function / Queueを横断する1 Operationの経路
+→ Trace / Correlation候補
+```
+
+Small systemでStructured Logだけで十分なら、Distributed Tracingを追加しません。
+
+### SHOULD: Multi-component Operationを相関可能にする
+
+1つのUser Action / Request / Jobが複数Componentを通る場合、原因箇所を追えるよう必要に応じて次を持ちます。
+
+- Correlation / Request / Operation ID
+- app / deploy revision
+- service / function / worker名
+- bounded operation type
+- status / failure class
+- relevant duration / attempt
+
+Full request body、Webhook payload全文、Token、Cookie、Personal DataをCorrelationのために保存しません。
+
+### MUST: AlertとDashboard / Diagnostic Signalを分ける
+
+すべてのError / Metric変化をHuman notificationへ変換しません。
+
+- **Alert** — HumanのActionが必要、または近く必要になるMaterial condition
+- **Ticket / Follow-up** — Immediateではないが修正・確認が必要
+- **Dashboard / Diagnostic Signal** — 状況理解やRoot Cause調査のEvidence
+
+ActionのないAlert、同一Failureの大量通知、単一Instanceの瞬間的Event等でAlert fatigueを作らないようにします。
+
+### MUST: Telemetry自身のRiskを制御する
+
+Production Telemetryでも既存Diagnosticsと同じく、必要範囲で次を制御します。
+
+- Secret / Credential / Personal Data minimization
+- Payload size / event volume
+- Retention
+- Provider quota / cost
+- Runtime performance impact
+- access permission
+- production / preview / test dataの識別
+
+Observability ProviderのDashboardやAlertが存在するだけで、Canonical Product StateやSuccess Oracleにしません。
+
+### CONDITIONAL: Production IncidentをRecoveryとLearningへ接続する
+
+User-impacting outage、data loss risk、security incident、長時間のmajor degradation等が発生した場合は、必要範囲で次を追跡します。
+
+```text
+Detection
+→ User / system impact
+→ Containment / Mitigation
+→ Recovery
+→ Root Cause / Failure Mechanism
+→ Monitoring / Test / Guard improvement
+→ Project Learning
+```
+
+Incident中は安全化をPostmortem作成より優先します。復旧後のRoot Cause /再発防止は [10 Failure / Bug Root Cause Workflow](10-project-management.md#failure--bug-root-cause-workflow)、Release / Rollback / Recoveryは [09 Version / Maintenance](09-maintenance.md)、Verificationは [07 Testing / Quality](07-testing-quality.md) を正本とします。
+
+---
+
 ## Project Feedback Loop
 
 新しい問題が解決したら次の流れを使います。

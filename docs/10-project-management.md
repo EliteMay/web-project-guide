@@ -125,6 +125,33 @@ PRではDiffとCIを確認してからMergeします。
 
 一時Workflow / Scriptを使った場合は作業完了前にCleanupし、Cleanup後の最終状態を再検証します。
 
+## Write Capability / Tool Discovery Safety
+
+### MUST: Default BranchをWrite Probeに使わない
+
+GitHub Tool / Connector / APIで「この操作が使えるか」「書込み権限があるか」を確認するためだけに、`main`等のDefault / Authoritative Branchへ一時Fileを作成して削除する**Write Probe**を行いません。
+
+Capability確認は原則として次の順で行います。
+
+```text
+利用可能Action / Tool schemaを確認
+↓
+Read-only API / Repository metadata / current refを確認
+↓
+Target Repository / Branch / Commitを一意にする
+↓
+実際のProduct変更がある場合だけ必要なWrite Actionを使う
+```
+
+- Tool discovery / permission discoveryだけならRead-only確認を優先する。
+- Authoritative write前に、少なくとも対象Repository、target branch / ref、current baseを確認する。
+- `create → delete`すれば元に戻るという理由でDefault Branchを試験場所にしない。Commit history、CI、Deploy、Audit log等の副作用は残り得る。
+- Low-riskな意図したProduct変更をDefault Branchへ直接行える運用と、Capability discovery用のProbeは別物として扱う。
+- 実Writeそのものの検証が避けられない場合は、確認済みCurrent Commitから作る隔離Branch / scratch ref等の**non-authoritative target**を優先し、不要になった試験ArtifactをCleanupする。
+- Probe /失敗Writeが既にAuthoritative Branchへ入った場合は、隠さずEvidenceを残し、Root Causeと再発防止を [Failure / Bug Root Cause Workflow](#failure--bug-root-cause-workflow) へ通す。
+
+Repository protection / Ruleset等でDefault Branchへの危険操作を機械的に制限できる場合は、Riskに応じて [16 Cross-Repository GitHub Infrastructure](16-cross-repository-github-infrastructure.md) も確認します。
+
 ## Agent Autonomy / Impact Review
 
 ### MUST: 高Impact = 自動的なUser待ち、ではない

@@ -30,6 +30,9 @@
 - `docs/07`へ現実的・非誘導なTaskを使い、Unassisted / Assisted / False Success / Blocked / Abandonedを区別するTask-based Usability Validationを追加
 - `docs/06` / `docs/07`へSecure Context・Permissions Policy・User permission・User activation・Device / OS availabilityを分離するBrowser Powerful Feature Permission LifecycleとVerificationを追加
 - GOV.UK / MDNのCurrent official evidenceを整理したUsability / Browser Permissionのcurated non-normative Referenceを追加
+- Managed Backend / Serverless / Worker等へ比例適用するProduction Runtime Observability / Operational Readiness Contractを`docs/15`へ追加
+- OpenTelemetry / Google SREのCurrent public evidenceから、User-visible health・Telemetry correlation・Actionable Alert・Incident learningの境界を整理したcurated non-normative Referenceを追加
+- Round 2 Deep Auditで追加したProduction Observability / write-probe safety Contractを守るfocused validatorを追加
 
 ## Changed
 
@@ -59,6 +62,8 @@
 - `releaseCommit`以後の差分判定からVersion / CHANGELOG / Unreleased / Work Report等のRelease bookkeepingを除外し、Release内容Commitの後にMetadata commitを安全に置けるよう修正
 - Visual Owner境界を整理し、`docs/04`はUI / UX / AccessibilityとVisual Quality原則、`docs/18`はDomain Research / Design Direction Contract / Candidate比較・採否Workflowを正本とする構造へ変更
 - Quality ChecklistへTask-based UsabilityとBrowser Powerful Feature PermissionのConditional Routing /実行確認を追加し、新しいOwner・Profile・Stable Gateを増やさず既存Ownerへ接続
+- GitHub Tool / ConnectorのCapability discoveryではRead-only確認を先に行い、Default / Authoritative BranchをWrite Probeへ使わないRuleを`docs/10`とCore Checklistへ追加
+- Quality ChecklistへProduction Runtime ObservabilityのConditional Routing /実行確認を追加し、Static Siteへ不要なObservability stackを強制しない構造へ変更
 
 ## Fixed
 
@@ -76,6 +81,8 @@
 - Correction Interactionのsource Workstreamで新Interaction IDを直接参照しない正当なContractをPersistence Receiptがfailure扱いするRegression
 - `guide-version.json`とCHANGELOGが両方同時に古い場合、Current GuideがRelease baselineより進んでいてもCIが検出できなかったRelease metadata drift
 - `releaseCommit`を`guide-version.json`自身へ記録する設計で、Metadata変更自体をRelease-affecting差分として数えると`status: released`へ戻せない自己参照問題
+- Managed Backend / Worker等をGuideが扱う一方、Local Development Diagnostics中心でProduction health・Correlation・Actionable Alert・Incident learningのOperational Readinessが明示されていなかったRule Gap
+- Tool write可否の確認目的だけでGuide `main`へtemporary create-delete probeを行い、Contentは戻っても不要Commit / CI / Pages履歴が残ったRepository operation failure
 
 ## Compatibility
 

@@ -8,6 +8,7 @@
 
 - [ ] Current Repository / Requirements / Spec等のSource of Truthを必要範囲で確認した
 - [ ] 変更対象と影響範囲を確認した
+- [ ] Tool / write capability確認だけのためにDefault / Authoritative Branchへ一時Fileを作成していない
 - [ ] Meaningfulな既存Project作業では、今回のSystem / 症状に関係する`PROJECT_LEARNINGS.md` / Failure CatalogをTargeted Searchし、既知Failureの予防策を今回の実装・Guardへ接続した
 - [ ] 同じ機能の旧Runtime / Patch / Version別実装を本番へ重複させていない
 - [ ] Syntax / 起動時Error / 必須Asset・Link参照切れがない
@@ -33,6 +34,7 @@
 | Data / Save / Import / Migration | Data safety | [03](../docs/03-data-storage.md) |
 | Page Load / 重いRuntime | Performance / Reliability | [05](../docs/05-performance-reliability.md) |
 | Runtime Diagnostics / Remote Handoff | Observability | [15](../docs/15-development-observability.md) |
+| Production Managed Runtime / Serverless / Backend / WorkerでRuntime failureがUserへMaterial | Production Runtime Observability / Operational Readiness | [15](../docs/15-development-observability.md) / [05](../docs/05-performance-reliability.md) / [07](../docs/07-testing-quality.md) |
 | Content / IA / Search / Discoverability | Content quality / Findability / Public discovery | [01](../docs/01-requirements.md) / [22](../docs/22-task-first-structure-flow-research.md) / [07](../docs/07-testing-quality.md) |
 | Measurement / Analytics / Experimentation | Outcome / Evidence / Rollout validation | [01](../docs/01-requirements.md) / [20](../docs/20-evidence-first-research.md) / [09](../docs/09-maintenance.md) / [07](../docs/07-testing-quality.md) |
 | AI Feature / RAG / Agent / Model change | Output / Eval / Grounding / Agent / Model lifecycle | [01](../docs/01-requirements.md) / [07](../docs/07-testing-quality.md) / [20](../docs/20-evidence-first-research.md) / [13](../docs/13-dependencies-assets.md) / [06](../docs/06-security.md) |
@@ -177,6 +179,15 @@
 - [ ] Export / Remote Handoffを使う場合、Sanitize済みCompact Evidenceだけを渡す
 - [ ] Remote Provider停止時もLocal Diagnostics / Core機能が残る
 - [ ] AIが原因判断するとき、古いZIP / MemoryだけでなくCurrent Runtime Evidenceを確認した
+
+## Production Runtime Observability — 該当時
+
+- [ ] Production Runtime failureがMaterialな場合、process / deploy状態だけでなくPrimary TaskのUser-visible healthを判断できるSignalを持つ
+- [ ] Metrics / Logs / Tracesを全部必須化せず、Failureを説明・分離できる最小Telemetryを選んだ
+- [ ] 複数Service / Function / Worker / Queueを横断するOperationでは、必要に応じてCorrelation ID / revision / bounded operation contextを追跡できる
+- [ ] Alertを単なるEvent通知やDashboard情報と混同せず、Human actionが必要なMaterial conditionへ絞った
+- [ ] TelemetryのSecret / Personal Data / payload size / retention / quota・cost / performance impactを必要範囲で制御した
+- [ ] User-impacting IncidentではDetection / Impact / Recovery / Root Cause / Monitoring・Test改善を必要範囲で追跡した
 
 ## GitHub Pages / Public Site
 
