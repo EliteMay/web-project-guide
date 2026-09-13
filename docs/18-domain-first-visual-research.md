@@ -8,12 +8,13 @@
 - Representative Visual Referenceの重点比較
 - 既存UIの`KEEP / FIX / REMOVE`
 - Reference Transfer Rule
-- Candidate比較
+- Design Direction Contract
+- Candidate生成・比較・Promote / Reject
 - Visual Foundation Reset
 
 一般的なResearch Depth、Broad Discovery、Source Quality、Opposing Evidence、Bias、Applicability、Research Saturation、Evidence Mapは [20 Evidence-first Research](20-evidence-first-research.md) を正本とします。
 
-Visual Design原則は [04 UI / UX / Accessibility](04-ui-ux-accessibility.md)、最低品質は [17 Visual Quality Baseline](17-visual-quality-baseline.md) を正本とします。
+Visual Design原則、Typography / Spacing / Hierarchy、Component semantics、Accessibility、Responsive、Build後のVisual Quality Reviewは [04 UI / UX / Accessibility](04-ui-ux-accessibility.md)、最低品質は [17 Visual Quality Baseline](17-visual-quality-baseline.md) を正本とします。
 
 User Goal / TaskからInformation Architecture、Navigation構造、Task Flow、State、Page / Viewを導くResearch Workflowは [22 Task-first Structure / Flow Research](22-task-first-structure-flow-research.md) を正本とします。
 
@@ -21,11 +22,30 @@ User Goal / TaskからInformation Architecture、Navigation構造、Task Flow、
 Navigationの分類・階層・到達経路を変える
 → docs/22
 
-Navigation UIのLayout / Density / Typography / Color等を変える
-→ docs/18 + docs/04
+Visual DirectionをResearchし候補を比較・選定する
+→ docs/18
+
+選定したDirectionをUI品質原則・Accessibility・Responsiveで評価する
+→ docs/04
 ```
 
 構造とVisualを両方変える場合は、Task / IA / Flowを先に整理してからVisual Directionへ進みます。
+
+## Responsibility Boundary
+
+この章は**Visual Directionをどう調査し、候補化し、比較し、採用 / Rejectするか**を所有します。
+
+次のWorkflowを`docs/04`へ重複定義しません。
+
+- Target Type / Domain Research
+- Representative Reference選定
+- `KEEP / FIX / REMOVE`
+- Design Direction Contract作成
+- 2〜3 structural directionsの生成・比較
+- CandidateのPromote / Reject
+- Foundation Reset時の方向再選定
+
+`docs/04`は、選定されたDirectionや実装済みUIが**良いUIとして成立しているか**を評価する原則・品質基準を所有します。Visual Directionを決める作業と、決めたDirectionを品質基準で評価する作業を同じOwnerへ重複させません。
 
 ## 目的
 
@@ -215,6 +235,24 @@ Open axes:
 
 重要なのは、**調査結果がDesign Directionへどう影響したかを説明できること**です。
 
+## Design Direction Contract
+
+Domain Research Briefを作った後、候補比較または本格実装へ進む前に、今回のDirectionを必要範囲で次へ落とします。
+
+- **Design Concept:** 何を感じてほしいか / 何を最優先で見せるか
+- **Reference Direction:** どのReferenceから何の構造原理を借りるか。表層Copy先にはしない
+- **Layout Type:** single-column / split / sidebar / master-detail / editorial / dashboard等
+- **Navigation Type:** top nav / sidebar / tabs / command bar等
+- **Content Density:** low / medium / high
+- **Typography Direction:** compact / editorial / product UI / display-heavy等
+- **Color Rule:** neutral中心 / brand accent / semantic color等
+- **Component Rule:** card / list / table / border / section等を何の情報単位へ使うか
+- **Decorative Effect Policy:** shadow / blur / gradient / motionを何のために使うか
+
+すべての項目を機械的に埋める必要はありません。今回のVisual Directionへ影響する軸だけを明示し、理由をProjectのTask / Content / Audience / Evidenceへ接続します。
+
+実在Service名はDirectionを説明する語彙として参照できますが、そのServiceのLayout・色・Effectをそのまま完成形へコピーする根拠にはしません。
+
 ## Current Siteを`KEEP / FIX / REMOVE`へ分ける
 
 既存Siteでは、外部Referenceへ寄せる前に現在UIの価値を固定します。
@@ -264,6 +302,7 @@ Current baseline
 → Evidence-first Research（必要強度）
 → Representative Visual Reference比較
 → KEEP / FIX / REMOVE
+→ Design Direction Contract
 → 2〜3 structural directions（必要時）
 → Candidate
 → Current vs Candidate
@@ -272,7 +311,7 @@ Current baseline
 → Promote or Reject
 ```
 
-比較案は色違いではなく、Navigation / Density / Content Width / Grid / Typography / Primary Action等が実際に異なる案にします。
+結果へ大きく影響する場合は、**2〜3種類の構造的に異なるDesign Directionを比較してから1つを選びます。** 比較案は色違いではなく、Navigation / Density / Content Width / Grid / Typography / Primary Action等が実際に異なる案にします。
 
 CandidateがCurrentを明確に上回らない場合は、Polish量を増やす前にDirection自体を見直します。
 
@@ -300,7 +339,7 @@ Purpose / User Task
 → IA / Navigation / Task Flowに問題があればdocs/22で再設計
 → Target Type / Domain Research
 → Wireframe
-→ Design Direction
+→ Design Direction Contract
 → Typography / Spacing / Hierarchy
 → Color / Effect
 → Rebuild UI
@@ -350,12 +389,13 @@ AIへMeaningfulなUI / Visual要件定義や「見た目を良くして」を依
 5. Representative Visual Referencesを重点比較
 6. Domain Research Brief
 7. KEEP / FIX / REMOVE
-8. 必要なら2〜3 Directionを比較
-9. 要件 / Candidateを確定
-10. Candidateを実装
-11. Current vs Candidateを確認
-12. Visual Review
-13. User feedbackをEvidenceへ残す
+8. Design Direction Contractを整理
+9. 必要なら2〜3 Directionを比較
+10. 要件 / Candidateを確定
+11. Candidateを実装
+12. Current vs Candidateを確認
+13. docs/04のVisual Quality原則でReview
+14. User feedbackをEvidenceへ残す
 ```
 
 AI自身が過去に作った成功例や一般知識だけを最初の答えとして使わないことを基本とします。
@@ -371,6 +411,7 @@ MeaningfulなUI / Visual要件決定または大きなVisual変更で次を説�
 - そのCategoryで共通していた構造は何か
 - Reference間で違っていた部分は何か
 - Current UIの何をKEEP / FIX / REMOVEしたか
+- Design Direction Contractの主要軸をTask / Content / Audience / Evidenceへ接続できるか
 - 今回どれを採用し、どれを採用しなかったか
 - 過去成功例を使った場合、なぜ今回にも適合するのか
 - Foundation Resetをした場合、何を保持し何を作り直したか

@@ -176,6 +176,35 @@ if (!routingGuide.includes('../maintenance/rule-router.json')) errors.push('docs
 if (!routingGuide.includes('STRUCTURE_FLOW')) errors.push('docs/21: missing STRUCTURE_FLOW domain guidance');
 if (!uiUx.includes('22-task-first-structure-flow-research.md')) errors.push('docs/04: missing Structure / Flow Research route');
 if (!visualResearch.includes('22-task-first-structure-flow-research.md')) errors.push('docs/18: missing structural research boundary route');
+if (!/^## Visual Directionとの責務境界$/m.test(uiUx)) {
+  errors.push('docs/04: missing explicit visual direction responsibility boundary');
+}
+for (const forbiddenHeading of ['## Design Direction', '## Wireframe Before Visual Polish']) {
+  if (uiUx.includes(forbiddenHeading)) {
+    errors.push(`docs/04: visual research workflow leaked back into UI quality owner -> ${forbiddenHeading}`);
+  }
+}
+if (!/^## Responsibility Boundary$/m.test(visualResearch)) {
+  errors.push('docs/18: missing visual workflow responsibility boundary');
+}
+if (!/^## Design Direction Contract$/m.test(visualResearch)) {
+  errors.push('docs/18: missing Design Direction Contract owner section');
+}
+for (const requiredAxis of [
+  'Design Concept',
+  'Reference Direction',
+  'Layout Type',
+  'Navigation Type',
+  'Content Density',
+  'Typography Direction',
+  'Color Rule',
+  'Component Rule',
+  'Decorative Effect Policy'
+]) {
+  if (!visualResearch.includes(requiredAxis)) {
+    errors.push(`docs/18: Design Direction Contract lost required axis -> ${requiredAxis}`);
+  }
+}
 for (const ownerLink of [
   '04-ui-ux-accessibility.md',
   '18-domain-first-visual-research.md',
