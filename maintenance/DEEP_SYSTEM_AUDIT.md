@@ -14,7 +14,7 @@ Normative Ownerは [`docs/14-continuous-improvement.md`](../docs/14-continuous-i
 - [ ] Audit dateを記録した
 - [ ] `README` / `START_HERE` / `docs/14` / `docs/21`をCurrent Revisionから読んだ
 
-Audit Reportは`maintenance/audits/YYYY-MM-DD-*.md`等へ保存します。
+Audit Report本体は、`EliteMay/web-project-data`へ書込み可能な場合、`evidence/YYYY/web-project-guide/audits/YYYY-MM-DD-*.md`へ保存します。Guide側`maintenance/audits/`はCompatibility Pointer / Indexだけに使います。Dataへ書けない場合もPublic Guideへraw / private audit dataをFallback保存せず、保存不能を明記します。
 
 ## 1. Audit Stance
 
@@ -250,5 +250,7 @@ Validator guards:
 Validation:
 Final status:
 ```
+
+Audit result本体の保存先は上記Storage Boundaryに従い、Guide側`maintenance/audits/`へpoint-in-time Reportを積み続けません。
 
 次回はこのChecklistをCurrent Revisionから使い、前回Reportを「正しい」と仮定せずCurrent Repositoryを再監査します。
