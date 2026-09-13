@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ja">
+<html lang="ja" data-repo-root="../../" data-surface-id="all-rules">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -15,18 +15,19 @@
 <body>
   <header class="sitebar">
     <div class="sitebar-inner">
-      <a class="brand" href="../../index.html">Web Project Guide</a>
-      <nav class="tabs" aria-label="Guide navigation">
+      <a class="brand" data-human-guide-home href="../../index.html">Web Project Guide</a>
+      <nav class="tabs" data-human-guide-nav aria-label="Guide navigation">
         <a href="../../project-dashboards/">Project Dashboards</a>
         <a href="work-dashboard.html">Guide Migration</a>
         <a href="ai-workflow.html">AIの作業ルール</a>
         <a href="rules.html">ルール検索</a>
         <a href="all-rules.html" aria-current="page">全ルール</a>
+        <a href="research-requirements.html">研究・要件</a>
       </nav>
     </div>
   </header>
 
-  <main class="container">
+  <main class="container" id="main-content">
     <header class="hero">
       <div>
         <p class="eyebrow">ALL RULES · SHORT VERSION</p>
@@ -101,5 +102,6 @@
 
     <p class="footer-note">このページは人間向けの短縮版です。正式なRule本文・例外・優先関係はOwner Docs、今回読むべきRuleのRoutingは <a href="https://github.com/EliteMay/web-project-guide/blob/main/START_HERE.md">START_HERE.md</a> と <a href="https://github.com/EliteMay/web-project-guide/blob/main/docs/21-rule-routing-preflight.md">21 Rule Routing / Preflight</a> を正本とします。</p>
   </main>
+  <script src="../assets/human-guide-shell.js"></script>
 </body>
 </html>
