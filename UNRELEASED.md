@@ -10,6 +10,8 @@
 
 ## Added
 
+- Human GuideのCurrent Product Contract、Surface Manifest、正本種別を区別するサイト全体検索、Current Machine Routerを投影する作業ルート診断を追加
+- Human Guide Manifest / compatibility adapter / Public Search境界を検証するRegression Guardと、narrow viewportでもGlobal Navigationへ到達できる共通Shell / responsive基盤を追加
 - Meaningful UI requirementsでも候補案を固定する前にDomain / Genre Researchへ到達するRouteを明確化
 - 既知Game interaction / collider regressionを再利用するKnown Failure preflightとActual Playtest補強
 - Manual conversation / scheduled workerが同じ未完了作業へ書き得る場合のexclusive work lease coordination
@@ -36,6 +38,7 @@
 
 ## Changed
 
+- Human GuideのNavigation / Search / compatibility route metadataを`site/data/human-guide-manifest.json`へ集約し、Release baseline表示とHuman Summaryの同期状態を同一視しないContractへ変更
 - Development System IntegrityのCurrent ContractをPhase 0-4実装済み / Phase 5 Data Retention・Archive次工程へ同期し、`web-project-data`側Persistence Gap Detector V1、Development Traceability V1、Development System Health V1、Trusted Recovery Phase 2の最終Validation済み状態を記録
 - Trusted Recovery Phase 2の検証済みBaselineとして`web-project-data` PR #134 / merge `740c2fcdacaeda77e1b48430fab681bc0bf89e1f`、merge後`Validate Data` / Windows PowerShell Compatibility PASSをCurrent Contractへ反映
 - Dashboard V2のWork Queue状態表記をCurrent Queue Evidenceへ合わせ、Task生成済みだが`activeRunId: null`・idle lanes・queued tasksでtask execution未開始であることを明確化
@@ -67,6 +70,7 @@
 
 ## Fixed
 
+- Human GuideのGlobal Navigation / compatibility route / validator coverageがページごとにdriftしやすく、narrow viewportでGlobal tabsが到達不能になり得た構造上のGap
 - Current Rule / Procedureとpoint-in-time Research / Evidenceの保存場所がGuide内で重複し、Public Guideが作業履歴Repository化し得た責任境界の曖昧さ
 - `docs/14`はAudit結果をData側へ保存すると定義しているのに、Deep Audit Checklist / review policyがGuide側`maintenance/audits`を結果本体の保存先としていた矛盾
 - Persistence Ruleが存在していても通常Interactionの終了経路から適用されず、保存漏れが起こり得たCompletion Routing failure
