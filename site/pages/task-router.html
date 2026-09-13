@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="ja" data-repo-root="../../" data-surface-id="task-router">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="maintenance/rule-router.json を使って、今回読むべきWeb Project GuideのOwner DocとGateを人間向けに表示します。">
+  <title>作業ルート診断 · Web Project Guide</title>
+  <link rel="stylesheet" href="../assets/human-guide.css">
+  <link rel="stylesheet" href="../assets/mobile-fixes.css">
+  <style>
+    .router-shell{max-width:980px;margin:0 auto}.router-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:24px}.panel{padding:18px;border:1px solid var(--border);border-radius:10px;background:var(--surface)}.panel h2{margin-top:0}.field{display:grid;gap:7px;margin-top:14px}.field label,.field legend{font-size:13px;font-weight:700}.field select{min-height:44px;width:100%;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);padding:0 12px;font:inherit}.check-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.check{display:flex;gap:8px;align-items:flex-start;padding:9px;border:1px solid var(--border);border-radius:8px;background:var(--bg);font-size:12px}.check input{margin-top:2px}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}.actions button{min-height:44px;border:1px solid var(--accent);border-radius:8px;background:var(--accent);color:white;padding:0 15px;font:inherit;font-weight:700;cursor:pointer}.actions button.secondary{background:transparent;color:var(--text);border-color:var(--border)}.result-list{display:grid;gap:9px}.owner-card{padding:13px;border:1px solid var(--border);border-radius:9px;background:var(--bg)}.owner-card a{font-weight:700;color:var(--text);text-decoration:none}.owner-card a:hover,.owner-card a:focus-visible{color:var(--accent);text-decoration:underline}.owner-meta{margin-top:5px;color:var(--muted);font-size:11px}.gate-list{display:flex;flex-wrap:wrap;gap:7px;margin:10px 0}.gate{border:1px solid var(--border);border-radius:999px;padding:5px 8px;color:var(--muted);font-size:11px}.notice{padding:12px;border-left:3px solid var(--accent);background:var(--bg);color:var(--muted);font-size:13px;line-height:1.7}.release-note{margin-top:14px;color:var(--muted);font-size:12px}@media(max-width:760px){.router-grid{grid-template-columns:1fr}.check-grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <header class="sitebar">
+    <div class="sitebar-inner">
+      <a class="brand" data-human-guide-home href="../../index.html">Web Project Guide</a>
+      <nav class="tabs" data-human-guide-nav aria-label="Guide navigation"></nav>
+    </div>
+  </header>
+
+  <main class="container" id="main-content">
+    <div class="router-shell">
+      <header class="hero">
+        <div>
+          <p class="eyebrow">TASK ROUTER</p>
+          <h1>やることを選んで、今回読むOwnerを出す。</h1>
+          <p class="lead">この画面はHuman専用のRule表を持ちません。Current <code>maintenance/rule-router.json</code> を読み、その内容を人間向けに表示します。</p>
+        </div>
+      </header>
+
+      <div class="router-grid">
+        <section class="panel" aria-labelledby="router-input-title">
+          <h2 id="router-input-title">今回の作業</h2>
+          <div class="field">
+            <label for="work-type">作業種類</label>
+            <select id="work-type"></select>
+          </div>
+          <div class="field">
+            <label for="scope">変更規模</label>
+            <select id="scope">
+              <option value="LOCAL">LOCAL — 局所変更</option>
+              <option value="MEANINGFUL" selected>MEANINGFUL — 複数Component / Flowへ影響</option>
+              <option value="SYSTEMIC">SYSTEMIC — Architecture / Storage / Major Navigation等</option>
+            </select>
+          </div>
+          <fieldset class="field">
+            <legend>関係する分野</legend>
+            <div id="domains" class="check-grid"></div>
+          </fieldset>
+          <fieldset class="field">
+            <legend>Risk / 条件</legend>
+            <div id="signals" class="check-grid"></div>
+          </fieldset>
+          <div class="actions">
+            <button id="resolve" type="button">必要Ruleを表示</button>
+            <button id="clear" class="secondary" type="button">選択をクリア</button>
+          </div>
+        </section>
+
+        <section class="panel" aria-labelledby="router-result-title">
+          <h2 id="router-result-title">今回読むもの</h2>
+          <div id="router-state" class="notice">Routerを読み込んでいます…</div>
+          <div id="gates" class="gate-list" aria-label="Applicable gates"></div>
+          <div id="owners" class="result-list"></div>
+        </section>
+      </div>
+
+      <p class="release-note" data-guide-release></p>
+    </div>
+  </main>
+
+  <script src="../assets/human-guide-shell.js"></script>
+  <script>
+    const routerUrl = new URL('../../maintenance/rule-router.json', location.href);
+    const githubBase = 'https://github.com/EliteMay/web-project-guide/blob/main/';
+    const workType = document.querySelector('#work-type');
+    const scope = document.querySelector('#scope');
+    const domains = document.querySelector('#domains');
+    const signals = document.querySelector('#signals');
+    const owners = document.querySelector('#owners');
+    const gates = document.querySelector('#gates');
+    const state = document.querySelector('#router-state');
+    let router;
+
+    const workLabels = {
+      REQUIREMENTS: '要件定義',
+      RESEARCH: '調査・比較',
+      IMPLEMENTATION: '実装',
+      BUG_FIX: '不具合修正',
+      REVIEW: 'Review / 検証',
+      DATA_CONTENT: 'Data / Content',
+      DEPLOYMENT: '公開 / Deployment',
+      MAINTENANCE: '保守 / Guide改善'
+    };
+
+    const domainLabels = {
+      ARCHITECTURE: 'Architecture', DATA_STORAGE: '保存・Data', UI_UX: 'UI / UX',
+      STRUCTURE_FLOW: '構造・Navigation・Flow', VISUAL: 'Visual', PERFORMANCE_RELIABILITY: 'Performance / Reliability',
+      SECURITY: 'Security', TESTING_QUALITY: 'Testing / Quality', GITHUB_PAGES: 'GitHub Pages',
+      MAINTENANCE: 'Version / Maintenance', PROJECT_MANAGEMENT: 'Project Management', ELECTRON: 'Electron',
+      DISTRIBUTION: 'Distribution', DEPENDENCIES_ASSETS: 'Dependencies / Assets', CONTINUOUS_IMPROVEMENT: 'Guide改善 / Audit',
+      OBSERVABILITY: 'Observability', CROSS_REPOSITORY_GITHUB: 'Cross-Repository GitHub', CONVERSATION_HANDOFF: 'Conversation Handoff',
+      GAME_DESIGN: 'Game Design', LEARNING_CONTENT: 'Learning Content', RESEARCH: 'Research', GOVERNANCE_ROUTING: 'Governance / Routing'
+    };
+
+    const signalLabels = {
+      MEANINGFUL_VISUAL_CHANGE: '意味のあるVisual変更', RESEARCHABLE_QUESTION: '外部Evidenceで答えが変わる重要Question',
+      EXISTING_SAVE: '既存Saveあり', SCHEMA_CHANGE: 'Schema変更', MIGRATION: 'Migration', AUTH_REQUIRED: '認証が必要',
+      EXTERNAL_API: '外部API / Webhook', PUBLIC_RELEASE: '一般公開', REAL_DEVICE_REQUIRED: '実機確認が必要',
+      GAME_PRIMARY_FLOW_CHANGE: 'Game主要Flow変更', GAME_COMPLETION_CHANGE: 'Game Completion変更',
+      CONVERSATION_STATE_RECOVERY: '会話状態のRecovery'
+    };
+
+    function checkbox(container, name, value, labelText) {
+      const label = document.createElement('label');
+      label.className = 'check';
+      const input = document.createElement('input');
+      input.type = 'checkbox';
+      input.name = name;
+      input.value = value;
+      const text = document.createElement('span');
+      text.textContent = labelText;
+      label.append(input, text);
+      container.append(label);
+    }
+
+    function selected(name) {
+      return [...document.querySelectorAll(`input[name="${name}"]:checked`)].map((input) => input.value);
+    }
+
+    function addDocs(target, list, reason, reasonMap) {
+      for (const doc of list || []) {
+        target.add(doc);
+        if (!reasonMap.has(doc)) reasonMap.set(doc, []);
+        reasonMap.get(doc).push(reason);
+      }
+    }
+
+    function resolveRoute() {
+      if (!router) return;
+      const docs = new Set();
+      const reasonMap = new Map();
+      const gateSet = new Set();
+      const wt = workType.value;
+      addDocs(docs, router.workTypes?.[wt], `Work Type: ${wt}`, reasonMap);
+
+      for (const domain of selected('domain')) {
+        addDocs(docs, router.domains?.[domain], `Domain: ${domain}`, reasonMap);
+      }
+
+      for (const signal of selected('signal')) {
+        const definition = router.signals?.[signal];
+        addDocs(docs, definition?.docs, `Signal: ${signal}`, reasonMap);
+        for (const gate of definition?.gates || []) gateSet.add(gate);
+      }
+
+      if (scope.value === 'MEANINGFUL' || scope.value === 'SYSTEMIC') {
+        gateSet.add('RULE-PREFLIGHT-GATE');
+      }
+
+      for (const gate of gateSet) {
+        const definition = router.gates?.[gate];
+        if (definition?.owner) addDocs(docs, [definition.owner], `Gate: ${gate}`, reasonMap);
+      }
+
+      gates.replaceChildren();
+      for (const gate of gateSet) {
+        const badge = document.createElement('span');
+        badge.className = 'gate';
+        badge.textContent = gate;
+        gates.append(badge);
+      }
+
+      owners.replaceChildren();
+      for (const doc of docs) {
+        const card = document.createElement('div');
+        card.className = 'owner-card';
+        const link = document.createElement('a');
+        link.href = githubBase + doc.split('/').map(encodeURIComponent).join('/');
+        link.textContent = doc;
+        const meta = document.createElement('div');
+        meta.className = 'owner-meta';
+        meta.textContent = [...new Set(reasonMap.get(doc) || [])].join(' · ');
+        card.append(link, meta);
+        owners.append(card);
+      }
+
+      state.textContent = docs.size
+        ? `${docs.size}件のOwner / RuleをCurrent Machine Routerから解決しました。`
+        : '該当Ruleを解決できませんでした。START HEREから確認してください。';
+    }
+
+    function clearSelections() {
+      document.querySelectorAll('input[type="checkbox"]').forEach((input) => { input.checked = false; });
+      scope.value = 'MEANINGFUL';
+      workType.selectedIndex = 0;
+      resolveRoute();
+    }
+
+    async function initRouter() {
+      try {
+        const response = await fetch(routerUrl);
+        if (!response.ok) throw new Error(`router ${response.status}`);
+        router = await response.json();
+
+        for (const key of Object.keys(router.workTypes || {})) {
+          const option = document.createElement('option');
+          option.value = key;
+          option.textContent = workLabels[key] || key;
+          workType.append(option);
+        }
+        for (const key of Object.keys(router.domains || {})) checkbox(domains, 'domain', key, domainLabels[key] || key);
+        for (const key of Object.keys(router.signals || {})) checkbox(signals, 'signal', key, signalLabels[key] || key);
+
+        workType.value = 'IMPLEMENTATION';
+        state.textContent = '選択内容からCurrent Machine Routerを使って解決します。';
+        resolveRoute();
+      } catch (error) {
+        console.error(error);
+        state.innerHTML = 'Machine Routerを読み込めませんでした。<a href="../../START_HERE.md">START HERE</a>または<a href="rules.html">ルール検索</a>を使ってください。';
+      }
+    }
+
+    document.querySelector('#resolve').addEventListener('click', resolveRoute);
+    document.querySelector('#clear').addEventListener('click', clearSelections);
+    workType.addEventListener('change', resolveRoute);
+    scope.addEventListener('change', resolveRoute);
+    domains.addEventListener('change', resolveRoute);
+    signals.addEventListener('change', resolveRoute);
+    initRouter();
+  </script>
+</body>
+</html>
