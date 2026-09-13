@@ -104,7 +104,9 @@
     "enabled": true,
     "procedure": "maintenance/DEEP_SYSTEM_AUDIT.md",
     "owner": "docs/14-continuous-improvement.md",
-    "resultDirectory": "maintenance/audits",
+    "resultRepository": "EliteMay/web-project-data",
+    "resultDirectory": "evidence/YYYY/web-project-guide/audits",
+    "compatibilityIndex": "maintenance/audits",
     "assumption": "start from a low-confidence hypothesis and require current repository evidence to earn confidence",
     "ownerDiscovery": "maintenance/rule-router.json owners registry",
     "ownerAxes": [
