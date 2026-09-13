@@ -25,6 +25,9 @@ jobs:
       - name: Validate guide structure and links
         run: node tests/validate-guide.mjs
 
+      - name: Validate round-two audit contracts
+        run: node tests/validate-deep-audit-round2-contracts.mjs
+
       - name: Test release lifecycle integrity
         run: node tests/test-release-integrity.mjs
 
