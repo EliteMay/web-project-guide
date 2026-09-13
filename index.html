@@ -1,21 +1,21 @@
 <!doctype html>
-<html lang="ja">
+<html lang="ja" data-repo-root="./" data-surface-id="home">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Web Project Guide の人間向け入口です。Repository別の作業ダッシュボード、AIの作業ルール、ルール検索、全ルール短縮版、研究・要件定義の一覧へ進めます。">
+  <meta name="description" content="Web Project Guide の人間向け入口です。Repository別の作業ダッシュボード、AIの作業ルール、作業ルート診断、サイト全体検索、全ルール短縮版、研究・要件定義の一覧へ進めます。">
   <title>Web Project Guide</title>
   <link rel="stylesheet" href="site/assets/human-guide.css">
   <link rel="stylesheet" href="site/assets/mobile-fixes.css">
   <style>
-    .home-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:28px}.home-card{display:flex;flex-direction:column;min-height:220px;padding:22px;border:1px solid var(--border);border-radius:10px;background:var(--surface);color:var(--text);text-decoration:none}.home-card:hover,.home-card:focus-visible{border-color:var(--accent);transform:translateY(-1px)}.home-kicker{color:var(--muted);font-size:12px;font-weight:700}.home-card h2{margin:12px 0 8px;font-size:20px}.home-card p{margin:0;color:var(--muted);font-size:14px}.home-arrow{margin-top:auto;padding-top:24px;color:var(--accent);font-size:13px;font-weight:700}.home-note{max-width:760px;margin-top:28px;color:var(--muted);font-size:13px}@media(max-width:800px){.home-grid{grid-template-columns:1fr}.home-card{min-height:0}}
+    .home-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:28px}.home-card{display:flex;flex-direction:column;min-height:220px;padding:22px;border:1px solid var(--border);border-radius:10px;background:var(--surface);color:var(--text);text-decoration:none}.home-card:hover,.home-card:focus-visible{border-color:var(--accent);transform:translateY(-1px)}.home-kicker{color:var(--muted);font-size:12px;font-weight:700}.home-card h2{margin:12px 0 8px;font-size:20px}.home-card p{margin:0;color:var(--muted);font-size:14px}.home-arrow{margin-top:auto;padding-top:24px;color:var(--accent);font-size:13px;font-weight:700}.home-note{max-width:760px;margin-top:28px;color:var(--muted);font-size:13px}.release-note{margin-top:14px;color:var(--muted);font-size:12px}@media(max-width:800px){.home-grid{grid-template-columns:1fr}.home-card{min-height:0}}
   </style>
 </head>
 <body>
   <header class="sitebar">
     <div class="sitebar-inner">
-      <a class="brand" href="index.html">Web Project Guide</a>
-      <nav class="tabs" aria-label="Guide navigation">
+      <a class="brand" data-human-guide-home href="index.html">Web Project Guide</a>
+      <nav class="tabs" data-human-guide-nav aria-label="Guide navigation">
         <a href="project-dashboards/">Project Dashboards</a>
         <a href="site/pages/work-dashboard.html">Guide Migration</a>
         <a href="site/pages/ai-workflow.html">AIの作業ルール</a>
@@ -26,12 +26,12 @@
     </div>
   </header>
 
-  <main class="container">
+  <main class="container" id="main-content">
     <header class="hero">
       <div>
         <p class="eyebrow">HUMAN GUIDE</p>
         <h1>各Repositoryの作業状況と、AIが従うルールを見る。</h1>
-        <p class="lead">Projectごとの並列作業はRepository別Dashboardへ分離します。Guide自体のMigration、AIの判断フロー、ルール検索、全ルール一覧、研究・要件定義の蓄積もここから確認できます。</p>
+        <p class="lead">Projectごとの並列作業、Guide自体のMigration、AIの判断フローに加えて、作業ルート診断とサイト全体検索からCurrent Ruleへ直接到達できます。</p>
       </div>
       <div class="hero-meta">
         <div class="meta-row"><span>Project作業</span><strong>Repo別Dashboard</strong></div>
@@ -53,6 +53,20 @@
         <h2>Guide Migration Dashboard</h2>
         <p>web-project-guide / data 自体のMigration Runについて、A/B/C/D/Iの進捗と状態を確認します。</p>
         <span class="home-arrow">Guide作業を見る →</span>
+      </a>
+
+      <a class="home-card" href="site/pages/task-router.html">
+        <span class="home-kicker">TASK ROUTER</span>
+        <h2>作業ルート診断</h2>
+        <p>作業種類・分野・Risk条件を選び、Current Machine Routerから今回読むOwner DocとGateを解決します。</p>
+        <span class="home-arrow">今回読むRuleを出す →</span>
+      </a>
+
+      <a class="home-card" href="site/pages/search.html">
+        <span class="home-kicker">SITE-WIDE SEARCH</span>
+        <h2>サイト全体検索</h2>
+        <p>Owner Docs、Current Requirements、Human Guide、Catalogを横断し、正本・要約・実例を区別して探します。</p>
+        <span class="home-arrow">Guide全体から探す →</span>
       </a>
 
       <a class="home-card" href="site/pages/ai-workflow.html">
@@ -85,6 +99,8 @@
     </section>
 
     <p class="home-note">Privateな <code>web-project-data</code> は内部データ置き場として使い、この公開サイトには表示して安全な情報だけを出します。正式な細かいルール本文は引き続きOwner Docsが正本です。</p>
+    <p class="release-note" data-guide-release></p>
   </main>
+  <script src="site/assets/human-guide-shell.js"></script>
 </body>
 </html>
