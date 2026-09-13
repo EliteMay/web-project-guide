@@ -22,13 +22,20 @@ for (const required of [
 
 for (const required of [
   'MUST: Automatic Resume前に1回だけUser確認する',
-  'Userが直前のResume候補を「違う」と否定',
   'MUST: Resume誤判定はRoot-Cause-firstで処理する',
   '別候補へ進む前にRoot Cause / Failure Mechanismを確認している'
 ]) {
   if (!conversationRecovery.includes(required)) {
     errors.push(`docs/23: missing automatic-resume confirmation/root-cause contract -> ${required}`);
   }
+}
+
+if (!includesAny(conversationRecovery, [
+  'Userが直前のResume候補を「違う」と否定',
+  'UserがResume候補を否定した場合',
+  'UserからResume先を「違う」と指摘された場合'
+])) {
+  errors.push('docs/23: resume rejection must trigger failure review before switching candidates');
 }
 
 if (!includesAny(conversationRecovery, [

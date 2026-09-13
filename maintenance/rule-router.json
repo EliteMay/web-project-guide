@@ -67,41 +67,33 @@
   "workTypes": {
     "REQUIREMENTS": [
       "docs/01-requirements.md",
-      "docs/12-project-profiles.md",
-      "docs/23-conversation-handoff-recovery.md"
+      "docs/12-project-profiles.md"
     ],
     "RESEARCH": [
-      "docs/20-evidence-first-research.md",
-      "docs/23-conversation-handoff-recovery.md"
+      "docs/20-evidence-first-research.md"
     ],
     "IMPLEMENTATION": [
       "docs/10-project-management.md",
-      "docs/07-testing-quality.md",
-      "docs/23-conversation-handoff-recovery.md"
+      "docs/07-testing-quality.md"
     ],
     "BUG_FIX": [
       "docs/10-project-management.md",
-      "docs/07-testing-quality.md",
-      "docs/23-conversation-handoff-recovery.md"
+      "docs/07-testing-quality.md"
     ],
     "REVIEW": [
-      "docs/07-testing-quality.md",
-      "docs/23-conversation-handoff-recovery.md"
+      "docs/07-testing-quality.md"
     ],
     "DATA_CONTENT": [
-      "docs/03-data-storage.md",
-      "docs/23-conversation-handoff-recovery.md"
+      "docs/03-data-storage.md"
     ],
     "DEPLOYMENT": [
       "docs/10-project-management.md",
       "docs/09-maintenance.md",
-      "docs/07-testing-quality.md",
-      "docs/23-conversation-handoff-recovery.md"
+      "docs/07-testing-quality.md"
     ],
     "MAINTENANCE": [
       "docs/09-maintenance.md",
-      "docs/10-project-management.md",
-      "docs/23-conversation-handoff-recovery.md"
+      "docs/10-project-management.md"
     ]
   },
   "domains": {
@@ -276,6 +268,11 @@
       ]
     }
   },
+  "interactionLifecycle": {
+    "completionDocs": [
+      "docs/23-conversation-handoff-recovery.md"
+    ]
+  },
   "goldenCases": [
     {
       "id": "meaningful-game-ui-requirements",
@@ -346,7 +343,8 @@
       ],
       "mustNotRequire": [
         "docs/18-domain-first-visual-research.md",
-        "docs/20-evidence-first-research.md"
+        "docs/20-evidence-first-research.md",
+        "docs/23-conversation-handoff-recovery.md"
       ]
     },
     {

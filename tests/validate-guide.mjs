@@ -34,6 +34,7 @@ const requiredFiles = [
   'docs/20-evidence-first-research.md',
   'docs/21-rule-routing-preflight.md',
   'docs/22-task-first-structure-flow-research.md',
+  'docs/23-conversation-handoff-recovery.md',
   'maintenance/README.md',
   'maintenance/DEEP_SYSTEM_AUDIT.md',
   'maintenance/review-policy.json',
@@ -253,6 +254,9 @@ if (routerSchema) {
   if (routerSchema?.$defs?.routeMap?.minProperties !== 1) {
     errors.push('rule-router.schema.json: route maps must reject empty registries');
   }
+  if (!routerSchema?.properties?.interactionLifecycle) {
+    errors.push('rule-router.schema.json: missing interactionLifecycle schema');
+  }
 }
 
 if (reviewPolicy) {
@@ -261,6 +265,15 @@ if (reviewPolicy) {
   }
   if (reviewPolicy.deepSystemAudit?.owner !== 'docs/14-continuous-improvement.md') {
     errors.push('review-policy.json: deepSystemAudit owner must be docs/14-continuous-improvement.md');
+  }
+  if (reviewPolicy.deepSystemAudit?.resultRepository !== 'EliteMay/web-project-data') {
+    errors.push('review-policy.json: deepSystemAudit resultRepository must be EliteMay/web-project-data');
+  }
+  if (reviewPolicy.deepSystemAudit?.resultDirectory !== 'evidence/YYYY/web-project-guide/audits') {
+    errors.push('review-policy.json: deepSystemAudit resultDirectory must point to companion Data audit storage');
+  }
+  if (reviewPolicy.deepSystemAudit?.compatibilityIndex !== 'maintenance/audits') {
+    errors.push('review-policy.json: deepSystemAudit compatibilityIndex must remain maintenance/audits');
   }
   if (!Array.isArray(reviewPolicy.deepSystemAudit?.surfaces) || reviewPolicy.deepSystemAudit.surfaces.length < 5) {
     errors.push('review-policy.json: deepSystemAudit must define cross-system audit surfaces');
@@ -272,15 +285,29 @@ if (router) {
     errors.push('rule-router.json: behaviorOwner must be docs/21-rule-routing-preflight.md');
   }
 
+  const ownerDocs = new Set(Object.values(router.owners || {}));
+  const lifecycleDocs = router.interactionLifecycle?.completionDocs || [];
+  if (!Array.isArray(lifecycleDocs) || lifecycleDocs.length === 0) {
+    errors.push('rule-router.json: interactionLifecycle.completionDocs must not be empty');
+  }
+
   const referencedDocs = new Set();
-  for (const rel of Object.values(router.owners || {})) referencedDocs.add(rel);
+  for (const rel of ownerDocs) referencedDocs.add(rel);
   for (const rels of Object.values(router.workTypes || {})) for (const rel of rels) referencedDocs.add(rel);
   for (const rels of Object.values(router.domains || {})) for (const rel of rels) referencedDocs.add(rel);
   for (const signal of Object.values(router.signals || {})) for (const rel of signal.docs || []) referencedDocs.add(rel);
   for (const gate of Object.values(router.gates || {})) referencedDocs.add(gate.owner);
+  for (const rel of lifecycleDocs) referencedDocs.add(rel);
 
   for (const rel of referencedDocs) {
     if (!fs.existsSync(path.join(root, rel))) errors.push(`rule-router.json: referenced doc does not exist -> ${rel}`);
+  }
+
+  for (const rel of lifecycleDocs) {
+    if (!ownerDocs.has(rel)) errors.push(`rule-router.json: lifecycle doc is not a registered owner -> ${rel}`);
+    for (const [workType, rels] of Object.entries(router.workTypes || {})) {
+      if (rels.includes(rel)) errors.push(`rule-router.json: lifecycle doc leaked into ${workType} preflight route -> ${rel}`);
+    }
   }
 
   const gateIds = Object.keys(router.gates || {});
@@ -304,6 +331,7 @@ if (router) {
   for (const rels of Object.values(router.domains || {})) for (const rel of rels) reachableOwnerDocs.add(rel);
   for (const signal of Object.values(router.signals || {})) for (const rel of signal.docs || []) reachableOwnerDocs.add(rel);
   for (const gate of Object.values(router.gates || {})) reachableOwnerDocs.add(gate.owner);
+  for (const rel of lifecycleDocs) reachableOwnerDocs.add(rel);
   for (const [ownerId, rel] of Object.entries(router.owners || {})) {
     if (!reachableOwnerDocs.has(rel)) errors.push(`rule-router.json: owner is registered but unreachable -> ${ownerId} (${rel})`);
   }
@@ -370,6 +398,16 @@ if (router) {
     }
     if (resolved.has('docs/18-domain-first-visual-research.md')) {
       errors.push('structure flow routing parity: visual research must not be required without visual scope');
+    }
+  }
+
+  const localUiBugCase = (router.goldenCases || []).find((testCase) => testCase.id === 'local-ui-bug');
+  if (!localUiBugCase) {
+    errors.push('rule-router.json: missing local-ui-bug golden case');
+  } else {
+    const resolved = resolveCase(localUiBugCase);
+    if (resolved.has('docs/23-conversation-handoff-recovery.md')) {
+      errors.push('local UI bug routing parity: interaction lifecycle owner must not be a preflight requirement');
     }
   }
 }

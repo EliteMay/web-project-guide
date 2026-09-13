@@ -3,7 +3,7 @@
   "$id": "https://github.com/EliteMay/web-project-guide/maintenance/rule-router.schema.json",
   "title": "Web Project Guide Rule Router",
   "type": "object",
-  "required": ["schemaVersion", "routerId", "behaviorOwner", "owners", "gates", "workTypes", "domains", "signals", "goldenCases"],
+  "required": ["schemaVersion", "routerId", "behaviorOwner", "owners", "gates", "workTypes", "domains", "signals", "interactionLifecycle", "goldenCases"],
   "properties": {
     "schemaVersion": { "type": "integer", "minimum": 1 },
     "routerId": { "type": "string", "minLength": 1 },
@@ -40,6 +40,19 @@
         },
         "additionalProperties": false
       }
+    },
+    "interactionLifecycle": {
+      "type": "object",
+      "required": ["completionDocs"],
+      "properties": {
+        "completionDocs": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "minItems": 1,
+          "uniqueItems": true
+        }
+      },
+      "additionalProperties": false
     },
     "goldenCases": {
       "type": "array",

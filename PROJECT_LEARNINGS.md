@@ -193,6 +193,19 @@ Common Rule本文は`docs/`、一般化済みのFailure / Success / Anti-Pattern
 - Prevention: Recovery Evidenceが強くても「候補を特定できる」と「Userがその作業を続けたい」が同義とは扱わない。誤判定を指摘されたら代替候補を先に出さず、既存Failure Workflowを先に適用する。
 - Guide candidate: yes — `docs/23` / `docs/10`連携へ反映済み。
 
+### PL-F-016 Completion LifecycleをPreflight Routeへ混ぜた
+
+- Date: 2026-09-14
+- Status: resolved
+- Severity: high
+- Symptom: Conversation Persistenceを通常InteractionのCompletionから外さないため、`docs/23`を全Development Work TypeのRequired Docsへ直接追加した結果、Local Bug等でもConversation Recovery Ownerが作業開始時の必読Docになった。同時にAudit保存境界はOwnerでData側へ移ったのに、Execution Checklist / review policyへ旧Guide-local保存先が残った。
+- Root Cause: 「作業前に読むPreflight」と「作業完了時に適用するLifecycle」をMachine Router上で同じRoute配列として表現し、Cross-cutting behavior変更のprojectionをphase別に分けなかった。
+- Final Fix: `interactionLifecycle.completionDocs`を最小追加し、`docs/23`をWork Type Preflightから除外。Conversation Recovery自体がTaskの場合だけDomain / SignalからPreflight到達させた。Deep AuditのChecklist / review policyもData側保存境界へ同期し、`docs/23`からData implementation detailを除いてBehavioral Contractへ戻した。
+- Detection method: Local UI Bug Golden Case、Work Type routing table、docs14 / Deep Audit checklist / review policyのstorage parity、Guide/Data owner boundary review。
+- Regression Guard: ValidatorでLifecycle DocがWork Type Preflightへ逆流しないこと、`local-ui-bug`が`docs/23`へover-routeされないこと、Audit result repository / directory / compatibility indexを構造検証する。
+- Prevention: Cross-cutting責務を追加するときは「いつ適用するか」を確認し、Preflight / during-work gate / completion lifecycleを同じ配列へ混ぜない。Owner変更時はOwner → Machine metadata → Execution Checklist / Template → Validatorをphase込みで横断確認する。
+- Guide candidate: yes — `docs/21` / `docs/23` / Router / Audit contractへ反映済み。
+
 ## Success
 
 ### PL-S-001 Ruleを消さず責務を戻す整理
@@ -242,10 +255,10 @@ Common Rule本文は`docs/`、一般化済みのFailure / Success / Anti-Pattern
 ### PL-S-005 Audit ReportをCurrent Finding Registerとして保存する
 
 - Date: 2026-09-07
-- Goal: 長い監査が途中で切れても「何を見た / 何が残る / どう直した」をGitHubだけから復元する。
-- Adopted Pattern: `maintenance/audits/`へbaseline / owner matrix / finding / severity / action / final statusを保存し、修正時にResolvedへ更新する。
-- Why it worked: Conversation Summaryに依存せず、監査進捗と未解決FindingをCurrent Repositoryから追跡できた。
-- Trade-off: ReportをCommon Rule本文にしないよう、次回AuditではCurrent Ownerを再読する必要がある。
+- Goal: 長い監査が途中で切れても「何を見た / 何が残る / どう直した」をRepository Evidenceから復元する。
+- Adopted Pattern: point-in-time Audit Reportへbaseline / owner matrix / finding / severity / action / final statusを保存する。Current storage boundaryでは書込み可能なら本体を`EliteMay/web-project-data/evidence/YYYY/web-project-guide/audits/`へ置き、Guide側`maintenance/audits/`はCompatibility Pointer / Indexだけにする。
+- Why it worked: Conversation Summaryに依存せず、監査進捗と未解決Findingを再取得できる。
+- Trade-off: ReportはCurrent Ruleの第二正本ではないため、次回AuditではCurrent Ownerを再読する必要がある。
 - Reuse when: 多数Owner /複数PRにまたがるSystem audit。
 - Avoid when: 単一Fileの小修正。
-- Guide candidate: yes — `docs/14` / Audit archiveへ反映。
+- Guide candidate: yes — `docs/14` / Guide-Data storage boundaryへ反映済み。

@@ -17,7 +17,7 @@ Current Repository / User Intent
 ↓
 Work Type / Domain / Risk Signalを分類
 ↓
-rule-router.jsonからRequired Docs / Gatesを解決
+rule-router.jsonからPreflight Required Docs / Gatesを解決
 ↓
 Required DocsをCurrent Guide Revisionから実際に読む
 ↓
@@ -26,11 +26,26 @@ Required DocsをCurrent Guide Revisionから実際に読む
 Research / Best Reasonable Decision / 要件確定 / 実装
 ↓
 必要なValidation
+↓
+Guide対象InteractionでPersistence capabilityがある場合はInteraction Lifecycleを完了
 ```
 
 `README.md`や`START_HERE.md`を読んだだけで、必要Owner Docを読んだ扱いにはしません。
 
 ただし、Typo修正や原因と正解が明確な局所Bugへ大規模Preflightを要求しません。小規模作業でも関係する専門Ownerだけは必要範囲で確認します。
+
+### MUST: Preflight RoutingとInteraction Lifecycleを分離する
+
+`workTypes` / `domains` / `signals` / `gates`は、**作業前・作業中に今回必要なRuleへ到達するためのPreflight Routing**です。
+
+一方、Guide対象の開発Interactionを完了するときのConversation Persistence / Recovery責務は、Machine Routerの`interactionLifecycle.completionDocs`で別Layerとして表します。
+
+- `docs/23-conversation-handoff-recovery.md`を全Work TypeのPreflight Required Docへ機械的に追加しない。
+- 会話移行、stale checkpoint、Automatic Resume、duplicate active conversation等が今回のTask自体に関係する場合は、`CONVERSATION_HANDOFF` Domain / `CONVERSATION_STATE_RECOVERY` Signalから`docs/23`をPreflightで読む。
+- 通常の実装・Bug Fix・Research等で会話Recoveryが作業Domainではない場合、`docs/23`を作業開始時の必読Ownerにしない。
+- ただしGuide対象InteractionでPersistence capabilityが利用できる場合、作業完了前に`interactionLifecycle.completionDocs`へ戻り、Current Completion / Persistence Contractを必要範囲で確認する。
+
+この分離はConversation Persistenceを任意化するためではありません。**Preflightで読むRuleと、Interaction完了時に適用するLifecycle責務を同じ配列へ混ぜない**ためのものです。
 
 ### MUST: Known Failureを実装前に再利用する
 
@@ -299,10 +314,13 @@ Profileは現行の分類を維持し、Profile体系そのものの再設計は
 
 - Owner Doc Registry
 - Stable Gate Registry
-- Work Typeの基本Route
+- Work Typeの基本Preflight Route
 - Domain → Owner Doc
 - Risk Signal → Required Doc / Gate
+- Interaction LifecycleのCompletion Doc
 - 代表Golden Cases
+
+`interactionLifecycle.completionDocs`はPreflight Required Docsへ合流させません。Guide対象InteractionのCompletion時に条件が成立する場合だけ参照するLifecycle Layerです。
 
 最初からSession Receipt、永続Cache、専用CLI、複雑なRisk Scoreを必須化しません。実運用で不足が確認された機能だけ追加します。
 
@@ -329,19 +347,23 @@ Guide Validatorでは少なくとも次を確認します。
 - Work Type / Domain / Signal / Gateの参照先が有効
 - Stable Gate IDが重複しない
 - Gate Ownerが一意
+- `interactionLifecycle.completionDocs`が有効なOwner Docを指す
+- Interaction LifecycleのCompletion Docが全Work TypeのPreflight Routeへ逆流していない
 - 代表Golden Caseで必要DocがRoutingされる
-- Owner Registryの重要DocがRoute / Gateから実質到達不能になっていない
+- Local UI Bug等の代表Small TaskがConversation Handoff Ownerへover-routeされない
+- Owner Registryの重要DocがRoute / Gate / Lifecycleから実質到達不能になっていない
 - `START_HERE.md`からこの章へ辿れる
 - Guide自身のDeep Reviewで`docs/14`へMachine Routerから到達できる
 - Structure / Flowの代表Caseで`docs/22`へ到達できる
 - Conversation Recoveryの代表Caseで`docs/23`へ到達できる
 
-文章の特定フレーズを大量固定して品質保証の代わりにしません。文章表現ではなく、Owner / Route / Gate / Link等の構造Contractを優先して検証します。
+文章の特定フレーズを大量固定して品質保証の代わりにしません。文章表現ではなく、Owner / Route / Gate / Lifecycle / Link等の構造Contractを優先して検証します。
 
 ## 非目標
 
 - Guide全文を毎回読む
 - 小さなBugにもResearch / Full Checklistを強制する
+- Interaction LifecycleのCompletion Ownerを全Work TypeのPreflight Required Docへ混ぜる
 - Userへ「どのGuideを読むか」を決めさせる
 - Core / High-costという分類だけでUser回答待ちにする
 - Profileだけで全Routingを決める
@@ -350,4 +372,4 @@ Guide Validatorでは少なくとも次を確認します。
 
 ## 完成条件
 
-Rule Routingは、Agentが今回の作業に必要な正本を**作業前に到達・読込でき、不要な章を機械的に増やさず、作業途中のScope変化でも追加Ruleへ戻れ、Repository / Requirements / Evidenceで解けるDecisionを不要なUser確認へ投げ返さず継続できる**状態を完成基準とします。
+Rule Routingは、Agentが今回の作業に必要な正本を**作業前に到達・読込でき、不要な章を機械的に増やさず、作業途中のScope変化でも追加Ruleへ戻れ、Repository / Requirements / Evidenceで解けるDecisionを不要なUser確認へ投げ返さず継続でき、Interaction Completion責務をPreflight Routeと混同しない**状態を完成基準とします。

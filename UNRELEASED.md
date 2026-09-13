@@ -25,6 +25,7 @@
 - AI-generated UI homogenization等のnon-normative Research assets
 - Release baseline / Current unreleased stateを検証する`tests/validate-release-integrity.mjs`
 - 正式Release状態を自己参照なしで構築できることを検証する`tests/test-release-integrity.mjs`
+- Machine RouterへPreflightとは独立した`interactionLifecycle.completionDocs` Layerを追加
 
 ## Changed
 
@@ -32,6 +33,7 @@
 - Trusted Recovery Phase 2の検証済みBaselineとして`web-project-data` PR #134 / merge `740c2fcdacaeda77e1b48430fab681bc0bf89e1f`、merge後`Validate Data` / Windows PowerShell Compatibility PASSをCurrent Contractへ反映
 - Dashboard V2のWork Queue状態表記をCurrent Queue Evidenceへ合わせ、Task生成済みだが`activeRunId: null`・idle lanes・queued tasksでtask execution未開始であることを明確化
 - Guide / Dataの責任境界を整理し、point-in-time Audit、Project-specific / time-specific Evidence、Promotion済みHistorical Research、Research working stateの本体を`EliteMay/web-project-data`へ保存するContractへ変更
+- Deep System AuditのExecution Checklist / review policyもData側Audit保存先へ合わせ、Guide側`maintenance/audits/`をCompatibility Pointer / Indexへ限定
 - `maintenance/audits/`、移動対象`maintenance/research/*`、Project-specific `references/*`の旧Pathを削除せずCompatibility Pointer化し、過去Linkを維持
 - Publicで複数Projectへ直接再利用するCurated Research / ReferenceとCurrent Research execution protocolはGuide側へ残す境界を明文化
 - Root `REQUIREMENTS.md`からPhase単位のResearch履歴本文を外し、Current Contract + Guide/Data storage boundaryへ整理
@@ -40,13 +42,12 @@
 - Human Guideを`site/`配下へ責務別に整理し、既存Root URLはCompatibility Adapterとして維持
 - Human Guideのmobile usability、dashboard freshness、isolated worker status、current routing parityを改善
 - Work Queue contractを現在のruntime / Claim Gate / public projectionへ同期
-- Conversation Persistenceの通常Entryを`web-project-data/tools/conversations/persist-interaction.mjs`へ合わせ、Current Repository再取得境界を明確化
 - Conversation PersistenceをGuide-scoped InteractionのCompletion Gateへ接続
-- 全Development Work TypeをConversation Persistence OwnerへRoutingし、通常の実装・調査・公開作業でも保存確認がCompletion経路から外れないように強化
+- Conversation Persistence Ownerを全Development Work TypeのPreflight Required Docから外し、`interactionLifecycle.completionDocs`でCompletion時に到達する構造へ変更。Conversation Recovery自体がTaskの場合は従来どおりDomain / SignalからPreflightで`docs/23`へ到達
 - Conversation Handoff / Recovery OwnerをWorkstream候補解決、semantic candidate interpretation、one-time Resume Confirmation Gate、User Override、Write Target / Live Guard分離へ拡張
 - Automatic Resume候補をUserが否定した場合、別候補へ即切替せずRoot Cause / Failure Mechanism確認と必要な再発防止を先に行うFlowへ変更
-- Live coordination churnをCanonical `main`から分離し、dedicated `recovery-live` coordination branchとCAS / fast-forward-only publicationを使うContractへ変更
-- Persistence成功条件をInteraction file存在だけでなくConversation checkpoint / Workstream association / Correction / generated indexの整合へ強化
+- `docs/23`はRecovery / PersistenceのBehavioral Contractへ限定し、Data側のBranch / Ref名、File path、Schema、書込みAlgorithm、Receipt field、Settlement implementationを`EliteMay/web-project-data` Current Contractへ委譲
+- Persistence成功条件はGuide側で特定Fieldを複製せず、Current Data Contractが要求するCanonical / Derived state整合とPersistence Receipt相当のEvidenceを確認するContractへ整理
 - `docs/10-project-management.md`へRoot-Cause-first Failure / Bug Workflowを追加
 - `guide-version.json`へReleased baseline commitとCurrent release stateを追加
 - `docs/09-maintenance.md`へReleased baseline / Unreleased current stateの分離Contractを追加
@@ -56,8 +57,11 @@
 ## Fixed
 
 - Current Rule / Procedureとpoint-in-time Research / Evidenceの保存場所がGuide内で重複し、Public Guideが作業履歴Repository化し得た責任境界の曖昧さ
+- `docs/14`はAudit結果をData側へ保存すると定義しているのに、Deep Audit Checklist / review policyがGuide側`maintenance/audits`を結果本体の保存先としていた矛盾
 - Persistence Ruleが存在していても通常Interactionの終了経路から適用されず、保存漏れが起こり得たCompletion Routing failure
 - Persistenceの文章Validatorは通っていてもMachine Routerの通常Work Typeが`docs/23`へ到達せず、実際のConversation保存が再度抜けたRule Application failure
+- 上記対策として`docs/23`を全Work Typeへ直接入れた結果、Local Bug等までConversation Recovery OwnerをPreflight必読にしていたover-routing
+- Guide側`docs/23`とData側Current Contractの両方へCurrent Recovery implementation detailが存在し、第二Source of Truth化し得た責務重複
 - Automatic ResumeのHigh Confidence候補をUser確認なしでResume可能としていた誤復帰経路と、User否定後にRoot Cause確認なしで別候補へ進めたFailure path
 - Caller-supplied Confirmation / write-safety assertion、historical backfill、future timestamp、stale topic accumulationがRecovery Current Stateを誤らせ得る経路
 - Correction Interactionのsource Workstreamで新Interaction IDを直接参照しない正当なContractをPersistence Receiptがfailure扱いするRegression
@@ -72,5 +76,5 @@
 - 新しい正式Releaseはまだ切らず、Released baselineは`1.22.0 / 2026-09-07`のまま維持
 - Product RepositoryのRuntime / Storage / Schema / Deploymentを自動変更しない
 - Automatic Resume Capabilityがない通常ChatGPT環境へPlatform-level lifecycle hookが存在すると仮定しない
-- Existing Interaction / Workstream recordsは`stateEffect`未指定をCurrent-compatibleとして扱い、破壊的rewritingを要求しない
+- Existing Interaction / Workstream recordsはCurrent Data ContractでCompatibilityを扱い、破壊的rewritingをGuide側から要求しない
 - non-normative Research / Work Report / Project Learning / Release bookkeepingだけの変更まで機械的に新Releaseへ昇格させない
