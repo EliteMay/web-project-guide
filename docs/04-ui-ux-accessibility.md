@@ -73,41 +73,25 @@ Visual Qualityを高めるときは、原則として次の順で考えます。
 
 余白、文字サイズ・Weight、境界線、背景差、密度、Alignmentだけで十分な階層が作れるなら、Effectを追加しない選択も正解です。
 
-## Design Direction
+## Visual Directionとの責務境界
 
-### CONDITIONAL: Visual Designが重要なProjectではCSSより先に方向を決める
+Meaningful Visual Changeで次を決めるWorkflowは [18 Domain-first Visual Research](18-domain-first-visual-research.md) を正本とします。
 
-Landing Page、Portfolio / Showcase、Media、一般公開Product、Visual Qualityを重視するTool等では、実装前に最低限次を整理します。
+- Target Type / Domain Research
+- Representative Visual Referenceの選定・比較
+- Current UIの`KEEP / FIX / REMOVE`
+- Design Direction Contract
+- 2〜3 structural directionsの生成・比較
+- CandidateのPromote / Reject
+- Visual Foundation Reset
 
-- **Design Concept:** 何を感じてほしいか / 何を最優先で見せるか
-- **Reference Direction:** 実在SiteやDesign Systemから何を参考にするか。ただしコピー元にはしない
-- **Layout Type:** single-column / split / sidebar / master-detail / editorial / dashboard等
-- **Navigation Type:** top nav / sidebar / tabs / command bar等
-- **Content Density:** low / medium / high
-- **Typography Direction:** compact / editorial / product UI / display-heavy等
-- **Color Rule:** neutral中心 / brand accent / semantic color等
-- **Component Rule:** card中心にするのか、list / table / border / sectionを使い分けるのか
-- **Decorative Effect Policy:** shadow / blur / gradient / motionを何のために使うか
+この章はDirection候補をどう作るかではなく、**選定したDirectionや実装済みUIが良いUIとして成立しているか**を評価する一般原則を所有します。Visual Direction Workflowをここへ再定義しません。
 
-結果へ大きく影響する場合は、**2〜3種類の構造的に異なるDesign Directionを比較してから1つを選びます。**
+### SHOULD: 題材との適合を評価する
 
-比較案は「青版 / 緑版 / 紫版」のような色違いではなく、Navigation、Density、Content Width、Grid、Typography、Primary Action等が実際に異なる案にします。
+「modern」「premium」「clean」等の抽象語だけでVisual Qualityを判断しません。
 
-実在サービスは方向性を説明する語彙として参照できます。
-
-例:
-
-- GitHub / dense product UI方向: 高密度、明確なNavigation、List / Table / Panel中心
-- Apple / visual showcase方向: 広い余白、強いVisual hierarchy、少ない同時情報
-- Discord / Spotify等のservice UI方向: Product / Media / actual UIを前面に出す
-
-これは「その企業のLayoutをコピーする」という意味ではありません。
-
-### SHOULD: 題材からDesignを導く
-
-「modern」「premium」「clean」等の抽象語だけからVisualを決めません。
-
-Design Directionを考えるときは、Project固有の次の材料を先に見ます。
+Project固有の次の材料と、実際のLayout / Component / hierarchyがつながっているか確認します。
 
 - 利用者が普段使う語彙
 - 扱うContent / Data / Mediaの形
@@ -116,7 +100,7 @@ Design Directionを考えるときは、Project固有の次の材料を先に見
 - 情報の比較・探索・編集・閲覧などの性質
 - 利用頻度と必要な情報密度
 
-実在企業を参考にする場合も、色・角丸・Heroを真似るのではなく、**Audience / Job / Content Model / Navigation / Density / Proof / Component choice / Effectの理由**を抽象化します。
+実在企業を参考にした場合も、色・角丸・Heroを真似たかではなく、**Audience / Job / Content Model / Navigation / Density / Proof / Component choice / Effectの理由**が今回のProjectへ適合しているかを見ます。
 
 ### SHOULD: Signatureは1つを明確にする
 
@@ -145,7 +129,7 @@ AIへ先に固定しやすいもの:
 - 崩してはいけない仕様
 - 既存Design Systemがある場合のToken / Component契約
 
-Visual Design決定前に固定しすぎないもの:
+Visual Direction確定前に固定しすぎないもの:
 
 - Heroの有無と高さ
 - Card Gridの列数
@@ -157,13 +141,13 @@ Visual Design決定前に固定しすぎないもの:
 - Gradient / Glass / Glow / Shadow
 - CTA Sectionの数と配置
 
-「full-height centered hero + 3 cards + glass nav + cursor glow」のように完成形をPromptへ固定してから「独自Designにして」と要求すると、AI自身の探索余地を消します。
+候補生成・比較の順序自体は`docs/18`を正本とします。「full-height centered hero + 3 cards + glass nav + cursor glow」のように完成形をPromptへ固定してから「独自Designにして」と要求すると、AI自身の探索余地を消します。
 
-## Wireframe Before Visual Polish
+## Structure Before Visual Polish
 
-### SHOULD: 色とEffectを外しても成立する構造を先に作る
+### SHOULD: 色とEffectを外しても成立する構造を保つ
 
-Visual Design前に、少なくとも次の配置関係を決めます。
+Visual polish前後を問わず、少なくとも次の配置関係が装飾なしでも理解できることを確認します。
 
 - Header
 - Navigation
@@ -173,26 +157,13 @@ Visual Design前に、少なくとも次の配置関係を決めます。
 - Detail / Supporting Information
 - Footer（必要な場合）
 
-推奨順序:
+Information Architecture / Navigation / Task Flowの設計Workflowは`docs/22`、ResearchからVisual Directionを選ぶWorkflowは`docs/18`を正本とします。この章ではその順序を別のWorkflowとして重複定義しません。
 
-```text
-Purpose / Workflow
-→ Data / State
-→ Information Architecture
-→ Wireframe / UI Structure
-→ Design Direction
-→ Design Plan Critique
-→ Typography / Spacing / Color
-→ Decorative Effects
-→ Build
-→ Visual Design Review
-```
+これは [AP-020 Design Before Workflow](../catalog/anti-patterns.md) と同じ考え方です。Visualを重視する場合でも、Workflow / Data / UI Structureを飛ばして見た目だけ完成させません。
 
-これは [AP-020 Design Before Workflow](../catalog/anti-patterns.md) と同じ考え方です。Visualを重視する場合でも、Workflow / Data / UI Structureを飛ばして見た目から完成させません。
+### Visual Plan Quality Review
 
-### Design Plan Critique
-
-Visual Designが重要なProjectでは、CSSを本格実装する前に一度Directionを自己Reviewします。
+`docs/18`でDirection / Candidateを選んだ後、本格Build前または大きなPolish前に品質観点でReviewします。
 
 確認例:
 
@@ -202,7 +173,7 @@ Visual Designが重要なProjectでは、CSSを本格実装する前に一度Dir
 - 「modern」「premium」等の抽象語をEffectで埋めていないか
 - Companion ToolやReferenceのSkeletonをそのまま完成形にしていないか
 
-Genericに見える場合は、実装量を増やす前にDirectionを修正します。
+Genericに見える場合は、実装量を増やす前に`docs/18`のDirection / Candidate判断へ戻ります。
 
 ## AI Template Lookを避ける
 
@@ -334,17 +305,15 @@ Project Typeに応じて適切な構造を変えます。
 | Data-heavy App | Search / filters / table / master-detail / comparison |
 | Portfolio / Showcase | Editorial rhythm / project imagery / asymmetric composition |
 
-これはTemplate指定ではありません。同じProject Typeでも内容・利用頻度・主要操作によって別構造を選べます。
+これはTemplate指定ではありません。同じProject Typeでも内容・利用頻度・主要操作によって別構造を選べます。Direction候補をどう調査・比較するかは`docs/18`を正本とします。
 
 ## Companion Tool / Visual Catalogの扱い
 
-Design direction比較Tool、過去Layout Catalog、Skeleton集等を使う場合も、それをCommon Ruleの正本や完成Templateにしません。
+Design direction比較Tool、過去Layout Catalog、Skeleton集等は、[18 Domain-first Visual Research](18-domain-first-visual-research.md) のResearch / Candidate inputとして扱います。この章ではCandidate数や比較Workflowを別に定義しません。
 
-- Structure比較の語彙として使う。
-- 2〜3のcoherent directionを比較する。
-- Palette変更だけを新Directionとしない。
-- Layout ID / Skeletonを正解一覧としない。
-- Target ProjectのNavigation / Density / Content / Primary ActionへRebuildする。
+- Tool / CatalogをCommon Ruleの正本や完成Templateにしない。
+- Target ProjectのTask / Navigation / Density / Content / Primary Actionへ適合しているかをこの章の品質原則で確認する。
+- Layout ID / SkeletonやPalette差だけを「高品質」の根拠にしない。
 
 過去に利用した特定Companion ToolのEvidenceは [DesignShelf Companion Tool Evidence](../references/designshelf-companion-tool-evidence.md) に非Normative Referenceとして保存します。Current Tool実装は利用時にCurrent Repositoryを再確認します。
 
