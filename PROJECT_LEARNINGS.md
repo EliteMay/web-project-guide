@@ -206,6 +206,19 @@ Common Rule本文は`docs/`、一般化済みのFailure / Success / Anti-Pattern
 - Prevention: Cross-cutting責務を追加するときは「いつ適用するか」を確認し、Preflight / during-work gate / completion lifecycleを同じ配列へ混ぜない。Owner変更時はOwner → Machine metadata → Execution Checklist / Template → Validatorをphase込みで横断確認する。
 - Guide candidate: yes — `docs/21` / `docs/23` / Router / Audit contractへ反映済み。
 
+### PL-F-017 Write capability確認でAuthoritative BranchへProbeした
+
+- Date: 2026-09-14
+- Status: resolved
+- Severity: medium
+- Symptom: GitHub write / branch toolingの利用可否を確認する過程で、Guide `main`へ一時File `__probe__`と後日の`__noop__`を作成し、直後に削除した。最終Contentには残らなかったが、不要なCommit historyとCI / Pages実行Evidenceが残った。
+- Root Cause: Tool capability discoveryと実際のRepository mutationを分離せず、「書けるか確認する」ための試験WriteをAuthoritative Branchで実行した。Create後にDeleteすればContent上は戻ることを、安全なno-opと誤認した。
+- Final Fix: `docs/10`へ`Write Capability / Tool Discovery Safety`を追加し、Read-only tool discovery → target ref確認 → 意図したProduct writeの順へ固定。実Write検証が避けられない場合はisolated branch / scratch ref等のnon-authoritative targetを使う。Quality ChecklistにもDefault Branch write-probe禁止を追加した。
+- Detection method: Git history / Work Report / point-in-time Audit Evidenceで、目的のProduct変更ではないcreate-delete pairがDefault Branchへ入っていることを確認。
+- Regression Guard: `tests/validate-deep-audit-round2-contracts.mjs`でOwner sectionとChecklist execution guardの存在を構造確認する。
+- Prevention: Capability / permission discoveryでは、まずTool schema・read-only endpoint・current refを確認する。Authoritative BranchへのmutationはUser-requested Product changeまたは必要なRepository operationに限定する。
+- Guide candidate: yes — `docs/10` / Quality Checklistへ反映済み。
+
 ## Success
 
 ### PL-S-001 Ruleを消さず責務を戻す整理
