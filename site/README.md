@@ -2,6 +2,8 @@
 
 This directory contains the human-facing Web Project Guide runtime that is published with GitHub Pages.
 
+Current Human Guide product contract: [`../HUMAN_GUIDE_REQUIREMENTS.md`](../HUMAN_GUIDE_REQUIREMENTS.md)
+
 ## Layout
 
 ```text
@@ -24,5 +26,7 @@ site/
 ## Authority boundary
 
 The pages here are human-readable summaries and navigation surfaces. Normative Guide rules remain owned by `docs/` and the registered Owner Docs. Research remains non-normative evidence unless promoted into an Owner / Requirements contract. Do not duplicate a second normative rule body into `site/`.
+
+Human Guide navigation, search, routing projections, freshness labeling, public-data boundaries, and structural validation must follow `HUMAN_GUIDE_REQUIREMENTS.md`.
 
 When paths change, update page links, runtime fetch paths, compatibility adapters, and `tests/validate-human-guide.mjs` together, then verify the final GitHub Pages URLs after merge.
