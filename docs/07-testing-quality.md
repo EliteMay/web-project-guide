@@ -65,6 +65,60 @@ Pure Functionにできる処理はブラウザUIから切り離してTestしま�
 
 UIが重要なSiteでは、変更内容に応じてNavigation / overflow / fixed UI / Canvas geometry /主要Button visibility等も確認します。
 
+## Task-based Usability Validation
+
+CONDITIONAL: Primary Task、MeaningfulなUX / IA、重要な新機能について、Self ReviewやStatic / E2Eだけでは「初見Userが理解し、自力で完了できるか」が不確実な場合、**実際または想定利用者によるTask observation**へ上げます。Current evidenceは [Task-based Usability Testing Research](../references/task-based-usability-testing-research.md) を参照します。
+
+Formal Labや固定人数を全Projectへ要求しません。小規模Personal Projectでも、判断へ影響する不確実性があるなら、対象Userに近い人による短いRepresentative SessionやPrototype確認を利用できます。
+
+### Task Design
+
+TaskはUI操作そのものではなく、Userが達成したいGoalとして書きます。
+
+- 実際に起こり得る、関連性のあるGoalにする。
+- 成功条件を観察可能にする。
+- `設定を開いてXボタンを押してください`のように正解Pathを含めない。
+- Control名、Menu名、期待する答えをTask本文で教えない。
+- 既に知識を持つUserだけが成功するTaskなら、その前提がTarget Userと一致するか確認する。
+
+### Observation / Facilitation
+
+Facilitatorは原則として先回りして教えず、何を見て・何を期待し・どこで迷ったかを観察します。Think-aloudは補助Evidenceとして利用できますが、発言だけでTask successを判定しません。
+
+結果は必要に応じて次を区別します。
+
+- **Unassisted Success** — Helpなしで正しいGoalへ到達
+- **Assisted Success** — Hint / explanation後に到達
+- **False Success** — Userは成功したと思ったが実際のGoal / Stateが成立していない
+- **Blocked** — 途中で進めなくなった
+- **Abandoned** — Taskを諦めた / 離脱した
+
+Helpを与えた場合はその時点を記録し、Assisted SuccessをUnassisted Successへ読み替えません。
+
+### Findingとして残すもの
+
+Preferenceの多数決より、**観察したTask failureとContext**を優先します。
+
+- どのGoal / Stepで起きたか
+- 何を期待していたか
+- 何を見落とした / 誤解したか
+- 誤操作や遠回りが起きたか
+- 自力Recoveryできたか
+- Helpが必要だったか
+- 間違った結果を成功と認識したか
+
+SeverityはPrimary Taskへの影響、完了不能、危険な誤成功、Recovery cost等から判断します。固定のParticipant数や全Project共通のTime-on-task thresholdをPass条件にしません。
+
+### Benchmarking
+
+同じPrimary Taskを継続的に改善する価値がある場合、安定したTaskについてTask completion、Time、Error / abandonment等を反復計測できます。BenchmarkはTrend Evidenceであり、単一の平均時間や1回の高い成功率だけをUX完成のOracleにしません。
+
+### Privacy / Data
+
+Real User Dataを使う必要がなければDummy / Test Dataを優先できます。個人情報・Credential・private contentを「現実的なTestのため」という理由だけで収集・保存しません。
+
+Task / IA自体のResearch Workflowは [22 Task-first Structure / Flow Research](22-task-first-structure-flow-research.md)、一般UI / UX原則は [04 UI / UX / Accessibility](04-ui-ux-accessibility.md) を正本とし、この章は**実際に使えるかを観察・検証する方法**を所有します。
+
 ## Data / Storage Verification
 
 Data / Storage変更ではHappy Pathだけで完成扱いにしません。Projectに該当する範囲で、[03 Data / Storage](03-data-storage.md) のContractをFailure Caseまで検証します。
@@ -718,6 +772,37 @@ Feature Detection / fallbackを実装した場合、Supported pathだけでな�
 ### Polyfill / Transpilation Verification
 
 Polyfill / transpilationを採用する場合、Build成功だけで互換性完了としません。Target Runtimeで必要なsyntax / APIが実際に成立すること、Bundle / Performance / Securityへの副作用、不要になったLegacy layerが残っていないことを必要範囲で確認します。Dependency判断は [13](13-dependencies-assets.md#web-platform-compatibility-dependencies) を使います。
+
+## Browser Capability / Permission Verification
+
+Browser Permission / Powerful Featureを使う場合、Security / PrivacyのBehavioral Contractは [06 Security](06-security.md#browser-powerful-feature-permission--capability-access) を正本とし、この章では**実際のPermission / Capability StateとBrowser差を検証**します。Current evidenceは [Browser Powerful Feature / Permission Research](../references/browser-powerful-feature-permission-research.md) を参照します。
+
+すべてのAPIへ同じMatrixを機械適用せず、対象APIとPrimary Taskに関係するStateだけを選びます。
+
+確認候補:
+
+- API / Browser自体がunsupportedまたはunavailable
+- Secure Context要件を満たす正常Pathと、満たさない場合のFailure
+- 初回`prompt` / request
+- Granted後のPrimary Task
+- Denied時のFallback / recovery
+- Revoked / changed後にstaleな`enabled`表示を残さない
+- User activationが必要な操作でActivationがある / ない場合
+- Permissions Policy / iframe等でDocument側からblockedされた場合
+- Device missing / busy / OS-level failure
+- per-use requestが必要なCapabilityで、以前の成功を永続Permissionと誤認しない
+
+### MUST: Operation成功とPermission表示を一致させる
+
+Browser Promptで許可された、またはPermissions APIが`granted`を返しただけで機能成功としません。実際のOperationが失敗した場合はSuccess / Enabled表示へ進めず、Reasonを区別してRecovery可能なStateへ戻します。
+
+Denied / blocked時に自動RetryでPromptを繰り返しません。Userが再試行を選んだ場合も、現在のBrowser / APIで再Prompt可能なのか、設定変更が必要なのか、per-use PromptなのかをCurrent behaviorに合わせます。
+
+### Browser / Device Matrix
+
+Clipboard、Notification、Media / Capture、Device系API等はBrowser / OS差があり得るため、Primary Taskへ重要ならRepresentative Browserで確認します。Simulator / headlessではPrompt / OS permission / physical device状態を再現できない場合があるため、その場合はReal Browser / Real Deviceへ上げます。
+
+実機確認できなければ`Real Device Validated`や`User Validated`へ昇格させず、未確認条件を残します。
 
 ### Real Browser / Real Device
 

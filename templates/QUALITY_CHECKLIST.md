@@ -28,6 +28,7 @@
 | 条件 | 追加確認 | Owner |
 |---|---|---|
 | User-facing UI | UI / Visual / Accessibility | [04](../docs/04-ui-ux-accessibility.md) / [17](../docs/17-visual-quality-baseline.md) |
+| Primary Task / UX / IAの使いやすさに重要な不確実性がある | Task-based Usability Observation / User Validation | [07](../docs/07-testing-quality.md) / [04](../docs/04-ui-ux-accessibility.md) / [22](../docs/22-task-first-structure-flow-research.md) |
 | Meaningful Visual Change | Visual Research / Direction | [18](../docs/18-domain-first-visual-research.md) |
 | Data / Save / Import / Migration | Data safety | [03](../docs/03-data-storage.md) |
 | Page Load / 重いRuntime | Performance / Reliability | [05](../docs/05-performance-reliability.md) |
@@ -38,6 +39,7 @@
 | General Web Deployment / Managed Hosting / Serverless / Backend | Runtime / Environment / Release / Validation | [10](../docs/10-project-management.md) / [09](../docs/09-maintenance.md) / [07](../docs/07-testing-quality.md) |
 | GitHub Pages / 公開Site | Pages / Public URL / Repository discoverability | [08](../docs/08-github-pages.md) / [10](../docs/10-project-management.md) |
 | Browser / Web Platform compatibility | Support Target / Feature fallback / Browser verification / Compatibility dependency | [01](../docs/01-requirements.md) / [07](../docs/07-testing-quality.md) / [13](../docs/13-dependencies-assets.md) |
+| Browser Powerful Feature / Permission | Secure Context / Policy / User Permission / Activation / Capability state | [06](../docs/06-security.md) / [07](../docs/07-testing-quality.md) / [01](../docs/01-requirements.md) |
 | Public / Auth / OAuth / API / Cloud / AI | Security / Privacy / Dependency | [06](../docs/06-security.md) / [13](../docs/13-dependencies-assets.md) |
 | External API / SDK / Webhook | Contract / Reliability / Security / Validation / Lifecycle | [02](../docs/02-architecture.md) / [05](../docs/05-performance-reliability.md) / [06](../docs/06-security.md) / [07](../docs/07-testing-quality.md) / [13](../docs/13-dependencies-assets.md) |
 | Release / Rollback / Legacy | Version / Maintenance | [09](../docs/09-maintenance.md) |
@@ -62,6 +64,17 @@
 - [ ] 複数Locale対応時、Language metadataとDate / Number / Currency等のLocale-sensitive表示を必要範囲で確認した
 - [ ] FormでLabel / Instruction / Autofill / Error association /入力保持 / Recovery導線を必要範囲で確認した
 - [ ] Motion / Mediaがある場合、Reduced Motion、Pause / Stop、必要なCaption / Transcript等をScopeに応じて確認した
+
+## Task-based Usability — 該当時
+
+- [ ] 対象Userに近いParticipantまたは代表的な利用条件を選び、固定人数を満たすこと自体を目的にしていない
+- [ ] TaskをUI操作手順ではなく現実的なUser Goalとして書き、正解Control名やPathをTask本文で教えていない
+- [ ] Facilitatorが先回りして操作を教えず、実際の行動・迷い・誤認・Recoveryを観察した
+- [ ] Unassisted Success / Assisted Success / False Success / Blocked / Abandonedを必要範囲で区別した
+- [ ] Helpを与えたCaseを自力成功へ読み替えていない
+- [ ] FindingをPreferenceだけでなくPrimary Taskへの影響・完了不能・危険な誤成功・Recovery cost等から判断した
+- [ ] Benchmarkingを使う場合、StableなTaskと測定条件を保ち、単一の平均時間だけをUX完成条件にしていない
+- [ ] Real User Dataが不要な場合はDummy / Test Dataを使い、Testのために不要なPersonal Dataを集めていない
 
 ## Meaningful Visual Change
 
@@ -131,6 +144,10 @@
 - [ ] OAuth / OIDC採用時、Current Provider guidanceに従いPKCE / redirect / state / nonce / scope等を必要範囲で確認した
 - [ ] BrowserからCloudへ直接Accessする場合、RLS / Grant / operation permissionを必要範囲で確認した
 - [ ] `service_role` / secret / bypass credentialをFrontendへ置いていない
+- [ ] Browser Powerful Featureを使う場合、API support / Secure Context / Permissions Policy / User permission / User activation / Device・OS availabilityを必要範囲で分けた
+- [ ] PermissionをPage load直後に不要にまとめて要求せず、必要なUser Action付近で最小Capabilityだけ要求している
+- [ ] Denied / Revoked / Policy-blocked / Device failureをRuntime crash・無限再Prompt・偽Success表示へ変えていない
+- [ ] Capability取得後もData Minimizationを維持し、不要なCamera / Microphone Track等を停止している
 - [ ] Upload / Import / User Contentでtype / size / path / archive / stored XSS等のRiskを必要範囲で確認した
 - [ ] Public endpoint / paid API / AI proxyでrate / size / count / cost abuseの上限を確認した
 - [ ] Analytics / replay / diagnosticsで不要なPersonal Data・Token・form本文等を収集 /送信していない
@@ -184,6 +201,9 @@
 - [ ] 新Web API / CSS / syntax採用時、Support Targetとの差とfallback / polyfill / transpilation要否を確認した
 - [ ] Representative Browser / engine / Desktop-Mobile / WebView等をProject riskに合わせて選んだ
 - [ ] Permission / Media / Touch / PWA / WebView等で必要ならReal Browser / Real Deviceを確認した、または未確認と記録した
+- [ ] Browser Powerful Featureを使う場合、Prompt / Granted / Denied / Revoked・Changed / Policy-blocked / unsupported等の該当Stateを確認した
+- [ ] User activation / per-use Promptが必要なAPIで、以前の成功を永続Permissionと誤認していない
+- [ ] Permission失敗後もCore Task / fallback / recoveryが成立し、Operation失敗をEnabled / Success表示していない
 - [ ] Polyfill / transpilationを使う場合、Target Runtimeで実際に動作し、不要なLegacy layerを残していない
 - [ ] Browser support終了時、Current Requirements / test matrix / user-facing limitationを必要範囲で同期した
 

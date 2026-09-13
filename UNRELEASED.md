@@ -27,6 +27,9 @@
 - 正式Release状態を自己参照なしで構築できることを検証する`tests/test-release-integrity.mjs`
 - Machine RouterへPreflightとは独立した`interactionLifecycle.completionDocs` Layerを追加
 - `docs/18`へVisual Direction候補の判断軸を一元化する`Design Direction Contract`を追加
+- `docs/07`へ現実的・非誘導なTaskを使い、Unassisted / Assisted / False Success / Blocked / Abandonedを区別するTask-based Usability Validationを追加
+- `docs/06` / `docs/07`へSecure Context・Permissions Policy・User permission・User activation・Device / OS availabilityを分離するBrowser Powerful Feature Permission LifecycleとVerificationを追加
+- GOV.UK / MDNのCurrent official evidenceを整理したUsability / Browser Permissionのcurated non-normative Referenceを追加
 
 ## Changed
 
@@ -55,6 +58,7 @@
 - `Validate Guide`をfull git historyで実行し、Release-affecting変更とUnreleased recordの整合を検証
 - `releaseCommit`以後の差分判定からVersion / CHANGELOG / Unreleased / Work Report等のRelease bookkeepingを除外し、Release内容Commitの後にMetadata commitを安全に置けるよう修正
 - Visual Owner境界を整理し、`docs/04`はUI / UX / AccessibilityとVisual Quality原則、`docs/18`はDomain Research / Design Direction Contract / Candidate比較・採否Workflowを正本とする構造へ変更
+- Quality ChecklistへTask-based UsabilityとBrowser Powerful Feature PermissionのConditional Routing /実行確認を追加し、新しいOwner・Profile・Stable Gateを増やさず既存Ownerへ接続
 
 ## Fixed
 
@@ -65,6 +69,8 @@
 - 上記対策として`docs/23`を全Work Typeへ直接入れた結果、Local Bug等までConversation Recovery OwnerをPreflight必読にしていたover-routing
 - Guide側`docs/23`とData側Current Contractの両方へCurrent Recovery implementation detailが存在し、第二Source of Truth化し得た責務重複
 - `docs/04`と`docs/18`の両方がDesign Direction候補・2〜3案比較・WireframeからDirection確定までのVisual Workflowを持ち、Single Normative Ownerが曖昧になっていた重複
+- General User Testの存在だけは認識していたが、現実的Task・非誘導Facilitation・自力成功と補助成功・誤成功・Blocked等を分ける一般Usability Validation Workflowが無かったRule Gap
+- Browser PermissionをAuth / Compatibilityの断片として扱い、Secure Context・Permissions Policy・User Permission・Activation・Device stateを横断したCapability Lifecycleが無かったResearch / Rule Gap
 - Automatic ResumeのHigh Confidence候補をUser確認なしでResume可能としていた誤復帰経路と、User否定後にRoot Cause確認なしで別候補へ進めたFailure path
 - Caller-supplied Confirmation / write-safety assertion、historical backfill、future timestamp、stale topic accumulationがRecovery Current Stateを誤らせ得る経路
 - Correction Interactionのsource Workstreamで新Interaction IDを直接参照しない正当なContractをPersistence Receiptがfailure扱いするRegression

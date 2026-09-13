@@ -165,6 +165,66 @@ CORSはAuthentication / Authorizationではありません。
 - Credentialed requestでは許可Originを用途に合わせて制限する。
 - Browserから読めないことをServer Dataの保護と同義にしない。
 
+## Browser Powerful Feature Permission / Capability Access
+
+CONDITIONAL: Camera / Microphone / Geolocation / Clipboard / Notifications / Screen Capture / Bluetooth / MIDI / Sensor / File・Device picker等、BrowserがUser permission・User activation・Document policyで制御するCapabilityを使う場合、AuthZとは別の**Browser Capability Permission Lifecycle**として扱います。Current evidenceは [Browser Powerful Feature / Permission Research](../references/browser-powerful-feature-permission-research.md) を参照します。
+
+### MUST: Permissionを1つのBooleanとして扱わない
+
+少なくとも次を分けます。
+
+```text
+API / Browser support
++ Secure Context要件
++ Document / iframe / Permissions Policy
++ User permission state
++ User activation / per-use requirement
++ Device / OS availability
+→ 実際にCapabilityを使えるか
+```
+
+`permission === granted`のような1条件だけで利用可能と断定しません。Permissions APIが返す状態は有用ですが、すべてのAPIが同じquery / request mechanismを持つわけではなく、Browser差もあります。実装時は対象APIのCurrent official documentationを確認します。
+
+### SHOULD: 必要な時点で、必要なCapabilityだけ要求する
+
+- Page load直後に将来使うかもしれないPermissionをまとめて要求しない。
+- Capabilityが必要になるUser-visible Actionへできるだけ近い位置で要求する。
+- User activationが必要なAPIでは、Button等の明示操作からRequestを開始する。
+- Notificationのように濫用防止上User gestureが重要なAPIでは、意味のあるActionなしにPromptを出さない。
+- Camera / Microphone等で複数Capabilityを使う場合も、Productに不要なTrack / Device accessを広げない。
+
+Permission request前に理由が自明でない場合は、何に使うか・拒否しても何ができるかを短く説明できます。ただしBrowser Promptを模倣した偽Dialogや、拒否しづらくするDark Patternを作りません。
+
+### MUST: Denied / Revoked / Policy-blockedを正常なStateとして扱う
+
+少なくとも該当する範囲で次を区別します。
+
+- Unsupported / unavailable
+- `prompt` / not yet decided
+- Granted
+- Denied
+- Revoked / changed after grant
+- Secure Context不足
+- Permissions Policy / iframe restriction
+- User activation不足
+- Device missing / busy / OS-level failure
+
+DeniedをRuntime crashや無限再Promptへ変えません。Permissionが無くても成立するCore TaskがあるならFallbackを提供し、Capabilityが必須なら「なぜ使えないか」「次に何ができるか」を示します。Browser設定変更を強制せず、再許可方法が必要な場合だけCurrent Browser / OSに合うGuidanceへつなぎます。
+
+### MUST: PermissionとData handlingを分けない
+
+Capabilityを許可された後もLeast Privilege / Data Minimizationを維持します。
+
+- Capture / sensor / location等を必要以上に長く取得しない。
+- Camera / Microphone Track等は不要になったら停止する。
+- Backgroundで継続利用する必要がないCapabilityを黙って保持しない。
+- Permission取得済みを、収集Dataの保存・送信・共有への包括同意として扱わない。
+- Third-party iframeへCapabilityを委譲する場合はoriginと必要Featureを限定する。
+
+### Testing boundary
+
+Browser CapabilityのSecurity / Privacy Contractはこの章、Permission State / Browser差 / denied・revoked・unsupported等の実行確認は [07 Testing / Quality](07-testing-quality.md#browser-capability--permission-verification) を正本とします。
+
 ## File Upload / Import
 
 CONDITIONAL: UserがFileをUpload / Importする場合、拡張子やContent-Typeだけを信用しません。
