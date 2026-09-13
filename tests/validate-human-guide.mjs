@@ -46,6 +46,37 @@ function assertUnique(values, label) {
   }
 }
 
+function validateShellSurface(surface) {
+  const canonical = surface.canonicalPath;
+  if (!canonical.endsWith('.html')) return;
+  if (!fs.existsSync(canonical)) return;
+
+  const text = read(canonical);
+  const isRootHome = canonical === 'index.html';
+  const expectedShellPath = isRootHome
+    ? 'site/assets/human-guide-shell.js'
+    : '../assets/human-guide-shell.js';
+
+  if (!text.includes(`data-surface-id="${surface.id}"`)) {
+    errors.push(`${canonical}: missing data-surface-id="${surface.id}"`);
+  }
+  if (!text.includes('data-repo-root=')) {
+    errors.push(`${canonical}: missing data-repo-root for shared shell`);
+  }
+  if (!text.includes('data-human-guide-nav')) {
+    errors.push(`${canonical}: missing manifest-driven global navigation mount`);
+  }
+  if (!text.includes('data-human-guide-home')) {
+    errors.push(`${canonical}: missing shared home-link mount`);
+  }
+  if (!text.includes(expectedShellPath)) {
+    errors.push(`${canonical}: missing shared Human Guide shell -> ${expectedShellPath}`);
+  }
+  if (!text.includes('id="main-content"')) {
+    errors.push(`${canonical}: missing stable main-content target for skip navigation`);
+  }
+}
+
 const manifest = fs.existsSync('site/data/human-guide-manifest.json')
   ? parseJson('site/data/human-guide-manifest.json')
   : null;
@@ -101,6 +132,10 @@ if (manifest) {
       } else if (isDirectoryPath(canonical) && !fs.statSync(canonical).isDirectory()) {
         errors.push(`human guide manifest ${surface.id}: expected directory -> ${canonical}`);
       }
+
+      // Project dashboards are a separate subsystem. Every HTML surface owned by
+      // the Human Guide itself must mount the same manifest-driven shell.
+      validateShellSurface(surface);
 
       for (const compatibilityPath of surface.compatibilityPaths || []) {
         if (!fs.existsSync(compatibilityPath)) {
@@ -200,6 +235,7 @@ if (errors.length === 0) {
   }
 
   for (const [page, text] of [
+    ['site/pages/rules.html', rules],
     ['site/pages/ai-workflow.html', workflow],
     ['site/pages/work-dashboard.html', dashboard],
     ['site/pages/all-rules.html', allRules],
@@ -216,8 +252,8 @@ if (errors.length === 0) {
   if (!dashboard.includes("fetch('../data/dashboard-data.json'")) {
     errors.push('site/pages/work-dashboard.html: missing site/data dashboard source');
   }
-  if (!rules.includes("fetch('../../guide-version.json')")) {
-    errors.push('site/pages/rules.html: missing root guide-version source');
+  if (!rules.includes("../data/search-sources.json")) {
+    errors.push('site/pages/rules.html: Owner list must use the public search/source registry');
   }
   if (!searchPage.includes("../data/search-sources.json")) {
     errors.push('site/pages/search.html: missing public search source registry');
