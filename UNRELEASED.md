@@ -10,6 +10,7 @@
 
 ## Added
 
+- Human Guideの長いPageへManifest opt-inのAuto TOCと、Source / Owner / Edit / Reportを共通化するSource Footerを追加
 - Human GuideのCurrent Product Contract、Surface Manifest、正本種別を区別するサイト全体検索、Current Machine Routerを投影する作業ルート診断を追加
 - Human Guide Manifest / compatibility adapter / Public Search境界を検証するRegression Guardと、narrow viewportでもGlobal Navigationへ到達できる共通Shell / responsive基盤を追加
 - Meaningful UI requirementsでも候補案を固定する前にDomain / Genre Researchへ到達するRouteを明確化
@@ -38,6 +39,7 @@
 
 ## Changed
 
+- Site-wide SearchをAuthority + Content Typeの2軸Filter、URL state復元、`/`・`Ctrl/Cmd+K` shortcut対応へ拡張
 - Human GuideのNavigation / Search / compatibility route metadataを`site/data/human-guide-manifest.json`へ集約し、Release baseline表示とHuman Summaryの同期状態を同一視しないContractへ変更
 - Development System IntegrityのCurrent ContractをPhase 0-4実装済み / Phase 5 Data Retention・Archive次工程へ同期し、`web-project-data`側Persistence Gap Detector V1、Development Traceability V1、Development System Health V1、Trusted Recovery Phase 2の最終Validation済み状態を記録
 - Trusted Recovery Phase 2の検証済みBaselineとして`web-project-data` PR #134 / merge `740c2fcdacaeda77e1b48430fab681bc0bf89e1f`、merge後`Validate Data` / Windows PowerShell Compatibility PASSをCurrent Contractへ反映
