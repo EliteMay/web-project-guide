@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ja">
+<html lang="ja" data-repo-root="../../" data-surface-id="ai-workflow">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -11,16 +11,19 @@
 <body>
   <header class="sitebar">
     <div class="sitebar-inner">
-      <a class="brand" href="../../index.html">Web Project Guide</a>
-      <nav class="tabs" aria-label="Guide navigation">
-        <a href="work-dashboard.html">作業ダッシュボード</a>
+      <a class="brand" data-human-guide-home href="../../index.html">Web Project Guide</a>
+      <nav class="tabs" data-human-guide-nav aria-label="Guide navigation">
+        <a href="../../project-dashboards/">Project Dashboards</a>
+        <a href="work-dashboard.html">Guide Migration</a>
         <a href="ai-workflow.html" aria-current="page">AIの作業ルール</a>
         <a href="rules.html">ルール検索</a>
+        <a href="all-rules.html">全ルール</a>
+        <a href="research-requirements.html">研究・要件</a>
       </nav>
     </div>
   </header>
 
-  <main class="container">
+  <main class="container" id="main-content">
     <header class="hero">
       <div>
         <p class="eyebrow">HOW THE AI DECIDES</p>
@@ -109,18 +112,9 @@
         </div>
       </div>
       <div class="research-ladder">
-        <article class="research-level">
-          <h3>Quick Research</h3>
-          <p>Version、仕様、対応有無、日付などの単純な事実。公式資料や一次Sourceで確認できれば終わります。</p>
-        </article>
-        <article class="research-level">
-          <h3>Standard Research</h3>
-          <p>普通の比較や改善判断。複数の独立Source、Alternative、Limit、Projectへの適用可能性を確認します。</p>
-        </article>
-        <article class="research-level">
-          <h3>Deep Research</h3>
-          <p>重要かつ不確実な判断。既存研究、Original Source、賛成・反対Evidence、Bias、Failure、Evidence Mapまで確認します。</p>
-        </article>
+        <article class="research-level"><h3>Quick Research</h3><p>Version、仕様、対応有無、日付などの単純な事実。公式資料や一次Sourceで確認できれば終わります。</p></article>
+        <article class="research-level"><h3>Standard Research</h3><p>普通の比較や改善判断。複数の独立Source、Alternative、Limit、Projectへの適用可能性を確認します。</p></article>
+        <article class="research-level"><h3>Deep Research</h3><p>重要かつ不確実な判断。既存研究、Original Source、賛成・反対Evidence、Bias、Failure、Evidence Mapまで確認します。</p></article>
       </div>
 
       <div class="branch-grid">
@@ -213,5 +207,6 @@
 
     <footer class="footer">このページは人間向けの説明です。MUST / SHOULD / CONDITIONALなどの正式な条件は各Owner Docを正本として扱います。</footer>
   </main>
+  <script src="../assets/human-guide-shell.js"></script>
 </body>
 </html>

@@ -1,5 +1,24 @@
 /* Mobile and touch refinements for the human-facing Guide pages. */
+.sitebar-inner {
+  min-width: 0;
+}
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0 0 0 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
 .tabs {
+  min-width: 0;
+  max-width: 100%;
+  overflow-x: auto;
   scrollbar-width: none;
   -webkit-overflow-scrolling: touch;
   overscroll-behavior-x: contain;
@@ -7,6 +26,25 @@
 
 .tabs::-webkit-scrollbar {
   display: none;
+}
+
+.skip-link {
+  position: fixed;
+  top: 8px;
+  left: 8px;
+  z-index: 1000;
+  transform: translateY(-160%);
+  padding: 9px 12px;
+  border: 2px solid var(--accent);
+  border-radius: 7px;
+  background: var(--surface);
+  color: var(--text);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.skip-link:focus {
+  transform: translateY(0);
 }
 
 .brand,
@@ -21,6 +59,10 @@
 .copy {
   display: inline-flex;
   align-items: center;
+}
+
+.brand {
+  flex: 0 0 auto;
 }
 
 .tabs a {

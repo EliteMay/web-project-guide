@@ -1,0 +1,122 @@
+{
+  "schemaVersion": 1,
+  "authority": "human-guide-presentation-metadata",
+  "globalNav": [
+    "project-dashboards",
+    "guide-migration",
+    "ai-workflow",
+    "rule-finder",
+    "all-rules",
+    "research-requirements"
+  ],
+  "surfaces": [
+    {
+      "id": "home",
+      "label": "Web Project Guide",
+      "canonicalPath": "index.html",
+      "compatibilityPaths": [],
+      "surfaceType": "home",
+      "authority": "human-summary",
+      "nav": { "visible": false, "order": 0 },
+      "searchable": true,
+      "sourceLinks": ["README.md", "START_HERE.md", "HUMAN_GUIDE_REQUIREMENTS.md"],
+      "keywords": ["入口", "guide", "home", "ルール", "作業"]
+    },
+    {
+      "id": "project-dashboards",
+      "label": "Project Dashboards",
+      "canonicalPath": "project-dashboards/",
+      "compatibilityPaths": [],
+      "surfaceType": "dashboard",
+      "authority": "status",
+      "nav": { "visible": true, "order": 10 },
+      "searchable": false,
+      "sourceLinks": ["project-dashboards/", "DASHBOARD_REQUIREMENTS.md"],
+      "keywords": ["project", "dashboard", "作業状況"]
+    },
+    {
+      "id": "guide-migration",
+      "label": "Guide Migration",
+      "canonicalPath": "site/pages/work-dashboard.html",
+      "compatibilityPaths": ["work-dashboard.html"],
+      "surfaceType": "dashboard",
+      "authority": "status",
+      "nav": { "visible": true, "order": 20 },
+      "searchable": true,
+      "sourceLinks": ["DASHBOARD_REQUIREMENTS.md"],
+      "keywords": ["migration", "guide", "dashboard", "移行"]
+    },
+    {
+      "id": "ai-workflow",
+      "label": "AIの作業ルール",
+      "canonicalPath": "site/pages/ai-workflow.html",
+      "compatibilityPaths": ["ai-workflow.html"],
+      "surfaceType": "router",
+      "authority": "human-summary",
+      "nav": { "visible": true, "order": 30 },
+      "searchable": true,
+      "sourceLinks": ["START_HERE.md", "docs/21-rule-routing-preflight.md", "maintenance/rule-router.json"],
+      "keywords": ["AI", "workflow", "作業", "research", "validation", "routing"]
+    },
+    {
+      "id": "rule-finder",
+      "label": "ルール検索",
+      "canonicalPath": "site/pages/rules.html",
+      "compatibilityPaths": ["rules.html"],
+      "surfaceType": "router",
+      "authority": "human-summary",
+      "nav": { "visible": true, "order": 40 },
+      "searchable": true,
+      "sourceLinks": ["START_HERE.md", "maintenance/rule-router.json"],
+      "keywords": ["rule", "finder", "機能", "困りごと", "検索"]
+    },
+    {
+      "id": "all-rules",
+      "label": "全ルール",
+      "canonicalPath": "site/pages/all-rules.html",
+      "compatibilityPaths": ["all-rules.html"],
+      "surfaceType": "reference-summary",
+      "authority": "human-summary",
+      "nav": { "visible": true, "order": 50 },
+      "searchable": true,
+      "sourceLinks": ["README.md", "docs/"],
+      "keywords": ["all rules", "owner", "一覧", "全ルール"]
+    },
+    {
+      "id": "research-requirements",
+      "label": "研究・要件",
+      "canonicalPath": "site/pages/research-requirements.html",
+      "compatibilityPaths": ["research-requirements.html"],
+      "surfaceType": "research-requirements-summary",
+      "authority": "human-summary",
+      "nav": { "visible": true, "order": 60 },
+      "searchable": true,
+      "sourceLinks": ["REQUIREMENTS.md", "HUMAN_GUIDE_REQUIREMENTS.md", "references/"],
+      "keywords": ["research", "requirements", "evidence", "研究", "要件"]
+    },
+    {
+      "id": "site-search",
+      "label": "サイト全体検索",
+      "canonicalPath": "site/pages/search.html",
+      "compatibilityPaths": ["search.html"],
+      "surfaceType": "router",
+      "authority": "human-summary",
+      "nav": { "visible": false, "order": 70 },
+      "searchable": false,
+      "sourceLinks": ["HUMAN_GUIDE_REQUIREMENTS.md"],
+      "keywords": ["search", "全文検索", "正本", "owner", "evidence"]
+    },
+    {
+      "id": "task-router",
+      "label": "作業ルート診断",
+      "canonicalPath": "site/pages/task-router.html",
+      "compatibilityPaths": ["task-router.html"],
+      "surfaceType": "router",
+      "authority": "human-summary",
+      "nav": { "visible": false, "order": 80 },
+      "searchable": true,
+      "sourceLinks": ["maintenance/rule-router.json", "docs/21-rule-routing-preflight.md"],
+      "keywords": ["router", "work type", "domain", "gate", "作業ルート", "診断"]
+    }
+  ]
+}
