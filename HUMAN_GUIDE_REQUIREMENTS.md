@@ -22,10 +22,11 @@ Human Guideは、利用者がOwner番号やRepository構造を暗記しなくて
 3. Navigation / Search / Task Routerの複数経路から目的の情報へ到達できるか
 4. 現在見ている情報がHuman Summary / Current Contract / Owner / Evidence / Catalogのどれか
 5. 長いPage内で現在地と主要Sectionを把握できるか
-6. 誤りを見つけたとき、Source確認・編集・Issue報告へ進めるか
-7. 表示されているGuide Version / freshness情報が何を意味するか
+6. 読み終わったあと、次に使うべきHuman Guideの入口へ進めるか
+7. 誤りを見つけたとき、Source確認・編集・Issue報告へ進めるか
+8. 表示されているGuide Version / freshness情報が何を意味するか
 
-Searchを壊れたIAの唯一のFallbackにはせず、Navigation / Page TOC / Task Router / Searchを相互補完として扱います。
+Searchを壊れたIAの唯一のFallbackにはせず、Navigation / Page TOC / Task Router / Search / Related linksを相互補完として扱います。
 
 ## 2. Non-goals
 
@@ -62,6 +63,7 @@ Current Human Guideでは次を追加しません。
 - `nav.visible` / `nav.order`
 - `searchable`
 - `sourceLinks[]`
+- `relatedSurfaceIds[]`
 - 必要な`keywords[]`
 - 長いPageでPage TOCを出す場合は `toc: true`
 
@@ -171,7 +173,7 @@ Manifestで`toc: true`のcanonical HTML surfaceは、`main`内の`h2` / `h3`か�
 
 - HTML本文へTOC Linkを手作業で重複管理しない
 - Anchor IDが無いHeadingにはRuntimeで重複しないIDを付ける
-- TOC自身やSource FooterのHeadingをIndexへ含めない
+- TOC自身やRelated / Source FooterのHeadingをIndexへ含めない
 - 現在Sectionを`aria-current="location"`等で示せる場合は示す
 - Desktopでは読み進めながら再利用しやすいsticky / persistent patternを使える
 - Mobileでは本文を押し下げ続けないcompact / collapsible patternを優先する
@@ -199,13 +201,33 @@ FooterはHuman Guideの要約を正本と誤認させず、Source確認・Correc
 - Report Linkはcurrent surfaceを識別できる情報を含める
 - Private `web-project-data` をSource Footerへ露出しない
 
+## 8A. Related / Next Steps Contract
+
+### SHOULD: 明示的な関連Surfaceだけを次の導線として表示する
+
+Shared shellを使うcanonical Human Guideは、Manifestの`relatedSurfaceIds[]`に関連先がある場合、「次に見る」導線を共通Shellから生成します。
+
+- Related先はHuman Guide Manifest内のcanonical surfaceだけを参照する
+- 自分自身をRelated先にしない
+- 同じRelated先を重複させない
+- Page本文へRelated linkを重複して手書きしない
+- AI / Recommendation Engineで動的推測しない
+- Relatedが空のSurfaceへ無理にSectionを表示しない
+- Narrow viewportでは縦方向へ安全にStackできる
+
+Related / Next StepsはGlobal Navigation、Search、Task Routerの代替ではなく、Page読了後の補助導線です。
+
 ## 9. Human Guide Freshness / Release State Contract
 
 ### MUST: Guide release stateとHuman page同期状態を同一視しない
 
 `guide-version.json` の `guideVersion` / `updated` / `status` はRepositoryのRelease Baselineを表します。それを表示しただけで、手書きHuman SummaryがCurrent `main`の全Ruleへ同期済みであると表現しません。
 
+Shared Source FooterではRelease Baseline / unreleased stateを表示できるが、Human Summary surfaceでは**Release表示が本文同期保証ではない**ことを同じ文脈で明示します。
+
 Navigation / Route / Source metadata等、機械的に投影できる情報はManifest / Machine Router / canonical metadataから生成または読込し、Human HTMLへの手動複製を減らします。
+
+Manual `reviewedAt` / `reviewedAgainstCommit`を全Surfaceへ必須化しません。Critical pageで必要性が実Evidenceとして出た場合だけ追加検討します。
 
 ## 10. Validator / Regression Guard Contract
 
@@ -219,7 +241,9 @@ ValidatorはManifest / Search RegistryからCurrent SurfaceとSearch corpusを�
 - nav-visible surfaceがGlobal Navigation contractから欠落していない
 - required source / authority metadata
 - `toc: true` surfaceがshared TOC runtimeへ接続されている
-- shared shellがSource FooterをManifestから生成する
+- `relatedSurfaceIds[]`が既知Surfaceだけを参照し、自己参照 / 重複がない
+- shared shellがRelated / Source FooterをManifestから生成する
+- Source FooterがRelease BaselineとHuman Summary本文同期を同一視しない
 - Search sourceがAuthority / Content Type metadataを持つ
 - Search pageがAuthority / Content Type FilterとKeyboard shortcut contractを持つ
 - private `web-project-data` path / dataをPublic manifest/search indexへ登録していない
@@ -237,7 +261,8 @@ ValidatorはManifest / Search RegistryからCurrent SurfaceとSearch corpusを�
 - Search resultのauthority / content type labelが読み取れる
 - Focus styleを消さない
 - Search / Router error stateからRecovery pathがある
-- Source FooterのLinkにKeyboardで到達できる
+- Related / Source FooterのLinkにKeyboardで到達できる
+- Freshness文言がRelease stateとHuman Summary同期を混同させない
 
 ## 12. Compatibility / Non-breakable Contract
 
@@ -263,13 +288,14 @@ Human GuideをCurrent Contractに対してCompletedと呼べるのは、最低�
 3. `/` と `Ctrl/Cmd + K` のSearch shortcutが通常入力を壊さない
 4. Human Task RouterがCurrent Machine RouterからRouteを投影する
 5. `toc: true`の長いPageでAuto TOCが生成され、Desktop / Mobileで主要本文を阻害しない
-6. Shared shell pageでManifest-driven Source / Edit / Report footerへ到達できる
-7. Guide release stateをHuman Summary freshnessと誤認させない
-8. Existing public URLsと既存Human-facing content coverageを維持する
-9. Static Validation / dedicated Regression Guardを通す
-10. BrowserでSearch / TOC / Footer / Keyboard flowを確認する
-11. Narrow viewportでNavigation / Search / TOC / Footerを確認する
-12. Merge後のCurrent Pages URLを確認できる場合、実公開状態まで確認する
+6. ManifestにRelated先があるPageで「次に見る」が生成され、既知canonical surfaceへ到達できる
+7. Shared shell pageでManifest-driven Source / Edit / Report footerへ到達できる
+8. Guide release stateをHuman Summary freshnessと誤認させない
+9. Existing public URLsと既存Human-facing content coverageを維持する
+10. Static Validation / dedicated Regression Guardを通す
+11. BrowserでSearch / TOC / Related / Footer / Keyboard flowを確認する
+12. Narrow viewportでNavigation / Search / TOC / Related / Footerを確認する
+13. Merge後のCurrent Pages URLを確認できる場合、実公開状態まで確認する
 
 CI successだけをBrowser / Public Pages確認済みとは扱いません。
 

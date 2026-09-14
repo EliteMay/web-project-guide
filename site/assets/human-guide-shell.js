@@ -92,7 +92,7 @@ function renderPageToc(surface) {
   if (!main || main.querySelector('[data-human-guide-toc]')) return;
 
   const headings = [...main.querySelectorAll('h2, h3')]
-    .filter((heading) => !heading.closest('[data-human-guide-toc], [data-human-guide-source-footer]'));
+    .filter((heading) => !heading.closest('[data-human-guide-toc], [data-human-guide-related], [data-human-guide-source-footer]'));
   if (headings.length < 2) return;
 
   const usedIds = new Set([...document.querySelectorAll('[id]')].map((element) => element.id));
@@ -150,6 +150,46 @@ function renderPageToc(surface) {
   }
 }
 
+function renderRelatedSurfaces(manifest, surface) {
+  const main = document.querySelector('main');
+  const relatedIds = surface?.relatedSurfaceIds || [];
+  if (!main || relatedIds.length === 0 || main.querySelector('[data-human-guide-related]')) return;
+
+  const byId = new Map(manifest.surfaces.map((item) => [item.id, item]));
+  const related = relatedIds
+    .map((id) => byId.get(id))
+    .filter((item) => item && item.id !== surface.id);
+  if (related.length === 0) return;
+
+  const section = document.createElement('section');
+  section.className = 'related-surfaces';
+  section.dataset.humanGuideRelated = '';
+  section.setAttribute('aria-labelledby', 'human-guide-next-title');
+
+  const heading = document.createElement('h2');
+  heading.id = 'human-guide-next-title';
+  heading.textContent = '次に見る';
+  section.append(heading);
+
+  const note = document.createElement('p');
+  note.textContent = 'このページの次に使いやすいHuman Guideの入口です。';
+  section.append(note);
+
+  const links = document.createElement('div');
+  links.className = 'related-surfaces-links';
+  for (const item of related) {
+    const link = document.createElement('a');
+    link.href = fromRoot(item.canonicalPath);
+    link.textContent = item.label;
+    links.append(link);
+  }
+  section.append(links);
+
+  const footer = main.querySelector('[data-human-guide-source-footer]');
+  if (footer) footer.insertAdjacentElement('beforebegin', section);
+  else main.append(section);
+}
+
 function renderSourceFooter(surface) {
   const main = document.querySelector('main');
   if (!main || !surface || main.querySelector('[data-human-guide-source-footer]')) return;
@@ -168,6 +208,12 @@ function renderSourceFooter(surface) {
     ? 'このページはHuman Guideの要約です。判断の正本は下のSource / Owner / Requirementを確認してください。'
     : 'このページを支えるSourceと修正経路です。';
   footer.append(boundary);
+
+  const freshness = document.createElement('p');
+  freshness.className = 'source-footer-freshness';
+  freshness.dataset.humanGuideFreshness = '';
+  freshness.textContent = 'Release情報を確認しています…';
+  footer.append(freshness);
 
   const links = document.createElement('div');
   links.className = 'source-footer-links';
@@ -198,40 +244,58 @@ function renderSourceFooter(surface) {
   main.append(footer);
 }
 
-function renderReleaseState(version) {
-  const target = document.querySelector('[data-guide-release]');
-  if (!target) return;
-
+function releaseText(version) {
   const baseline = version.guideVersion ? `Release baseline v${version.guideVersion}` : 'Release baseline';
   const updated = version.updated ? ` · ${version.updated}` : '';
   const status = version.status === 'unreleased-changes'
     ? ' · Current mainには未Release変更あり'
     : '';
-  target.textContent = baseline + updated + status;
+  return baseline + updated + status;
+}
+
+function renderReleaseState(version) {
+  const target = document.querySelector('[data-guide-release]');
+  if (!target) return;
+  target.textContent = releaseText(version);
+}
+
+function renderFooterFreshness(surface, version) {
+  const target = document.querySelector('[data-human-guide-freshness]');
+  if (!target) return;
+  const syncBoundary = surface?.authority === 'human-summary'
+    ? 'このRelease表示はHuman Summary本文の同期保証ではありません。判断時はSourceを確認してください。'
+    : 'Release状態とこのSurfaceのSource境界は別に確認します。';
+  target.textContent = `${releaseText(version)}。${syncBoundary}`;
 }
 
 async function initHumanGuideShell() {
   ensureComponentStyles();
   ensureSkipLink();
 
+  let currentSurface = null;
   try {
     const response = await fetch(fromRoot('site/data/human-guide-manifest.json'));
     if (!response.ok) throw new Error(`manifest ${response.status}`);
     const manifest = await response.json();
     renderNavigation(manifest);
-    const surface = manifest.surfaces.find((item) => item.id === currentSurfaceId);
-    renderPageToc(surface);
-    renderSourceFooter(surface);
+    currentSurface = manifest.surfaces.find((item) => item.id === currentSurfaceId);
+    renderPageToc(currentSurface);
+    renderSourceFooter(currentSurface);
+    renderRelatedSurfaces(manifest, currentSurface);
   } catch (error) {
     console.warn('Human Guide manifest could not be loaded.', error);
   }
 
-  if (document.querySelector('[data-guide-release]')) {
+  if (document.querySelector('[data-guide-release], [data-human-guide-freshness]')) {
     try {
       const response = await fetch(fromRoot('guide-version.json'));
       if (!response.ok) throw new Error(`guide version ${response.status}`);
-      renderReleaseState(await response.json());
+      const version = await response.json();
+      renderReleaseState(version);
+      renderFooterFreshness(currentSurface, version);
     } catch (error) {
+      const freshness = document.querySelector('[data-human-guide-freshness]');
+      if (freshness) freshness.textContent = 'Release情報を読み込めませんでした。Current stateはRepositoryのSourceを確認してください。';
       console.warn('Guide release state could not be loaded.', error);
     }
   }
