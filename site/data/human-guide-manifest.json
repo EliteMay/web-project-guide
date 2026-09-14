@@ -20,6 +20,7 @@
       "nav": { "visible": false, "order": 0 },
       "searchable": true,
       "sourceLinks": ["README.md", "START_HERE.md", "HUMAN_GUIDE_REQUIREMENTS.md"],
+      "relatedSurfaceIds": ["task-router", "site-search", "rule-finder"],
       "keywords": ["入口", "guide", "home", "ルール", "作業"]
     },
     {
@@ -32,6 +33,7 @@
       "nav": { "visible": true, "order": 10 },
       "searchable": false,
       "sourceLinks": ["project-dashboards/", "DASHBOARD_REQUIREMENTS.md"],
+      "relatedSurfaceIds": [],
       "keywords": ["project", "dashboard", "作業状況"]
     },
     {
@@ -44,6 +46,7 @@
       "nav": { "visible": true, "order": 20 },
       "searchable": true,
       "sourceLinks": ["DASHBOARD_REQUIREMENTS.md"],
+      "relatedSurfaceIds": ["project-dashboards", "site-search"],
       "keywords": ["migration", "guide", "dashboard", "移行"]
     },
     {
@@ -57,6 +60,7 @@
       "searchable": true,
       "toc": true,
       "sourceLinks": ["START_HERE.md", "docs/21-rule-routing-preflight.md", "maintenance/rule-router.json"],
+      "relatedSurfaceIds": ["task-router", "rule-finder", "all-rules"],
       "keywords": ["AI", "workflow", "作業", "research", "validation", "routing"]
     },
     {
@@ -69,6 +73,7 @@
       "nav": { "visible": true, "order": 40 },
       "searchable": true,
       "sourceLinks": ["START_HERE.md", "maintenance/rule-router.json"],
+      "relatedSurfaceIds": ["site-search", "task-router", "all-rules"],
       "keywords": ["rule", "finder", "機能", "困りごと", "検索"]
     },
     {
@@ -82,6 +87,7 @@
       "searchable": true,
       "toc": true,
       "sourceLinks": ["README.md", "docs/"],
+      "relatedSurfaceIds": ["rule-finder", "site-search", "research-requirements"],
       "keywords": ["all rules", "owner", "一覧", "全ルール"]
     },
     {
@@ -95,6 +101,7 @@
       "searchable": true,
       "toc": true,
       "sourceLinks": ["REQUIREMENTS.md", "HUMAN_GUIDE_REQUIREMENTS.md", "references/"],
+      "relatedSurfaceIds": ["site-search", "all-rules", "task-router"],
       "keywords": ["research", "requirements", "evidence", "研究", "要件"]
     },
     {
@@ -107,6 +114,7 @@
       "nav": { "visible": false, "order": 70 },
       "searchable": false,
       "sourceLinks": ["HUMAN_GUIDE_REQUIREMENTS.md"],
+      "relatedSurfaceIds": ["task-router", "rule-finder", "all-rules"],
       "keywords": ["search", "全文検索", "正本", "owner", "evidence"]
     },
     {
@@ -119,6 +127,7 @@
       "nav": { "visible": false, "order": 80 },
       "searchable": true,
       "sourceLinks": ["maintenance/rule-router.json", "docs/21-rule-routing-preflight.md"],
+      "relatedSurfaceIds": ["ai-workflow", "rule-finder", "site-search"],
       "keywords": ["router", "work type", "domain", "gate", "作業ルート", "診断"]
     }
   ]
