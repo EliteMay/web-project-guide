@@ -35,24 +35,19 @@ if (registry && manifest) {
     }
   }
 
-  const requiredHumanSurfaces = manifest.surfaces.filter((surface) =>
-    surface.searchable === true &&
-    surface.authority === 'human-summary' &&
-    surface.canonicalPath.endsWith('.html') &&
-    surface.id !== 'site-search'
-  );
+  const requiredHumanSurfaces = manifest.surfaces.filter((surface) => surface.searchable === true);
 
   for (const surface of requiredHumanSurfaces) {
     const source = sourceByPath.get(surface.canonicalPath);
     if (!source) {
-      errors.push(`site search registry missing canonical Human Guide surface: ${surface.id} -> ${surface.canonicalPath}`);
+      errors.push(`site search registry missing searchable Human Guide surface: ${surface.id} -> ${surface.canonicalPath}`);
       continue;
     }
-    if (source.authority !== 'human-summary') {
-      errors.push(`site search source ${source.id}: canonical Human Guide surface must be human-summary`);
+    if (source.authority !== surface.authority) {
+      errors.push(`site search source ${source.id}: authority must match Human Guide manifest -> ${surface.authority}`);
     }
     if (source.contentType !== 'human-page') {
-      errors.push(`site search source ${source.id}: canonical Human Guide surface must be contentType=human-page`);
+      errors.push(`site search source ${source.id}: searchable Human Guide surface must be contentType=human-page`);
     }
     if (source.destination !== surface.canonicalPath) {
       errors.push(`site search source ${source.id}: destination must equal canonical Human Guide path ${surface.canonicalPath}`);
@@ -69,6 +64,8 @@ const implementationMarkers = [
   'source.contentType',
   'contentTypeLabels',
   'id="contentType"',
+  'value="status"',
+  "'status': 'Status / 状態'",
   "params.set('authority'",
   "params.set('type'",
   "event.key === '/'",

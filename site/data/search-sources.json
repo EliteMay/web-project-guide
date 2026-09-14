@@ -6,6 +6,7 @@
     {"id":"readme","title":"Web Project Guide README","path":"README.md","authority":"human-summary","contentType":"entry-doc","keywords":["入口","owner","source of truth"]},
     {"id":"start-here","title":"START HERE","path":"START_HERE.md","authority":"human-summary","contentType":"entry-doc","keywords":["router","作業","入口"]},
     {"id":"human-home","title":"Web Project Guide Human Guide","path":"index.html","destination":"index.html","authority":"human-summary","contentType":"human-page","keywords":["human guide","入口","dashboard","検索","ルート診断"]},
+    {"id":"human-guide-migration","title":"Guide Migration Dashboard","path":"site/pages/work-dashboard.html","destination":"site/pages/work-dashboard.html","authority":"status","contentType":"human-page","keywords":["guide","migration","dashboard","status","移行","進捗"]},
     {"id":"human-ai-workflow","title":"AIの作業ルール","path":"site/pages/ai-workflow.html","destination":"site/pages/ai-workflow.html","authority":"human-summary","contentType":"human-page","keywords":["ai","workflow","research","validation","routing"]},
     {"id":"human-rule-finder","title":"ルール検索","path":"site/pages/rules.html","destination":"site/pages/rules.html","authority":"human-summary","contentType":"human-page","keywords":["rule finder","機能","困りごと","検索"]},
     {"id":"human-all-rules","title":"全ルール短縮版","path":"site/pages/all-rules.html","destination":"site/pages/all-rules.html","authority":"human-summary","contentType":"human-page","keywords":["all rules","owner","一覧","全ルール"]},
