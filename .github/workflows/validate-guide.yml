@@ -45,6 +45,9 @@ jobs:
       - name: Validate human guide routes
         run: node tests/validate-human-guide.mjs
 
+      - name: Validate Rule Finder feature coverage
+        run: node tests/validate-rule-finder-coverage.mjs
+
       - name: Validate development conversation persistence
         run: node tests/validate-development-conversation-persistence.mjs
 
