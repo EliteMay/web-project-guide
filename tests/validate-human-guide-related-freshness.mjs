@@ -52,9 +52,9 @@ if (errors.length === 0) {
   for (const marker of [
     'renderRelatedSurfaces',
     'surface?.relatedSurfaceIds',
-    'data.humanGuideRelated',
+    'dataset.humanGuideRelated',
     'renderFooterFreshness',
-    'data.humanGuideFreshness',
+    'dataset.humanGuideFreshness',
     'Release表示はHuman Summary本文の同期保証ではありません'
   ]) {
     if (!shell.includes(marker)) errors.push(`human-guide-shell.js: missing contract marker -> ${marker}`);
