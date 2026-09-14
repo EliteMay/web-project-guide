@@ -2,18 +2,16 @@
 
 この文書は `EliteMay/web-project-guide` の**人間向けWeb版（Human Guide）のCurrent Product Contract**です。
 
-Common Rule本文の正本は引き続き `docs/` の各Owner Doc、Machine-readable Routingの正本は `maintenance/rule-router.json` です。この文書はHuman Guideという公開Surfaceが、それらの正本を人間へどう安全に投影するかを定義します。Human Guideへ第二のRule本文を作りません。
+Common Rule本文の正本は `docs/` の各Owner Doc、Machine-readable Routingの正本は `maintenance/rule-router.json` です。Human Guideは、それらの正本を人間へ安全に投影するためのSummary / Router / Search / Status Surfaceであり、第二のRule本文を作りません。
 
 ## 0. Status / Scope
 
-- Status: Ready for implementation
+- Status: **Current Product Contract**
 - Target: Repository root public entry + `site/` canonical Human Guide surfaces
 - Primary users: Repository owner / collaborators / Human Guideを使ってRuleを探す利用者
-- Deployment: Current GitHub Pages modelを維持
+- Deployment: Current GitHub Pages static modelを維持
 - Authority: Human GuideはSummary / Router / Search / Status projection。Normative Ruleではない
 - Private `EliteMay/web-project-data` の内容をPublic Human Guideへ直接公開しない
-
-このContractは、2026-09-14のComparative Research / Feature Gap MatrixでP0と判定したFindability・Consistency・Freshnessの改善をCurrent Requirementへ昇格したものです。
 
 ## 1. 目的
 
@@ -21,15 +19,17 @@ Human Guideは、利用者がOwner番号やRepository構造を暗記しなくて
 
 1. 今回どこから始めればよいか
 2. どのRule / Requirementが正本か
-3. 目的の情報をNavigation / Search / Task Routerの複数経路から見つけられるか
-4. 現在見ているPageがHuman Summaryなのか、Current Contractなのか、Evidenceなのか
-5. 表示されているGuide Version / freshness情報が何を意味するか
+3. Navigation / Search / Task Routerの複数経路から目的の情報へ到達できるか
+4. 現在見ている情報がHuman Summary / Current Contract / Owner / Evidence / Catalogのどれか
+5. 長いPage内で現在地と主要Sectionを把握できるか
+6. 誤りを見つけたとき、Source確認・編集・Issue報告へ進めるか
+7. 表示されているGuide Version / freshness情報が何を意味するか
 
-Searchを壊れたIAの唯一のFallbackにはせず、Navigation / Task Router / Searchを相互補完として扱います。
+Searchを壊れたIAの唯一のFallbackにはせず、Navigation / Page TOC / Task Router / Searchを相互補完として扱います。
 
 ## 2. Non-goals
 
-P0では次を追加しません。
+Current Human Guideでは次を追加しません。
 
 - Login / Account system
 - Cloud bookmark / Favorite sync
@@ -39,63 +39,37 @@ P0では次を追加しません。
 - `web-project-data` のPrivate Research / Evidence公開
 - Human Guide専用の第二Rule本文
 - Human Guideのためだけの大規模Framework移行
+- 大規模Recommendation Engine
+- Helpfulness analyticsを収集するだけのUI
 - `llms.txt` / Docs専用MCP / Agent専用API
 
-これらは将来のEvidenceで必要性が上がった場合に再評価します。
+これらはCurrent evidenceで必要性が上がった場合だけ再評価します。
 
 ## 3. Human Guide Surface Registry / Manifest
 
 ### MUST: Public Surface metadataを1つのRegistryへ集約する
 
-Human GuideのNavigation / Search / Validator / compatibility routeが別々のHardcode表を持たないよう、`site/data/human-guide-manifest.json` をHuman Guide presentation metadataのSingle Sourceとします。
-
-ManifestはNormative Ruleの正本ではありません。Human Guideの**表示・経路・検索用metadata**だけを所有します。
+`site/data/human-guide-manifest.json` をHuman Guide presentation metadataのSingle Sourceとします。ManifestはNormative Ruleの正本ではなく、表示・経路・検索・Page補助UI用metadataだけを所有します。
 
 各canonical surfaceは最低限次を持ちます。
 
 - stable `id`
 - 日本語のpublic `label`
-- canonical public `path`
+- canonical public `canonicalPath`
 - `compatibilityPaths[]`
 - `surfaceType`
 - `authority`
-- `nav.visible`
-- `nav.order`
+- `nav.visible` / `nav.order`
 - `searchable`
 - `sourceLinks[]`
 - 必要な`keywords[]`
-
-### Surface type
-
-初期typeは必要最小限にします。
-
-- `home`
-- `router`
-- `reference-summary`
-- `research-requirements-summary`
-- `dashboard`
-
-新しいtypeは実際の役割差がある場合だけ追加します。
-
-### Authority label
-
-Search / UIで最低限次を区別できるmetadataを持ちます。
-
-- `human-summary` — Human Guideの要約
-- `normative-owner` — Common Rule正本へのEntry
-- `current-contract` — Current Requirements
-- `reference-evidence` — Public Reference / Evidence
-- `catalog-example` — Failure / Success / Anti-pattern等
-- `status` — Dashboard / current status
-- `compatibility` — 旧URL等の互換Surface
+- 長いPageでPage TOCを出す場合は `toc: true`
 
 Human Guide自身を`normative-owner`として登録しません。
 
-## 4. Global Navigation Contract
+## 4. Global Navigation / Accessibility Contract
 
 ### MUST: Canonical Human Guide SurfaceでGlobal Navigationを一致させる
-
-Canonical Human Guide page間で、Global Navigationの主要destination・相対順序を理由なく変えません。
 
 - Manifestで`nav.visible: true`のSurfaceを共通Navigationの基準とする
 - Current pageには`aria-current="page"`等で現在地を示す
@@ -105,68 +79,80 @@ Canonical Human Guide page間で、Global Navigationの主要destination・相�
 
 ### MUST: Narrow viewportで主要Navigationを失わせない
 
-Global Navigationは小さい画面でも主要destinationがclippingで到達不能にならないこと。
-
-実装はCurrent designに合わせて、wrap / horizontal scroll / compact navigation等から最小で安全な方法を選べます。方式そのものをこのRequirementで固定しません。
+小さい画面でも主要destinationがclippingで到達不能にならないこと。Current designではhorizontal scroll等の最小で安全な方法を選べます。
 
 ### MUST: Repeated navigationを飛ばせる
 
-Canonical Human Guide pageはmain contentへ移動できるskip mechanismを持ち、Keyboard利用時のfocusを視認できること。
+Canonical Human Guide pageはmain contentへ移動できるskip mechanismを持ち、Keyboard focusを視認できること。
 
 ## 5. Site-wide Search Contract
 
-### MUST: Human Guide全体からCurrent Public Guide資産を検索できる
+### MUST: Current Public Guide資産を横断検索できる
 
-Rule Finder page内だけのLocal Filterとは別に、Public Human Guide全体を横断するSearchを提供します。
-
-初期index候補:
+初期index対象:
 
 - canonical Human Guide pages
 - `docs/` Owner Docs
 - root Current Requirements / Human Guide Requirements
-- `references/` のPublic Curated Reference
+- Public entry / router docs
 - `catalog/` のPublic Catalog
+- 必要に応じて `references/` のPublic Curated Reference
 
 `EliteMay/web-project-data` はindex対象にしません。
 
-### MUST: Search resultでAuthorityを区別する
+### MUST: Search resultでAuthorityとContent Typeを区別する
 
-Search resultは少なくとも次を表示または識別可能にします。
+Search resultは最低限次を表示または識別可能にします。
 
 - title
 - short summary / matching context
-- authority / content type
+- authority
+- content type
 - canonical destination
 
-Human Summary / Owner Doc / Requirements / Evidenceを同列の正本に見せません。
+`authority`は「どの程度正本か」、`contentType`は「何の種類のDocument / Surfaceか」を表し、同じ概念として潰しません。
 
-### SHOULD: Static searchを優先する
+Current content type vocabulary:
 
-Current GitHub Pages運用ではServer backendを前提にしません。
+- `requirements`
+- `entry-doc`
+- `human-page`
+- `owner-doc`
+- `catalog`
 
-Pagefind等のStatic index、またはGenerated JSON + browser-side searchを候補とし、Current Publishing Source / CI / maintenance costを比較して決めます。
+新しいtypeはSearch上の探索差が実際にある場合だけ追加します。
+
+### SHOULD: Filterは少数の意味ある軸に限定する
+
+初期Filterは次の2軸を標準とします。
+
+- Authority
+- Content Type
+
+Product / Role / Level等の多軸FilterをCurrent規模へ機械的に追加しません。
+
+### SHOULD: KeyboardからSearchへ直接移動できる
+
+Search pageでは `/` と `Ctrl/Cmd + K` を検索欄Focus shortcutとして利用できます。
+
+- Input / textarea / select等へ入力中は`/`を奪わない
+- `Ctrl/Cmd + K`を使用する場合はSearch page内でのみ明示的に扱う
+- Shortcutが動かなくても通常のTab操作でSearchへ到達できる
 
 ### Search behavior
 
 - 日本語QueryをPrimary use caseとして扱う
-- KeyboardだけでSearch input / resultへ到達できる
-- 0件時にQuery変更・Rule Router等の次Actionを示す
+- KeyboardだけでSearch input / filters / resultsへ到達できる
+- 0件時にQuery変更・Task Router等の次Actionを示す
 - SearchをGlobal Navigationの代替にしない
-- 初期Filterは`authority` / `content type`等、実際に探索差が出るものへ限定する
+- Query / Filter stateはURLへ反映し、Reload / share時に復元できる
+- Current GitHub Pages運用ではServer backendを前提にしない
 
 ## 6. Human Task Router Contract
 
 ### MUST: Human RouterのDecision logicをMachine Routerと二重管理しない
 
 人間向け「作業ルート診断」は `maintenance/rule-router.json` のCurrent dataをSourceとしてprojectionします。
-
-利用者はOwner番号を覚えず、最低限次のようなTask情報から必要Owner / Gateへ到達できます。
-
-- Work Type
-- Domain
-- applicable Risk Signal / Gate
-
-### Result
 
 Router resultは最低限次を示します。
 
@@ -175,72 +161,85 @@ Router resultは最低限次を示します。
 - なぜそのRouteになったかを理解できる短い説明
 - Canonical OwnerへのLink
 
-Human Router用にRule decisionを別JSON / HTML本文へ再定義しません。
+Machine Router dataの読込に失敗してもHuman Guide全体を壊さず、`START_HERE.md` / Rule FinderへのFallbackを残します。
 
-### Graceful failure
+## 7. Page TOC Contract
 
-Machine Router dataの読込に失敗しても、Human Guide全体を壊しません。Canonical `START_HERE.md` / Rule FinderへのFallbackを残します。
+### SHOULD: Long / reference-oriented PageはAuto TOCを使う
 
-## 7. Human Guide Freshness / Release State Contract
+Manifestで`toc: true`のcanonical HTML surfaceは、`main`内の`h2` / `h3`からPage TOCを自動生成します。
+
+- HTML本文へTOC Linkを手作業で重複管理しない
+- Anchor IDが無いHeadingにはRuntimeで重複しないIDを付ける
+- TOC自身やSource FooterのHeadingをIndexへ含めない
+- 現在Sectionを`aria-current="location"`等で示せる場合は示す
+- Desktopでは読み進めながら再利用しやすいsticky / persistent patternを使える
+- Mobileでは本文を押し下げ続けないcompact / collapsible patternを優先する
+- Heading数が少なくNavigation価値が低いPageへ機械的に出さない
+
+TOCはGlobal Navigationの代替ではありません。
+
+## 8. Source / Edit / Report Contract
+
+### MUST: Shared shellを使うcanonical Human GuideはSource境界へ到達できる
+
+Human Guide page下部に、Manifestの`sourceLinks[]`から生成する共通Source Footerを提供します。
+
+最低限:
+
+- Current Human surfaceを支えるSource / Owner / RequirementへのLink
+- Current HTML pageをGitHubで編集するLink
+- 誤りをIssueとして報告するLink
+
+FooterはHuman Guideの要約を正本と誤認させず、Source確認・Correctionへ進むための導線です。
+
+- Source LinkはManifestから投影し、Pageごとに別の一覧を手書きしない
+- Directory sourceはGitHub tree、File sourceはGitHub blobへ到達できる
+- Edit Linkはcurrent canonical HTML sourceを対象にする
+- Report Linkはcurrent surfaceを識別できる情報を含める
+- Private `web-project-data` をSource Footerへ露出しない
+
+## 9. Human Guide Freshness / Release State Contract
 
 ### MUST: Guide release stateとHuman page同期状態を同一視しない
 
-`guide-version.json` の `guideVersion` / `updated` / `status` はRepositoryのRelease Baselineを表します。
-
-それを表示しただけで、手書きHuman SummaryがそのVersion / Current `main`の全Ruleへ同期済みであると表現しません。
-
-### SHOULD: duplicate Human contentを減らす
+`guide-version.json` の `guideVersion` / `updated` / `status` はRepositoryのRelease Baselineを表します。それを表示しただけで、手書きHuman SummaryがCurrent `main`の全Ruleへ同期済みであると表現しません。
 
 Navigation / Route / Source metadata等、機械的に投影できる情報はManifest / Machine Router / canonical metadataから生成または読込し、Human HTMLへの手動複製を減らします。
 
-### MUST: freshnessの意味を明示する
+## 10. Validator / Regression Guard Contract
 
-UIにVersion / updated informationを出す場合は、少なくとも次のどれを表すか混同しないこと。
-
-- Guide release baseline
-- Current mainにunreleased changesがある状態
-- Human surface自身のcontent review / synchronization evidence
-
-P0では大量の手動`lastReviewed` field運用を必須にしません。まずGenerated projectionとValidatorでdrift sourceを減らすことを優先します。
-
-## 8. Validator / Regression Guard Contract
-
-### MUST: ValidatorはManifestからCurrent Human Surfaceを解決する
-
-`tests/validate-human-guide.mjs` はCanonical Surface / compatibility adapter一覧を別Hardcode表として持ち続けず、ManifestをCurrent Surface Registryとして検証します。
+ValidatorはManifest / Search RegistryからCurrent SurfaceとSearch corpusを解決し、別Hardcode表の増殖を避けます。
 
 最低限確認するもの:
 
 - Manifest JSONがparse可能
 - stable id / canonical pathの重複なし
-- canonical fileの存在
-- compatibility adapterの存在
-- compatibility adapterが期待canonical routeへ到達する
-- nav-visible surfaceがglobal navigation contractから欠落していない
-- canonical surfaceのcurrent-page indicator contract
+- canonical file / compatibility adapterの存在とtarget
+- nav-visible surfaceがGlobal Navigation contractから欠落していない
 - required source / authority metadata
+- `toc: true` surfaceがshared TOC runtimeへ接続されている
+- shared shellがSource FooterをManifestから生成する
+- Search sourceがAuthority / Content Type metadataを持つ
+- Search pageがAuthority / Content Type FilterとKeyboard shortcut contractを持つ
 - private `web-project-data` path / dataをPublic manifest/search indexへ登録していない
-- Search index / Router projectionを生成する場合、source registryとのdriftを検出できる
+- Rule Finder等の既存主要Content / Feature coverageをPresentation refactorで落としていない
 
-### MUST: New Surface追加時のValidator更新漏れを減らす
+## 11. Accessibility / Responsive Acceptance
 
-Surface追加は原則としてManifest登録を入口とし、Validatorがそれを動的に検査します。
+少なくとも次を確認します。
 
-`requiredFiles` 等を別々の配列へ毎回手動追加する設計は必要最小限へ縮小します。
-
-## 9. Accessibility / Responsive Acceptance
-
-P0機能の実装後、少なくとも次を確認します。
-
-- KeyboardのみでGlobal Navigation / Search / Router主要操作へ到達できる
-- Current page / selected stateが色だけに依存しない
+- KeyboardのみでGlobal Navigation / Search / filters / Router主要操作へ到達できる
+- Current page / current section / selected stateが色だけに依存しない
 - Skip linkが機能する
 - Narrow viewportでGlobal Navigation destinationが消えない
-- Search resultのauthority labelが読み取れる
+- Auto TOCがMobile本文を恒常的に遮らない
+- Search resultのauthority / content type labelが読み取れる
 - Focus styleを消さない
 - Search / Router error stateからRecovery pathがある
+- Source FooterのLinkにKeyboardで到達できる
 
-## 10. Compatibility / Non-breakable Contract
+## 12. Compatibility / Non-breakable Contract
 
 次は壊しません。
 
@@ -251,35 +250,29 @@ P0機能の実装後、少なくとも次を確認します。
 - `maintenance/rule-router.json` のMachine Routing authority
 - Current GitHub Pages static deployment
 - Private `web-project-data` とPublic Guideの分離
+- Rule Finder等、既存Human-facing feature inventory
 
 URL変更が不要な機能改善のために既存Public URLをRenameしません。
 
-## 11. Completion Contract
+## 13. Completion Contract
 
-P0 Human Guide改善をCompletedと呼べるのは、最低限次を満たす場合です。
+Human GuideをCurrent Contractに対してCompletedと呼べるのは、最低限次を満たす場合です。
 
-1. `site/data/human-guide-manifest.json` がCurrent Surface Registryとして存在する
-2. Canonical Human GuideのGlobal NavigationがManifest contractと一致する
-3. Current page indicator / skip mechanism / narrow viewport Navigationが機能する
-4. Public corpusを横断するSite-wide Searchが使える
-5. Search resultでAuthority / content typeを区別できる
-6. Human Task Routerが`maintenance/rule-router.json`からCurrent Routeを投影する
-7. `tests/validate-human-guide.mjs` がManifest / adapters / nav / public-data boundaryを検証する
-8. Guide release stateをHuman Summary freshnessと誤認させない
-9. Existing public URLsのcompatibilityを維持する
-10. Static Validationを通す
-11. Browserで主要Flowを確認する
-12. Narrow viewportでNavigation / Search / Routerを確認する
-13. Merge後のCurrent Pages URLを確認できる場合、実公開状態まで確認する
+1. Manifest-driven Global Navigation / current page / skip mechanism / narrow viewport Navigationが機能する
+2. Site-wide SearchがPublic corpusを横断し、Authority / Content Typeを区別・Filterできる
+3. `/` と `Ctrl/Cmd + K` のSearch shortcutが通常入力を壊さない
+4. Human Task RouterがCurrent Machine RouterからRouteを投影する
+5. `toc: true`の長いPageでAuto TOCが生成され、Desktop / Mobileで主要本文を阻害しない
+6. Shared shell pageでManifest-driven Source / Edit / Report footerへ到達できる
+7. Guide release stateをHuman Summary freshnessと誤認させない
+8. Existing public URLsと既存Human-facing content coverageを維持する
+9. Static Validation / dedicated Regression Guardを通す
+10. BrowserでSearch / TOC / Footer / Keyboard flowを確認する
+11. Narrow viewportでNavigation / Search / TOC / Footerを確認する
+12. Merge後のCurrent Pages URLを確認できる場合、実公開状態まで確認する
 
 CI successだけをBrowser / Public Pages確認済みとは扱いません。
 
-## 12. Implementation Handoff
+## 14. Research / Evidence Boundary
 
-- Status: **Ready for implementation**
-- Blocking Decisions: None
-- Research record: `EliteMay/web-project-data/research/studies/web-project-guide/human-guide-comparative-research.md`
-- Feature gap matrix: `EliteMay/web-project-data/research/studies/web-project-guide/human-guide-feature-gap-matrix.md`
-- Implementation target: `EliteMay/web-project-guide`
-- Preferred change path: Feature Branch + Pull Request
-- Important constraint: Human Guideを第二Normative Rule本文にしない
+Current Product Contractを導いた比較Researchの詳細は `EliteMay/web-project-data/research/studies/web-project-guide/` にHistorical / working evidenceとして保存します。Current判断ではこの文書、Current Repository、Current Owner Docsを優先し、Research recordを第二Source of Truthにしません。

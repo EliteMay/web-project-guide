@@ -55,6 +55,7 @@
       "authority": "human-summary",
       "nav": { "visible": true, "order": 30 },
       "searchable": true,
+      "toc": true,
       "sourceLinks": ["START_HERE.md", "docs/21-rule-routing-preflight.md", "maintenance/rule-router.json"],
       "keywords": ["AI", "workflow", "作業", "research", "validation", "routing"]
     },
@@ -79,6 +80,7 @@
       "authority": "human-summary",
       "nav": { "visible": true, "order": 50 },
       "searchable": true,
+      "toc": true,
       "sourceLinks": ["README.md", "docs/"],
       "keywords": ["all rules", "owner", "一覧", "全ルール"]
     },
@@ -91,6 +93,7 @@
       "authority": "human-summary",
       "nav": { "visible": true, "order": 60 },
       "searchable": true,
+      "toc": true,
       "sourceLinks": ["REQUIREMENTS.md", "HUMAN_GUIDE_REQUIREMENTS.md", "references/"],
       "keywords": ["research", "requirements", "evidence", "研究", "要件"]
     },

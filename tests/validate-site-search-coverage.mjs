@@ -23,6 +23,17 @@ if (!searchPage) errors.push(`missing ${searchPagePath}`);
 if (registry && manifest) {
   const sources = Array.isArray(registry.sources) ? registry.sources : [];
   const sourceByPath = new Map(sources.map((source) => [source.path, source]));
+  const allowedContentTypes = new Set(['requirements', 'entry-doc', 'human-page', 'owner-doc', 'catalog']);
+
+  for (const source of sources) {
+    if (!source.contentType) {
+      errors.push(`site search source missing contentType: ${source.id || source.path}`);
+      continue;
+    }
+    if (!allowedContentTypes.has(source.contentType)) {
+      errors.push(`site search source ${source.id}: unsupported contentType -> ${source.contentType}`);
+    }
+  }
 
   const requiredHumanSurfaces = manifest.surfaces.filter((surface) =>
     surface.searchable === true &&
@@ -40,6 +51,9 @@ if (registry && manifest) {
     if (source.authority !== 'human-summary') {
       errors.push(`site search source ${source.id}: canonical Human Guide surface must be human-summary`);
     }
+    if (source.contentType !== 'human-page') {
+      errors.push(`site search source ${source.id}: canonical Human Guide surface must be contentType=human-page`);
+    }
     if (source.destination !== surface.canonicalPath) {
       errors.push(`site search source ${source.id}: destination must equal canonical Human Guide path ${surface.canonicalPath}`);
     }
@@ -51,7 +65,16 @@ const implementationMarkers = [
   'function stripSource',
   '<script\\b',
   '<style\\b',
-  "source.authority"
+  'source.authority',
+  'source.contentType',
+  'contentTypeLabels',
+  'id="contentType"',
+  "params.set('authority'",
+  "params.set('type'",
+  "event.key === '/'",
+  "key === 'k'",
+  'event.ctrlKey || event.metaKey',
+  'isTextEntry(event.target)'
 ];
 
 for (const marker of implementationMarkers) {

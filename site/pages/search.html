@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="../assets/human-guide.css">
   <link rel="stylesheet" href="../assets/mobile-fixes.css">
   <style>
-    .search-shell{max-width:920px;margin:0 auto}.search-panel{margin-top:24px;padding:18px;border:1px solid var(--border);border-radius:10px;background:var(--surface)}.search-row{display:grid;grid-template-columns:minmax(0,1fr) 210px;gap:10px}.search-row input,.search-row select{min-height:46px;width:100%;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font:inherit;padding:0 13px}.search-row input:focus-visible,.search-row select:focus-visible{outline:3px solid color-mix(in srgb,var(--accent) 34%,transparent);outline-offset:2px}.search-help,.search-status{color:var(--muted);font-size:13px}.search-status{margin:14px 0 0}.results{display:grid;gap:10px;margin-top:18px}.result{padding:16px;border:1px solid var(--border);border-radius:10px;background:var(--surface)}.result-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}.result h2{margin:0;font-size:18px}.result a{color:var(--text);text-decoration:none}.result a:hover,.result a:focus-visible{color:var(--accent);text-decoration:underline}.authority{flex:0 0 auto;border:1px solid var(--border);border-radius:999px;padding:3px 8px;color:var(--muted);font-size:11px;font-weight:700}.result p{margin:9px 0 0;color:var(--muted);font-size:13px;line-height:1.7}.result-path{margin-top:9px;color:var(--muted);font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:11px;overflow-wrap:anywhere}.empty{padding:26px;border:1px dashed var(--border);border-radius:10px;color:var(--muted);text-align:center}.quick-links{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}.quick-links a{border:1px solid var(--border);border-radius:999px;padding:7px 10px;color:var(--text);font-size:12px;text-decoration:none}.release-note{margin-top:14px;color:var(--muted);font-size:12px}@media(max-width:680px){.search-row{grid-template-columns:1fr}.result-top{display:block}.authority{display:inline-block;margin-top:8px}}
+    .search-shell{max-width:980px;margin:0 auto}.search-panel{margin-top:24px;padding:18px;border:1px solid var(--border);border-radius:10px;background:var(--surface)}.search-row{display:grid;grid-template-columns:minmax(0,1fr) 190px 190px;gap:10px}.search-row input,.search-row select{min-height:46px;width:100%;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font:inherit;padding:0 13px}.search-row input:focus-visible,.search-row select:focus-visible{outline:3px solid color-mix(in srgb,var(--accent) 34%,transparent);outline-offset:2px}.search-help,.search-status{color:var(--muted);font-size:13px}.search-help kbd{display:inline-block;min-width:24px;padding:1px 5px;border:1px solid var(--border);border-bottom-width:2px;border-radius:5px;background:var(--surface-2);color:var(--text);font:11px ui-monospace,SFMono-Regular,Consolas,monospace;text-align:center}.search-status{margin:14px 0 0}.results{display:grid;gap:10px;margin-top:18px}.result{padding:16px;border:1px solid var(--border);border-radius:10px;background:var(--surface)}.result-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}.result h2{margin:0;font-size:18px}.result a{color:var(--text);text-decoration:none}.result a:hover,.result a:focus-visible{color:var(--accent);text-decoration:underline}.result-badges{display:flex;flex:0 0 auto;flex-wrap:wrap;justify-content:flex-end;gap:6px}.authority,.content-type{border:1px solid var(--border);border-radius:999px;padding:3px 8px;color:var(--muted);font-size:11px;font-weight:700;white-space:nowrap}.content-type{background:var(--surface-2)}.result p{margin:9px 0 0;color:var(--muted);font-size:13px;line-height:1.7}.result-path{margin-top:9px;color:var(--muted);font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:11px;overflow-wrap:anywhere}.empty{padding:26px;border:1px dashed var(--border);border-radius:10px;color:var(--muted);text-align:center}.quick-links{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}.quick-links a{border:1px solid var(--border);border-radius:999px;padding:7px 10px;color:var(--text);font-size:12px;text-decoration:none}.release-note{margin-top:14px;color:var(--muted);font-size:12px}@media(max-width:860px){.search-row{grid-template-columns:1fr 1fr}.search-row label:first-child{grid-column:1/-1}}@media(max-width:620px){.search-row{grid-template-columns:1fr}.search-row label:first-child{grid-column:auto}.result-top{display:block}.result-badges{justify-content:flex-start;margin-top:8px}}
   </style>
 </head>
 <body>
@@ -34,20 +34,31 @@
         <div class="search-row">
           <label>
             <span class="visually-hidden">検索語</span>
-            <input id="query" type="search" autocomplete="off" placeholder="例: 保存、Navigation、Research、Electron" autofocus>
+            <input id="query" type="search" autocomplete="off" aria-keyshortcuts="/ Control+K Meta+K" placeholder="例: 保存、Navigation、Research、Electron">
           </label>
           <label>
-            <span class="visually-hidden">種類で絞り込む</span>
+            <span class="visually-hidden">正本種別で絞り込む</span>
             <select id="authority">
-              <option value="">すべての種類</option>
+              <option value="">すべての正本種別</option>
               <option value="normative-owner">Owner / 正本</option>
               <option value="current-contract">Requirements / Current Contract</option>
               <option value="human-summary">Human Guide / 要約</option>
               <option value="catalog-example">Catalog / 実例</option>
             </select>
           </label>
+          <label>
+            <span class="visually-hidden">Content Typeで絞り込む</span>
+            <select id="contentType">
+              <option value="">すべてのContent Type</option>
+              <option value="owner-doc">Owner Doc</option>
+              <option value="requirements">Requirements</option>
+              <option value="human-page">Human Guide Page</option>
+              <option value="entry-doc">Entry / Router Doc</option>
+              <option value="catalog">Catalog</option>
+            </select>
+          </label>
         </div>
-        <p class="search-help">検索結果の種類を必ず表示し、Human Guideの要約をOwner Docの正本と同一視しないようにしています。</p>
+        <p class="search-help">Authorityは「どれが正本か」、Content Typeは「何の種類か」を表します。<kbd>/</kbd> または <kbd>Ctrl/⌘ K</kbd> で検索欄へ移動できます。</p>
         <p id="status" class="search-status" role="status" aria-live="polite">2文字以上入力すると検索します。</p>
       </section>
 
@@ -66,6 +77,7 @@
   <script>
     const queryInput = document.querySelector('#query');
     const authoritySelect = document.querySelector('#authority');
+    const contentTypeSelect = document.querySelector('#contentType');
     const results = document.querySelector('#results');
     const status = document.querySelector('#status');
     const sourceUrl = new URL('../data/search-sources.json', location.href);
@@ -77,6 +89,14 @@
       'current-contract': 'Current Contract',
       'human-summary': 'Human Guide / 要約',
       'catalog-example': 'Catalog / 実例'
+    };
+
+    const contentTypeLabels = {
+      'requirements': 'Requirements',
+      'entry-doc': 'Entry / Router Doc',
+      'human-page': 'Human Guide Page',
+      'owner-doc': 'Owner Doc',
+      'catalog': 'Catalog'
     };
 
     let sources = [];
@@ -163,8 +183,10 @@
 
     function renderMatches(query) {
       const selectedAuthority = authoritySelect.value;
+      const selectedContentType = contentTypeSelect.value;
       const matches = sources
         .filter((source) => !selectedAuthority || source.authority === selectedAuthority)
+        .filter((source) => !selectedContentType || source.contentType === selectedContentType)
         .filter((source) => source.searchText.includes(normalize(query)))
         .map((source) => ({ source, score: score(source, query) }))
         .sort((a, b) => b.score - a.score || a.source.title.localeCompare(b.source.title, 'ja'))
@@ -174,7 +196,7 @@
       if (!matches.length) {
         const empty = document.createElement('div');
         empty.className = 'empty';
-        empty.innerHTML = '一致する公開Guide資産がありません。検索語を短くするか、<a href="task-router.html">作業ルート診断</a>を使ってください。';
+        empty.innerHTML = '一致する公開Guide資産がありません。検索語やFilterを緩めるか、<a href="task-router.html">作業ルート診断</a>を使ってください。';
         results.append(empty);
         status.textContent = '0件';
         return;
@@ -190,10 +212,18 @@
         link.href = sourceHref(source);
         link.textContent = source.title;
         heading.append(link);
-        const label = document.createElement('span');
-        label.className = 'authority';
-        label.textContent = authorityLabels[source.authority] || source.authority;
-        top.append(heading, label);
+
+        const badges = document.createElement('div');
+        badges.className = 'result-badges';
+        const authority = document.createElement('span');
+        authority.className = 'authority';
+        authority.textContent = authorityLabels[source.authority] || source.authority;
+        const contentType = document.createElement('span');
+        contentType.className = 'content-type';
+        contentType.textContent = contentTypeLabels[source.contentType] || source.contentType;
+        badges.append(authority, contentType);
+
+        top.append(heading, badges);
         const snippet = document.createElement('p');
         snippet.textContent = makeSnippet(source.content, query);
         const path = document.createElement('div');
@@ -206,11 +236,17 @@
       status.textContent = `${matches.length}件表示`;
     }
 
-    async function runSearch() {
-      const query = queryInput.value.trim();
+    function updateUrlState(query) {
       const params = new URLSearchParams(location.search);
       if (query) params.set('q', query); else params.delete('q');
+      if (authoritySelect.value) params.set('authority', authoritySelect.value); else params.delete('authority');
+      if (contentTypeSelect.value) params.set('type', contentTypeSelect.value); else params.delete('type');
       history.replaceState(null, '', `${location.pathname}${params.size ? `?${params}` : ''}${location.hash}`);
+    }
+
+    async function runSearch() {
+      const query = queryInput.value.trim();
+      updateUrlState(query);
 
       if (normalize(query).length < 2) {
         results.replaceChildren();
@@ -229,15 +265,46 @@
       }
     }
 
+    function focusSearch() {
+      queryInput.focus();
+      queryInput.select();
+    }
+
+    function isTextEntry(target) {
+      return target instanceof HTMLInputElement ||
+        target instanceof HTMLTextAreaElement ||
+        target instanceof HTMLSelectElement ||
+        target?.isContentEditable === true;
+    }
+
     let timer;
     queryInput.addEventListener('input', () => {
       clearTimeout(timer);
       timer = setTimeout(runSearch, 120);
     });
     authoritySelect.addEventListener('change', runSearch);
+    contentTypeSelect.addEventListener('change', runSearch);
 
-    const initialQuery = new URLSearchParams(location.search).get('q') || '';
+    document.addEventListener('keydown', (event) => {
+      const key = event.key.toLocaleLowerCase();
+      if ((event.ctrlKey || event.metaKey) && key === 'k') {
+        event.preventDefault();
+        focusSearch();
+        return;
+      }
+      if (event.key === '/' && !event.ctrlKey && !event.metaKey && !event.altKey && !isTextEntry(event.target)) {
+        event.preventDefault();
+        focusSearch();
+      }
+    });
+
+    const initialParams = new URLSearchParams(location.search);
+    const initialQuery = initialParams.get('q') || '';
+    const initialAuthority = initialParams.get('authority') || '';
+    const initialType = initialParams.get('type') || '';
     queryInput.value = initialQuery;
+    if ([...authoritySelect.options].some((option) => option.value === initialAuthority)) authoritySelect.value = initialAuthority;
+    if ([...contentTypeSelect.options].some((option) => option.value === initialType)) contentTypeSelect.value = initialType;
     if (initialQuery) runSearch();
   </script>
 </body>
