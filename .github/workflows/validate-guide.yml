@@ -48,6 +48,9 @@ jobs:
       - name: Validate Rule Finder feature coverage
         run: node tests/validate-rule-finder-coverage.mjs
 
+      - name: Validate site-wide search coverage
+        run: node tests/validate-site-search-coverage.mjs
+
       - name: Validate development conversation persistence
         run: node tests/validate-development-conversation-persistence.mjs
 
