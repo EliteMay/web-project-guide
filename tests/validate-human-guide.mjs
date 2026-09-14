@@ -84,6 +84,9 @@ const manifest = fs.existsSync('site/data/human-guide-manifest.json')
 const searchSources = fs.existsSync('site/data/search-sources.json')
   ? parseJson('site/data/search-sources.json')
   : null;
+const ruleRouter = fs.existsSync('maintenance/rule-router.json')
+  ? parseJson('maintenance/rule-router.json')
+  : null;
 
 if (manifest) {
   if (manifest.schemaVersion !== 1) errors.push('human guide manifest: unsupported schemaVersion');
@@ -194,7 +197,7 @@ if (searchSources) {
     errors.push('search sources: sources must be a non-empty array');
   } else {
     assertUnique(searchSources.sources.map((source) => source.id), 'search source id');
-    const allowedAuthorities = new Set(['normative-owner', 'current-contract', 'human-summary', 'catalog-example', 'reference-evidence']);
+    const allowedAuthorities = new Set(['normative-owner', 'current-contract', 'human-summary', 'status', 'catalog-example', 'reference-evidence']);
     const allowedContentTypes = new Set(['requirements', 'entry-doc', 'human-page', 'owner-doc', 'catalog']);
     for (const source of searchSources.sources) {
       if (!source.id || !source.title || !source.path || !source.authority || !source.contentType) {
@@ -213,6 +216,16 @@ if (searchSources) {
       if (/web-project-data/i.test(JSON.stringify(source))) {
         errors.push(`search source ${source.id}: private web-project-data must not be indexed`);
       }
+    }
+  }
+}
+
+if (ruleRouter && fs.existsSync('site/pages/all-rules.html')) {
+  const allRulesProjection = read('site/pages/all-rules.html');
+  const currentOwners = [...new Set(Object.values(ruleRouter.owners || {}))];
+  for (const ownerPath of currentOwners) {
+    if (!allRulesProjection.includes(ownerPath)) {
+      errors.push(`site/pages/all-rules.html: missing Current Owner projection -> ${ownerPath}`);
     }
   }
 }

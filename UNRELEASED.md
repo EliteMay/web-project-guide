@@ -74,6 +74,7 @@
 
 ## Fixed
 
+- Human Guideの全ルール短縮版でVisual Quality Baseline Owner 17が欠落し、Manifestで`searchable: true`のGuide MigrationがSite-wide Searchから抜けていたCoverage drift。Current Ownerとsearchable Surfaceを動的検証するRegression Guardで再発を防止
 - Human GuideのGlobal Navigation / compatibility route / validator coverageがページごとにdriftしやすく、narrow viewportでGlobal tabsが到達不能になり得た構造上のGap
 - Current Rule / Procedureとpoint-in-time Research / Evidenceの保存場所がGuide内で重複し、Public Guideが作業履歴Repository化し得た責任境界の曖昧さ
 - `docs/14`はAudit結果をData側へ保存すると定義しているのに、Deep Audit Checklist / review policyがGuide側`maintenance/audits`を結果本体の保存先としていた矛盾
