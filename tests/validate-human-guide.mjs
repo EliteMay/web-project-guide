@@ -6,6 +6,7 @@ const requiredFiles = [
   'HUMAN_GUIDE_REQUIREMENTS.md',
   'site/README.md',
   'site/assets/human-guide.css',
+  'site/assets/human-guide-components.css',
   'site/assets/mobile-fixes.css',
   'site/assets/human-guide-shell.js',
   'site/data/human-guide-manifest.json',
@@ -122,6 +123,9 @@ if (manifest) {
       if (!Array.isArray(surface.sourceLinks)) {
         errors.push(`human guide manifest ${surface.id}: sourceLinks must be an array`);
       }
+      if ('toc' in surface && typeof surface.toc !== 'boolean') {
+        errors.push(`human guide manifest ${surface.id}: toc must be boolean when present`);
+      }
       if (/web-project-data/i.test(JSON.stringify(surface))) {
         errors.push(`human guide manifest ${surface.id}: private web-project-data must not be a public surface source`);
       }
@@ -133,8 +137,6 @@ if (manifest) {
         errors.push(`human guide manifest ${surface.id}: expected directory -> ${canonical}`);
       }
 
-      // Project dashboards are a separate subsystem. Every HTML surface owned by
-      // the Human Guide itself must mount the same manifest-driven shell.
       validateShellSurface(surface);
 
       for (const compatibilityPath of surface.compatibilityPaths || []) {
@@ -152,6 +154,12 @@ if (manifest) {
         if (adapter.length > 2500) {
           errors.push(`${compatibilityPath}: compatibility adapter contains too much substantive page content`);
         }
+      }
+    }
+
+    for (const tocSurfaceId of ['ai-workflow', 'all-rules', 'research-requirements']) {
+      if (byId.get(tocSurfaceId)?.toc !== true) {
+        errors.push(`human guide manifest: long/reference surface must keep Auto TOC enabled -> ${tocSurfaceId}`);
       }
     }
 
@@ -187,13 +195,17 @@ if (searchSources) {
   } else {
     assertUnique(searchSources.sources.map((source) => source.id), 'search source id');
     const allowedAuthorities = new Set(['normative-owner', 'current-contract', 'human-summary', 'catalog-example', 'reference-evidence']);
+    const allowedContentTypes = new Set(['requirements', 'entry-doc', 'human-page', 'owner-doc', 'catalog']);
     for (const source of searchSources.sources) {
-      if (!source.id || !source.title || !source.path || !source.authority) {
+      if (!source.id || !source.title || !source.path || !source.authority || !source.contentType) {
         errors.push(`search source ${source.id || '<unknown>'}: missing required field`);
         continue;
       }
       if (!allowedAuthorities.has(source.authority)) {
         errors.push(`search source ${source.id}: unsupported authority -> ${source.authority}`);
+      }
+      if (!allowedContentTypes.has(source.contentType)) {
+        errors.push(`search source ${source.id}: unsupported contentType -> ${source.contentType}`);
       }
       if (!fs.existsSync(source.path)) {
         errors.push(`search source ${source.id}: missing public source -> ${source.path}`);
@@ -215,6 +227,7 @@ if (errors.length === 0) {
   const searchPage = read('site/pages/search.html');
   const taskRouter = read('site/pages/task-router.html');
   const shell = read('site/assets/human-guide-shell.js');
+  const components = read('site/assets/human-guide-components.css');
   const mobile = read('site/assets/mobile-fixes.css');
   const requirements = read('REQUIREMENTS.md');
   const humanRequirements = read('HUMAN_GUIDE_REQUIREMENTS.md');
@@ -261,8 +274,8 @@ if (errors.length === 0) {
   if (!taskRouter.includes("../../maintenance/rule-router.json")) {
     errors.push('site/pages/task-router.html: must project the Current Machine Router');
   }
-  if (!searchPage.includes('authorityLabels')) {
-    errors.push('site/pages/search.html: search results must expose authority/content type');
+  if (!searchPage.includes('authorityLabels') || !searchPage.includes('contentTypeLabels')) {
+    errors.push('site/pages/search.html: search results must expose authority and content type');
   }
   if (!shell.includes('human-guide-manifest.json')) {
     errors.push('human-guide-shell.js: must load Human Guide manifest');
@@ -270,8 +283,26 @@ if (errors.length === 0) {
   if (!shell.includes("setAttribute('aria-current', 'page')")) {
     errors.push('human-guide-shell.js: must expose current page state');
   }
+  if (!shell.includes("setAttribute('aria-current', 'location')")) {
+    errors.push('human-guide-shell.js: Auto TOC must expose current section state');
+  }
   if (!shell.includes('ensureSkipLink')) {
     errors.push('human-guide-shell.js: must provide skip navigation for shell-enabled surfaces');
+  }
+  if (!shell.includes('renderPageToc') || !shell.includes('surface?.toc !== true')) {
+    errors.push('human-guide-shell.js: must project opt-in Auto TOC from Manifest metadata');
+  }
+  if (!shell.includes('renderSourceFooter') || !shell.includes('surface.sourceLinks')) {
+    errors.push('human-guide-shell.js: must project Source Footer from Manifest sourceLinks');
+  }
+  if (!shell.includes('human-guide-components.css')) {
+    errors.push('human-guide-shell.js: must load shared TOC / Source Footer component styles');
+  }
+  if (!shell.includes('/issues/new') || !shell.includes("githubPath(surface.canonicalPath, 'edit')")) {
+    errors.push('human-guide-shell.js: Source Footer must provide edit and issue-report paths');
+  }
+  if (!components.includes('.page-toc') || !components.includes('.source-footer')) {
+    errors.push('human-guide-components.css: missing Auto TOC / Source Footer styles');
   }
   if (!/overflow-x:\s*auto/.test(mobile)) {
     errors.push('mobile-fixes.css: global tabs must remain horizontally reachable on narrow viewports');
@@ -312,15 +343,17 @@ if (errors.length === 0) {
 
   const humanContractMarkers = [
     'Human Guide Surface Registry / Manifest',
-    'Global Navigation Contract',
+    'Global Navigation / Accessibility Contract',
     'Site-wide Search Contract',
     'Human Task Router Contract',
+    'Page TOC Contract',
+    'Source / Edit / Report Contract',
     'Human Guide Freshness / Release State Contract',
     'Validator / Regression Guard Contract'
   ];
   for (const marker of humanContractMarkers) {
     if (!humanRequirements.includes(marker)) {
-      errors.push(`HUMAN_GUIDE_REQUIREMENTS.md: missing P0 contract -> ${marker}`);
+      errors.push(`HUMAN_GUIDE_REQUIREMENTS.md: missing current contract -> ${marker}`);
     }
   }
 }
