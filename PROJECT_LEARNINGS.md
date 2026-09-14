@@ -219,6 +219,19 @@ Common Rule本文は`docs/`、一般化済みのFailure / Success / Anti-Pattern
 - Prevention: Capability / permission discoveryでは、まずTool schema・read-only endpoint・current refを確認する。Authoritative BranchへのmutationはUser-requested Product changeまたは必要なRepository operationに限定する。
 - Guide candidate: yes — `docs/10` / Quality Checklistへ反映済み。
 
+### PL-F-018 Human Guide Shell Refactorで既存機能群を落とした
+
+- Date: 2026-09-14
+- Status: resolved
+- Severity: medium
+- Symptom: `site/pages/rules.html`を独自Sidebar / inline CSSからManifest-driven shared shellへ置き換える途中で、既存Rule Finderの「GitHub Pages」「Dependencies / Assets」「Observability」の3機能カードがPR diff上から消えた。Navigation / Shell / SearchのValidatorは通っていたため、内容Coverageの欠落は自動検出されなかった。
+- Root Cause: 大きなPresentation refactorでLayout / Navigation contractを主に検証し、置換前のHuman-facing content inventoryをRegression Oracleとして固定していなかった。
+- Final Fix: PR diff reviewで欠落を発見して3機能カードを復元し、`tests/validate-rule-finder-coverage.mjs`で既存19機能群を必須Coverageとして固定。`.github/workflows/validate-guide.yml`へ専用Stepを追加した。
+- Detection method: 置換前後のPR diffとHuman Guideのfeature inventoryを比較。
+- Regression Guard: Rule Finderの19機能群が欠けるとCI Failureになる。加えてSite-wide Search側も`tests/validate-site-search-coverage.mjs`でCanonical Human Guideの検索Coverageを検証する。
+- Prevention: MeaningfulなUI / Shell / IA refactorでは、Visual / Navigationの整合だけでなく、変更前の主要Content / Task / Feature inventoryを先に列挙し、置換後に同じCoverageが残っているかを検証する。大きなHTML置換ではDiff reviewをCompletion Gateから外さない。
+- Guide candidate: yes — 既存のRule Preservation / Testing / Continuous Improvement方針と専用Regression Guardへ反映済み。新しいOwnerは追加しない。
+
 ## Success
 
 ### PL-S-001 Ruleを消さず責務を戻す整理
