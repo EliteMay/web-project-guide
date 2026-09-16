@@ -179,8 +179,9 @@ Setup.exe / Auto Update / Windows固有機能をCIだけで実機確認済み扱
 - Projectに`AGENTS.md`があればそのRouter
 - 通常と同じTesting / Security / Storage / Visual基準
 - MeaningfulなUI / Visual要件では [18 Domain-first Visual Research](docs/18-domain-first-visual-research.md) を候補案・実装より先に行う
+- 長時間・反復AgentをGoalから自動継続させる場合は [Loop Engineering Foundation](LOOP_ENGINEERING_REQUIREMENTS.md) のGoal / Scope / Verifier / Progress / Budget / Permission / Stop Contractも適用する
 
-Memoryや古い会話だけでCurrent Repositoryを推測しません。
+Memoryや古い会話だけでCurrent Repositoryを推測しません。Loop Engineeringを使う場合も、Runtime Controllerが未実装・未実行なら自動実行済みとは扱いません。
 
 ## 会話移行 / Automatic Resume / stale checkpoint / duplicate active conversation
 

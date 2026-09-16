@@ -1,0 +1,105 @@
+{
+  "policyVersion": "1",
+  "loopId": "example-safe-loop",
+  "repository": "EliteMay/example-project",
+  "autonomyLevel": "L1_WORKTREE",
+  "goal": {
+    "statement": "Current Requirementsに対する1件のeligible taskをisolated workspaceで実装し、必要な検証Evidenceを残す",
+    "completionCriteria": [
+      "formal queue task is completed",
+      "required verification passed",
+      "completion receipt records the final repository ref and unresolved items"
+    ]
+  },
+  "scope": {
+    "workingBranchPolicy": "isolated_worktree",
+    "allowedPaths": [
+      "src/**",
+      "tests/**",
+      "README.md"
+    ],
+    "protectedPaths": [
+      ".github/workflows/**",
+      "tests/acceptance/**",
+      "production/**"
+    ],
+    "requiredSources": [
+      "README.md",
+      "REQUIREMENTS.md",
+      "PROJECT_LEARNINGS.md"
+    ]
+  },
+  "trigger": {
+    "type": "queue",
+    "source": "formal-work-queue"
+  },
+  "verification": {
+    "minimumLevel": "V3_RUNTIME",
+    "protected": true,
+    "requiredChecks": [
+      "project static validation",
+      "task-specific deterministic tests",
+      "representative runtime or E2E check"
+    ],
+    "evidenceRequired": true,
+    "allowWorkerToModifyVerifier": false
+  },
+  "budget": {
+    "maxIterations": 6,
+    "maxSameFailure": 3,
+    "maxParallelWorkers": 1,
+    "maxWallClockMinutes": null,
+    "maxModelTokens": null,
+    "maxExternalCost": null,
+    "costCurrency": null
+  },
+  "permissions": {
+    "repositoryRead": true,
+    "workingBranchWrite": true,
+    "commit": true,
+    "pushWorkingBranch": false,
+    "defaultBranchWrite": false,
+    "merge": false,
+    "deploy": false,
+    "externalNetwork": false,
+    "secretAccess": false
+  },
+  "progress": {
+    "detectSameFailure": true,
+    "requireMeaningfulDelta": true,
+    "signatureInputs": [
+      "error_category",
+      "normalized_message",
+      "failing_checks",
+      "affected_area",
+      "blocker"
+    ]
+  },
+  "stop": {
+    "successWhen": [
+      "all completion criteria are evidenced",
+      "required verification passed",
+      "no unresolved blocking item remains"
+    ],
+    "escalateWhen": [
+      "user_decision_required",
+      "irreversible_destructive_action",
+      "external_permission_required",
+      "billing_required",
+      "secret_access_required",
+      "material_requirements_conflict",
+      "verifier_uncertain",
+      "scope_expansion_required",
+      "production_release_gate"
+    ],
+    "terminalStates": [
+      "passed",
+      "failed",
+      "stuck",
+      "blocked",
+      "budget_exhausted",
+      "escalated",
+      "cancelled"
+    ]
+  }
+}
