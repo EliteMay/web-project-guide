@@ -1,8 +1,8 @@
 # Loop Engineering Foundation 要件定義
 
-Status: Requirements complete / Guide-side foundation implemented / Runtime Phase A implemented / Phase B not implemented
+Status: Requirements complete / Guide-side foundation implemented / Runtime Phase A implemented / Runtime Phase B implemented / Phase C not implemented
 Target: `EliteMay/web-project-guide`
-Companion runtime/data target: `EliteMay/web-project-data`（Phase A Runtime implementation / validation evidenceのCurrent Owner）
+Companion runtime/data target: `EliteMay/web-project-data`（Phase A / B Runtime implementation / validation evidenceのCurrent Owner）
 
 この文書は、Coding Agentへ単発Taskを渡すだけでなく、**Goal → Work → Verification → State → Next Decision** を安全に反復できるLoop Engineering機能を `web-project-guide` のProduct機能として導入するためのCurrent Product Contractです。
 
@@ -543,6 +543,8 @@ Receiptは「Agentが完成と言った」記録ではなく、最低限:
 
 を追跡できるものとします。
 
+Phase BではAttemptごとのMachine-readable ReceiptをData側へ保存するRuntimeが実装されています。ReceiptはCurrent Repository / Queue Stateの第二Source of Truthではなく、Resume時にCurrent EvidenceとreconcileするためのEvidenceです。
+
 ---
 
 ## 15. Trigger Policy
@@ -602,29 +604,75 @@ Guide側Foundation自体はRuntime Agentを起動しません。
 
 `EliteMay/web-project-data`へRead-only / Dry Run Controllerを実装済みです。
 
-Current runtime surfaces:
-
-- `tools/loop-engineering/dry-run-controller.mjs`
-- `tools/loop-engineering/json-schema-lite.mjs`
-- `tools/loop-engineering/test-dry-run-controller.mjs`
-- `tools/loop-engineering/README.md`
-- `.github/workflows/validate-loop-engineering.yml`
-- `evidence/2026/web-project-guide/loop-engineering-phase-a-runtime-evidence.md`
-
 Phase AはGuide側Current Policy Schemaを正本として読み、Target Repository / Work Queue / Queue Requirements revisionをread-onlyでreconcileし、mechanical task candidate、required verifier、blocker / next-action候補をMachine-readable JSONで返します。
 
 Phase A Outputは`authority: derived-loop-dry-run-only`で、formal assignment authorityを持ちません。Policyが将来Phase向けwrite capabilityを含んでも、Phase Aのeffective permissionではwrite / commit / push / merge / deploy / external network / secret accessを無効化します。
 
 Queueが参照するRequirementsが`blobSha`の場合、Target RepositoryのCurrent `HEAD:<requirements-path>`と比較し、stale revisionやdirty Requirementsを`ready`へ丸めません。
 
-GitHub Evidence:
+Runtime implementation PR: `EliteMay/web-project-data#149`
 
-- Runtime implementation PR: `EliteMay/web-project-data#149`
-- Squash merge commit: `cba21d98cd12657e42a93a3f82daaddd23926bf3`
-- PR-head: Loop Engineering / Validate Data / Reliability / Windows PowerShell Compatibility PASS
-- Post-merge `main`: Loop Engineering validationとRepository observation / reconciliationを含むCurrent workflowsが完了し、failureは確認されていない
+### Runtime Phase B — Implemented
 
-Phase AはTaskを実行しません。Formal assignment / claim、isolated worker、implementation、independent verifier execution、Receipt persistence、retry / stuck / budget runtimeはPhase B以降です。
+`EliteMay/web-project-data`へIsolated Worker Loopを実装済みです。
+
+Phase BはPhase Aで`ready`となったCurrent Taskを明示的に受け取り、既存Work Queue Contractを再利用してformal assignment / claimした後、`L1_WORKTREE`境界で1 Taskだけを実行します。
+
+Current behavioral flow:
+
+```text
+Phase A ready evidence
+↓
+Repository writer coordination
+↓
+formal assignment / claim
+↓
+dedicated worker branch / isolated worktree
+↓
+implementation within allowed scope
+↓
+candidate commit on worker branch only
+↓
+protected verification
+↓
+ready_for_apply
+↓
+Queue completion
+↓
+Machine-readable Receipt
+```
+
+Phase Bでは次をGuardします。
+
+- Target primary/default branchは開始時SHAから動かさない。
+- Queue assignment前に同一Repositoryのwriter coordinationを成立させる。
+- Worker変更はdedicated branch / isolated worktreeだけへ限定する。
+- allowed path外 / protected path変更を成功へ丸めない。
+- Worker BranchへのCandidate Commitは許可するが、Push / Merge / Deployはしない。
+- protected verifierのrequired checksとTask-specific validation requirementsの両方を満たす。
+- Verifier後にWorker HEAD / worktreeがCandidate Commitから変化した場合はPASSにしない。
+- Verification PASS前にQueueを`completed`へ進めない。
+- Verifier failure / operational failure時はTaskをcompletedへ進めず、Receipt / Claim / Worker BranchをRecovery Evidenceとして残せる。
+
+Current Data-side surfaces / Schema / exact storage pathは`EliteMay/web-project-data`のCurrent Contractを正本とし、Guideへ実装詳細を複製しません。
+
+Runtime implementation PR: `EliteMay/web-project-data#150`
+Squash merge commit: `186f6ff70feafde79eb654aa71ba5b4e3b26c156`
+
+Validation evidence:
+
+- Phase A regression PASS
+- Phase B Ubuntu integration PASS
+- Phase B Windows integration PASS
+- Validate Data / Reliability / Windows compatibility PASS on PR head
+- success pathでPrimary Branch SHA不変 / Worker Branch Candidate Commit / success-only Queue completion / Receipt persistenceを確認
+- verifier failure / unsafe Policy / concurrent writer conflictをfail closedするRegressionを確認
+
+重要: **実ProjectのCurrent Queue TaskをPhase Bで実際に自動実装したProduction Pilotはまだ`NOT_RUN`です。**
+
+したがって、Phase B Runtimeが実装・fixture integration-testedであることと、real Projectで長時間自律Loopが実証済みであることを同一視しません。
+
+またPhase BのVerifier callback境界はWorker self-reportより強いEvidenceを要求しますが、OS-level sandbox / network namespace /別Credential processまでRuntime自身が提供する実装ではありません。Execution Environment側のCapability isolationは別途必要です。
 
 ---
 
@@ -648,25 +696,36 @@ Phase AはTaskを実行しません。Formal assignment / claim、isolated worke
 
 Phase Aの目的は、実行前にCurrent Stateを安全に説明できることです。`ready`は「実行してよい正式権限」ではなく、次のCoordinator / Phase B判断に渡せるread-only Evidenceです。
 
-### Phase B — Isolated Worker Loop — Next
+### Phase B — Isolated Worker Loop — Implemented
+
+実装済み:
+
+- Phase A ready evidence再確認
+- explicit Task / lane selection
+- single-writer coordination before Queue mutation
+- formal Queue assignment / claim
+- dedicated Worker Branch / isolated worktree
+- Policy allowed / protected path guard
+- Worker Branch Candidate Commit
+- protected verifier callback / required verification reconciliation
+- Verifier後のWorker projection integrity check
+- success-only `ready_for_apply -> completed`
+- Machine-readable Phase B Receipt
+- Ubuntu / Windows integration regression
+- no push / merge / deploy
+
+Phase Bは1 Attemptを安全に実行するFoundationです。Failure後の自動Retry、Crash後のResume、Stuck / Budget判断までは担当しません。
+
+### Phase C — Resume / Stuck / Budget — Next
 
 候補:
 
-- dedicated branch / worktree
-- one task formal claim
-- implementation
-- local + independent verification
-- machine-readable receipt
-- no merge
-
-Phase BではPhase Aで成立したCurrent Repository / Queue reconciliationを再利用し、WorkerにDefault Branch / Merge authorityを与えません。
-
-### Phase C — Resume / Stuck / Budget
-
 - crash recovery
-- failure signature
-- progress detection
-- budget enforcement
+- Current Queue / Branch / Receipt / Claim reconciliation
+- failure signature normalization
+- meaningful progress detection
+- retry strategy / maxSameFailure enforcement
+- iteration / wall-clock / model / external cost budget enforcement
 - pause / cancel / kill switch
 
 ### Phase D — Parallel-safe Tasks
@@ -701,7 +760,7 @@ Foundationは次を満たしています。
 
 ### Runtime Phase A
 
-Phase Aは次を満たした状態をCurrent completionとします。
+Phase Aは次を満たしています。
 
 - Guide側Current SchemaでPolicyをValidationする。
 - Target Repository identityをCurrent Git Evidenceから確認する。
@@ -714,23 +773,45 @@ Phase Aは次を満たした状態をCurrent completionとします。
 - Fixture TestでQueue / Target Repository / Git statusが変更されない。
 - Current Guide / Current Guide QueueによるSmoke Testを通す。
 - Data側point-in-time Evidenceを保存する。
-- PR-head / merge後mainの必要ValidationでKnown Failureが残らない。
 
-Phase B以降が存在しない場合、Phase A完了を「自律実装Loop完成」とは表現しません。
+### Runtime Phase B
+
+Phase Bは次を満たしています。
+
+- Phase Aで`ready`となったTaskだけを明示的に実行対象とする。
+- Queue mutation前にsame-repository writer conflictをfail closedする。
+- formal assignment / claimを既存Queue Contractで行う。
+- Target primary/default branchを直接変更しない。
+- Worker branch / worktreeをisolatedに作成する。
+- Policy scope外 / protected path変更を拒否する。
+- Candidate CommitをWorker Branchへだけ作成する。
+- protected verificationのrequired evidenceをWorker自己申告だけで代替しない。
+- Verifier後のWorker projection改変を成功扱いしない。
+- Verification PASS前にTaskをcompletedへ進めない。
+- Attempt結果をMachine-readable Receiptとして追跡できる。
+- Ubuntu / Windows integrationでPrimary Branch SHA不変とQueue transitionを確認する。
+- Push / Merge / Deployを行わない。
+
+Phase C以降が存在しないため、Phase B完了を「長時間の自律Retry / Recovery / Budget制御まで完成」とは表現しません。Real-project Production Pilotも`NOT_RUN`のまま区別します。
 
 ---
 
 ## 20. Out of Scope
 
-Current Phase Aまででは次を実装しません。
+Current Phase Bまででは次を実装しません。
 
 - ChatGPT Platform全体のglobal background loop
 - hidden system hookの存在を仮定した自動実行
+- automatic crash recovery / resume
+- same-failure / stuck runtime enforcement
+- automatic retry strategy loop
+- wall-clock / model / external cost budget runtime enforcement
+- parallel multi-worker execution
+- guarded PR / Merge / Release automation
 - Productionへの無条件自動Deploy
 - Default Branchへの無条件direct write
 - unrestricted network / secret access
 - Verifierを書き換えてPassさせる仕組み
-- すべてのCoding Taskのparallel multi-agent化
 - Task qualityを単一Scoreだけで判定する仕組み
 - Cost上限のUniversal fixed value
 
