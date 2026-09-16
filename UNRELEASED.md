@@ -16,6 +16,7 @@
 - Human Guide Manifest / compatibility adapter / Public Search境界を検証するRegression Guardと、narrow viewportでもGlobal Navigationへ到達できる共通Shell / responsive基盤を追加
 - Meaningful UI requirementsでも候補案を固定する前にDomain / Genre Researchへ到達するRouteを明確化
 - 既知Game interaction / collider regressionを再利用するKnown Failure preflightとActual Playtest補強
+- Known Failure preflightのRule / Checklist / AGENTS / Work Report接続を検証する専用Regression Guardと、作業報告へPreflight evidenceを残す欄を追加
 - Manual conversation / scheduled workerが同じ未完了作業へ書き得る場合のexclusive work lease coordination
 - Human-facing AI Workflow / Work Dashboard / Rule Finder、repository-specific project dashboards、sanitized Work Queue表示、guarded worker start handoff
 - Human Guideに現在のCommon Ruleを短い箇条書きで横断確認できる「全ルール短縮版」ページ
