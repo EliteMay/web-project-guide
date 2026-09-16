@@ -38,13 +38,14 @@ Guide Versionの正本は [`guide-version.json`](guide-version.json)、変更履
 | `UNRELEASED.md` | 次の正式Release前に入っている未Release変更の要約 |
 | `DASHBOARD_REQUIREMENTS.md` | Dashboard機能の要件 |
 | `WORK_QUEUE_REQUIREMENTS.md` | Work Queue機能の要件 |
+| `LOOP_ENGINEERING_REQUIREMENTS.md` | 長時間・反復Agentを安全に回すLoop Engineering機能のProduct Contract |
 | `guide-version.json` | Guide VersionとRelease状態の機械可読情報 |
 | `project-dashboard.json` | このRepository用Dashboardの設定情報 |
 | `docs/` | 正式なRule本文を置く場所 |
 | `templates/` | 新しいProjectや文書を作るときのひな形 |
 | `catalog/` | 失敗例・成功例・Anti-pattern等の再利用Catalog |
 | `references/` | Common Guideを支えるPublicで再利用可能なCurated Research / Reference |
-| `maintenance/` | Router / Review設定 / Audit Checklist / Current Research Protocol / 旧Path互換Pointer |
+| `maintenance/` | Router / Review設定 / Audit Checklist / Current Research Protocol / Loop Policy / 旧Path互換Pointer |
 | `tests/` | Guide構造や整合性を確認するValidation / Test |
 | `site/` | 人間向けWeb版Guideの実ページ |
 | `project-dashboards/` | Project別Dashboard設定 |
@@ -102,6 +103,12 @@ Trade-off時は原則として次を優先します。
 見た目が6番目でもUser-facing UIを未調整のまま完成扱いしません。最低品質は [Visual Quality Baseline](docs/17-visual-quality-baseline.md) を参照します。
 
 MUST / SHOULD / MAY / CONDITIONAL、Source of Truth、Rule Budgetは [Guide Governance](docs/00-governance.md) が正本です。
+
+## Loop Engineering機能
+
+長時間・反復Coding Agentを使う場合のProduct Contractは [Loop Engineering Foundation](LOOP_ENGINEERING_REQUIREMENTS.md) を参照します。
+
+これは新しいCommon Normative Ownerではありません。Goal / Scope / Budget / Permission / Stop / Progress / Verifierを外側のLoop Controllerで管理し、Testing / Security / Project Management / Recovery等の判断は既存Ownerへ委譲します。Guide-side FoundationはPolicy SchemaとValidationまでを担当し、Runtime Controllerが未実装なら自動実行済みとは扱いません。
 
 ## Owner Docs
 
