@@ -1,8 +1,8 @@
 # Loop Engineering Foundation 要件定義
 
-Status: Requirements complete / Guide-side foundation implemented / runtime controller not implemented
+Status: Requirements complete / Guide-side foundation implemented / Runtime Phase A implemented / Phase B not implemented
 Target: `EliteMay/web-project-guide`
-Companion runtime/data target: `EliteMay/web-project-data`（将来実装時。Current implementation detailの正本候補）
+Companion runtime/data target: `EliteMay/web-project-data`（Phase A Runtime implementation / validation evidenceのCurrent Owner）
 
 この文書は、Coding Agentへ単発Taskを渡すだけでなく、**Goal → Work → Verification → State → Next Decision** を安全に反復できるLoop Engineering機能を `web-project-guide` のProduct機能として導入するためのCurrent Product Contractです。
 
@@ -125,7 +125,7 @@ Loopを1つの巨大Agent promptへしません。
 - Current Repository / Learning / Evidence確認
 - Planning / implementation / local validation
 - Failure原因の狭い診断
--許可範囲内でのRetry / strategy change
+- 許可範囲内でのRetry / strategy change
 
 Inner Workerが自分でGoal、権限、最終Stop条件を拡張しません。
 
@@ -264,7 +264,7 @@ VerificationはTask Riskに応じて次のEvidenceを組み合わせます。
 - Runtime / real-environment evidence
 - Independent review
 - protected acceptance verification
--必要時Human judgment
+- 必要時Human judgment
 
 `docs/07-testing-quality.md`のTesting Strategyを正本とし、Loop側は必要なVerifierを**実行・収集・判定へ接続**します。
 
@@ -574,8 +574,8 @@ V1ではManual / Queueを優先し、Schedule / EventはRuntime foundationの安
 - `L0_ASSISTED` — 調査 /提案中心。writeは人間主導。
 - `L1_WORKTREE` — isolated worktree / branchで自動変更 + verification。mergeなし。
 - `L2_PR` — branch push / PR preparationまで。mergeなし。
-- `L3_GUARDED_MERGE` —明示的に許可された低Risk Taskのみguarded merge。
-- `L4_GUARDED_RELEASE` —明示的Project Contractがある場合だけrelease / deployまで。
+- `L3_GUARDED_MERGE` — 明示的に許可された低Risk Taskのみguarded merge。
+- `L4_GUARDED_RELEASE` — 明示的Project Contractがある場合だけrelease / deployまで。
 
 Autonomy Levelを「賢さ」の評価や必須成長段階として扱いません。Task Risk / Environment / Verifier capabilityに応じて必要なLevelを選びます。
 
@@ -583,43 +583,83 @@ V1 foundationのSafe Exampleは`L1_WORKTREE`相当とします。
 
 ---
 
-## 17. Current Guide-side Implementation
+## 17. Current Implementation
 
-このRequirements導入時点でGuide側に実装するFoundation:
+### Guide-side Foundation
+
+Current Guide側に実装済み:
 
 - `LOOP_ENGINEERING_REQUIREMENTS.md`
 - `maintenance/loop-policy.schema.json`
 - `maintenance/loop-policy.example.json`
 - `tests/validate-loop-engineering-contract.mjs`
-- `Validate Guide` workflowへのLoop Contract validation追加
+- `Validate Guide` workflowへのLoop Contract validation
+- README / START_HEREからのRoute
 
-Guide側FoundationはRuntime Agentを起動しません。
+Guide側Foundation自体はRuntime Agentを起動しません。
 
-将来のRuntime実装では、既存Work Queue / web-project-data / Traceability / System Health / Recoveryを再利用し、別の第二Source of Truthを作らないことを優先します。
+### Runtime Phase A — Implemented
+
+`EliteMay/web-project-data`へRead-only / Dry Run Controllerを実装済みです。
+
+Current runtime surfaces:
+
+- `tools/loop-engineering/dry-run-controller.mjs`
+- `tools/loop-engineering/json-schema-lite.mjs`
+- `tools/loop-engineering/test-dry-run-controller.mjs`
+- `tools/loop-engineering/README.md`
+- `.github/workflows/validate-loop-engineering.yml`
+- `evidence/2026/web-project-guide/loop-engineering-phase-a-runtime-evidence.md`
+
+Phase AはGuide側Current Policy Schemaを正本として読み、Target Repository / Work Queue / Queue Requirements revisionをread-onlyでreconcileし、mechanical task candidate、required verifier、blocker / next-action候補をMachine-readable JSONで返します。
+
+Phase A Outputは`authority: derived-loop-dry-run-only`で、formal assignment authorityを持ちません。Policyが将来Phase向けwrite capabilityを含んでも、Phase Aのeffective permissionではwrite / commit / push / merge / deploy / external network / secret accessを無効化します。
+
+Queueが参照するRequirementsが`blobSha`の場合、Target RepositoryのCurrent `HEAD:<requirements-path>`と比較し、stale revisionやdirty Requirementsを`ready`へ丸めません。
+
+GitHub Evidence:
+
+- Runtime implementation PR: `EliteMay/web-project-data#149`
+- Squash merge commit: `cba21d98cd12657e42a93a3f82daaddd23926bf3`
+- PR-head: Loop Engineering / Validate Data / Reliability / Windows PowerShell Compatibility PASS
+- Post-merge `main`: Loop Engineering validationとRepository observation / reconciliationを含むCurrent workflowsが完了し、failureは確認されていない
+
+Phase AはTaskを実行しません。Formal assignment / claim、isolated worker、implementation、independent verifier execution、Receipt persistence、retry / stuck / budget runtimeはPhase B以降です。
 
 ---
 
-## 18. V1 Runtime Implementation Candidates
+## 18. V1 Runtime Implementation Status / Next Candidates
 
-Guide-side foundation完了後のRuntime実装候補:
+### Phase A — Read-only / Dry Run Controller — Implemented
 
-### Phase A — Read-only / Dry Run Controller
+実装済み:
 
-- policy load / validate
-- current repository / queue inspect
-- eligible task selection simulation
+- policy load / Guide Schema validation
+- target repository identity / required source inspection
+- current queue inspection
+- Queue Requirements blob SHA / Current Repository reconciliation
+- eligible task candidate simulation
 - required verifier resolution
-- stop / escalation simulation
-- no repository mutation
+- blocker / stop / next-action simulation
+- Phase A read-only permission override
+- temporary Git / Queue fixture regression test
+- Current `web-project-guide` + Current Guide Queueを使うreal repository smoke
+- no repository / queue / loop-state mutation
 
-### Phase B — Isolated Worker Loop
+Phase Aの目的は、実行前にCurrent Stateを安全に説明できることです。`ready`は「実行してよい正式権限」ではなく、次のCoordinator / Phase B判断に渡せるread-only Evidenceです。
+
+### Phase B — Isolated Worker Loop — Next
+
+候補:
 
 - dedicated branch / worktree
-- one task claim
+- one task formal claim
 - implementation
 - local + independent verification
-- receipt
+- machine-readable receipt
 - no merge
+
+Phase BではPhase Aで成立したCurrent Repository / Queue reconciliationを再利用し、WorkerにDefault Branch / Merge authorityを与えません。
 
 ### Phase C — Resume / Stuck / Budget
 
@@ -642,9 +682,11 @@ Project-specific risk / verification evidenceが十分な場合だけ検討し�
 
 ---
 
-## 19. Completion Criteria — Guide-side Foundation
+## 19. Completion Criteria
 
-このFoundationは次を満たした場合に完了扱いにします。
+### Guide-side Foundation
+
+Foundationは次を満たしています。
 
 - Product Goal / boundary / state / verifier / stuck / budget / permission / recovery / parallelismがCurrent Contractとして定義されている。
 - Product Contractが既存Normative Ownerを複製せず参照している。
@@ -657,13 +699,30 @@ Project-specific risk / verification evidenceが十分な場合だけ検討し�
 - focused validatorがSchema / Example / safety invariantsを検証する。
 - CIでfocused validatorが実行される。
 
-Runtime Agent / Scheduler / Data-side persistent controllerが存在しない場合、Guide-side foundationをRuntime実装済みとは表現しません。
+### Runtime Phase A
+
+Phase Aは次を満たした状態をCurrent completionとします。
+
+- Guide側Current SchemaでPolicyをValidationする。
+- Target Repository identityをCurrent Git Evidenceから確認する。
+- Queue Requirements revisionをCurrent Target Repositoryと照合する。
+- stale / dirty / unverified Requirementsをfail closedする。
+- Current Queueからmechanical candidateをread-onlyで導出する。
+- candidateをformal assignmentへ読み替えない。
+- Verifier requirementをPolicy + Taskから導出する。
+- Phase A effective permissionがread-onlyへ固定される。
+- Fixture TestでQueue / Target Repository / Git statusが変更されない。
+- Current Guide / Current Guide QueueによるSmoke Testを通す。
+- Data側point-in-time Evidenceを保存する。
+- PR-head / merge後mainの必要ValidationでKnown Failureが残らない。
+
+Phase B以降が存在しない場合、Phase A完了を「自律実装Loop完成」とは表現しません。
 
 ---
 
 ## 20. Out of Scope
 
-このFoundationでは次を実装しません。
+Current Phase Aまででは次を実装しません。
 
 - ChatGPT Platform全体のglobal background loop
 - hidden system hookの存在を仮定した自動実行

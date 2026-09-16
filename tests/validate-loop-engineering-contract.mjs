@@ -35,12 +35,30 @@ const requiredContractMarkers = [
   'Checkpoint / Resume / Crash Recovery',
   'Parallelism Policy',
   'Maintenance / Drift Loop',
-  'Runtime Agent / Scheduler / Data-side persistent controller'
+  'Runtime Phase A',
+  'Phase B'
 ];
 
 for (const marker of requiredContractMarkers) {
   assert(contract.includes(marker), `product contract lost required section/marker: ${marker}`);
 }
+
+assert(
+  contract.includes('Runtime Phase A implemented') || contract.includes('Runtime Phase A — Implemented'),
+  'product contract must record Runtime Phase A as implemented'
+);
+assert(
+  contract.includes('Phase B not implemented') || contract.includes('Phase B — Isolated Worker Loop — Next'),
+  'product contract must keep Phase B explicitly unimplemented/next'
+);
+assert(
+  contract.includes('derived-loop-dry-run-only'),
+  'product contract must preserve Phase A derived/read-only authority boundary'
+);
+assert(
+  contract.includes('formal assignment authority') || contract.includes('formal assignmentへ読み替えない'),
+  'product contract must preserve the no-formal-assignment boundary for Phase A'
+);
 
 assert(schema.$schema === 'https://json-schema.org/draft/2020-12/schema', 'schema must use JSON Schema draft 2020-12');
 assert(schema.type === 'object', 'schema root must be an object');

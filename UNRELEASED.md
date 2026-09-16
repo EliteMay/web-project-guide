@@ -12,6 +12,7 @@
 
 - Loop EngineeringをGuideのProduct機能として扱う`LOOP_ENGINEERING_REQUIREMENTS.md`を追加し、Outer / Inner Loop、Verifier Integrity、Progress / Stuck、Budget、Permission、Recovery、Parallelism、Autonomy LevelをCurrent Contract化
 - `maintenance/loop-policy.schema.json` / safe example / focused validatorを追加し、Default Branch direct-write・merge・deploy・secret access・WorkerによるVerifier改変をSafe Exampleで禁止してCI検証
+- `web-project-data`へLoop Engineering Runtime Phase AのRead-only / Dry Run Controllerを実装し、Current Repository / Queue / Requirements blob SHA照合、mechanical candidate、Verifier requirement、blocker / next-action simulationをMutationなしで行う経路を追加
 - Human GuideにManifest-drivenな「次に見る」Related / Next Steps導線と、関連ID整合を検証する専用Regression Guardを追加
 - Human Guideの長いPageへManifest opt-inのAuto TOCと、Source / Owner / Edit / Reportを共通化するSource Footerを追加
 - Human GuideのCurrent Product Contract、Surface Manifest、正本種別を区別するサイト全体検索、Current Machine Routerを投影する作業ルート診断を追加
@@ -43,6 +44,7 @@
 
 ## Changed
 
+- `LOOP_ENGINEERING_REQUIREMENTS.md`のCurrent StatusをGuide-side FoundationのみからRuntime Phase A実装済みへ同期し、Phase B以降を未実装として分離
 - Human GuideのSource FooterでRelease Baseline / unreleased stateとHuman Summary本文の同期保証を明確に分離し、Release表示だけで最新本文と誤認しないよう変更
 - Site-wide SearchをAuthority + Content Typeの2軸Filter、URL state復元、`/`・`Ctrl/Cmd+K` shortcut対応へ拡張
 - Human GuideのNavigation / Search / compatibility route metadataを`site/data/human-guide-manifest.json`へ集約し、Release baseline表示とHuman Summaryの同期状態を同一視しないContractへ変更
