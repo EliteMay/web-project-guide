@@ -36,7 +36,8 @@ const requiredContractMarkers = [
   'Parallelism Policy',
   'Maintenance / Drift Loop',
   'Runtime Phase A',
-  'Phase B'
+  'Runtime Phase B',
+  'Phase C'
 ];
 
 for (const marker of requiredContractMarkers) {
@@ -48,8 +49,12 @@ assert(
   'product contract must record Runtime Phase A as implemented'
 );
 assert(
-  contract.includes('Phase B not implemented') || contract.includes('Phase B — Isolated Worker Loop — Next'),
-  'product contract must keep Phase B explicitly unimplemented/next'
+  contract.includes('Runtime Phase B implemented') || contract.includes('Runtime Phase B — Implemented'),
+  'product contract must record Runtime Phase B as implemented'
+);
+assert(
+  contract.includes('Phase C not implemented') || contract.includes('Phase C — Resume / Stuck / Budget — Next'),
+  'product contract must keep Phase C explicitly unimplemented/next'
 );
 assert(
   contract.includes('derived-loop-dry-run-only'),
@@ -58,6 +63,22 @@ assert(
 assert(
   contract.includes('formal assignment authority') || contract.includes('formal assignmentへ読み替えない'),
   'product contract must preserve the no-formal-assignment boundary for Phase A'
+);
+assert(
+  contract.includes('Target primary/default branch') || contract.includes('Target primary/default branchを直接変更しない'),
+  'product contract must preserve the no-default-branch-write boundary for Phase B'
+);
+assert(
+  contract.includes('Push / Merge / Deploy') || contract.includes('Push / Merge / Deployを行わない'),
+  'product contract must preserve Phase B no-push/no-merge/no-deploy boundary'
+);
+assert(
+  contract.includes('Verification PASS前') || contract.includes('Verification PASS前にTaskをcompletedへ進めない'),
+  'product contract must keep verification before Queue completion'
+);
+assert(
+  contract.includes('Production Pilot') && contract.includes('NOT_RUN'),
+  'product contract must distinguish Phase B runtime implementation from real-project Production Pilot evidence'
 );
 
 assert(schema.$schema === 'https://json-schema.org/draft/2020-12/schema', 'schema must use JSON Schema draft 2020-12');
