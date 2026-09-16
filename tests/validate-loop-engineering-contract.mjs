@@ -56,7 +56,7 @@ assert(
   'product contract must preserve Phase A derived/read-only authority boundary'
 );
 assert(
-  contract.includes('assignmentAuthority'),
+  contract.includes('formal assignment authority') || contract.includes('formal assignmentへ読み替えない'),
   'product contract must preserve the no-formal-assignment boundary for Phase A'
 );
 
