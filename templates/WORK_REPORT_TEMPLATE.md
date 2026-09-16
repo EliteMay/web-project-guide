@@ -30,6 +30,17 @@
 
 - 
 
+## Known Failure Preflight
+
+Meaningfulな既存Project作業では、[Rule Routing / Preflight](../docs/21-rule-routing-preflight.md) に従って今回のSystem / 症状 / Riskに関係する既知FailureをTargeted Searchした結果を短く残します。該当しない場合は`Not applicable`とします。
+
+- 実施: Yes / Not applicable
+- 検索対象: `PROJECT_LEARNINGS.md` / Failure Catalog / Anti-Pattern Catalog / 直近Work Report・Known Issue / Other
+- Targeted Search（System / 症状 / Risk）:
+- 該当Learning / Failure: `F-xxx` / `AP-xxx` / Project Learning ID / None found
+- 今回のPrevention:
+- Regression Guard / Runtime Check / Playtest:
+
 ## 保存・互換性への影響
 
 - Schema変更:
