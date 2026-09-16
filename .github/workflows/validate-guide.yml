@@ -65,3 +65,6 @@ jobs:
 
       - name: Validate project dashboard queue rendering
         run: node tests/validate-project-dashboard-queue.mjs
+
+      - name: Validate Loop Engineering foundation
+        run: node tests/validate-loop-engineering-contract.mjs
