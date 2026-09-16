@@ -60,5 +60,8 @@ jobs:
       - name: Validate root-cause failure workflow
         run: node tests/validate-root-cause-workflow.mjs
 
+      - name: Validate known-failure preflight evidence
+        run: node tests/validate-known-failure-preflight.mjs
+
       - name: Validate project dashboard queue rendering
         run: node tests/validate-project-dashboard-queue.mjs
