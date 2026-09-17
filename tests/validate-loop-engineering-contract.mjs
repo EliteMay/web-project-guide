@@ -39,7 +39,7 @@ const requiredContractMarkers = [
   'Runtime Phase B',
   'Runtime Phase C',
   'Runtime Phase D',
-  'Phase E'
+  'Runtime Phase E'
 ];
 
 for (const marker of requiredContractMarkers) {
@@ -63,8 +63,12 @@ assert(
   'product contract must record Runtime Phase D as implemented'
 );
 assert(
-  contract.includes('Phase E not implemented') || contract.includes('Phase E — Optional guarded PR / Merge / Release — Next'),
-  'product contract must keep Phase E explicitly unimplemented/next'
+  contract.includes('Runtime Phase E implemented') || contract.includes('Runtime Phase E — Implemented'),
+  'product contract must record Runtime Phase E as implemented'
+);
+assert(
+  contract.includes('EliteMay/web-project-runtime'),
+  'product contract must identify the public Runtime owner for Phase E'
 );
 assert(
   contract.includes('derived-loop-dry-run-only'),
@@ -111,12 +115,28 @@ assert(
   'product contract must preserve operator control / kill-switch boundary'
 );
 assert(
+  contract.includes('L2_PR') && contract.includes('ready_for_human_merge'),
+  'product contract must preserve the Phase E L2_PR / human-merge handoff boundary'
+);
+assert(
+  contract.includes('non-force') && contract.includes('Human approval'),
+  'product contract must preserve Phase E non-force publication and Human Review gate'
+);
+assert(
+  contract.includes('mergePerformed: false') && contract.includes('deployPerformed: false'),
+  'product contract must preserve no-runtime-merge/no-deploy evidence through Phase E'
+);
+assert(
   contract.includes('Production Pilot') && contract.includes('NOT_RUN'),
   'product contract must distinguish implemented runtime from real-project Production Pilot evidence'
 );
 assert(
   contract.includes('EliteMay/web-project-data#152') && contract.includes('2913e1b02f2fcd1392fc350e2ca911a562d9a57c'),
   'product contract must point to the merged Phase D runtime implementation evidence'
+);
+assert(
+  contract.includes('EliteMay/web-project-runtime#1') && contract.includes('4ba80487fe7210e4150381b859cf6af1315de0a4'),
+  'product contract must point to the merged public Phase E runtime evidence'
 );
 
 assert(schema.$schema === 'https://json-schema.org/draft/2020-12/schema', 'schema must use JSON Schema draft 2020-12');

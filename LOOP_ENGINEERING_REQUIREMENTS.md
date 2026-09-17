@@ -1,8 +1,8 @@
 # Loop Engineering Foundation 要件定義
 
-Status: Requirements complete / Guide-side foundation implemented / Runtime Phase A implemented / Runtime Phase B implemented / Runtime Phase C implemented / Runtime Phase D implemented / Phase E not implemented
+Status: Requirements complete / Guide-side foundation implemented / Runtime Phase A implemented / Runtime Phase B implemented / Runtime Phase C implemented / Runtime Phase D implemented / Runtime Phase E implemented
 Target: `EliteMay/web-project-guide`
-Companion runtime/data target: `EliteMay/web-project-data`（Phase A / B / C / D Runtime implementation / validation evidenceのCurrent Owner）
+Companion runtime/data targets: `EliteMay/web-project-runtime`（Phase E Public Runtime code / schema / regression / CIのCurrent Owner） / `EliteMay/web-project-data`（Phase A / B / C / D Runtime implementationとPrivate Queue / Loop State / EvidenceのCurrent Owner）
 
 この文書は、Coding Agentへ単発Taskを渡すだけでなく、**Goal → Work → Verification → State → Next Decision** を安全に反復できるLoop Engineering機能を `web-project-guide` のProduct機能として導入するためのCurrent Product Contractです。
 
@@ -524,7 +524,7 @@ Logへsecret / token / raw private contentを保存しません。詳細は`docs
 
 Receiptは「Agentが完成と言った」記録ではなく、goal / task identity、final state、verifier result、evidence references、final repository ref、unresolved / unverified itemsを追跡できるものとします。
 
-Phase BではAttempt Receipt、Phase CではLoop Run State / Operator Control / failure signature / budget usage、Phase DではParallel Plan / Parallel State / Worker Evidence / Integration Evidence / aggregate ReceiptをData側へ保存できます。
+Phase BではAttempt Receipt、Phase CではLoop Run State / Operator Control / failure signature / budget usage、Phase DではParallel Plan / Parallel State / Worker Evidence / Integration Evidence / aggregate Receipt、Phase EではRemote publication / PR / Required Checks / Human Review GateのState / ReceiptをPrivate Data側へ保存できます。
 
 Receipt / Runtime StateはCurrent Repository / Queue Stateの第二Source of Truthではなく、Current EvidenceとreconcileするためのEvidenceです。
 
@@ -562,7 +562,7 @@ Manual / Queueを優先し、Schedule / EventはRuntime foundationの安定後�
 
 Autonomy Levelを「賢さ」の評価や必須成長段階として扱いません。Task Risk / Environment / Verifier capabilityに応じて必要なLevelを選びます。
 
-Current Safe Exampleは`L1_WORKTREE`相当で`maxParallelWorkers: 1`を維持します。Phase Dを使うProjectは、独立性とBudgetを明示したProject Policyで`maxParallelWorkers >= 2`を選択します。
+Current Safe Exampleは`L1_WORKTREE`相当で`maxParallelWorkers: 1`を維持します。Phase Dを使うProjectは、独立性とBudgetを明示したProject Policyで`maxParallelWorkers >= 2`を選択します。Phase Eを使う場合は`L2_PR`を明示し、merge / deploy permissionは引き続きfalseを要求します。
 
 ---
 
@@ -669,9 +669,41 @@ Validation evidence:
 
 PR終盤のDocumentation / Evidence-only headではGitHub-hosted runnerが`runner_id: 0` / `steps: []`のまま割り当てられない外部CI障害が発生しました。これはRuntime Test failureと区別し、直前の実装headで全Required CIがPASSしているEvidenceを保持した上でPRをMergeしています。
 
-重要: **実ProjectのCurrent Queue TaskをPhase C / Dで長時間自律実行するProduction Pilotはまだ`NOT_RUN`です。** Fixture integration-testedであることとReal Projectで長時間運用実証済みであることを同一視しません。
+### Runtime Phase E — Implemented
 
-またPhase DはOS-level sandbox / network namespace / separate credential processをRuntime自身が提供する実装ではありません。Execution Environment側のCapability isolationは引き続き必要です。
+`EliteMay/web-project-runtime`へRemote Publication / Human Review GateをPublic Runtimeとして実装済みです。
+
+Phase EはPhase Dで検証済みのIntegration Branchを`L2_PR`境界でRemote reviewへ公開し、PR / Required Checks / Human Reviewをreconcileしたうえで`ready_for_human_merge`まで進めます。
+
+Behavioral Contract:
+
+- Current Guide Loop Policy SchemaでPolicyをValidationする。
+- `autonomyLevel: L2_PR`、`pushWorkingBranch: true`、`defaultBranchWrite: false`、`merge: false`、`deploy: false`を要求する。
+- passed Phase D Receipt / passed Integration Verification / unresolved itemなしを要求する。
+- local base / Integration BranchとRemote base / review branchをPush前後に再確認する。
+- Remote baseがPhase D検証時点から進んでいた場合は`needs_reconcile`へ止める。
+- review branchはnon-force pushのみとし、既存Remote branchが別Commitを指す場合は上書きしない。
+- review branchとbase branchの同一指定を拒否する。
+- PR head / base identityを検証し、Resume時は既存PRを再利用する。
+- Required Check pending / missingは`awaiting_checks`、failure / cancel / timeout / action-requiredは`blocked`へ分類する。
+- Required Checks PASS後もHuman approvalが不足していれば`awaiting_human_review`で停止する。
+- Required Checks + Human approval成立後は`ready_for_human_merge`とするが、Runtime自身はMergeしない。
+- `mergePerformed: false` / `deployPerformed: false`をReceiptで維持する。
+
+Runtime migration PR: `EliteMay/web-project-runtime#1`
+Squash merge commit: `4ba80487fe7210e4150381b859cf6af1315de0a4`
+
+Validation evidence:
+
+- PR head `24b0197170df9d6b193c3c6886f90730287263f3`で`Validate Loop Runtime #2` PASS
+- Ubuntu / Windows Phase E integration PASS
+- main `4ba80487fe7210e4150381b859cf6af1315de0a4`で`Validate Loop Runtime #3` PASS
+- Public CIはPrivate `web-project-data`をcheckoutせず、Current `web-project-guide` Contractだけを取得して検証する。
+- Private `web-project-data#153`のPhase E重複実装はmergeせずsupersededとしてcloseした。
+
+重要: **実ProjectのCurrent Queue TaskをPhase C / D / Eで長時間自律実行し、実Remote PRまで通すProduction Pilotはまだ`NOT_RUN`です。** Fixture integration-testedであることとReal Projectで運用実証済みであることを同一視しません。
+
+Phase D / EはOS-level sandbox / network namespace / separate credential processをRuntime自身が提供する実装ではありません。Execution Environment側のCapability isolationは引き続き必要です。
 
 ---
 
@@ -729,19 +761,20 @@ PR終盤のDocumentation / Evidence-only headではGitHub-hosted runnerが`runne
 - Ubuntu / Windows integration regression
 - default branch SHA unchanged / no push / no merge / no deploy
 
-### Phase E — Optional guarded PR / Merge / Release — Next
+### Phase E — Remote Publication / Human Review Gate — Implemented
 
-Project-specific risk / verification evidenceが十分な場合だけ検討します。
-
-候補:
-
-- verified Integration Branchの安全なPush
-- PR creation / existing PR reconciliation
-- branch protection / required checksのCurrent Evidence取得
+- verified Phase D Integration Branchのnon-force Push
+- PR creation / existing PR reuse
+- stale base / divergent remote branch fail-closed reconciliation
+- Policy required checksを含むRequired Checks observation
 - Human Approval Gate
-- stale-base recheck
-- merge authorityをRuntimeから分離したreview / publication contract
-- guarded release / deployはさらに別の明示的Permission Contract
+- `ready_for_human_merge` terminal review state
+- default branch direct writeなし
+- Runtime mergeなし
+- release / deployなし
+- Public Ubuntu / Windows regression CI
+
+Next candidateはPhase A〜D Runtime code / schema / regressionのPublic `web-project-runtime`への段階移行と、その後のReal Project Production Pilotです。Guarded Merge / Releaseは別Phaseとして扱います。
 
 ---
 
@@ -804,18 +837,29 @@ Project-specific risk / verification evidenceが十分な場合だけ検討し�
 - Ubuntu / Windows integrationでParallel success / overlap rejection / integration failure / budget exhaustion / default branch不変を確認する。
 - Push / Runtime PR creation / Default Branch Merge / Deployを行わない。
 
-Phase Eが存在しないため、Phase D完了を「Remote PR / Merge / Release automationまで完成」とは表現しません。Real-project Production Pilotも`NOT_RUN`のまま区別します。
+### Runtime Phase E
+
+- passed Phase D Receipt / Integration VerificationをPublication prerequisiteにする。
+- Remote base / review branch / local Integration refをPublication前後にreconcileする。
+- review branchはnon-force pushのみで、base branchへの直接Pushを拒否する。
+- PR identityをCurrent Integration head / base branchと照合する。
+- Policy Required Checksを省略できない。
+- Required Check failureとpendingを区別する。
+- Human Review GateをRequired Checksとは別に評価する。
+- `ready_for_human_merge`到達時もRuntime merge / deployを行わない。
+- Ubuntu / WindowsのPublic CIでRegressionを通す。
+
+Phase E完了を「Guarded Merge / Release automationまで完成」とは表現しません。Real-project Production Pilotも`NOT_RUN`のまま区別します。
 
 ---
 
 ## 20. Out of Scope
 
-Current Phase Dまででは次を実装しません。
+Current Phase Eまででは次を実装しません。
 
 - ChatGPT Platform全体のglobal background loop
 - hidden system hookの存在を仮定した自動実行
 - ambiguous crash stateをEvidenceなしで自動修復する仕組み
-- automatic branch push / Runtime PR creation
 - guarded Merge / Release automation
 - Productionへの無条件自動Deploy
 - Default Branchへの無条件direct write
@@ -849,6 +893,7 @@ Current Projectで検証すべきHypothesis:
 4. L1_WORKTREEで十分な価値を出せるか。価値が確認できるまで自動Merge / Deployへ進まない。
 5. Maintenance Loopがautomation由来のdrift / duplicate / temporary artifact蓄積を抑えられるか。
 6. Phase Dのparallelismが安全性を崩さず、独立Taskのwall-clockを実際に短縮できるか。
-7. Phase Eへ進む前に、Real Project Production PilotでQueue / Recovery / Integration behaviorを実証できるか。
+7. Phase EのReal Project Production PilotでRemote PR / Required Checks / Human Review Gateがfixture外でも期待どおり動くか。
+8. Public RuntimeへA〜Dを移した後も、Private Dataを第二Source of Truthにせず同じQueue / Recovery contractを維持できるか。
 
 Research結果だけでRuntime成功を保証しません。実装後はpoint-in-time EvidenceをData側へ保存し、Keep / Revise / Rejectを判断します。
