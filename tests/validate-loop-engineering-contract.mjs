@@ -181,11 +181,17 @@ const expectedTerminalStates = [
   'blocked',
   'budget_exhausted',
   'escalated',
-  'cancelled'
+  'cancelled',
+  'needs_reconcile'
 ];
 const actualTerminalStates = example.stop?.terminalStates ?? [];
 for (const state of expectedTerminalStates) {
   assert(actualTerminalStates.includes(state), `safe example missing terminal state: ${state}`);
+}
+
+const schemaTerminalStates = schema.properties?.stop?.properties?.terminalStates?.items?.enum ?? [];
+for (const state of expectedTerminalStates) {
+  assert(schemaTerminalStates.includes(state), `schema missing terminal state: ${state}`);
 }
 
 const requiredEscalations = [

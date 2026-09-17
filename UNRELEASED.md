@@ -82,6 +82,7 @@
 
 ## Fixed
 
+- Loop Engineering Product Contractでterminal扱いしている`needs_reconcile`がMachine Policy Schema / Safe Exampleの`terminalStates` enumから漏れていたdriftを修正し、focused validatorでSchema / Example双方を8状態として固定
 - Loop Engineering Phase Cの正常なpre-assignment Pause / ResumeをCrash扱いして`needs_reconcile`へ誤分類し得たReconciliation条件。Assignment成立前と成立後を分け、未記録Worker Branch等の曖昧なCrash Evidenceだけをfail closedするRegressionで補強
 - Human Guideの全ルール短縮版でVisual Quality Baseline Owner 17が欠落し、Manifestで`searchable: true`のGuide MigrationがSite-wide Searchから抜けていたCoverage drift。Current Ownerとsearchable Surfaceを動的検証するRegression Guardで再発を防止
 - Human GuideのGlobal Navigation / compatibility route / validator coverageがページごとにdriftしやすく、narrow viewportでGlobal tabsが到達不能になり得た構造上のGap

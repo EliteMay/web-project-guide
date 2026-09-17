@@ -99,7 +99,8 @@
       "blocked",
       "budget_exhausted",
       "escalated",
-      "cancelled"
+      "cancelled",
+      "needs_reconcile"
     ]
   }
 }
