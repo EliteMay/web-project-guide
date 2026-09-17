@@ -1,0 +1,66 @@
+name: Temporary Loop Runtime Owner Sync
+
+on:
+  push:
+    branches:
+      - chore/loop-runtime-owner-sync
+    paths:
+      - '.github/workflows/temp-loop-runtime-owner-sync.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: chore/loop-runtime-owner-sync
+          fetch-depth: 0
+
+      - name: Patch current Loop runtime ownership
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          def replace_exact(path, old, new):
+              p = Path(path)
+              text = p.read_text(encoding='utf-8')
+              count = text.count(old)
+              if count != 1:
+                  raise SystemExit(f'{path}: expected exactly one match, found {count}')
+              p.write_text(text.replace(old, new), encoding='utf-8')
+
+          replace_exact(
+              'LOOP_ENGINEERING_REQUIREMENTS.md',
+              'Status: Requirements complete / Guide-side foundation implemented / Runtime Phase A implemented / Runtime Phase B implemented / Runtime Phase C implemented / Runtime Phase D implemented / Phase E not implemented\nTarget: `EliteMay/web-project-guide`\nCompanion runtime/data target: `EliteMay/web-project-data`（Phase A / B / C / D Runtime implementation / validation evidenceのCurrent Owner）',
+              'Status: Requirements complete / Guide-side foundation implemented / Runtime Phase A implemented / Runtime Phase B implemented / Runtime Phase C implemented / Runtime Phase D implemented / Runtime Phase E implemented\nTarget: `EliteMay/web-project-guide`\nCompanion runtime target: `EliteMay/web-project-runtime`（Phase A / B / C / D / E Runtime implementation / regression validationのCurrent Owner）\nCompanion private data target: `EliteMay/web-project-data`（Conversation / Work Queue state / Loop run evidence / Recovery data等のPrivate State Owner）'
+          )
+
+          replace_exact(
+              'UNRELEASED.md',
+              '- `LOOP_ENGINEERING_REQUIREMENTS.md`のCurrent StatusをRuntime Phase A / B / C実装済みからRuntime Phase A / B / C / D実装済みへ同期し、Phase EをRemote Publication / Review Integrationの次工程として分離。Real-project Phase C / D Production Pilotは`NOT_RUN`としてfixture integration-tested状態と区別',
+              '- `LOOP_ENGINEERING_REQUIREMENTS.md`のCurrent StatusをRuntime Phase A–E実装済みへ同期し、再利用可能Runtime / Schema / Regression / generic Queue helperのCurrent OwnerをPublic `EliteMay/web-project-runtime`へ分離。Private `web-project-data`はConversation / Work Queue state / Loop run evidence / Recovery data等のPrivate State Ownerとして維持。Public Runtime main `f9875625c5f023d391cdfbd79b536d4f3d293ac3`でPhase A–E × Ubuntu / Windowsの10 Job PASSを確認'
+          )
+
+          readme = Path('README.md')
+          text = readme.read_text(encoding='utf-8')
+          anchor = '長時間・反復Coding Agentを使う場合のProduct Contractは [Loop Engineering Foundation](LOOP_ENGINEERING_REQUIREMENTS.md) を参照します。\n\n'
+          addition = '長時間・反復Coding Agentを使う場合のProduct Contractは [Loop Engineering Foundation](LOOP_ENGINEERING_REQUIREMENTS.md) を参照します。\n\nCurrent Runtime / Regressionの実装OwnerはPublic [`EliteMay/web-project-runtime`](https://github.com/EliteMay/web-project-runtime) です。Conversation / Work Queue state / Loop run evidence / Recovery data等のPrivate Stateは引き続き`EliteMay/web-project-data`へ分離します。\n\n'
+          if text.count(anchor) != 1:
+              raise SystemExit(f'README.md: expected Loop anchor exactly once, found {text.count(anchor)}')
+          readme.write_text(text.replace(anchor, addition), encoding='utf-8')
+          PY
+
+      - name: Commit patch
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add LOOP_ENGINEERING_REQUIREMENTS.md UNRELEASED.md README.md
+          git diff --cached --check
+          git commit -m "Sync Loop runtime public ownership"
+          git push origin HEAD:chore/loop-runtime-owner-sync
