@@ -37,7 +37,8 @@ const requiredContractMarkers = [
   'Maintenance / Drift Loop',
   'Runtime Phase A',
   'Runtime Phase B',
-  'Phase C'
+  'Runtime Phase C',
+  'Phase D'
 ];
 
 for (const marker of requiredContractMarkers) {
@@ -53,8 +54,12 @@ assert(
   'product contract must record Runtime Phase B as implemented'
 );
 assert(
-  contract.includes('Phase C not implemented') || contract.includes('Phase C — Resume / Stuck / Budget — Next'),
-  'product contract must keep Phase C explicitly unimplemented/next'
+  contract.includes('Runtime Phase C implemented') || contract.includes('Runtime Phase C — Implemented'),
+  'product contract must record Runtime Phase C as implemented'
+);
+assert(
+  contract.includes('Phase D not implemented') || contract.includes('Phase D — Parallel-safe Tasks — Next'),
+  'product contract must keep Phase D explicitly unimplemented/next'
 );
 assert(
   contract.includes('derived-loop-dry-run-only'),
@@ -66,19 +71,31 @@ assert(
 );
 assert(
   contract.includes('Target primary/default branch') || contract.includes('Target primary/default branchを直接変更しない'),
-  'product contract must preserve the no-default-branch-write boundary for Phase B'
+  'product contract must preserve the no-default-branch-write boundary for worker execution'
 );
 assert(
   contract.includes('Push / Merge / Deploy') || contract.includes('Push / Merge / Deployを行わない'),
-  'product contract must preserve Phase B no-push/no-merge/no-deploy boundary'
+  'product contract must preserve no-push/no-merge/no-deploy boundary through Phase C'
 );
 assert(
   contract.includes('Verification PASS前') || contract.includes('Verification PASS前にTaskをcompletedへ進めない'),
   'product contract must keep verification before Queue completion'
 );
 assert(
+  contract.includes('needs_reconcile'),
+  'product contract must preserve fail-closed reconciliation for ambiguous resume state'
+);
+assert(
+  contract.includes('maxSameFailure'),
+  'product contract must preserve same-failure stuck guard'
+);
+assert(
+  contract.includes('pause') && contract.includes('cancel') && contract.includes('Kill Switch'),
+  'product contract must preserve Phase C operator control / kill-switch boundary'
+);
+assert(
   contract.includes('Production Pilot') && contract.includes('NOT_RUN'),
-  'product contract must distinguish Phase B runtime implementation from real-project Production Pilot evidence'
+  'product contract must distinguish implemented runtime from real-project Production Pilot evidence'
 );
 
 assert(schema.$schema === 'https://json-schema.org/draft/2020-12/schema', 'schema must use JSON Schema draft 2020-12');
