@@ -15,6 +15,7 @@
 - `web-project-data`へLoop Engineering Runtime Phase AのRead-only / Dry Run Controllerを実装し、Current Repository / Queue / Requirements blob SHA照合、mechanical candidate、Verifier requirement、blocker / next-action simulationをMutationなしで行う経路を追加
 - `web-project-data`へLoop Engineering Runtime Phase BのIsolated Worker Loopを実装し、formal assignment / claim、Repository writer coordination、isolated Worker Branch / worktree、protected verification、success-only Queue completion、Machine-readable Receiptを追加
 - `web-project-data`へLoop Engineering Runtime Phase CのResume / Stuck / Budget / Control Outer Loopを実装し、Current Evidence reconciliation、same-failure detection、retry strategy guard、iteration / wall-clock / model token / external cost budget、pause / cancel Kill Switch、`needs_reconcile` fail-closedを追加
+- `web-project-data`へLoop Engineering Runtime Phase DのParallel Worker Orchestrationを実装し、explicit path / semantic scope isolation、atomic multi-task assignment、per-worker isolated branch / worktree、実並列implementation、protected worker verification、deterministic Integration Branch、cross-worker Integration Verification、aggregate budget / global Kill Switchを追加
 - Human GuideにManifest-drivenな「次に見る」Related / Next Steps導線と、関連ID整合を検証する専用Regression Guardを追加
 - Human Guideの長いPageへManifest opt-inのAuto TOCと、Source / Owner / Edit / Reportを共通化するSource Footerを追加
 - Human GuideのCurrent Product Contract、Surface Manifest、正本種別を区別するサイト全体検索、Current Machine Routerを投影する作業ルート診断を追加
@@ -46,7 +47,7 @@
 
 ## Changed
 
-- `LOOP_ENGINEERING_REQUIREMENTS.md`のCurrent StatusをRuntime Phase A / B実装済みからRuntime Phase A / B / C実装済みへ同期し、Phase DをParallel Worker Orchestrationの次工程として分離。Real-project Phase C Production Pilotは`NOT_RUN`としてfixture integration-tested状態と区別
+- `LOOP_ENGINEERING_REQUIREMENTS.md`のCurrent StatusをRuntime Phase A / B / C実装済みからRuntime Phase A / B / C / D実装済みへ同期し、Phase EをRemote Publication / Review Integrationの次工程として分離。Real-project Phase C / D Production Pilotは`NOT_RUN`としてfixture integration-tested状態と区別
 - Human GuideのSource FooterでRelease Baseline / unreleased stateとHuman Summary本文の同期保証を明確に分離し、Release表示だけで最新本文と誤認しないよう変更
 - Site-wide SearchをAuthority + Content Typeの2軸Filter、URL state復元、`/`・`Ctrl/Cmd+K` shortcut対応へ拡張
 - Human GuideのNavigation / Search / compatibility route metadataを`site/data/human-guide-manifest.json`へ集約し、Release baseline表示とHuman Summaryの同期状態を同一視しないContractへ変更
