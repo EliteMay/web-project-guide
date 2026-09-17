@@ -38,7 +38,8 @@ const requiredContractMarkers = [
   'Runtime Phase A',
   'Runtime Phase B',
   'Runtime Phase C',
-  'Phase D'
+  'Runtime Phase D',
+  'Phase E'
 ];
 
 for (const marker of requiredContractMarkers) {
@@ -58,8 +59,12 @@ assert(
   'product contract must record Runtime Phase C as implemented'
 );
 assert(
-  contract.includes('Phase D not implemented') || contract.includes('Phase D — Parallel-safe Tasks — Next'),
-  'product contract must keep Phase D explicitly unimplemented/next'
+  contract.includes('Runtime Phase D implemented') || contract.includes('Runtime Phase D — Implemented'),
+  'product contract must record Runtime Phase D as implemented'
+);
+assert(
+  contract.includes('Phase E not implemented') || contract.includes('Phase E — Optional guarded PR / Merge / Release — Next'),
+  'product contract must keep Phase E explicitly unimplemented/next'
 );
 assert(
   contract.includes('derived-loop-dry-run-only'),
@@ -70,16 +75,28 @@ assert(
   'product contract must preserve the no-formal-assignment boundary for Phase A'
 );
 assert(
-  contract.includes('Target primary/default branch') || contract.includes('Target primary/default branchを直接変更しない'),
+  contract.includes('Target primary/default branch') || contract.includes('Target default branch SHA'),
   'product contract must preserve the no-default-branch-write boundary for worker execution'
 );
 assert(
-  contract.includes('Push / Merge / Deploy') || contract.includes('Push / Merge / Deployを行わない'),
-  'product contract must preserve no-push/no-merge/no-deploy boundary through Phase C'
+  contract.includes('Push / Runtime PR creation / Default Branch Merge / Deploy') || contract.includes('Push / Merge / Deploy'),
+  'product contract must preserve no-push/no-merge/no-deploy boundary through Phase D'
 );
 assert(
   contract.includes('Verification PASS前') || contract.includes('Verification PASS前にTaskをcompletedへ進めない'),
   'product contract must keep verification before Queue completion'
+);
+assert(
+  contract.includes('Integration Verification PASS後') || contract.includes('Integration Verification PASS前にTaskをcompletedへ進めない'),
+  'product contract must keep cross-worker integration verification before Phase D Queue completion'
+);
+assert(
+  contract.includes('safeParallel=true') && contract.includes('scopePaths[]') && contract.includes('semanticScopes[]'),
+  'product contract must preserve explicit Phase D parallel eligibility boundaries'
+);
+assert(
+  contract.includes('deterministic order') || contract.includes('deterministic Integration'),
+  'product contract must preserve deterministic Phase D integration order'
 );
 assert(
   contract.includes('needs_reconcile'),
@@ -91,11 +108,15 @@ assert(
 );
 assert(
   contract.includes('pause') && contract.includes('cancel') && contract.includes('Kill Switch'),
-  'product contract must preserve Phase C operator control / kill-switch boundary'
+  'product contract must preserve operator control / kill-switch boundary'
 );
 assert(
   contract.includes('Production Pilot') && contract.includes('NOT_RUN'),
   'product contract must distinguish implemented runtime from real-project Production Pilot evidence'
+);
+assert(
+  contract.includes('EliteMay/web-project-data#152') && contract.includes('2913e1b02f2fcd1392fc350e2ca911a562d9a57c'),
+  'product contract must point to the merged Phase D runtime implementation evidence'
 );
 
 assert(schema.$schema === 'https://json-schema.org/draft/2020-12/schema', 'schema must use JSON Schema draft 2020-12');
@@ -146,7 +167,7 @@ const budget = example.budget ?? {};
 assert(Number.isInteger(budget.maxIterations) && budget.maxIterations > 0, 'safe example must bound iterations');
 assert(Number.isInteger(budget.maxSameFailure) && budget.maxSameFailure > 0, 'safe example must bound same-failure repetition');
 assert(budget.maxSameFailure <= budget.maxIterations, 'same-failure budget must not exceed total iteration budget');
-assert(budget.maxParallelWorkers === 1, 'V1 safe example must remain sequential-first');
+assert(budget.maxParallelWorkers === 1, 'safe example must remain sequential-first even though Phase D is implemented');
 
 const progress = example.progress ?? {};
 assert(progress.detectSameFailure === true, 'safe example must detect repeated failures');
