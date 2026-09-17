@@ -14,6 +14,7 @@
 - `maintenance/loop-policy.schema.json` / safe example / focused validatorを追加し、Default Branch direct-write・merge・deploy・secret access・WorkerによるVerifier改変をSafe Exampleで禁止してCI検証
 - `web-project-data`へLoop Engineering Runtime Phase AのRead-only / Dry Run Controllerを実装し、Current Repository / Queue / Requirements blob SHA照合、mechanical candidate、Verifier requirement、blocker / next-action simulationをMutationなしで行う経路を追加
 - `web-project-data`へLoop Engineering Runtime Phase BのIsolated Worker Loopを実装し、formal assignment / claim、Repository writer coordination、isolated Worker Branch / worktree、protected verification、success-only Queue completion、Machine-readable Receiptを追加
+- `web-project-data`へLoop Engineering Runtime Phase CのResume / Stuck / Budget / Control Outer Loopを実装し、Current Evidence reconciliation、same-failure detection、retry strategy guard、iteration / wall-clock / model token / external cost budget、pause / cancel Kill Switch、`needs_reconcile` fail-closedを追加
 - Human GuideにManifest-drivenな「次に見る」Related / Next Steps導線と、関連ID整合を検証する専用Regression Guardを追加
 - Human Guideの長いPageへManifest opt-inのAuto TOCと、Source / Owner / Edit / Reportを共通化するSource Footerを追加
 - Human GuideのCurrent Product Contract、Surface Manifest、正本種別を区別するサイト全体検索、Current Machine Routerを投影する作業ルート診断を追加
@@ -45,7 +46,7 @@
 
 ## Changed
 
-- `LOOP_ENGINEERING_REQUIREMENTS.md`のCurrent StatusをRuntime Phase A実装済みからRuntime Phase A / B実装済みへ同期し、Phase CをResume / Stuck / Budgetの次工程として分離。Real-project Phase B Production Pilotは`NOT_RUN`として実装済み状態と区別
+- `LOOP_ENGINEERING_REQUIREMENTS.md`のCurrent StatusをRuntime Phase A / B実装済みからRuntime Phase A / B / C実装済みへ同期し、Phase DをParallel Worker Orchestrationの次工程として分離。Real-project Phase C Production Pilotは`NOT_RUN`としてfixture integration-tested状態と区別
 - Human GuideのSource FooterでRelease Baseline / unreleased stateとHuman Summary本文の同期保証を明確に分離し、Release表示だけで最新本文と誤認しないよう変更
 - Site-wide SearchをAuthority + Content Typeの2軸Filter、URL state復元、`/`・`Ctrl/Cmd+K` shortcut対応へ拡張
 - Human GuideのNavigation / Search / compatibility route metadataを`site/data/human-guide-manifest.json`へ集約し、Release baseline表示とHuman Summaryの同期状態を同一視しないContractへ変更
@@ -80,6 +81,7 @@
 
 ## Fixed
 
+- Loop Engineering Phase Cの正常なpre-assignment Pause / ResumeをCrash扱いして`needs_reconcile`へ誤分類し得たReconciliation条件。Assignment成立前と成立後を分け、未記録Worker Branch等の曖昧なCrash Evidenceだけをfail closedするRegressionで補強
 - Human Guideの全ルール短縮版でVisual Quality Baseline Owner 17が欠落し、Manifestで`searchable: true`のGuide MigrationがSite-wide Searchから抜けていたCoverage drift。Current Ownerとsearchable Surfaceを動的検証するRegression Guardで再発を防止
 - Human GuideのGlobal Navigation / compatibility route / validator coverageがページごとにdriftしやすく、narrow viewportでGlobal tabsが到達不能になり得た構造上のGap
 - Current Rule / Procedureとpoint-in-time Research / Evidenceの保存場所がGuide内で重複し、Public Guideが作業履歴Repository化し得た責任境界の曖昧さ
