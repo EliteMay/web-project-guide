@@ -1,8 +1,8 @@
 # Loop Engineering Foundation 要件定義
 
-Status: Requirements complete / Guide-side foundation implemented / Runtime Phase A implemented / Runtime Phase B implemented / Phase C not implemented
+Status: Requirements complete / Guide-side foundation implemented / Runtime Phase A implemented / Runtime Phase B implemented / Runtime Phase C implemented / Phase D not implemented
 Target: `EliteMay/web-project-guide`
-Companion runtime/data target: `EliteMay/web-project-data`（Phase A / B Runtime implementation / validation evidenceのCurrent Owner）
+Companion runtime/data target: `EliteMay/web-project-data`（Phase A / B / C Runtime implementation / validation evidenceのCurrent Owner）
 
 この文書は、Coding Agentへ単発Taskを渡すだけでなく、**Goal → Work → Verification → State → Next Decision** を安全に反復できるLoop Engineering機能を `web-project-guide` のProduct機能として導入するためのCurrent Product Contractです。
 
@@ -223,8 +223,9 @@ Success / failure / stuck / blocked / user-decision-requiredを区別します�
 - `budget_exhausted`
 - `escalated`
 - `cancelled`
+- `needs_reconcile`
 
-Terminal State:
+Terminal / operator-resolution-required State:
 
 - `passed`
 - `failed`
@@ -233,6 +234,7 @@ Terminal State:
 - `budget_exhausted`
 - `escalated`
 - `cancelled`
+- `needs_reconcile`
 
 `stopped`の1状態へ全部まとめません。
 
@@ -374,6 +376,8 @@ Budget上限到達は`budget_exhausted`とし、Product Failure / Verifier Failu
 
 Budgetを増やせば解決するとは限らないため、自動で上限を無限拡張しません。
 
+FiniteなModel Token / External Cost BudgetをRuntimeで強制する場合、Usage Evidenceが観測できない状態を`0`として成功扱いしません。
+
 ---
 
 ## 9. Permission / Sandbox Contract
@@ -449,6 +453,8 @@ resume / needs_reconcile / blocked
 
 stale stateをforce overwriteして再開しません。
 
+AmbiguousなCrash痕跡、未記録Worker Branch、Claim ownership不一致等を「たぶん続き」と推測して自動Retryしません。Current Evidenceだけで安全に解決できない場合は`needs_reconcile`へ止めます。
+
 ---
 
 ## 11. Queue Integration
@@ -466,6 +472,8 @@ Loop ControllerはWorkerが自分でTaskを発明する仕組みではありま�
 5. 次のeligible Taskへ進む
 
 Loop-specific stateをQueue item本文へ大量複製しません。
+
+Loop停止時にControllerが所有する`working` Taskを曖昧なまま残さないため、既存Queue Contractの正式Transitionで`blocked`等へ移すことができます。Queue Stateの新しい第二体系は作りません。
 
 ---
 
@@ -528,7 +536,7 @@ Loopが「何回動いたか」だけでなく、なぜ次Actionを選んだか�
 
 Logへsecret / token / raw private contentを保存しません。詳細は`docs/15-development-observability.md`。
 
-### Receipt
+### Receipt / Runtime State
 
 Task / Loop completion時は必要に応じてMachine-readable Receiptを持てる構造にします。
 
@@ -543,7 +551,9 @@ Receiptは「Agentが完成と言った」記録ではなく、最低限:
 
 を追跡できるものとします。
 
-Phase BではAttemptごとのMachine-readable ReceiptをData側へ保存するRuntimeが実装されています。ReceiptはCurrent Repository / Queue Stateの第二Source of Truthではなく、Resume時にCurrent EvidenceとreconcileするためのEvidenceです。
+Phase BではAttemptごとのMachine-readable ReceiptをData側へ保存するRuntimeが実装されています。Phase CではLoop Run State / Operator Control / Attempt reference / failure signature / budget usageをData側へ保存できます。
+
+Receipt / Runtime StateはCurrent Repository / Queue Stateの第二Source of Truthではなく、Resume時にCurrent EvidenceとreconcileするためのEvidenceです。
 
 ---
 
@@ -616,7 +626,7 @@ Runtime implementation PR: `EliteMay/web-project-data#149`
 
 `EliteMay/web-project-data`へIsolated Worker Loopを実装済みです。
 
-Phase BはPhase Aで`ready`となったCurrent Taskを明示的に受け取り、既存Work Queue Contractを再利用してformal assignment / claimした後、`L1_WORKTREE`境界で1 Taskだけを実行します。
+Phase BはPhase Aで`ready`となったCurrent Taskを明示的に受け取り、既存Work Queue Contractを再利用してformal assignment / claimした後、`L1_WORKTREE`境界で1 Attempt / 1 Taskを実行します。
 
 Current behavioral flow:
 
@@ -659,20 +669,47 @@ Current Data-side surfaces / Schema / exact storage pathは`EliteMay/web-project
 Runtime implementation PR: `EliteMay/web-project-data#150`
 Squash merge commit: `186f6ff70feafde79eb654aa71ba5b4e3b26c156`
 
+### Runtime Phase C — Implemented
+
+`EliteMay/web-project-data`へResume / Stuck / Budget / Control Outer Loopを実装済みです。
+
+Phase CはPhase Bを1 Attempt primitiveとして再利用し、同じTask / ClaimをCurrent Evidenceと照合したうえで必要なRetryを継続します。
+
+Behavioral Contract:
+
+- Resume前にCurrent Repository / Requirements / Queue / Assignment Revision / Claim Holderを再取得してreconcileする。
+- 保存State単体をCurrent Stateの権威にしない。
+- Current Evidenceだけで安全に説明できないCrash痕跡は`needs_reconcile`へfail closedする。
+- Assignment前の正常Pauseは、Current Queueが同じqueued / unassigned状態ならResume可能とする。
+- Failure Signatureとmeaningful progressを比較し、同一Failure反復を`maxSameFailure`で`stuck`へ止める。
+- `requireMeaningfulDelta`時は同じRetry strategyを機械的に繰り返さない。
+- iteration / wall-clock / model token / external cost budgetを区別して扱う。
+- finite token / cost budgetでUsage Evidenceが観測できない場合は成功側へ丸めない。
+- `pause` / `run` / `cancel` Controlを持ち、`cancel`をKill Switchとして扱う。
+- owned `working` Taskを停止時に曖昧なまま残さず、必要なformal Queue transitionへ接続する。
+- Verifier `uncertain`を無条件Retryせず`blocked`へ止める。
+- Phase Bのprotected verification / primary branch不変 / no push / no merge / no deployを維持する。
+
+Current Data-side State Schema / Control Schema / Receipt field / path / holder identity等の実装詳細は`EliteMay/web-project-data`を正本とします。
+
+Runtime implementation PR: `EliteMay/web-project-data#151`
+Squash merge commit: `4640c317ac07cd2af29b0ba827e76929b43ebd56`
+
 Validation evidence:
 
 - Phase A regression PASS
-- Phase B Ubuntu integration PASS
-- Phase B Windows integration PASS
-- Validate Data / Reliability / Windows compatibility PASS on PR head
-- success pathでPrimary Branch SHA不変 / Worker Branch Candidate Commit / success-only Queue completion / Receipt persistenceを確認
-- verifier failure / unsafe Policy / concurrent writer conflictをfail closedするRegressionを確認
+- Phase B Ubuntu / Windows integration PASS
+- Phase C Ubuntu / Windows integration PASS
+- Validate Data / Reliability / Windows compatibility PASS on PR final head
+- failed Attempt → strategy change → successful AttemptのSequential Retryを確認
+- same-failure Stuck / iteration budget exhaustion / pause-resume / cancel / ambiguous crash `needs_reconcile`をRegression確認
+- Target primary branch SHA不変を確認
 
-重要: **実ProjectのCurrent Queue TaskをPhase Bで実際に自動実装したProduction Pilotはまだ`NOT_RUN`です。**
+重要: **実ProjectのCurrent Queue TaskをPhase Cで複数Attemptにわたり自律実行したProduction Pilotはまだ`NOT_RUN`です。**
 
-したがって、Phase B Runtimeが実装・fixture integration-testedであることと、real Projectで長時間自律Loopが実証済みであることを同一視しません。
+したがって、Phase C Runtimeが実装・fixture integration-testedであることと、real Projectで長時間自律Loopが実証済みであることを同一視しません。
 
-またPhase BのVerifier callback境界はWorker self-reportより強いEvidenceを要求しますが、OS-level sandbox / network namespace /別Credential processまでRuntime自身が提供する実装ではありません。Execution Environment側のCapability isolationは別途必要です。
+またPhase CはOS-level sandbox / network namespace /別Credential processをRuntime自身が提供する実装ではありません。Execution Environment側のCapability isolationは引き続き必要です。
 
 ---
 
@@ -711,28 +748,45 @@ Phase Aの目的は、実行前にCurrent Stateを安全に説明できること
 - Verifier後のWorker projection integrity check
 - success-only `ready_for_apply -> completed`
 - Machine-readable Phase B Receipt
+- same-claim continuation Attempt support for Phase C
 - Ubuntu / Windows integration regression
 - no push / merge / deploy
 
-Phase Bは1 Attemptを安全に実行するFoundationです。Failure後の自動Retry、Crash後のResume、Stuck / Budget判断までは担当しません。
+Phase Bは1 Attemptを安全に実行するFoundationです。
 
-### Phase C — Resume / Stuck / Budget — Next
+### Phase C — Resume / Stuck / Budget — Implemented
+
+実装済み:
+
+- persisted Run State / Control Schema
+- Current Repository / Queue / Requirements / Claim reconciliation before Resume
+- ambiguous crash evidenceの`needs_reconcile` fail-closed
+- normal pre-assignment pause / resume
+- failure signature normalization
+- meaningful progress detection
+- retry strategy change guard
+- `maxSameFailure` stuck enforcement
+- iteration / wall-clock / model / external cost budget enforcement
+- finite budget usage observability guard
+- `run` / `pause` / `cancel` control
+- cancel Kill Switch
+- owned working taskのformal block transition
+- verifier uncertainのblocked transition
+- Ubuntu / Windows integration regression
+- no push / merge / deploy
+
+Phase CまででSequential single-task LoopのResume / Retry / Stop foundationが成立しています。
+
+### Phase D — Parallel-safe Tasks — Next
 
 候補:
 
-- crash recovery
-- Current Queue / Branch / Receipt / Claim reconciliation
-- failure signature normalization
-- meaningful progress detection
-- retry strategy / maxSameFailure enforcement
-- iteration / wall-clock / model / external cost budget enforcement
-- pause / cancel / kill switch
-
-### Phase D — Parallel-safe Tasks
-
 - independent task detection
-- isolated workers
+- semantic / file scope overlap guard
+- isolated multi-worker lease / ownership
+- aggregate budget / global kill switch
 - integration gate
+- deterministic merge-order / conflict handling
 - no overlapping write authority
 
 ### Phase E — Optional guarded PR / Merge / Release
@@ -792,25 +846,42 @@ Phase Bは次を満たしています。
 - Ubuntu / Windows integrationでPrimary Branch SHA不変とQueue transitionを確認する。
 - Push / Merge / Deployを行わない。
 
-Phase C以降が存在しないため、Phase B完了を「長時間の自律Retry / Recovery / Budget制御まで完成」とは表現しません。Real-project Production Pilotも`NOT_RUN`のまま区別します。
+### Runtime Phase C
+
+Phase Cは次を満たしています。
+
+- Phase B Attemptを新しい第二Worker systemへ複製せず再利用する。
+- Resume前にCurrent Repository / Requirements / Queue / Claim authorityを再取得する。
+- stale / ambiguous / unexplained crash evidenceを`needs_reconcile`へfail closedする。
+- normal Pauseとambiguous crashを区別するRegressionを持つ。
+- failure signature / meaningful progress / strategy changeをRetry判断へ使う。
+- `maxSameFailure`到達で`stuck`へ止める。
+- iteration / wall-clock / model token / external cost budgetを区別できる。
+- finite token / cost budgetでUsage Evidenceが欠けた状態を安全側へ止める。
+- `pause` / `run` / `cancel`を持ち、CancelをKill Switchとして扱う。
+- stop時のowned `working` taskをformal Queue transitionへ接続できる。
+- verifier uncertainを無条件Retryしない。
+- Ubuntu / Windows integrationでRetry / Stuck / Budget / Pause Resume / Cancel / Reconcileを確認する。
+- Phase BのPrimary Branch不変 / protected verification / no push / no merge / no deploy境界を維持する。
+
+Phase D以降が存在しないため、Phase C完了を「Parallel Worker orchestrationやPR / Merge / Release automationまで完成」とは表現しません。Real-project Production Pilotも`NOT_RUN`のまま区別します。
 
 ---
 
 ## 20. Out of Scope
 
-Current Phase Bまででは次を実装しません。
+Current Phase Cまででは次を実装しません。
 
 - ChatGPT Platform全体のglobal background loop
 - hidden system hookの存在を仮定した自動実行
-- automatic crash recovery / resume
-- same-failure / stuck runtime enforcement
-- automatic retry strategy loop
-- wall-clock / model / external cost budget runtime enforcement
+- ambiguous crash stateをEvidenceなしで自動修復する仕組み
 - parallel multi-worker execution
-- guarded PR / Merge / Release automation
+- automatic branch push / PR creation
+- guarded Merge / Release automation
 - Productionへの無条件自動Deploy
 - Default Branchへの無条件direct write
 - unrestricted network / secret access
+- OS-level sandbox / network namespace / separate verifier credential processのRuntime内包
 - Verifierを書き換えてPassさせる仕組み
 - Task qualityを単一Scoreだけで判定する仕組み
 - Cost上限のUniversal fixed value
@@ -838,5 +909,6 @@ Current Projectで検証すべきHypothesis:
 3. Work Queue / Persistence / Traceabilityを再利用することで新しいState systemを増やさず実装できるか。
 4. L1_WORKTREEで十分な価値を出せるか。価値が確認できるまで自動Merge / Deployへ進まない。
 5. Maintenance Loopがautomation由来のdrift / duplicate / temporary artifact蓄積を抑えられるか。
+6. Sequential Phase Cの安全性を維持したまま、Phase Dで明示的に独立なTaskだけを並列化できるか。
 
 Research結果だけでRuntime成功を保証しません。実装後はpoint-in-time EvidenceをData側へ保存し、Keep / Revise / Rejectを判断します。
