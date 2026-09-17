@@ -68,3 +68,6 @@ jobs:
 
       - name: Validate Loop Engineering foundation
         run: node tests/validate-loop-engineering-contract.mjs
+
+      - name: Test validator failure detection
+        run: node tests/test-validator-failure-detection.mjs

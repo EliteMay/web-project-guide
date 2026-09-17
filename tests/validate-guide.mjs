@@ -100,11 +100,9 @@ const markdownFiles = [
   ...walk(path.join(root, 'references')),
   ...walk(path.join(root, 'templates')),
   ...walk(path.join(root, 'maintenance')),
-  path.join(root, 'README.md'),
-  path.join(root, 'START_HERE.md'),
-  path.join(root, 'REQUIREMENTS.md'),
-  path.join(root, 'CHANGELOG.md'),
-  path.join(root, '作業報告書.md')
+  ...fs.readdirSync(root, { withFileTypes: true })
+    .filter((entry) => entry.isFile() && entry.name.endsWith('.md'))
+    .map((entry) => path.join(root, entry.name))
 ].filter((file) => file.endsWith('.md') && fs.existsSync(file));
 
 for (const file of markdownFiles) {
@@ -117,7 +115,14 @@ for (const file of markdownFiles) {
     if (!target || target.startsWith('#') || /^[a-z][a-z0-9+.-]*:/i.test(target)) continue;
     const withoutAnchor = target.split('#')[0].split('?')[0];
     if (!withoutAnchor) continue;
-    const resolved = path.resolve(path.dirname(file), decodeURIComponent(withoutAnchor));
+    let decoded;
+    try {
+      decoded = decodeURIComponent(withoutAnchor);
+    } catch {
+      errors.push(`${rel}: invalid relative link encoding -> ${target}`);
+      continue;
+    }
+    const resolved = path.resolve(path.dirname(file), decoded);
     if (!fs.existsSync(resolved)) errors.push(`${rel}: broken relative link -> ${target}`);
   }
 }
