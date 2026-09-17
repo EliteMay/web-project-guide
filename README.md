@@ -108,6 +108,8 @@ MUST / SHOULD / MAY / CONDITIONAL、Source of Truth、Rule Budgetは [Guide Gove
 
 長時間・反復Coding Agentを使う場合のProduct Contractは [Loop Engineering Foundation](LOOP_ENGINEERING_REQUIREMENTS.md) を参照します。
 
+Current Runtime / Regressionの実装OwnerはPublic [`EliteMay/web-project-runtime`](https://github.com/EliteMay/web-project-runtime) です。Conversation / Work Queue state / Loop run evidence / Recovery data等のPrivate Stateは引き続き`EliteMay/web-project-data`へ分離します。
+
 これは新しいCommon Normative Ownerではありません。Goal / Scope / Budget / Permission / Stop / Progress / Verifierを外側のLoop Controllerで管理し、Testing / Security / Project Management / Recovery等の判断は既存Ownerへ委譲します。Guide-side FoundationはPolicy SchemaとValidationまでを担当し、Runtime Controllerが未実装なら自動実行済みとは扱いません。
 
 ## Owner Docs

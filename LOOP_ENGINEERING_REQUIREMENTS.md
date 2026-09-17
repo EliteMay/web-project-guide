@@ -1,8 +1,9 @@
 # Loop Engineering Foundation 要件定義
 
-Status: Requirements complete / Guide-side foundation implemented / Runtime Phase A implemented / Runtime Phase B implemented / Runtime Phase C implemented / Runtime Phase D implemented / Phase E not implemented
+Status: Requirements complete / Guide-side foundation implemented / Runtime Phase A implemented / Runtime Phase B implemented / Runtime Phase C implemented / Runtime Phase D implemented / Runtime Phase E implemented
 Target: `EliteMay/web-project-guide`
-Companion runtime/data target: `EliteMay/web-project-data`（Phase A / B / C / D Runtime implementation / validation evidenceのCurrent Owner）
+Companion runtime target: `EliteMay/web-project-runtime`（Phase A / B / C / D / E Runtime implementation / regression validationのCurrent Owner）
+Companion private data target: `EliteMay/web-project-data`（Conversation / Work Queue state / Loop run evidence / Recovery data等のPrivate State Owner）
 
 この文書は、Coding Agentへ単発Taskを渡すだけでなく、**Goal → Work → Verification → State → Next Decision** を安全に反復できるLoop Engineering機能を `web-project-guide` のProduct機能として導入するためのCurrent Product Contractです。
 
