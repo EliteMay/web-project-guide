@@ -232,6 +232,15 @@ Common Rule本文は`docs/`、一般化済みのFailure / Success / Anti-Pattern
 - Prevention: MeaningfulなUI / Shell / IA refactorでは、Visual / Navigationの整合だけでなく、変更前の主要Content / Task / Feature inventoryを先に列挙し、置換後に同じCoverageが残っているかを検証する。大きなHTML置換ではDiff reviewをCompletion Gateから外さない。
 - Guide candidate: yes — 既存のRule Preservation / Testing / Continuous Improvement方針と専用Regression Guardへ反映済み。新しいOwnerは追加しない。
 
+### PL-F-019 Validatorの正常系成功だけでは検出漏れが分からなかった
+
+- Date: 2026-09-17
+- Symptom: RootのLoop要件書へリンク切れを入れてもGuide Validatorが成功し、Safe Exampleのremote pushを許可してもLoop Validatorが成功した。
+- Root Cause: Root Markdownを固定File一覧で選択し、Safe Exampleの一部Permission / Evidence fieldを検査していなかった。正常なRepositoryに対するPASSだけでは不足を検出できなかった。
+- Final Fix: Root Markdownを動的に列挙し、不正なURLエンコードを診断として集約する。Safe Exampleのpush禁止、commit許可、Evidence必須を明示検査する。
+- Regression Guard: `tests/test-validator-failure-detection.mjs`が一時コピーへ欠落・不正値・リンク切れを注入し、期待する理由で非ゼロ終了することをCIで確認する。
+- Prevention: Validator変更では正常系だけでなく、守るContractを破った入力が失敗することを確認する。Fixtureの変更を実Repositoryへ残さない。
+
 ## Success
 
 ### PL-S-001 Ruleを消さず責務を戻す整理

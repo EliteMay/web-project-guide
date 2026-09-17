@@ -47,6 +47,9 @@
 
 ## Changed
 
+- Guide ValidatorのMarkdown検査を全Root文書へ広げ、Loop等の要件書・Draft・Learnings・Unreleasedのリンク切れを検出。不正なURLエンコードも検査中断せず報告する。
+- LoopのSafe Exampleでremote push禁止と検証Evidence必須を明示検査し、isolated branchへのcommit許可の欠落も検出。故障注入RegressionをCIへ追加。
+
 - `LOOP_ENGINEERING_REQUIREMENTS.md`のCurrent StatusをRuntime Phase A–E実装済みへ同期し、再利用可能Runtime / Schema / Regression / generic Queue helperのCurrent OwnerをPublic `EliteMay/web-project-runtime`へ分離。Private `web-project-data`はConversation / Work Queue state / Loop run evidence / Recovery data等のPrivate State Ownerとして維持。Public Runtime main `f9875625c5f023d391cdfbd79b536d4f3d293ac3`でPhase A–E × Ubuntu / Windowsの10 Job PASSを確認
 - Human GuideのSource FooterでRelease Baseline / unreleased stateとHuman Summary本文の同期保証を明確に分離し、Release表示だけで最新本文と誤認しないよう変更
 - Site-wide SearchをAuthority + Content Typeの2軸Filter、URL state復元、`/`・`Ctrl/Cmd+K` shortcut対応へ拡張
