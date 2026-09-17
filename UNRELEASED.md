@@ -47,7 +47,7 @@
 
 ## Changed
 
-- `LOOP_ENGINEERING_REQUIREMENTS.md`のCurrent StatusをRuntime Phase A / B / C実装済みからRuntime Phase A / B / C / D実装済みへ同期し、Phase EをRemote Publication / Review Integrationの次工程として分離。Real-project Phase C / D Production Pilotは`NOT_RUN`としてfixture integration-tested状態と区別
+- `LOOP_ENGINEERING_REQUIREMENTS.md`のCurrent StatusをRuntime Phase A–E実装済みへ同期し、再利用可能Runtime / Schema / Regression / generic Queue helperのCurrent OwnerをPublic `EliteMay/web-project-runtime`へ分離。Private `web-project-data`はConversation / Work Queue state / Loop run evidence / Recovery data等のPrivate State Ownerとして維持。Public Runtime main `f9875625c5f023d391cdfbd79b536d4f3d293ac3`でPhase A–E × Ubuntu / Windowsの10 Job PASSを確認
 - Human GuideのSource FooterでRelease Baseline / unreleased stateとHuman Summary本文の同期保証を明確に分離し、Release表示だけで最新本文と誤認しないよう変更
 - Site-wide SearchをAuthority + Content Typeの2軸Filter、URL state復元、`/`・`Ctrl/Cmd+K` shortcut対応へ拡張
 - Human GuideのNavigation / Search / compatibility route metadataを`site/data/human-guide-manifest.json`へ集約し、Release baseline表示とHuman Summaryの同期状態を同一視しないContractへ変更
