@@ -268,7 +268,7 @@
         },
         "terminalStates": {
           "type": "array",
-          "minItems": 7,
+          "minItems": 8,
           "uniqueItems": true,
           "items": {
             "type": "string",
@@ -279,7 +279,8 @@
               "blocked",
               "budget_exhausted",
               "escalated",
-              "cancelled"
+              "cancelled",
+              "needs_reconcile"
             ]
           }
         }
