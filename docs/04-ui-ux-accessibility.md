@@ -8,6 +8,22 @@
 - Loading / Empty / Error / Success の4状態を考える。
 - 0件画面には復帰操作を置く。
 
+## Theme / Brightness
+
+### SHOULD: Owner向け・個人利用UIはDark Themeを標準候補にする
+
+Project固有のTheme要件がなく、Project Owner自身が主利用者となる管理画面・Dashboard・Tool・学習サイト等では、**Dark / Night Modeを初期Themeの標準候補**として扱います。大きな白背景や高輝度Surfaceを無条件のDefaultにせず、長時間利用時の眩しさを減らします。
+
+- Current User / Ownerの明示的なTheme preferenceが分かっている場合は、それを一般的なAI Defaultより優先する。
+- このGuideをOwner本人向けProjectへ適用する場合、明示的な別要件がなければDark ThemeをDefaultとして検討する。
+- 一般公開ProductではOwner個人の好みだけで全利用者へDark Themeを強制せず、Target User / Domain / Brand / Accessibility要件を優先する。
+- Light / Dark切替を提供する場合はUserの選択を保存し、再訪時に理由なくDefaultへ戻さない。
+- User選択がまだない場合にOS / Browser preferenceを使うなら、`prefers-color-scheme`等を初期値のEvidenceとして利用できる。
+- Dark ThemeでもContrast不足や黒つぶれを許容しない。本文、Secondary text、Border、Focus、Disabled、Error等のStateを実画面で確認する。
+- Dark ThemeをDefaultにする場合、初回描画・Reload・Page transitionで一瞬だけ白背景が出る**White Flash**を可能な限り避け、Theme決定前のSurface色も初期Themeと整合させる。
+
+Themeは色だけの問題として扱わず、[Visual Design Quality](#visual-design-quality) とAccessibilityのContrast / Focus要件を同時に満たします。
+
 ## Task-first Structure / Flow
 
 ### SHOULD: Page / Featureより先にUser Goal / Taskを見る
