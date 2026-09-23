@@ -10,6 +10,7 @@
 
 ## Added
 
+- `docs/11`へElectron共通基盤（Desktop Foundation）Ruleを追加し、設定・Log・Diagnostics・Window State・Single Instance・Recovery・Path記憶・Theme / Network状態を共通責務候補として整理。Backup / RestoreとAuto Start / Tray / Notification / Global Shortcut / GitHub Integration等を条件付きCapabilityへ分離し、shared Template / Package利用時の責務境界とRegression確認を追加
 - Loop EngineeringをGuideのProduct機能として扱う`LOOP_ENGINEERING_REQUIREMENTS.md`を追加し、Outer / Inner Loop、Verifier Integrity、Progress / Stuck、Budget、Permission、Recovery、Parallelism、Autonomy LevelをCurrent Contract化
 - `maintenance/loop-policy.schema.json` / safe example / focused validatorを追加し、Default Branch direct-write・merge・deploy・secret access・WorkerによるVerifier改変をSafe Exampleで禁止してCI検証
 - `web-project-data`へLoop Engineering Runtime Phase AのRead-only / Dry Run Controllerを実装し、Current Repository / Queue / Requirements blob SHA照合、mechanical candidate、Verifier requirement、blocker / next-action simulationをMutationなしで行う経路を追加
