@@ -49,6 +49,42 @@ Projectの性質に応じて、最低限次を共通基盤候補として評価�
 
 ElectronにはSingle Instance、app-specific data / logs path、Native Theme、Notification、Crash Report等のPlatform APIがあります。採用時はCurrent Electron公式仕様を確認し、古いAPI挙動を固定知識として扱いません。
 
+### SHOULD: Userが変更する設定は専用のSettings Tab / Screenへ集約する
+
+複数のUser-configurable設定を持つElectron Appでは、各Feature画面へToggleやPath選択を散らすだけで済ませず、**設定タブ / 設定画面**を共通Surfaceとして用意します。
+
+対象例:
+
+- Theme / 表示
+- 保存先 / Work Folder /最近使ったPath
+- Update確認 / Update Channel
+- 起動時動作 / Auto Start / Tray
+- Notification
+- Download / Cache / Logの保存・Cleanup
+- Model / Provider /外部Runtime設定
+- Shortcut
+- Diagnostics / Log folder
+- Backup / Restore
+- About / App Version
+
+小規模Appで設定項目がほぼ存在しない場合まで空のSettings Tabを強制しません。ただし、Userが継続的に変更できる設定が複数ある場合はPrimary Navigation、App Menu、Gear button等から予測可能な経路で到達できるようにします。
+
+Settings UIでは次を守ります。
+
+- 現在値が分かる
+- 変更が即時反映か、保存Buttonが必要かを曖昧にしない
+- Restartが必要な設定は変更前後で明示する
+- 危険なReset / Delete / Cache clear等は通常設定とVisual / Interaction上で区別する
+- Secretは通常設定値と同じように平文表示・Exportしない
+- 未対応 / 使用不能な設定を操作可能に見せない
+- App再起動後も保存対象の設定が復元する
+- Defaultへ戻す場合、何がResetされるか分かる
+- 設定Schema変更時はMigration / fallbackを持つ
+
+設定画面自体が第二の保存先にならないよう、UI stateとCanonical Settings Storeを分離します。
+
+App内にSidebar / Tab navigationがある場合は、意味のある設定量があるAppでは`設定`を独立Navigation itemとして検討します。英語だけの`Settings`表記を強制せず、対象Userが理解できる名称を使います。
+
 ### CONDITIONAL SHOULD: 長時間処理はTask Managerで状態を統一する
 
 Download、AI処理、Repository監査、Build、外部Tool実行等、Userが待つ長時間処理を持つAppでは、処理ごとに独自Spinnerや独自Stateを増やすよりTask Managerとして共通化します。
@@ -277,7 +313,7 @@ Electron App
 ├─ Product-specific Feature
 └─ Desktop Foundation
    ├─ App Identity / Icon
-   ├─ Settings / Secret Storage
+   ├─ Settings Store / Settings UI / Secret Storage
    ├─ Logging / Diagnostics
    ├─ Window State / Recovery / Safe Mode
    ├─ Task Manager / Process Manager
@@ -300,6 +336,7 @@ Electron App
 
 共通機能を追加しただけで完成扱いにしません。変更内容に応じて次を確認します。
 
+- Settings Tab / Screenが必要なAppでは主要設定へ予測可能に到達でき、現在値 / 保存 / Restart要否 / Reset範囲が分かる
 - Restart後も設定 / Window State /最近使った対象が意図どおり復元する
 - Display構成変更後もWindowが到達可能な位置へ開く
 - 2重起動時に競合せず、必要なら既存WindowへFocusする
