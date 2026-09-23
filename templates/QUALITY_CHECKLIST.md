@@ -275,11 +275,20 @@
 ## Electron / Distribution
 
 - [ ] 実Windows起動 / preload / IPCを必要範囲で確認した
+- [ ] Settings / Log / Diagnostics / Window State / Recovery等の共通基盤候補をProject要件に照らして評価し、App固有実装へ重複させていない
+- [ ] Restart後も設定・Window State・最近使ったFolder / Project等が必要範囲で復元する
+- [ ] 保存したWindow位置がDisplay構成変更後も画面外へ固定されない
+- [ ] 複数起動が競合を起こし得るAppではSingle Instanceを使い、2回目起動時のRestore / Focusを確認した
+- [ ] 重要なLocal Dataがある場合、Backup / Restore / Corrupt Settings Recoveryを必要範囲で確認した
+- [ ] Diagnostic情報 / LogへSecret・Token・不要なPersonal Dataを含めていない
+- [ ] Auto Start / Tray / Notification / Global Shortcut等を採用した場合、Userが理解できるBehavior / ON-OFF / Failureを確認した
 - [ ] Installer更新で`userData`等のユーザーデータを失わない
 - [ ] App / Package / Release Tag / Installer / Update MetadataのVersionが整合する
 - [ ] Release Artifactを同じBuild / Release Pipelineから生成し、別Buildを混ぜていない
 - [ ] Auto Update採用時、旧Version → 新Version / Restart / userData維持を必要範囲で確認した
 - [ ] Update失敗時に手動Release導線と現Version継続利用ができる
+- [ ] shared Electron foundationを使う場合、代表Appで主要Flow / Storage / UpdateのRegressionを確認した
+- [ ] OS統合機能はCIだけで確認済み扱いにせず、必要な実Windows確認または未確認状態を明示した
 - [ ] 実機未確認・Code Signing等の配布制約を明示した
 
 ## Release / Rollback / Maintenance — 該当時
