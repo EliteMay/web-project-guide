@@ -10,6 +10,7 @@
 
 ## Added
 
+- `docs/11`のElectron共通基盤へSettings Tab / Settings Screen Contractを追加。複数のUser-configurable設定があるAppではTheme・保存先・Update・起動時動作・通知・Cache / Log・Backup等を予測可能な設定Surfaceへ集約し、現在値・保存方法・Restart要否・Reset範囲・危険操作・未対応状態を明示するRuleとChecklistを追加
 - `docs/11`のElectron共通基盤を拡張し、Task Manager、Process Manager / Crash Supervisor、Safe Mode / Repair、Secret Storage、Download Manager、Diagnostic Export、Disk / Cache lifecycle、Power / Sleep lifecycle、First Run / Repairを追加。独立配布するElectron Appはアプリごとに識別可能な固有Iconを持ち、Packaged executable / Taskbar / Shortcut / Start Menu / Installer等の必要Surfaceで確認するContractも追加
 - `docs/11`へElectron共通基盤（Desktop Foundation）Ruleを追加し、設定・Log・Diagnostics・Window State・Single Instance・Recovery・Path記憶・Theme / Network状態を共通責務候補として整理。Backup / RestoreとAuto Start / Tray / Notification / Global Shortcut / GitHub Integration等を条件付きCapabilityへ分離し、shared Template / Package利用時の責務境界とRegression確認を追加
 - Loop EngineeringをGuideのProduct機能として扱う`LOOP_ENGINEERING_REQUIREMENTS.md`を追加し、Outer / Inner Loop、Verifier Integrity、Progress / Stuck、Budget、Permission、Recovery、Parallelism、Autonomy LevelをCurrent Contract化

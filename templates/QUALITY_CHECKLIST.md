@@ -276,6 +276,8 @@
 
 - [ ] 実Windows起動 / preload / IPCを必要範囲で確認した
 - [ ] Settings / Log / Diagnostics / Window State / Recovery / Task / Process等の共通基盤候補をProject要件に照らして評価し、App固有実装へ重複させていない
+- [ ] 複数のUser-configurable設定がある場合、設定タブ / 設定画面へTheme・保存先・Update・起動時動作・通知・Cache/Log・Backup等を必要範囲で集約し、主要Navigationから予測可能に到達できる
+- [ ] Settings UIで現在値、保存方法、Restart要否、Default Reset範囲、危険操作、未対応状態が分かり、UI stateを第二の設定保存先にしていない
 - [ ] Restart後も設定・Window State・最近使ったFolder / Project等が必要範囲で復元する
 - [ ] 保存したWindow位置がDisplay構成変更後も画面外へ固定されない
 - [ ] 複数起動が競合を起こし得るAppではSingle Instanceを使い、2回目起動時のRestore / Focusを確認した
