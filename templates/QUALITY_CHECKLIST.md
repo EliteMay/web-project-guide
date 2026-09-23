@@ -275,19 +275,30 @@
 ## Electron / Distribution
 
 - [ ] 実Windows起動 / preload / IPCを必要範囲で確認した
-- [ ] Settings / Log / Diagnostics / Window State / Recovery等の共通基盤候補をProject要件に照らして評価し、App固有実装へ重複させていない
+- [ ] Settings / Log / Diagnostics / Window State / Recovery / Task / Process等の共通基盤候補をProject要件に照らして評価し、App固有実装へ重複させていない
 - [ ] Restart後も設定・Window State・最近使ったFolder / Project等が必要範囲で復元する
 - [ ] 保存したWindow位置がDisplay構成変更後も画面外へ固定されない
 - [ ] 複数起動が競合を起こし得るAppではSingle Instanceを使い、2回目起動時のRestore / Focusを確認した
+- [ ] 長時間Taskがある場合、実際のStateと一致するProgress / Cancel / Retry / Resume / Interrupted behaviorを持ち、架空の%やETAを表示していない
+- [ ] 外部Processを起動する場合、Start / Stop / Health / Crash / orphan cleanup / bounded restartを必要範囲で確認した
+- [ ] Crash Loopが起こり得る場合、Restart上限とSafe Mode / Repair pathを持つ
+- [ ] Secretを保存する場合、通常設定・Renderer storage・Log・Diagnostic Exportへ平文保存していない
+- [ ] 大容量Downloadがある場合、Pause / Resume可否、interruption、Integrity、temporary file、Disk fullを必要範囲で確認した
+- [ ] Sleep / Resumeで長時間Task・Process・Network・Device stateが壊れ得る場合、復帰後の再確認 / Interrupted処理を持つ
 - [ ] 重要なLocal Dataがある場合、Backup / Restore / Corrupt Settings Recoveryを必要範囲で確認した
-- [ ] Diagnostic情報 / LogへSecret・Token・不要なPersonal Dataを含めていない
+- [ ] Diagnostic情報 / Log / ExportへSecret・Token・不要なPersonal Dataを含めていない
+- [ ] Cache / Log / Downloadが増えるAppでは重要Dataと再生成可能Dataを分け、Cleanupで重要Dataを削除しない
+- [ ] 独立配布Appは他の自作Appと見分けられる固有Iconを持ち、Electron既定Iconのままになっていない
+- [ ] Icon変更時、Packaged executable / Taskbar / Window / Desktop Shortcut / Start Menu / Installer等の必要Surfaceを確認した
+- [ ] 既存AppのIcon変更でproductName / App ID / AppUserModelID等のstable identityを理由なく変更していない
+- [ ] First Run / Repairを持つ場合、再実行可能で失敗項目だけRetryでき、毎回同じFolder選択等を要求しない
 - [ ] Auto Start / Tray / Notification / Global Shortcut等を採用した場合、Userが理解できるBehavior / ON-OFF / Failureを確認した
 - [ ] Installer更新で`userData`等のユーザーデータを失わない
 - [ ] App / Package / Release Tag / Installer / Update MetadataのVersionが整合する
 - [ ] Release Artifactを同じBuild / Release Pipelineから生成し、別Buildを混ぜていない
 - [ ] Auto Update採用時、旧Version → 新Version / Restart / userData維持を必要範囲で確認した
 - [ ] Update失敗時に手動Release導線と現Version継続利用ができる
-- [ ] shared Electron foundationを使う場合、代表Appで主要Flow / Storage / UpdateのRegressionを確認した
+- [ ] shared Electron foundationを使う場合、代表Appで主要Flow / Storage / Update / Task / ProcessのRegressionを確認した
 - [ ] OS統合機能はCIだけで確認済み扱いにせず、必要な実Windows確認または未確認状態を明示した
 - [ ] 実機未確認・Code Signing等の配布制約を明示した
 

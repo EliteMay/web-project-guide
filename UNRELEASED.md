@@ -10,6 +10,7 @@
 
 ## Added
 
+- `docs/11`のElectron共通基盤を拡張し、Task Manager、Process Manager / Crash Supervisor、Safe Mode / Repair、Secret Storage、Download Manager、Diagnostic Export、Disk / Cache lifecycle、Power / Sleep lifecycle、First Run / Repairを追加。独立配布するElectron Appはアプリごとに識別可能な固有Iconを持ち、Packaged executable / Taskbar / Shortcut / Start Menu / Installer等の必要Surfaceで確認するContractも追加
 - `docs/11`へElectron共通基盤（Desktop Foundation）Ruleを追加し、設定・Log・Diagnostics・Window State・Single Instance・Recovery・Path記憶・Theme / Network状態を共通責務候補として整理。Backup / RestoreとAuto Start / Tray / Notification / Global Shortcut / GitHub Integration等を条件付きCapabilityへ分離し、shared Template / Package利用時の責務境界とRegression確認を追加
 - Loop EngineeringをGuideのProduct機能として扱う`LOOP_ENGINEERING_REQUIREMENTS.md`を追加し、Outer / Inner Loop、Verifier Integrity、Progress / Stuck、Budget、Permission、Recovery、Parallelism、Autonomy LevelをCurrent Contract化
 - `maintenance/loop-policy.schema.json` / safe example / focused validatorを追加し、Default Branch direct-write・merge・deploy・secret access・WorkerによるVerifier改変をSafe Exampleで禁止してCI検証
