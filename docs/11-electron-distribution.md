@@ -49,6 +49,199 @@ Projectの性質に応じて、最低限次を共通基盤候補として評価�
 
 ElectronにはSingle Instance、app-specific data / logs path、Native Theme、Notification、Crash Report等のPlatform APIがあります。採用時はCurrent Electron公式仕様を確認し、古いAPI挙動を固定知識として扱いません。
 
+### CONDITIONAL SHOULD: 長時間処理はTask Managerで状態を統一する
+
+Download、AI処理、Repository監査、Build、外部Tool実行等、Userが待つ長時間処理を持つAppでは、処理ごとに独自Spinnerや独自Stateを増やすよりTask Managerとして共通化します。
+
+最低限、実際に対応するStateだけを明示します。
+
+```text
+queued
+→ running
+→ completed
+
+running
+├─ cancelling → cancelled
+├─ interrupted → retry / resume
+└─ failed → retry / diagnostics
+```
+
+Pause / Resumeを実装していない処理へ見せかけのButtonを出しません。
+
+Task UIでは必要に応じて次を扱います。
+
+- 現在何をしているか
+- determinate / indeterminate progress
+- 経過時間
+- 実測可能な場合だけ残り時間
+- Cancel / Retry / Resume
+- Task-specific Log / Error
+- App再起動後のInterrupted state recovery
+
+進捗率や残り時間を計測できない場合、架空のPercent / ETAを表示しません。Task完了前に100%表示へ進めません。
+
+重いNode.js処理をMain / Rendererへ長時間Blockingさせないよう、用途に応じてWorker / Child Process / Electron `utilityProcess`等の隔離を検討します。
+
+### CONDITIONAL SHOULD: 外部ProcessはProcess Manager / Supervisorで管理する
+
+Local Server、LLM Runtime、CLI、Encoder、Game Tool等の外部Processを起動するAppでは、起動処理だけを各Featureへ散らさず共通Process Managerを検討します。
+
+必要に応じて次を持ちます。
+
+- Start / Stop / Restart
+- PID / instance identity
+- stdout / stderrのbounded Log
+- Health Check
+- 起動中 / 正常 / degraded / stopped / crashed等の状態
+- Graceful shutdown → timeout後の明示的Fallback
+- App終了時のorphan cleanup
+- bounded automatic restart
+- Crash Loop検出
+
+Process停止で実行File名だけを広く検索して無関係なProcessまでKillしません。自分が起動したinstance identityを優先して追跡します。
+
+自動Restartは無制限に行わず、短時間に同じFailureを繰り返す場合は停止して原因・Log・Recovery ActionをUserへ示します。
+
+### CONDITIONAL SHOULD: Crash LoopへSafe Mode / Repair Pathを持つ
+
+Plugin、外部Process、Window State、設定、GPU / optional integration等が起動Failureを起こし得るAppでは、通常起動だけに依存しません。
+
+必要に応じて:
+
+- 起動開始 / 正常起動完了のmarkerを使ってCrash Loopを検出する
+- 自動Restart回数へ上限を持つ
+- Safe Modeでoptional integrationや前回Session復元を一時無効化する
+- Cacheのみ削除、設定だけReset、Backup Restore等を破壊範囲別に分ける
+- Repair後に通常起動へ戻れる
+- Repair前に重要Dataを不用意に削除しない
+
+「問題が起きたら全Data削除」を標準Recoveryにしません。
+
+### CONDITIONAL MUST: Secretを保存する場合は通常設定と分離する
+
+API Key、Access Token、Password、private credential等を扱う場合、通常の`settings.json`やRenderer storageへ平文保存しません。
+
+Electronの`safeStorage`等、Current OS / Electronで利用可能な保護機構を検討し、最低限次を守ります。
+
+- Secret valueをLog / Diagnostics / Crash reportへ出さない
+- RendererへSecret一覧や復号APIを広く公開しない
+- Secret identifierとSecret valueを通常設定上で分離する
+- Encryption unavailable / temporary failure時に安全側へ倒す
+- Backup / ExportへSecretを無条件に含めない
+- Secret削除 /再設定手段を持つ
+
+OS暗号化は万能なVaultとは扱いません。PlatformごとのProtection BoundaryをCurrent公式仕様で確認します。
+
+### CONDITIONAL SHOULD: 大容量・長時間DownloadはDownload Managerへ統合する
+
+Model、Asset、Tool、Installer以外の大型File等をApp内Downloadする場合、必要に応じて共通Download Managerを使います。
+
+扱うState例:
+
+- queued
+- downloading
+- paused
+- interrupted
+- verifying
+- completed
+- failed
+- cancelled
+
+必要に応じて:
+
+- Bytes / Speed / Progress
+- Pause / Resume / Cancel
+- Network interruptionからのRecovery
+- 一時File → 完了後の確定
+- 空きDisk容量の確認
+- Expected Hash / Signature / Sizeの検証
+- 重複Download防止
+- 古い一時FileのCleanup
+
+ProviderやServerがResumeを保証しない場合、見せかけのResumeを実装しません。Download完了だけでTrusted Artifact扱いにせず、必要なIntegrity確認を分離します。
+
+### SHOULD: Support可能なDiagnostic Exportを用意する
+
+原因調査が必要なDesktop Appでは、Userが手動で共有できるDiagnostic Exportを検討します。
+
+例:
+
+- App / Electron / OS Version
+- Update Channel
+- relevant settingsのsanitized subset
+- Process / Task state
+- bounded recent logs
+- Crash / failure summary
+- Storage / cache pathの種別
+- Network provider status
+
+Export前にSecret、Token、Password、不要なPersonal Data、User File本文等を除外します。Diagnostic bundleを作れることと、外部へ自動送信してよいことは別です。
+
+### CONDITIONAL SHOULD: Disk / Cache lifecycleを管理する
+
+Model、Download、一時File、Cache、Log等でDisk使用量が増えるAppでは、User Dataと再生成可能Dataを区別して管理します。
+
+- category別の使用量を必要に応じて表示する
+- Cache / temp / old downloadへbounded cleanupを持つ
+- 重要Dataを「Cache削除」で巻き込まない
+- 自動Cleanupの対象 / retentionを明示する
+- Disk fullを謎の保存Failureとして扱わない
+
+### CONDITIONAL SHOULD: Suspend / Resume等のPower lifecycleを扱う
+
+長時間Task、外部Process、Server接続、Download等を持つAppでは、Sleep / Resume後も開始前と同じ状態だと仮定しません。
+
+ElectronのPower monitoring等を使う場合、必要に応じて:
+
+- suspend前に安全に中断可能な処理を整理する
+- resume後にNetwork / Process / File handle / Device stateを再確認する
+- Battery / AC状態で高負荷Taskを調整する場合はUser intentを優先する
+- Lock / UnlockがSecurityやSessionへ影響する場合だけ扱う
+- Taskが失われた場合は成功扱いにせずInterruptedへ遷移する
+
+### SHOULD: Appごとに識別可能な固有Icon / Identityを持つ
+
+独立して配布するElectron Appは、理由がない限りElectron既定Iconや他の無関係な自作Appと同一Iconのままにせず、**Appごとに見分けられる固有Icon**を持たせます。
+
+同じSuiteのAppではVisual familyを共有して構いませんが、Taskbar / Start Menu / Desktop等で個々のAppを識別できる差を残します。
+
+Iconを設定する場合、必要なSurfaceを同じApp identityへ揃えます。
+
+- Packaged executable
+- BrowserWindow / Taskbar
+- Desktop Shortcut
+- Start Menu
+- Installer / Uninstaller
+- Notification等、Icon表示があるOS Surface
+
+Windows配布ではPackaging ToolのIcon設定とRuntime Window Iconが別経路になる場合があるため、片方だけ変えて完成扱いにしません。
+
+Icon Assetは可能な限り1つのSource Asset / generation pathから派生させ、複数の古いIcon Fileが独立して残る状態を避けます。Windowsでは必要なSizeを含む適切な`.ico`等、Target Platformに合う形式を使います。
+
+Icon変更と同時にApp identity自体を毎Version変更しません。`productName`、App ID、Windows AppUserModelID等の安定した識別子はUpdate、Shortcut、Taskbar grouping、userData等へ影響し得るため、既存AppではCompatibilityを確認します。
+
+実Windows確認では必要に応じて:
+
+- Taskbar
+- Desktop Shortcut
+- Start Menu
+- Installer / Setup.exe
+- 実行中Window
+- Update後の既存Shortcut
+
+を確認します。Windows Icon Cacheにより旧Iconが残る場合があるため、実機で未確認ならその状態を明記します。
+
+### CONDITIONAL SHOULD: First Run / Repairを共通化する
+
+初回起動時にFolder、外部Runtime、権限、Model、Dependency等の準備が必要なAppでは、Feature画面ごとに初期化処理を散らさずFirst Run / Repair flowを検討します。
+
+- 必須 / 任意Dependencyを分ける
+- Detection結果を表示する
+- 再実行しても壊れないidempotentなSetupを優先する
+- 一度選んだFolder等を理由なく毎回聞かない
+- 失敗項目だけRetryできるようにする
+- Current settings / dataを壊さずRepairできる範囲を明示する
+
 ### CONDITIONAL SHOULD: 重要なLocal DataにはBackup / Restoreを持つ
 
 Userが再作成しにくいLocal Dataを持つ場合は、[03 Data / Storage](03-data-storage.md) のRuleに従って次を検討します。
