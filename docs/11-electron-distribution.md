@@ -25,6 +25,97 @@ Web版へ変更した方がよい理由がある場合も、Current Requirements
 
 ScriptやFileを増やすこと自体を完成条件にしません。
 
+## Electron共通基盤
+
+Electron Appは個別機能だけでなく、更新・保存・復旧・診断・OS統合等のDesktop共通責務を持ちやすいため、MeaningfulなElectron Projectでは**共通基盤（Desktop Foundation）を先に評価**します。
+
+目的は全Appへ同じ機能を機械的に積むことではありません。App固有機能と共通責務を分離し、同じ失敗を複数Appで繰り返さないことを優先します。
+
+### SHOULD: 基礎Capabilityを共通責務として整理する
+
+Projectの性質に応じて、最低限次を共通基盤候補として評価します。
+
+- **設定管理** — Theme、保存先、Update設定、Window設定等を一元化し、Schema / Version / Default /破損時Fallbackを持つ。
+- **Log** — 起動、終了、Update、IPC、外部Process、保存失敗等の原因追跡に必要なLogを残し、Retention / Sizeを制御する。
+- **診断画面 / 診断情報** — App / Electron / OS Version、主要Path、Update Channel、保存先、直近Error等を確認できるようにし、Secretや不要なPersonal Dataは含めない。
+- **Window State** — Size / Position / Maximized等を必要に応じて保存し、Display構成変更後に画面外へ復元しない。
+- **単一起動** — 複数起動がData競合・重複Task・Port競合等を起こし得るAppではSingle Instanceを使い、2回目の起動では既存WindowをRestore / Focusする。
+- **Recovery** — Renderer / Child Process異常終了や設定破損を検出し、Dataを守った再読込・再起動・Fallbackを用意する。無限Restart Loopを作らない。
+- **最近使った対象 / Path記憶** — Folder / Project等を繰り返し選ぶAppでは、前回選択や最近使った項目を安全に保存し、毎回同じ選択を要求しない。Clear / Change手段も残す。
+- **Theme連携** — App要件に合う場合はElectronのNative Theme / OS preferenceと連携し、ProjectのTheme Ruleは [04 UI / UX / Accessibility](04-ui-ux-accessibility.md) を正本とする。
+- **Network状態** — Network依存機能がある場合、Offline / Provider failureを単なる不明Errorにせず、利用可能なLocal機能と分離する。
+
+設定・Log・診断・Window State等を別々のComponentが独自形式で保存し、同じ情報の第二Source of Truthを増やさないようにします。
+
+ElectronにはSingle Instance、app-specific data / logs path、Native Theme、Notification、Crash Report等のPlatform APIがあります。採用時はCurrent Electron公式仕様を確認し、古いAPI挙動を固定知識として扱いません。
+
+### CONDITIONAL SHOULD: 重要なLocal DataにはBackup / Restoreを持つ
+
+Userが再作成しにくいLocal Dataを持つ場合は、[03 Data / Storage](03-data-storage.md) のRuleに従って次を検討します。
+
+- 明示的なExport / Backup
+- Restore前Validation
+- boundedな自動Backup /世代管理
+- Last-known-good設定へのRecovery
+- Backup → Restore → ReloadのRound-trip確認
+
+Cacheや再生成可能Dataまで無条件にBackup対象へ含めません。Backupが存在するだけでRestore可能とは扱いません。
+
+### CONDITIONAL: OS統合機能は用途がある場合だけ有効化する
+
+以下は便利でも全Electron Appへ標準搭載しません。
+
+- **Auto Start** — Background常駐等の明確な価値があり、UserがON/OFFできる場合。
+- **Tray** — Windowを閉じても処理継続するProduct behaviorが必要な場合。`×`、最小化、終了の意味を曖昧にしない。
+- **System Notification** — Background完了・Update・MaterialなError等、Appを見ていないUserへ知らせる価値がある場合。通知過多にしない。
+- **Global Shortcut** — Appが非Activeでも操作する必要がある場合。競合、登録失敗、解除を扱う。
+- **File Association / Custom Protocol** — File / LinkからAppを開くPrimary Flowがある場合。入力を信頼せずValidationする。
+- **GitHub Integration** — Release / Issue / Repository等がProduct機能に直接必要な場合。Token / permission / offline failureをSecurity Boundaryとして扱う。
+- **Cache Clear / DevTools / Log Folder Open** — 診断やRecoveryに有効な場合。通常Userへ破壊的Resetを誤操作させない。
+
+OS統合は「実装できるから追加する」のではなく、User Task / Background behavior / Recoveryに必要かで決めます。
+
+### SHOULD: 共通基盤を再利用可能にする
+
+複数Electron Appで同じ責務を使う場合、copy-pasteを増やすより次のいずれかを検討します。
+
+```text
+Electron App
+├─ Product-specific Feature
+└─ Desktop Foundation
+   ├─ Settings
+   ├─ Logging
+   ├─ Diagnostics
+   ├─ Window State
+   ├─ Recovery
+   ├─ Update
+   └─ Conditional OS Integration
+```
+
+再利用方法はTemplateでも内部Packageでも構いません。
+
+- 共通ModuleはPlatform責務へ限定し、App固有Business Logicを取り込まない。
+- Featureごとにopt-in / opt-outできるようにし、巨大な必須Frameworkにしない。
+- shared package自体もVersion / Compatibility / Migrationを持つ。
+- Rendererへ広いOS権限を渡す共通APIを作らず、Main / PreloadのCapability surfaceを最小化する。
+- 共通基盤の変更で複数AppへRegressionが波及するため、代表App / Integration Testを持つ。
+
+既存Appへ導入する場合は、現在のSettings / Window / Update / Storage実装を確認し、二重Runtimeや二重保存を作らず正式責務へ統合します。
+
+### Electron共通基盤のCompletion
+
+共通機能を追加しただけで完成扱いにしません。変更内容に応じて次を確認します。
+
+- Restart後も設定 / Window State /最近使った対象が意図どおり復元する
+- Display構成変更後もWindowが到達可能な位置へ開く
+- 2重起動時に競合せず、必要なら既存WindowへFocusする
+- Corrupt Settings / Renderer crash / Network failure等でDataを失わずRecoveryできる
+- Diagnostic情報が原因調査に使え、Secret /不要なPersonal Dataを含まない
+- Auto Start / Tray / Notification / Global Shortcut等は実Windows上のBehaviorを必要範囲で確認する
+- shared foundation更新で既存Appの主要Flow / Update / Storageを壊していない
+
+OS固有CapabilityはCIやStatic TestだけでReal-device validated扱いにしません。
+
 ## ユーザーデータ
 
 更新時にユーザーデータが消えない構成を優先します。
