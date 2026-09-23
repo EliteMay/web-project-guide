@@ -276,13 +276,14 @@ OS統合は「実装できるから追加する」のではなく、User Task / 
 Electron App
 ├─ Product-specific Feature
 └─ Desktop Foundation
-   ├─ Settings
-   ├─ Logging
-   ├─ Diagnostics
-   ├─ Window State
-   ├─ Recovery
+   ├─ App Identity / Icon
+   ├─ Settings / Secret Storage
+   ├─ Logging / Diagnostics
+   ├─ Window State / Recovery / Safe Mode
+   ├─ Task Manager / Process Manager
+   ├─ Download / Disk lifecycle
    ├─ Update
-   └─ Conditional OS Integration
+   └─ Conditional OS / Power Integration
 ```
 
 再利用方法はTemplateでも内部Packageでも構いません。
@@ -303,7 +304,12 @@ Electron App
 - Display構成変更後もWindowが到達可能な位置へ開く
 - 2重起動時に競合せず、必要なら既存WindowへFocusする
 - Corrupt Settings / Renderer crash / Network failure等でDataを失わずRecoveryできる
+- 長時間Taskが実Stateと一致するProgress / Cancel / Retry / Interrupted behaviorを持つ
+- 外部ProcessがCrash / App終了時にorphan化せず、Restart Loopへ上限がある
+- Secretを扱う場合、通常設定・Log・Diagnostic Exportへ平文流出しない
+- Download / Disk full / Suspend-Resume等のFailureから安全にRecoverできる
 - Diagnostic情報が原因調査に使え、Secret /不要なPersonal Dataを含まない
+- App固有IconがPackaged App / Taskbar / Shortcut / Start Menu / Installer等の必要Surfaceで識別できる
 - Auto Start / Tray / Notification / Global Shortcut等は実Windows上のBehaviorを必要範囲で確認する
 - shared foundation更新で既存Appの主要Flow / Update / Storageを壊していない
 
