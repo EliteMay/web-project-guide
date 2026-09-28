@@ -10,6 +10,7 @@
 
 ## Added
 
+- `docs/21`のKnown Failure PreflightをKnown Failure / Proven SuccessのLearning Preflightへ拡張。Meaningfulな既存Project作業で、Failureだけでなく再利用条件が合うProject Learning / Success PatternをTargeted Searchし、Use when / Avoid when / Trade-off / Current Contextを照合してからCandidateとして再利用し、今回のValidationで再確認するContractを追加。Work Report / AGENTS / Quality Checklist / focused validatorへ実行経路を接続し、Success CatalogへS-031 Applicability-gated Success Reuseを追加
 - Godot Game FoundationのAudio lifecycle regressionから、`docs/02`へLifecycle / Resource Ownership Contractを追加。temporary detach / reparent / suspendとTerminal dispose / destructionを分離し、Resource ownership、reusable dispose、stale async callbackのgeneration fencing、Lifecycle sequence validationを定義
 - `docs/19`とGame Quality ChecklistへPersistent Service / Scene lifecycle確認を追加し、CatalogへF-024 Temporary Tree Exit誤認とS-030 Lifecycle Generation Fencingを追加。既存Known Failure Preflightは既に実装前再利用経路を十分持つため、`docs/21`へ重複Ruleは追加していない
 - 直近のGame Dev Hub / Deep Factory実機Evidenceから、`docs/07`へRuntime Oracle / Representative Launch Pathを追加。exit code・status文字列だけのFalse Greenを避け、矛盾EvidenceをPASSへ丸めず、取得可能な固定操作ではsession-matched State delta / Eventを優先し、必要時はCold / Direct Startを検証するContractを追加

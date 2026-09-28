@@ -14,7 +14,7 @@
 8. Remote Diagnostic Handoff（有効な場合）
 9. 変更対象のCode / Data / Test
 
-Guide全文を毎回読むのではなく、Rule Routingで必要と判断されたOwner Docだけを追加確認します。Memoryや過去ConversationをCurrent Guide読込の代用にしません。
+Guide全文を毎回読むのではなく、Rule Routingで必要と判断されたOwner Docだけを追加確認します。Meaningfulな既存Project作業では、`docs/21`に従って関係するFailureだけでなく、適用条件が合うProject Learning / Success PatternもTargeted Searchします。Memoryや過去ConversationをCurrent Guide読込の代用にしません。
 
 ## Project
 

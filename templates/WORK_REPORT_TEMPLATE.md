@@ -30,16 +30,19 @@
 
 - 
 
-## Known Failure Preflight
+## Learning Preflight
 
-Meaningfulな既存Project作業では、[Rule Routing / Preflight](../docs/21-rule-routing-preflight.md) に従って今回のSystem / 症状 / Riskに関係する既知FailureをTargeted Searchした結果を短く残します。該当しない場合は`Not applicable`とします。
+Meaningfulな既存Project作業では、[Rule Routing / Preflight](../docs/21-rule-routing-preflight.md) に従って今回のSystem / 症状 / Goal / Riskに関係する既知Failureと、再利用条件が合うSuccess PatternをTargeted Searchした結果を短く残します。該当しない場合は`Not applicable`とします。
 
 - 実施: Yes / Not applicable
-- 検索対象: `PROJECT_LEARNINGS.md` / Failure Catalog / Anti-Pattern Catalog / 直近Work Report・Known Issue / Other
-- Targeted Search（System / 症状 / Risk）:
+- 検索対象: `PROJECT_LEARNINGS.md` / Failure Catalog / Anti-Pattern Catalog / Success Pattern Catalog / 直近Work Report・Known Issue・成功Evidence / Other
+- Targeted Search（System / 症状 / Goal / Risk）:
 - 該当Learning / Failure: `F-xxx` / `AP-xxx` / Project Learning ID / None found
 - 今回のPrevention:
-- Regression Guard / Runtime Check / Playtest:
+- 該当Success Pattern: `S-xxx` / Project Learning ID / None found
+- Applicability（Use when / Avoid when / Trade-off / Current Context）:
+- 今回再利用する部分:
+- Regression Guard / Runtime Check / Playtest / Validation:
 
 ## 保存・互換性への影響
 

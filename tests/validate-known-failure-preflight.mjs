@@ -24,21 +24,23 @@ if (!gate) {
 }
 
 for (const marker of [
-  '### MUST: Known Failureを実装前に再利用する',
+  '### MUST: Known Failure / Proven Successを実装前に再利用する',
   '`PROJECT_LEARNINGS.md`',
   'Failure Catalog',
+  'Success Pattern Catalog',
   'Targeted Search',
-  'Regression Guard / Runtime Check / Playtest項目',
+  'Reuse Conditions / Trade-off / Current Context',
+  'Regression Guard / Runtime Check / Playtest',
   'Rule Application Failure'
 ]) {
   if (!routingGuide.includes(marker)) {
-    errors.push(`docs/21: known-failure preflight contract lost marker -> ${marker}`);
+    errors.push(`docs/21: learning preflight contract lost marker -> ${marker}`);
   }
 }
 
 for (const marker of [
   'Meaningfulな既存Project作業では',
-  '`PROJECT_LEARNINGS.md` / Failure Catalog',
+  '`PROJECT_LEARNINGS.md` / Failure Catalog / Success Pattern Catalog',
   'Rule Application Failure'
 ]) {
   if (!checklist.includes(marker)) {
@@ -47,11 +49,14 @@ for (const marker of [
 }
 
 for (const marker of [
-  '## Known Failure Preflight',
-  'Targeted Search（System / 症状 / Risk）',
+  '## Learning Preflight',
+  'Targeted Search（System / 症状 / Goal / Risk）',
   '該当Learning / Failure',
   '今回のPrevention',
-  'Regression Guard / Runtime Check / Playtest'
+  '該当Success Pattern',
+  'Applicability（Use when / Avoid when / Trade-off / Current Context）',
+  '今回再利用する部分',
+  'Regression Guard / Runtime Check / Playtest / Validation'
 ]) {
   if (!workReport.includes(marker)) {
     errors.push(`WORK_REPORT_TEMPLATE.md: missing known-failure evidence field -> ${marker}`);
@@ -60,7 +65,8 @@ for (const marker of [
 
 for (const marker of [
   '`docs/21-rule-routing-preflight.md`',
-  '`PROJECT_LEARNINGS.md`（存在する場合）'
+  '`PROJECT_LEARNINGS.md`（存在する場合）',
+  'Success Pattern'
 ]) {
   if (!agentsTemplate.includes(marker)) {
     errors.push(`AGENTS_TEMPLATE.md: missing preflight entrypoint -> ${marker}`);
@@ -68,9 +74,9 @@ for (const marker of [
 }
 
 if (errors.length) {
-  console.error('Known-failure preflight validation failed:');
+  console.error('Learning preflight validation failed:');
   for (const error of errors) console.error(`- ${error}`);
   process.exit(1);
 }
 
-console.log('Known-failure preflight validation passed.');
+console.log('Learning preflight validation passed.');

@@ -9,7 +9,7 @@
 - [ ] Current Repository / Requirements / Spec等のSource of Truthを必要範囲で確認した
 - [ ] 変更対象と影響範囲を確認した
 - [ ] Tool / write capability確認だけのためにDefault / Authoritative Branchへ一時Fileを作成していない
-- [ ] Meaningfulな既存Project作業では、今回のSystem / 症状に関係する`PROJECT_LEARNINGS.md` / Failure CatalogをTargeted Searchし、既知Failureの予防策を今回の実装・Guardへ接続した
+- [ ] Meaningfulな既存Project作業では、今回のSystem / 症状 / Goalに関係する`PROJECT_LEARNINGS.md` / Failure Catalog / Success Pattern CatalogをTargeted Searchし、既知FailureはPrevention / Guardへ、適用条件が合う実証済みSuccessはCandidate Pattern / Validationへ接続した
 - [ ] 同じ機能の旧Runtime / Patch / Version別実装を本番へ重複させていない
 - [ ] Syntax / 起動時Error / 必須Asset・Link参照切れがない
 - [ ] 変更した主要Flow / Button / Linkが実際に動く
