@@ -329,3 +329,23 @@ Current baseline
 - **Decision:** CandidateがCurrentを明確に上回らず、同じ違和感が複数回続く場合はVisual Foundation Resetへ戻る。
 - **Promotion rule:** CI成功や実装完了だけでValidated Directionへ昇格しない。
 - **Related:** [S-025](success-patterns.md) / [AP-031](anti-patterns.md) / [Validated Visual Directions](validated-visual-directions.md) / [Visual Foundation Reset](../docs/17-visual-quality-baseline.md#visual-foundation-reset)
+
+## S-029 Deterministic Runtime State Delta Oracle
+
+**Pattern:** 固定的なRuntime操作の成否を、Screenshot / AI推定だけでなく、同一SessionのCanonical State delta / Eventで判定する。
+
+例:
+
+```text
+launch → ready/session matched
+WASD → position delta
+mouse look → yaw/pitch delta
+pickup → inventory/event delta
+```
+
+- **Use when:** Game / Electron / Automation等で、入力後の期待StateをRuntimeから安全に取得できる固定Smoke / Regression Test。
+- **Avoid when:** Visual quality、Audioの聴感、操作感、楽しさ等、State deltaだけではUser Experienceを証明できない判断。
+- **効果:** AIが`PASS`と言いながら説明では「変化なし」とする自己矛盾や、Screenshot差分の誤認を減らし、実機E2Eを短いdeterministic testへ寄せられる。
+- **Trade-off:** Test-only telemetry / bridgeのSession境界、公開範囲、Game StateとのSingle Source of Truthを管理する必要がある。
+- **Evidence:** Game Dev Hub v0.1.24 + Deep Factory Windows E2Eで、launch ready、Player position delta、camera yaw deltaをsession-matched runtime telemetryとして取得し3/3の固定操作を検証した。
+- **Related:** [F-022](failures.md) / [Testing](../docs/07-testing-quality.md) / [Game Development](../docs/19-game-development.md)

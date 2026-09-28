@@ -595,6 +595,25 @@ Happy Pathだけでなく、Resource不足、Inventory Full、Death / Failure、
 
 Bug修正では `reproduce → evidence / state → root cause → smallest safe fix → regression guard → runtime confirmation → related flow` を基本Flowとします。
 
+### SHOULD: 固定Gameplay SmokeはRuntime State Deltaを使う
+
+Movement / Camera / Pickup / Sell / Interaction等、期待するState変化が明確な固定Smokeでは、可能ならScreenshotやAI推定だけに依存せず、Session一致とGame側のState delta / EventをOracleへ使います。
+
+例:
+
+- WASD → Player位置が変化
+- Mouse Look → Camera yaw / pitchが変化
+- Pickup → Inventory / pickup eventが変化
+- Sell → Canonical Money / sell eventが変化
+
+AI / Visionは探索的PlaytestやVisual理解には使えますが、固定Regressionで直接Stateを取得できる場合は補助Evidenceとして扱います。Evidenceが自己矛盾するResultをPASSへ丸めません。一般のOracle Contractは [07 Runtime Oracle / Representative Launch Path](07-testing-quality.md#runtime-oracle--representative-launch-path) を正本とします。
+
+### CONDITIONAL MUST: 実配布の起動条件とCore Loop Regressionを再現する
+
+Editor / Import Cache / warm state無しでLauncherや実行Fileから起動するGameでは、重要なRuntime変更後に必要に応じてDirect Cold StartをSmokeへ含めます。
+
+また、新Phase / Upgrade / UI / Progression追加が既存の共通ControllerやCore Stateへ触れる場合、新機能だけでなく**既に成立していた最短Core Loop**もRegression Smokeへ含めます。後続Phaseの追加によってMovement、Interaction、Pickup、HUD、Sell等の基礎Flowを壊したまま次Featureへ進みません。
+
 Testing StrategyとVerification State全体は [07 Testing / Quality](07-testing-quality.md) を正本とします。
 
 ## Phase Planning / Scope Management / Completion Gate

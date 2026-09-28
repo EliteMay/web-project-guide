@@ -256,6 +256,30 @@
 - **検出:** Preflight review / Browser runtime validation / Actual Playtest / visible-solid-object collision sweep / user feedback。
 - **Related:** [Rule Routing / Preflight](../docs/21-rule-routing-preflight.md) / [Game Development](../docs/19-game-development.md) / [Development Observability](../docs/15-development-observability.md) / [Quality Checklist](../templates/QUALITY_CHECKLIST.md)
 
+## F-022 Runtime SmokeがFalse Greenになる
+
+- **Category:** Testing / Runtime / Game
+- **発生:** Deep Factory
+- **Severity / Cost:** High / 高い
+- **症状:** Import / Scene LoadのCIは成功していたが、実際のGame Dev Hub direct startではPlayer / Main ControllerのScriptが読み込まれず、入力・採掘Feedback・HUD等が停止した。
+- **Root Cause:** Test OracleがProcess終了やWarm / Import済みRuntimeを中心に見ており、Godotがexit code 0でもScript ErrorをLogへ出せる経路と、Editor / import cache無しのCold Start依存を検出できなかった。
+- **最終対応:** Known fatal / script error logをFailureへ昇格し、Gameplay Input Smoke、Direct Cold Start、既存Core Loop Regression Smokeを追加した。
+- **予防:** Runtime testではexit codeやscene load単独をBehavior成立のOracleにせず、実起動経路 + 期待State / Event + fatal logをRiskに応じて組み合わせる。
+- **検出:** Clean / direct-start smoke、Runtime state assertion、fatal-log guard、実機確認。
+- **Related:** [Testing](../docs/07-testing-quality.md) / [Game Development](../docs/19-game-development.md) / [AP-017](anti-patterns.md) / [S-029](success-patterns.md)
+
+## F-023 下位SDK TimeoutがProduct Timeoutを先に潰す
+
+- **Category:** Reliability / Dependency / AI Runtime
+- **発生:** Game Dev Hub
+- **Severity / Cost:** High / 中〜高
+- **症状:** Product側はAI Testを120秒まで許可していたのに、WASD / Mouse Testが推論・操作前に毎回Request timeoutとなった。
+- **Root Cause:** 利用SDK内部に30秒のRequest timeoutがhard-codeされ、上位Overall Timeoutより先にAbortしていた。上位設定だけを見てEffective Timeoutを確認していなかった。
+- **最終対応:** SDK内部Timeout境界を特定し、Hub管理のAbortSignalで不要な内部Timeoutだけを回避しながら、Emergency Stop / User Stop / Overall TimeoutをCancellation authorityとして維持した。
+- **予防:** 外部SDK / wrapperを使う長時間Taskでは、Product / Request / SDK / Provider / Retry各LayerのTimeoutとCancel propagationを確認する。
+- **検出:** Stage telemetry、経過時間、turn / action count、SDK source / current contract確認、Cancel regression test。
+- **Related:** [Performance / Reliability](../docs/05-performance-reliability.md) / [Dependencies](../docs/13-dependencies-assets.md) / [Quality Checklist](../templates/QUALITY_CHECKLIST.md)
+
 ---
 
 ## 修正コストの目安
