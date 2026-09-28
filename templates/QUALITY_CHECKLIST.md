@@ -13,6 +13,8 @@
 - [ ] 同じ機能の旧Runtime / Patch / Version別実装を本番へ重複させていない
 - [ ] Syntax / 起動時Error / 必須Asset・Link参照切れがない
 - [ ] 変更した主要Flow / Button / Linkが実際に動く
+- [ ] Runtime / Engine / External ToolのTestでは、exit codeやstatus文字列だけでなく期待Behaviorの観測可能なOracleを確認し、矛盾EvidenceをPASSへ丸めていない
+- [ ] 実利用がclean / cold / launcher / packaged startで始まる場合、Warm Cache / Editor / Import済み状態だけを唯一の起動Smokeにしていない
 - [ ] Existing Data / Save / URL /公開Contractを意図せず壊していない
 - [ ] Secret / Token / Password /不要な個人情報を公開ArtifactやLogへ入れていない
 - [ ] High-risk変更ではRollback / Recovery / Forward-fixのどれが使えるか必要範囲で確認した
@@ -270,6 +272,8 @@
 - [ ] Controls / Camera / CollisionがBlockingな状態で、Content / Props / Feature追加を品質改善の代替にしていない
 - [ ] 永続Saveがある場合、New Save / Save / Reload / Existing Saveを必要範囲で確認した
 - [ ] 必要なAutomated Test / Runtime ValidationとActual Playtestを分けて実施した
+- [ ] 固定Input / Interaction SmokeでRuntime Stateを直接取得できる場合、Session一致 + position / yaw / inventory / event等のState deltaを主要Oracleに使った
+- [ ] 新Phaseが共通Controller / Core Stateへ触れた場合、追加Featureだけでなく既存の最短Core Loop Regressionも確認した
 - [ ] Main Game Complete時はFresh StartからPrimary Completion Conditionまで主要Flowを確認した
 
 ## Electron / Distribution
@@ -341,6 +345,7 @@
 - [ ] Integration purpose、Provider boundary、Not Found vs Failure、transport success vs business successを必要範囲で分けた
 - [ ] External / Local authorityとID namespaceが明確で、保存 / Sync / Reconciliationがある場合は`docs/03`のData Contractを確認した
 - [ ] Retry / Webhookでduplicate mutationを起こさず、ordering / ACK / retry stop / provider outageをRiskに応じて確認した
+- [ ] 長時間Operation / AI / SDK連携ではProduct・Request・SDK内部・Provider等のEffective Timeoutを必要範囲で確認し、内部TimeoutをoverrideしてもUser Cancel / Emergency Stop / Overall Budgetを失っていない
 - [ ] MockだけをProviderの真実とせず、必要なContract / Sandbox / Production-safe evidenceを区別した
 - [ ] API / SDK / Webhook / Auth変更時にCompatibilityとDeprecation / Removalを確認した
 - [ ] Provider unavailableや未確認Environmentを`Verified`とせず、Known limitationを残した

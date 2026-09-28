@@ -65,6 +65,40 @@ Pure Functionにできる処理はブラウザUIから切り離してTestしま�
 
 UIが重要なSiteでは、変更内容に応じてNavigation / overflow / fixed UI / Canvas geometry /主要Button visibility等も確認します。
 
+## Runtime Oracle / Representative Launch Path
+
+Runtime / Engine / Desktop App / Game / External Tool連携では、**Test harnessが正常終了したこと**と**Userが必要とするBehaviorが成立したこと**を分けます。
+
+### MUST: PASSは観測可能な効果とEvidence全体で整合させる
+
+- Process exit code、HTTP 2xx、Test runnerの`PASS`文字列、AI / Agentが返したstatus等を、それ単独でBehavior成立のOracleにしない。
+- RuntimeがErrorをLogへ出しながら正常Exitし得る場合、Riskに応じて既知のfatal / script / load error、必須Objectの初期化、主要State等を追加Oracleにする。
+- `status=PASS`なのにReason / Actual resultが「変化なし」、Session IDが不一致、期待State deltaが無い等、同じResult内でEvidenceが矛盾する場合はPASSへ丸めない。直接Oracleで解消できなければ`UNKNOWN / NOT_VERIFIED`等へ落とす。
+- 固定的な入力・操作の成否を判定できるCanonical Runtime Stateがある場合、ScreenshotやAIの見た目推定だけでなく、必要に応じてSession一致 + State delta / Event / Counter等のdeterministic evidenceを優先する。
+
+Deterministic Runtime Evidenceの例:
+
+- 起動完了 → expected session / scene / routeがready
+- 移動 → Player / Object positionが実際に変化
+- Camera入力 → yaw / pitch等が変化
+- Pickup / Sell → Inventory / Money / canonical eventが変化
+- Save → Canonical Storageへ書込み後、再起動 / Reloadで復元
+
+数値化できないVisual quality、Audioの聴感、操作感、分かりやすさ等までTelemetryだけで証明しません。これらはVisual Review / Actual Playtest / Real-device / User Validationへ分けます。
+
+### CONDITIONAL MUST: 実際の起動経路がWarm Stateを保証しないならCold / Direct Startを含める
+
+Editor、Import済みCache、Dev Server、前回Session、事前生成Artifact等が本番起動前提ではない場合、それらが存在する状態だけをSmoke Testの唯一の経路にしません。
+
+Launcher / packaged app / child process / CLI / direct executable等、実利用と同じ起動経路が重要なら、Riskに応じて次をRepresentative Testへ含めます。
+
+- clean / cold start
+- import / cache生成前のdirect start
+- packaged / launcher経由のstart
+- 必須Dependency / Script / Assetが本番と同じ順序で解決されること
+
+Warm環境でしか成立しない暗黙Dependencyを、Test setupで先に満たして隠さないことを目的とします。
+
 ## Task-based Usability Validation
 
 CONDITIONAL: Primary Task、MeaningfulなUX / IA、重要な新機能について、Self ReviewやStatic / E2Eだけでは「初見Userが理解し、自力で完了できるか」が不確実な場合、**実際または想定利用者によるTask observation**へ上げます。Current evidenceは [Task-based Usability Testing Research](../references/task-based-usability-testing-research.md) を参照します。

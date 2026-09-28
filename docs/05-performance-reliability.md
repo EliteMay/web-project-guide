@@ -273,6 +273,26 @@ Cancel価値が高い例:
 
 Timeout / Cancel後もserver側writeが継続し得る場合は、late result、duplicate、stale responseによるCurrent State上書きを防ぎます。
 
+### CONDITIONAL MUST: Layered Timeout / Cancellation Boundaryを確認する
+
+SDK / Client Library / Model wrapper / Browser API / Child Process / Provider等を重ねる場合、Product側のOverall Timeoutだけを設定して完了としません。**実際に最初に発火するTimeoutがEffective Timeout**です。
+
+Timeout / Cancel問題が起きた、または長時間Operationを外部Dependencyへ委譲する場合は必要に応じて次を確認します。
+
+- UI wait feedback
+- Product overall task timeout
+- request / provider timeout
+- SDK / wrapper内部timeout
+- retryごとのtimeout
+- User Cancel / Emergency Stop
+- Process termination / AbortSignal propagation
+
+例えばProductが120秒を許可していても、SDK内部が30秒でRequestをAbortするなら実効上は30秒です。上位Timeoutを延ばすだけでは直りません。
+
+Dependency defaultをoverride / bypassする場合も、User Cancel、Emergency Stop、Overall Budget等のSafety Boundaryを同時に失わないようにします。Cancellation authorityを複数Layerで競合させる場合は、どのSignalがどこまで伝播し、late resultをどう無効化するかを説明できる状態にします。
+
+TimeoutのRoot Cause調査では、経過時間だけでなく`turns=0` / `actions=0` / request未到達等のStage Evidenceを使い、「処理が遅い」のか「下位Layerが先に切っている」のかを分けます。
+
 ## Offline Degradation / Connectivity Change
 
 Offline対応を「完全対応 / 非対応」の二択にしません。
