@@ -373,3 +373,23 @@ captured != current → ignore
 - **Trade-off:** generation / operation IDの管理と、Callback側でCurrent ownershipを検証する必要がある。Cancel可能ならCancelも併用する。
 - **Evidence:** Godot Game Foundation Phase 13 Audio Resource Lifecycleで、Global Musicのtransition callbackをdispose / reconfigure generationで無効化し、reusable disposeとlifecycle smokeを成立させた。
 - **Related:** [F-024](failures.md) / [Architecture](../docs/02-architecture.md#lifecycle--resource-ownership) / [Game Development](../docs/19-game-development.md)
+
+## S-031 Applicability-gated Success Reuse
+
+**Pattern:** 過去に成功した設計・Test・運用を、そのままTemplate化せず、Reuse Conditions / Trade-off / Current Contextを照合してから今回のCandidateへ使う。
+
+```text
+Relevant success evidence
+→ Use when / Avoid when / Trade-off
+→ Current requirements / runtime / scaleと照合
+→ applicable partsだけreuse
+→ current validation
+→ learning update
+```
+
+- **Use when:** 同じ種類のSystemやFailure Preventionを複数Project / Phaseで繰り返し実装する場合。
+- **Avoid when:** 成功EvidenceがAI自己評価だけ、今回のGoal / Runtime / Userが大きく違う、Current Projectにより直接的なEvidenceがある場合。
+- **効果:** 毎回ゼロから再発明するCostを減らしつつ、「前にうまくいったから今回も正解」というCargo-cult reuseを避けられる。
+- **Trade-off:** Pattern検索とApplicability確認の小さなPreflight Costが増える。小さな局所変更では機械的に行わない。
+- **Evidence:** Game Dev Hub / Deep FactoryではS-029のdeterministic Runtime State Deltaが固定操作のWindows E2Eを安定化し、Godot Game FoundationではS-030のLifecycle Generation Fencingがdispose / reconfigure境界のstale callback防止に有効だった。どちらも適用領域が限定され、Visual /聴感や完全同期処理へはそのまま広げない条件がある。
+- **Related:** [Rule Routing / Preflight](../docs/21-rule-routing-preflight.md) / [S-029](success-patterns.md) / [S-030](success-patterns.md) / [S-027](success-patterns.md)
