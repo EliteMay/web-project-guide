@@ -280,6 +280,18 @@
 - **検出:** Stage telemetry、経過時間、turn / action count、SDK source / current contract確認、Cancel regression test。
 - **Related:** [Performance / Reliability](../docs/05-performance-reliability.md) / [Dependencies](../docs/13-dependencies-assets.md) / [Quality Checklist](../templates/QUALITY_CHECKLIST.md)
 
+## F-024 Temporary Tree ExitをService破棄と誤認する
+
+- **Category:** Architecture / Lifecycle / Game Runtime
+- **発生:** Godot Game Foundation
+- **Severity / Cost:** High / 中〜高
+- **症状:** Scene-persistent Audio ServiceをSceneTree rootへreparentする途中でも`_exit_tree()` cleanupが走り、通常のPersistence setupだけでServiceがdisposeされて利用不能になった。
+- **Root Cause:** 「現在Treeから外れるEvent」と「Object自体が破棄されるTerminal lifecycle」を同一視し、Cleanup TriggerをFramework callback名から推測した。
+- **最終対応:** actual deletion側のpre-delete lifecycleへTerminal Cleanupを移し、explicit dispose / actual delete / reparentを分離。さらにdispose / reconfigureを跨ぐ旧Transition callbackをgenerationで無効化し、外部Parent配下のSpatial PlayerもService ownershipとしてCleanupした。
+- **予防:** Long-lived Serviceではattach / detach / reparent / suspend / dispose / destructionを区別し、Terminal Resource Cleanupを実際のLifecycle Contractへ接続する。再利用Serviceはstale async callbackもFenceする。
+- **検出:** lifecycle smoke（reparent後も利用可能、dispose後cleanup、reuse、actual deletion、stale callback無効化）+ Engine公式Lifecycle semantics確認。
+- **Related:** [Architecture](../docs/02-architecture.md#lifecycle--resource-ownership) / [Game Development](../docs/19-game-development.md) / [S-030](success-patterns.md) / [Quality Checklist](../templates/QUALITY_CHECKLIST.md)
+
 ---
 
 ## 修正コストの目安

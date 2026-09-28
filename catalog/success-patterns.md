@@ -349,3 +349,27 @@ pickup → inventory/event delta
 - **Trade-off:** Test-only telemetry / bridgeのSession境界、公開範囲、Game StateとのSingle Source of Truthを管理する必要がある。
 - **Evidence:** Game Dev Hub v0.1.24 + Deep Factory Windows E2Eで、launch ready、Player position delta、camera yaw deltaをsession-matched runtime telemetryとして取得し3/3の固定操作を検証した。
 - **Related:** [F-022](failures.md) / [Testing](../docs/07-testing-quality.md) / [Game Development](../docs/19-game-development.md)
+
+## S-030 Lifecycle Generation Fencing
+
+**Pattern:** Reusable Serviceがdispose / reconfigure境界を跨ぐとき、旧Generationで開始したAsync callback / Tween / Timer / resultをCurrent Stateへ適用させない。
+
+```text
+generation = 4
+start async work(captured=4)
+↓
+dispose / reconfigure
+↓
+generation = 5
+↓
+old callback(captured=4) completes
+↓
+captured != current → ignore
+```
+
+- **Use when:** Service instance、Controller、Media / Audio、Worker、Animation等を再利用し、CancelとCompletionが競合し得る場合。
+- **Avoid when:** 完全同期処理で旧Operationが後から戻る可能性がなく、instanceを必ず破棄して再利用しない場合。
+- **効果:** Dispose後の古いcallbackが新しいSession / Track / Stateを上書きするstale mutationを防ぎやすい。
+- **Trade-off:** generation / operation IDの管理と、Callback側でCurrent ownershipを検証する必要がある。Cancel可能ならCancelも併用する。
+- **Evidence:** Godot Game Foundation Phase 13 Audio Resource Lifecycleで、Global Musicのtransition callbackをdispose / reconfigure generationで無効化し、reusable disposeとlifecycle smokeを成立させた。
+- **Related:** [F-024](failures.md) / [Architecture](../docs/02-architecture.md#lifecycle--resource-ownership) / [Game Development](../docs/19-game-development.md)

@@ -249,6 +249,68 @@ Event-drivenにするとDependencyが消えるわけではありません。Inte
 
 Event Busの導入自体をDecouplingの証明にしません。
 
+## Lifecycle / Resource Ownership
+
+Long-lived Service、Player、Worker、Timer、Tween / Animation、Listener、外部Process、Media / Audio resource等では、**「一時的に現在のContainer / Tree / Routeから外れること」と「Lifecycleが終了して破棄されること」を同じEventとして扱いません。**
+
+### MUST: Cleanup Triggerを実際のTerminal Lifecycleへ合わせる
+
+Framework / EngineのCallback名だけから意味を推測せず、現在のRuntime Contractで少なくとも次を区別します。
+
+- attach / enter / mount / start
+- detach / unparent / route change / scene change
+- suspend / pause / background
+- reparent / transfer / ownership move
+- explicit dispose / shutdown
+- actual destruction / delete / process exit
+
+ServiceやObjectがScene / Routeを越えて再利用される設計なら、Temporary detach / reparentだけでTerminal Cleanupを走らせて再利用不能にしません。逆にactual destruction時にだけ解放されるべきResourceを、通常のdetach処理だけへ依存して孤立させません。
+
+Cleanup対象は**Resourceを誰がOwnerとして追跡しているか**で決めます。Resourceが別Parent / Window / Process等の配下に存在していても、Serviceがその生成・追跡・停止責務をOwnするなら、ServiceのTerminal Lifecycleで必要なCleanupを保証します。
+
+### SHOULD: Async CallbackをLifecycle GenerationでFenceする
+
+Dispose / Reconfigure / Restart後に同じService instanceを再利用する場合、以前のGenerationで開始したAsync callback、Tween、Timer、Promise、Worker result等が新しいStateを書き換えないようにします。
+
+候補:
+
+- 可能なら元処理をCancelする
+- generation / epoch / operation IDを進める
+- callback開始時のIDを保持する
+- callback完了時にCurrent IDと一致しなければState mutationを捨てる
+
+Cancelだけで十分と仮定しません。既にQueue済みのCallbackや停止と競合するCompletionがあり得るRuntimeでは、**Cancel + stale-result fence**を組み合わせる価値があります。
+
+### Reusable Dispose
+
+`dispose()`等を「Service instanceを再利用可能なReset」として定義する場合は、必要に応じて次を確認します。
+
+- active work / timer / transitionを停止
+- owned resource / referenceを解放
+- stale callbackを無効化
+- externally parented / externally located resourceもOwner責務に従ってCleanup
+- public stateを明示的なdisposed / idle状態へ戻す
+- reconfigure / restart後に以前のGenerationが干渉しない
+
+一方、disposeがTerminal destructionを意味するAPIでは無理に再利用可能にしません。名前ではなくProject Contractを正本にします。
+
+### Validation
+
+Lifecycleに意味のある変更では、該当する範囲で次を分離してTestします。
+
+```text
+normal use
+→ temporary detach / reparent / scene or route transition
+→ continued use
+→ explicit dispose / shutdown
+→ optional reuse / reconfigure
+→ actual destruction
+```
+
+加えて、dispose直前にAsync処理を開始し、dispose / reconfigure後に古いcallbackが完了してもCurrent Stateを変更しないRegressionを検討します。
+
+Framework / Engine固有のLifecycle callback semanticsはCurrent official documentationで確認し、Common GuideへHook名をUniversal Ruleとして固定しません。
+
 ## Architecture Health Signals
 
 次は**診断Trigger**として利用できます。
@@ -489,8 +551,8 @@ MeaningfulなArchitecture判断では、必要な範囲で次を残せる状態�
 
 ## 関連Catalog
 
-- Failure: [F-001 / F-008 / F-010 / F-019](../catalog/failures.md)
-- Success: [S-003 / S-023](../catalog/success-patterns.md)
+- Failure: [F-001 / F-008 / F-010 / F-019 / F-024](../catalog/failures.md)
+- Success: [S-003 / S-023 / S-030](../catalog/success-patterns.md)
 - Anti-pattern: [AP-001 / AP-002 / AP-003](../catalog/anti-patterns.md)
 
 ## External Integration Boundary

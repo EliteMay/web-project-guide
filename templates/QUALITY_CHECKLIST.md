@@ -274,6 +274,7 @@
 - [ ] 必要なAutomated Test / Runtime ValidationとActual Playtestを分けて実施した
 - [ ] 固定Input / Interaction SmokeでRuntime Stateを直接取得できる場合、Session一致 + position / yaw / inventory / event等のState deltaを主要Oracleに使った
 - [ ] 新Phaseが共通Controller / Core Stateへ触れた場合、追加Featureだけでなく既存の最短Core Loop Regressionも確認した
+- [ ] Persistent Service / Scene lifecycleを変更した場合、temporary detach / reparentとactual destructionを分け、dispose後のstale callback・外部配置ResourceのCleanup・必要なら再利用を確認した
 - [ ] Main Game Complete時はFresh StartからPrimary Completion Conditionまで主要Flowを確認した
 
 ## Electron / Distribution

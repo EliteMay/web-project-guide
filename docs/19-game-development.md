@@ -412,6 +412,17 @@ Core State、Progression、Economy、Combat、Exploration、Production、Logisti
 
 ECS、Event Bus、Dependency Injection等をGameだからという理由だけで導入しません。
 
+### Persistent Service / Scene Lifecycle
+
+Audio、Save、Input、Transition、Telemetry等のSceneを越えて生きるServiceでは、SceneTree / Parent / Current Sceneから一時的に外れることをService destructionと同一視しません。
+
+- Scene persistenceのためのreparent / transferでServiceを無効化しない
+- Serviceが生成・追跡した外部Node / Player / Resourceは、配置Parentが別でもTerminal shutdown時のownershipを明確にする
+- dispose / reconfigure後に旧Tween / Timer / callbackが新Stateを変更しない
+- Lifecycle callbackをCleanup Triggerへ使う場合、そのEngine上の意味が「Tree exit」なのか「actual deletion」なのかをCurrent official docsで確認する
+
+Game固有実装でも一般原則は [02 Lifecycle / Resource Ownership](02-architecture.md#lifecycle--resource-ownership) を正本とします。
+
 ## Runtime Performance / Scale
 
 Game Performanceは平均FPSだけで判断しません。
