@@ -10,6 +10,8 @@
 
 ## Added
 
+- Godot Game FoundationのAudio lifecycle regressionから、`docs/02`へLifecycle / Resource Ownership Contractを追加。temporary detach / reparent / suspendとTerminal dispose / destructionを分離し、Resource ownership、reusable dispose、stale async callbackのgeneration fencing、Lifecycle sequence validationを定義
+- `docs/19`とGame Quality ChecklistへPersistent Service / Scene lifecycle確認を追加し、CatalogへF-024 Temporary Tree Exit誤認とS-030 Lifecycle Generation Fencingを追加。既存Known Failure Preflightは既に実装前再利用経路を十分持つため、`docs/21`へ重複Ruleは追加していない
 - 直近のGame Dev Hub / Deep Factory実機Evidenceから、`docs/07`へRuntime Oracle / Representative Launch Pathを追加。exit code・status文字列だけのFalse Greenを避け、矛盾EvidenceをPASSへ丸めず、取得可能な固定操作ではsession-matched State delta / Eventを優先し、必要時はCold / Direct Startを検証するContractを追加
 - `docs/05`へLayered Timeout / Cancellation Boundaryを追加。Product Overall TimeoutだけでなくSDK / wrapper / provider / retry各LayerのEffective Timeoutを確認し、内部Timeoutを調整してもUser Cancel / Emergency Stop / Overall Budgetを失わないRuleを追加
 - `docs/19`とQuality Checklistへ、Game固定SmokeのRuntime State Delta Oracle、Direct Cold Start、後続Phase変更時の既存Core Loop Regression確認を追加。CatalogへFalse Green Runtime Smoke、Hidden SDK Timeout、Deterministic Runtime State DeltaのFailure / Success patternを追加
