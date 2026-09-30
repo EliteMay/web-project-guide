@@ -26,6 +26,16 @@
 - [ ] Cleanup後の最終Commit / Merge Commitに対するCI・Validation結果を確認した
 - [ ] 確認できなかった項目を「未確認」として明示した
 
+## Capability / Tool Selection — 該当時
+
+詳細判断は [21 Rule Routing / Preflight](../docs/21-rule-routing-preflight.md#capability--plugin-routing) を正本とします。
+
+- [ ] 必要なEvidence / ActionからCapabilityを選び、Project Typeだけの固定Plugin Setにしていない
+- [ ] Current Availabilityを確認し、未接続・権限不足・利用不可を使用済み扱いにしていない
+- [ ] 外部SystemへのWrite前に対象 / Current StateをReadで確認した
+- [ ] Scope / Risk / Runtime変化時に必要ならCapabilityをRe-routeした
+- [ ] Fallback /未確認がある場合、代替手段と証明できない範囲をWork Report等へ残した
+
 ## Conditional Routing
 
 | 条件 | 追加確認 | Owner |

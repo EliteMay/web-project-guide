@@ -168,6 +168,20 @@ Plugin / Connector / Skillの一覧を永久固定の前提にしません。
 
 Pluginを使えるという理由だけで使用しません。通常は1 Taskあたり**2〜4個程度**を目安としますが、これは上限ではありません。必要なEvidence / Validationを削ってまで数を減らさず、逆に不要なPluginを大量起動しません。
 
+### SHOULD: Capability Selectionを実行経路へ接続する
+
+Capability RoutingはOwner本文に存在するだけでは十分ではありません。Meaningful / Systemicな作業、外部SystemへのWrite、専用Runtime確認、またはFallback /未確認が発生した作業では、必要に応じてProject側の`AGENTS.md` / Work Report / Quality Checklist等の**実際に使うExecution Surface**へ短く接続します。
+
+最低限、作業に必要な範囲で次を分離します。
+
+- **Need / Evidence** — 何を確認・実行する必要があるか
+- **Selected Capability** — Current Availabilityから何を選んだか。Plugin名より能力を先に考える
+- **Fallback / Unavailable** — 必要Capabilityが未接続・権限不足・利用不可なら、代替と未確認範囲を分ける
+- **Write Target** — 外部Write前にRepository / Branch / File / Project / Document等の対象とCurrent StateをReadで確認したか
+- **Validation Evidence** — Capabilityを使った事実ではなく、Completion claimを支える実Evidence
+
+小さな局所修正でTool選択が自明な場合まで長いTool diaryを要求しません。目的は利用Tool一覧を増やすことではなく、**RoutingしたRuleが実作業へ届き、Fallbackや未確認が消えないこと**です。
+
 ### MUST: Rule OwnerとCapabilityを混同しない
 
 PluginはRuleの代わりではありません。

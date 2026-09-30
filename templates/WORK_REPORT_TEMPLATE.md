@@ -44,6 +44,17 @@ Meaningfulな既存Project作業では、[Rule Routing / Preflight](../docs/21-r
 - 今回再利用する部分:
 - Regression Guard / Runtime Check / Playtest / Validation:
 
+## Capability / Tool Selection
+
+Meaningful / Systemicな作業、外部SystemへのWrite、専用Runtime確認、またはFallback /未確認が発生した場合は、[Capability / Plugin Routing](../docs/21-rule-routing-preflight.md#capability--plugin-routing)に従い、必要な範囲だけ記録します。局所変更で選択が自明なら`Not applicable`で構いません。
+
+- 実施: Yes / Not applicable
+- Need / 必要Evidence:
+- Selected capability / 理由:
+- Unavailable / Permission不足 / Fallback:
+- Write target / Read-before-Write確認:
+- Validation evidence / 未確認範囲:
+
 ## 保存・互換性への影響
 
 - Schema変更:

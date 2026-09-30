@@ -137,6 +137,7 @@ Research GapだけP0 / P1 / P2を付けます。
 - [ ] Conditional PackがCoreへ逆流していない
 - [ ] Owner変更後のLinkが古くない
 - [ ] obsolete user-confirmation wording等がTemplateへ残っていない
+- [ ] Cross-cutting behavior変更時、Ownerだけで終わらずAGENTS / Work Report / Checklist等のExecution SurfaceとValidatorへのprojection要否を確認した
 
 ## 8. Semantic Duplication Sweep
 
