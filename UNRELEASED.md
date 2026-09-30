@@ -58,6 +58,7 @@
 
 ## Changed
 
+- Human Guide P1のSearch / Task Router / Manifest / Shared Shellが実装済みなのに`site/README.md`が旧構成のままだったDocumentation Driftを修正し、Current public surface / metadata / compatibility adapter構成へ同期
 - `LOOP_ENGINEERING_REQUIREMENTS.md`の後半に残っていたPhase A–D Private Data owner / Phase E未実装の旧記述を、Current Public `EliteMay/web-project-runtime` Phase A–E実装状態へ同期。Loop ValidatorもPhase E implemented / `L2_PR` / Required Checks / Human Review / no-runtime-merge境界とPublic Runtime evidenceを検証するよう更新
 - Guide Validatorを全Root Markdownの動的検査へ広げ、不正URL encodingを診断化。Loop Safe Exampleのisolated commit / remote push禁止 / verification evidenceを明示検査し、Root link・将来Root file・Capability execution adapter・Loop安全設定を意図的に壊して期待通りFAILするNegative / Fault-injection RegressionをCIへ追加
 - Owner本人向けの管理画面・Dashboard・Tool・学習サイト等では、明示的な別要件がない場合Dark / Night Modeを初期Themeの標準候補とし、Theme選択の保存、OS preference、Dark Theme時のContrast、初回描画のWhite Flash回避を`docs/04`へ追加
