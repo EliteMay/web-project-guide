@@ -232,6 +232,19 @@ Common Rule本文は`docs/`、一般化済みのFailure / Success / Anti-Pattern
 - Prevention: MeaningfulなUI / Shell / IA refactorでは、Visual / Navigationの整合だけでなく、変更前の主要Content / Task / Feature inventoryを先に列挙し、置換後に同じCoverageが残っているかを検証する。大きなHTML置換ではDiff reviewをCompletion Gateから外さない。
 - Guide candidate: yes — 既存のRule Preservation / Testing / Continuous Improvement方針と専用Regression Guardへ反映済み。新しいOwnerは追加しない。
 
+### PL-F-019 Validatorの正常系成功だけでは検出漏れが分からなかった
+
+- Date: 2026-10-01
+- Status: resolved
+- Severity: high
+- Symptom: Current mainのGuide ValidatorはRoot Markdownを固定File一覧で検査しており、新しいRoot Contractが追加されても自動でLink / H1検査対象にならなかった。Loop Safe Exampleでも一部のPermission / Verification fieldをValidatorが明示確認しておらず、Validator自身の検出漏れを通常PASSだけでは観測できなかった。
+- Root Cause: Validatorの正常系PASSを主Evidenceにし、守るContractを意図的に壊した入力がFAILするかというNegative / Fault-injection TestをCompletion Gateへ接続していなかった。旧PR #126に改善案は存在したがCurrent mainへ統合されず、stale branch上のEvidenceになっていた。
+- Final Fix: Root Markdownを動的列挙し、不正URL encodingを診断として集約。Loop Safe Exampleのisolated commit許可、remote working-branch push禁止、verification evidence必須を明示検査し、`tests/test-validator-failure-detection.mjs`で破壊入力に対するFAILをCI検証する。
+- Detection method: Current mainとstale PR #126のsemantic diff、Validator coverage review、fault-injection regression。
+- Regression Guard: CIで正常系に加え、Root link / future Root file / malformed encoding / Capability execution adapter / Loop permission・evidence contractを意図的に破壊し、期待理由で非ゼロ終了することを確認する。
+- Prevention: 高Impact Validator変更では「正常RepositoryがPASSする」だけでなく、「守るContractを壊すとFAILする」を代表Caseで確認する。stale PRは閉じる前にCurrent mainへ未統合の有効Fixがないかsemantic reviewする。
+- Guide candidate: yes — Testing / Continuous Improvement / Deep Auditの既存方針とNegative Regressionへ反映。新Ownerは追加しない。
+
 ## Success
 
 ### PL-S-001 Ruleを消さず責務を戻す整理
