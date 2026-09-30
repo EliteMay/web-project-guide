@@ -183,22 +183,8 @@ if (!routingGuide.includes('STRUCTURE_FLOW')) errors.push('docs/21: missing STRU
 if (!/^## Capability \/ Plugin Routing$/m.test(routingGuide)) {
   errors.push('docs/21: missing Capability / Plugin Routing section');
 }
-for (const requiredMarker of [
-  'Current Availability',
-  'Project Typeだけ',
-  'Read before Write',
-  'Re-routingとFallback',
-  'ValidationはCapability数ではなくEvidenceで決める'
-]) {
-  if (!routingGuide.includes(requiredMarker)) {
-    errors.push(`docs/21: Capability / Plugin Routing lost marker -> ${requiredMarker}`);
-  }
-}
-if (!readme.includes('Plugin / ToolはProject Typeだけで固定せず')) {
-  errors.push('README.md: missing automatic Plugin / Tool routing summary');
-}
-if (!startHere.includes('Capability / Plugin Routing')) {
-  errors.push('START_HERE.md: missing Capability / Plugin Routing route');
+if (!/^### SHOULD: Capability Selectionを実行経路へ接続する$/m.test(routingGuide)) {
+  errors.push('docs/21: missing capability execution-path contract');
 }
 if (!uiUx.includes('22-task-first-structure-flow-research.md')) errors.push('docs/04: missing Structure / Flow Research route');
 if (!visualResearch.includes('22-task-first-structure-flow-research.md')) errors.push('docs/18: missing structural research boundary route');
@@ -299,8 +285,22 @@ for (const pack of [
 }
 
 const qualityChecklist = read('templates/QUALITY_CHECKLIST.md');
+const agentTemplate = read('templates/AGENTS_TEMPLATE.md');
+const workReportTemplate = read('templates/WORK_REPORT_TEMPLATE.md');
 if (!/^## Conditional Routing$/m.test(qualityChecklist)) {
   errors.push('QUALITY_CHECKLIST.md: missing Conditional Routing section');
+}
+for (const [rel, text, heading] of [
+  ['templates/AGENTS_TEMPLATE.md', agentTemplate, '## Capability / Tool Selection'],
+  ['templates/WORK_REPORT_TEMPLATE.md', workReportTemplate, '## Capability / Tool Selection'],
+  ['templates/QUALITY_CHECKLIST.md', qualityChecklist, '## Capability / Tool Selection — 該当時']
+]) {
+  if (!text.includes(heading)) {
+    errors.push(`${rel}: missing capability execution surface`);
+  }
+  if (!text.includes('../docs/21-rule-routing-preflight.md#capability--plugin-routing')) {
+    errors.push(`${rel}: missing capability routing owner link`);
+  }
 }
 
 const visualBaseline = read('docs/17-visual-quality-baseline.md');
