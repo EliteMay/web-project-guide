@@ -151,6 +151,8 @@ assert(Array.isArray(example.scope?.protectedPaths) && example.scope.protectedPa
 const permissions = example.permissions ?? {};
 assert(permissions.repositoryRead === true, 'safe example should allow repository read');
 assert(permissions.workingBranchWrite === true, 'safe example should allow isolated working-branch writes');
+assert(permissions.commit === true, 'safe example should allow isolated working-branch commits');
+assert(permissions.pushWorkingBranch === false, 'safe example must deny remote working-branch push');
 assert(permissions.defaultBranchWrite === false, 'safe example must deny default-branch direct write');
 assert(permissions.merge === false, 'safe example must deny merge');
 assert(permissions.deploy === false, 'safe example must deny deploy');
@@ -160,6 +162,7 @@ assert(permissions.externalNetwork === false, 'safe example must deny unrestrict
 const verification = example.verification ?? {};
 assert(verification.protected === true, 'safe example must use protected verification');
 assert(verification.allowWorkerToModifyVerifier === false, 'safe example must not allow worker verifier mutation');
+assert(verification.evidenceRequired === true, 'safe example must require verification evidence');
 assert(verification.minimumLevel !== 'V0_SELF', 'safe example must require evidence stronger than self-evaluation');
 assert(Array.isArray(verification.requiredChecks) && verification.requiredChecks.length > 0, 'safe example must require verification checks');
 
