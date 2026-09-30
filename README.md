@@ -155,6 +155,7 @@ Machine-readable Routingは [`maintenance/rule-router.json`](maintenance/rule-ro
 - Meaningful Visual Changeは必要なResearchを先に行う。
 - MeaningfulなIA / Navigation / Task Flow変更ではTask-first Structure / Flow Researchを使う。
 - AI生成Codeも既存仕様・Test・最終状態のValidationを通す。
+- Plugin / ToolはProject Typeだけで固定せず、Work Type / Domain / Scope / Risk / Runtime / Current Availabilityから [21 Rule Routing / Preflight](docs/21-rule-routing-preflight.md) で必要なCapabilityだけを選ぶ。
 - 新しいCommon Ruleを追加する前に、既存Owner / Catalog / Checklist / Project側へ統合できないか確認する。
 - Requirementsへ実装済み改善履歴を積み続けない。
 - Conversation historyをProjectの第二Source of Truthにしない。
