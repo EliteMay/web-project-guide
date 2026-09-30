@@ -72,6 +72,13 @@ try {
     (text) => text.replace('../docs/21-rule-routing-preflight.md#capability--plugin-routing', '../docs/21-rule-routing-preflight.md'),
     'validate-guide.mjs', 'templates/AGENTS_TEMPLATE.md: missing capability routing owner link');
 
+  // Current Loop phase status must not regress to the stale pre-Phase-E contract.
+  mutate('LOOP_ENGINEERING_REQUIREMENTS.md',
+    (text) => text
+      .replace('Runtime Phase E implemented', 'Phase E not implemented')
+      .replace('### Runtime Phase E — Implemented', '### Phase E — Optional guarded PR / Merge / Release — Next'),
+    'validate-loop-engineering-contract.mjs', 'product contract must record Runtime Phase E as implemented');
+
   // Safe example permissions and verification evidence must fail closed when weakened.
   for (const [section, key, value, message] of [
     ['permissions', 'pushWorkingBranch', true, 'must deny remote working-branch push'],
