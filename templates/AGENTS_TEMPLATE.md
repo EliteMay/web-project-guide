@@ -16,6 +16,16 @@
 
 Guide全文を毎回読むのではなく、Rule Routingで必要と判断されたOwner Docだけを追加確認します。Meaningfulな既存Project作業では、`docs/21`に従って関係するFailureだけでなく、適用条件が合うProject Learning / Success PatternもTargeted Searchします。Memoryや過去ConversationをCurrent Guide読込の代用にしません。
 
+## Capability / Tool Selection
+
+詳細はGuideの [Capability / Plugin Routing](../docs/21-rule-routing-preflight.md#capability--plugin-routing) を正本とします。
+
+- Project Typeだけで固定Plugin Setを決めず、Work Type / Domain / Scope / Risk / Runtime /必要EvidenceからNeedを決める。
+- Current Availabilityを確認し、必要なCapabilityだけを選ぶ。未接続・権限不足・利用不可のCapabilityを使用済み扱いにしない。
+- 外部SystemへWriteする前に対象とCurrent StateをReadで確認する。
+- Scope / Risk / Runtimeが変わったらCapabilityもRe-routeする。
+- Fallbackや未確認が発生したMeaningful作業ではWork Reportへ短く残す。
+
 ## Project
 
 - Purpose:
