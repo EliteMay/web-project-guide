@@ -10,6 +10,8 @@
 
 ## Added
 
+- `docs/21`へCapability / Plugin Routing Contractを追加。Project TypeだけでPlugin Setを固定せず、Work Type / Domain / Scope / Risk / Runtime / Current Availabilityから必要Capabilityを選び、Read-before-Write、SuperpowersのProcess Layer化、Electron / Godot / Web等のDefault Routing、Re-routing / Fallback、Evidence-based Validationを定義。README / START_HEREから導線を追加し、Guide Validatorで主要Markerを保護
+
 - `docs/21`のKnown Failure PreflightをKnown Failure / Proven SuccessのLearning Preflightへ拡張。Meaningfulな既存Project作業で、Failureだけでなく再利用条件が合うProject Learning / Success PatternをTargeted Searchし、Use when / Avoid when / Trade-off / Current Contextを照合してからCandidateとして再利用し、今回のValidationで再確認するContractを追加。Work Report / AGENTS / Quality Checklist / focused validatorへ実行経路を接続し、Success CatalogへS-031 Applicability-gated Success Reuseを追加
 - Godot Game FoundationのAudio lifecycle regressionから、`docs/02`へLifecycle / Resource Ownership Contractを追加。temporary detach / reparent / suspendとTerminal dispose / destructionを分離し、Resource ownership、reusable dispose、stale async callbackのgeneration fencing、Lifecycle sequence validationを定義
 - `docs/19`とGame Quality ChecklistへPersistent Service / Scene lifecycle確認を追加し、CatalogへF-024 Temporary Tree Exit誤認とS-030 Lifecycle Generation Fencingを追加。既存Known Failure Preflightは既に実装前再利用経路を十分持つため、`docs/21`へ重複Ruleは追加していない

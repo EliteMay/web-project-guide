@@ -132,6 +132,184 @@ Best Reasonable Decision
 
 Repository確認やResearchで解決できる内容を、最初からUserへ投げ返しません。可逆なDecisionでは、安全で目的に合うDefaultを選びます。
 
+## Capability / Plugin Routing
+
+Rule Routingで「何を守るか」を解決した後に、**今回の作業を実行・確認するために必要なCapability / Plugin / Skillだけを選択**します。Project Typeだけから固定Setを機械的に起動しません。
+
+基本Flow:
+
+```text
+Current Repository / User Intent
+↓
+Work Type / Domain / Change Scope / Risk Signal
+↓
+Runtime / 必要なEvidence / 必要なAction
+↓
+Current Availability（利用可能・接続済みCapability）
+↓
+最小のCapability Setを選択
+↓
+Read-only確認
+↓
+必要なWrite / Runtime Action
+↓
+Validation
+```
+
+### MUST: Current Availabilityを基準にする
+
+Plugin / Connector / Skillの一覧を永久固定の前提にしません。
+
+- 現在利用可能・接続済みのCapabilityを優先する。
+- 必要Capabilityが存在しない場合だけ、利用可能な代替またはPlugin discoveryを検討する。
+- 未接続・権限不足・利用不可のCapabilityを「使った」「確認した」と扱わない。
+- Plugin名やTool名が将来変わっても、**必要な能力**から選び直す。
+- 専用Skill / prerequisiteがあるPluginは、Tool実行前にCurrent Skillを確認する。
+
+Pluginを使えるという理由だけで使用しません。通常は1 Taskあたり**2〜4個程度**を目安としますが、これは上限ではありません。必要なEvidence / Validationを削ってまで数を減らさず、逆に不要なPluginを大量起動しません。
+
+### MUST: Rule OwnerとCapabilityを混同しない
+
+PluginはRuleの代わりではありません。
+
+例:
+
+- ElectronだからRemote操作だけで進めるのではなく、Electron / Security / Testing等の必要Ownerを先に解決する。
+- Figmaを使ったからVisual Research済みとは扱わない。
+- Remote Desktopで起動したからTesting Contractを満たしたとは限らない。
+- Superpowers等のProcess Skillを使ってもCurrent Repository / Requirements / User Intentより上位のSource of Truthにはしない。
+
+Current User Request、Project-specific Contract、Common Guide、Plugin Skillが衝突する場合は [00 Governance](00-governance.md) の優先順位を使います。Process Skillが追加Approvalを要求していても、Current User Requestと正式Requirementsから安全に一意に進められる作業へ不必要な承認待ちを増やしません。
+
+### 標準Capability候補
+
+以下は**Default候補**であり、固定必須Setではありません。
+
+| Need | Preferred capability / plugin | 主なUse case |
+|---|---|---|
+| Current Repository / Code / PR / Actions / Releases | GitHub | Current State、Diff、Write、CI、Release |
+| Development Process | Superpowers | Brainstorm / Plan / TDD / Debug / Verification等、該当Skillのみ |
+| Current Library / Framework / SDK Docs | Context7 | API、deprecated、config、routing、package usage |
+| Windows / Electron / Godot / exe / Setup / PowerShell | Remote Desktop Commander | PC固有Runtime、Build、Installer、Log、Process |
+| Web / localhost / Pages / Form / Navigation | Opera Browser Connector | Browser Runtime、表示、遷移、操作確認 |
+| Meaningful UI / Visual Design | Figma | UI設計、Design System、Meaningful Visual Change |
+| 複雑なFlow / Architecture可視化 | tldraw | State、Data Flow、Service連携、IA等を図にする価値がある場合 |
+| OSS / 実装例 / 技術比較 /候補発見 | Exa | Search / Discovery / Deep Research入口 |
+| 特定Site / Docsの深掘り | Firecrawl | 詳細Read、複数Page、構造化取得 |
+| Supabase Project | Supabase | DB、SQL、Migration、RLS、Auth、Storage、Logs、Edge Functions |
+| OpenAI API Project | OpenAI Platform / current official docs | Responses、Realtime、Agents、SDK等のCurrent仕様 |
+| Product Analytics | PostHog | Funnel、Session Replay、Feature Flag、Experiment、Error |
+| 新規Web Appをゼロから構築 | Floot | Dashboard、CRUD、Auth、DB、Hosting等に適合する場合 |
+| 多Task / Multi-phase管理 | Linear | Roadmap、Priority、Issue / Phase管理 |
+| 長期Knowledge / Decision保存 | Notion | Requirements、Architecture、Research summary等 |
+| 外部共有資料 | Google Drive | Docs / Sheets / Slides /共有仕様 |
+| Academic Evidence | Consensus / SciSpace | 論文、UX / Human Factors / AI / Learning research |
+| 宣伝Asset / Banner / Slide等 | Canva | Product UIそのものはFigmaを優先 |
+| Mail / Schedule / People | Gmail / Calendar / Contacts | 開発Taskで実際に必要な場合のみ |
+
+### SuperpowersはProcess Layerとして選ぶ
+
+Superpowersが利用可能な場合、単なるDebug専用として扱いません。Current Skill定義を確認し、作業に合うものだけ使います。
+
+代表例:
+
+- Feature / Behavior変更 → Brainstorming系
+- Multi-step実装 → Planning / Execution系
+- Bug / unexpected behavior → Systematic Debugging系
+- Test可能なFeature / Bug Fix → TDD系
+- Completion claim前 → Verification系
+- 必要なBranch isolation → Worktree系
+- Major work / merge前 → Review系
+
+ただし、Project側により具体的なWorkflowがある場合はProject Ruleを優先します。
+
+### Project / Runtime別のDefault Routing
+
+#### Electron
+
+候補: GitHub + Superpowers + Context7 + Remote Desktop Commander。Meaningful UIならFigma、構造可視化が有効ならtldrawを追加します。
+
+Setup.exe / Auto Update / Windows固有機能はCIだけで実機確認済み扱いにせず、必要ならWindows Runtimeで確認します。
+
+#### Godot / Game
+
+候補: GitHub + Superpowers + Remote Desktop Commander。Current Godot仕様や外部事例が必要ならExa / Firecrawl、Meaningful UIならFigmaを追加します。
+
+主要Gameplay / Input / Save / Export等はStatic Testだけで完成扱いにせず、[19 Game Development](19-game-development.md) のActual Playtest条件を優先します。
+
+#### Web / React / Next.js / Node.js
+
+候補: GitHub + Context7 + Superpowers。Browser Runtime確認が必要ならOpera Browser Connector、Meaningful Visual ChangeならFigma、外部調査ならExa / Firecrawlを追加します。
+
+Library / Framework APIのCurrent仕様はContext7を優先し、一般的な候補発見やOSS探索はExa、特定Documentationの深掘りはFirecrawlへ分けます。
+
+#### Supabase / OpenAI API
+
+Repository / Runtimeから実使用Signalが確認できた場合だけ専用Capabilityを追加します。MemoryだけでCurrent API / Schema / RLS / SDK仕様を断定しません。
+
+### MUST: Read before Write
+
+外部Systemへ変更を加える前は原則として次を使います。
+
+```text
+Read
+↓
+Understand
+↓
+Target / Scope / Riskを確定
+↓
+Write
+↓
+Verify
+```
+
+GitHub / PC / Supabase / Figma / Notion / Drive / Linear等に共通です。
+
+破壊的・不可逆変更、Production Data、Secrets / Permission、課金Resource、外部公開範囲へ影響する場合は、[06 Security](06-security.md)、[10 Project Management](10-project-management.md)、必要な専門OwnerへRouteし、Backup / Rollback / Cost / User Decision条件を確認します。
+
+Secret、Token、Password、Cookie、`.env`等をRepository、Log、Chatへ不用意に露出しません。
+
+### Re-routingとFallback
+
+作業中に新しいRisk / Runtime / Integrationが判明したらCapability選択も更新します。
+
+例:
+
+- Local Bug → Storage Migrationが必要
+- UI調整 → Navigation / IA再設計へ拡大
+- Webのみ → Supabase / External API利用が判明
+- CI上は成功 → Windows実機 / Browser Runtime確認が必要と判明
+- Minor Fix → Meaningful Visual Changeへ拡大
+
+必要Pluginが未接続・利用不可でも全Taskを機械的に停止しません。安全な代替Capabilityで確認できる範囲を進め、代替では証明できない部分だけ**未確認**として残します。
+
+### ValidationはCapability数ではなくEvidenceで決める
+
+作業後は [07 Testing / Quality](07-testing-quality.md) のValidation Contractを優先します。
+
+代表的なEvidence ladder:
+
+```text
+Static / Lint
+↓
+Unit
+↓
+Integration
+↓
+Build
+↓
+Runtime
+↓
+Browser / Gameplay
+↓
+Real Device
+↓
+Packaged / Release Artifact
+```
+
+下位Evidenceを上位Evidenceの代用にしません。Pluginを何個使ったかではなく、今回のCompletion claimを支えるFresh Evidenceがあるかで判断します。
+
+
 ## Classification
 
 Routingのための分類は、必要最小限の軸だけ使います。

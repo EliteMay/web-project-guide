@@ -6,6 +6,8 @@ Meaningful / Systemicな作業では、最初に [Rule Routing / Preflight](docs
 
 Current Repository / Requirements / Existing User Intent / Evidenceから合理的に判断できる内容は、細かな承認待ちを作らずBest Reasonable Decisionで進めます。User Decisionの例外条件は [01 Requirements](docs/01-requirements.md) を正本とします。
 
+Plugin / Toolはユーザーが毎回指定する必要はありません。[21 Rule Routing / Preflight](docs/21-rule-routing-preflight.md) の **Capability / Plugin Routing** に従い、作業内容・Risk・Runtime・Current AvailabilityからAgent側で必要なCapabilityだけを選びます。
+
 ## 新しいサイト / アプリ / ゲームを作る
 
 1. [00 Governance](docs/00-governance.md)
