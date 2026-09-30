@@ -180,6 +180,26 @@ if (!governance.includes('docs/22-task-first-structure-flow-research.md')) {
 }
 if (!routingGuide.includes('../maintenance/rule-router.json')) errors.push('docs/21: missing machine router link');
 if (!routingGuide.includes('STRUCTURE_FLOW')) errors.push('docs/21: missing STRUCTURE_FLOW domain guidance');
+if (!/^## Capability \/ Plugin Routing$/m.test(routingGuide)) {
+  errors.push('docs/21: missing Capability / Plugin Routing section');
+}
+for (const requiredMarker of [
+  'Current Availability',
+  'Project Typeだけ',
+  'Read before Write',
+  'Re-routingとFallback',
+  'ValidationはCapability数ではなくEvidenceで決める'
+]) {
+  if (!routingGuide.includes(requiredMarker)) {
+    errors.push(`docs/21: Capability / Plugin Routing lost marker -> ${requiredMarker}`);
+  }
+}
+if (!readme.includes('Plugin / ToolはProject Typeだけで固定せず')) {
+  errors.push('README.md: missing automatic Plugin / Tool routing summary');
+}
+if (!startHere.includes('Capability / Plugin Routing')) {
+  errors.push('START_HERE.md: missing Capability / Plugin Routing route');
+}
 if (!uiUx.includes('22-task-first-structure-flow-research.md')) errors.push('docs/04: missing Structure / Flow Research route');
 if (!visualResearch.includes('22-task-first-structure-flow-research.md')) errors.push('docs/18: missing structural research boundary route');
 if (!/^## Visual Directionとの責務境界$/m.test(uiUx)) {
