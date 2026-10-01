@@ -51,6 +51,9 @@ Meaningful / Systemicな作業、外部SystemへのWrite、専用Runtime確認�
 - 実施: Yes / Not applicable
 - Need / 必要Evidence:
 - Selected capability / 理由:
+- Specialized Capability Gate: Triggered / Not triggered
+- Executed action / 得られたEvidence:
+- Skip / Fallback理由（Triggeredなのに未実行の場合）:
 - Unavailable / Permission不足 / Fallback:
 - Write target / Read-before-Write確認:
 - Validation evidence / 未確認範囲:
