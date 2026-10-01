@@ -20,6 +20,8 @@ Guide全文を毎回読むのではなく、Rule Routingで必要と判断され
 
 詳細はGuideの [Capability / Plugin Routing](../docs/21-rule-routing-preflight.md#capability--plugin-routing) を正本とします。
 
+### Specialized Capability Execution Gate
+
 - Project Typeだけで固定Plugin Setを決めず、Work Type / Domain / Scope / Risk / Runtime /必要EvidenceからNeedを決める。
 - Current Availabilityを確認し、必要なCapabilityだけを選ぶ。未接続・権限不足・利用不可のCapabilityを使用済み扱いにしない。
 - 明確に該当する専用Capabilityが接続済みなら、選択・言及で終えず実際に1回以上使い、その結果をEvidenceとして扱う。GitHubだけで完了する場合は専用Needが本当に無いか確認する。
