@@ -30,6 +30,8 @@
 
 詳細判断は [21 Rule Routing / Preflight](../docs/21-rule-routing-preflight.md#capability--plugin-routing) を正本とします。
 
+### Specialized Capability Execution Gate
+
 - [ ] 必要なEvidence / ActionからCapabilityを選び、Project Typeだけの固定Plugin Setにしていない
 - [ ] Current Availabilityを確認し、未接続・権限不足・利用不可を使用済み扱いにしていない
 - [ ] 明確に該当する接続済み専用Capabilityがある場合、選択・言及だけでなく実際のTool / Plugin / Skill actionを実行しEvidenceを確認した
