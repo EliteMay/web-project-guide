@@ -191,6 +191,9 @@ if (!/^## Capability \/ Plugin Routing$/m.test(routingGuide)) {
 if (!/^### SHOULD: Capability Selectionを実行経路へ接続する$/m.test(routingGuide)) {
   errors.push('docs/21: missing capability execution-path contract');
 }
+if (!/^### MUST: Specialized Capability Execution Gate$/m.test(routingGuide)) {
+  errors.push('docs/21: missing specialized capability execution gate');
+}
 if (!uiUx.includes('22-task-first-structure-flow-research.md')) errors.push('docs/04: missing Structure / Flow Research route');
 if (!visualResearch.includes('22-task-first-structure-flow-research.md')) errors.push('docs/18: missing structural research boundary route');
 if (!/^## Visual Directionとの責務境界$/m.test(uiUx)) {
@@ -305,6 +308,15 @@ for (const [rel, text, heading] of [
   }
   if (!text.includes('../docs/21-rule-routing-preflight.md#capability--plugin-routing')) {
     errors.push(`${rel}: missing capability routing owner link`);
+  }
+}
+for (const [rel, text] of [
+  ['templates/AGENTS_TEMPLATE.md', agentTemplate],
+  ['templates/WORK_REPORT_TEMPLATE.md', workReportTemplate],
+  ['templates/QUALITY_CHECKLIST.md', qualityChecklist]
+]) {
+  if (!/^### Specialized Capability Execution Gate$/m.test(text)) {
+    errors.push(`${rel}: missing specialized capability execution gate`);
   }
 }
 
