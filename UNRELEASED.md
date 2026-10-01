@@ -58,6 +58,8 @@
 
 ## Changed
 
+- Capability / Plugin Routingをv0.4相当に強化し、専門Needへ明確に対応する接続済みCapabilityがある場合は選択・言及だけで終えず実Tool / Plugin / Skill actionを必須化。Context7 / Superpowers / Remote Runtime / Browser / Figma / Research / Supabase / Security / Deploy / Observability等の代表Triggerをdocs/21へ追加し、AGENTS / Quality Checklist / Work Report / Validator / Negative RegressionへExecution Gateを接続
+
 - Human Guide P1のSearch / Task Router / Manifest / Shared Shellが実装済みなのに`site/README.md`が旧構成のままだったDocumentation Driftを修正し、Current public surface / metadata / compatibility adapter構成へ同期
 - `LOOP_ENGINEERING_REQUIREMENTS.md`の後半に残っていたPhase A–D Private Data owner / Phase E未実装の旧記述を、Current Public `EliteMay/web-project-runtime` Phase A–E実装状態へ同期。Loop ValidatorもPhase E implemented / `L2_PR` / Required Checks / Human Review / no-runtime-merge境界とPublic Runtime evidenceを検証するよう更新
 - Guide Validatorを全Root Markdownの動的検査へ広げ、不正URL encodingを診断化。Loop Safe Exampleのisolated commit / remote push禁止 / verification evidenceを明示検査し、Root link・将来Root file・Capability execution adapter・Loop安全設定を意図的に壊して期待通りFAILするNegative / Fault-injection RegressionをCIへ追加
