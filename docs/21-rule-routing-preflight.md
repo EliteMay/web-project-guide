@@ -168,6 +168,46 @@ Plugin / Connector / Skillの一覧を永久固定の前提にしません。
 
 Pluginを使えるという理由だけで使用しません。通常は1 Taskあたり**2〜4個程度**を目安としますが、これは上限ではありません。必要なEvidence / Validationを削ってまで数を減らさず、逆に不要なPluginを大量起動しません。
 
+### MUST: Specialized Capability Execution Gate
+
+作業に**明確に対応する専用CapabilityがCurrent Availability上で利用可能・接続済み**で、そのCapabilityがGenericなGitHub / text-only経路では得にくいEvidenceまたはActionを提供する場合、選択・言及するだけで終えず、**Completion前に少なくとも1回はその専用Capabilityを実際に実行**します。
+
+次の3条件をすべて満たす場合に発火します。
+
+1. 今回のTaskに専門Need / Evidence / Runtime / External Systemがある。
+2. そのNeedへ直接対応する専用Capabilityが現在利用可能・接続済みである。
+3. そのCapabilityを使うことでCorrectness / Freshness / Runtime Verification / Design Fidelity / Security / Deployment / Observabilityのいずれかが実質的に向上する。
+
+**Capabilityを選んだ、一覧へ書いた、使う予定と宣言しただけでは実行済みになりません。** 実際のTool / Plugin / Skill actionと、その結果から得たEvidenceが必要です。
+
+代表Trigger:
+
+| Trigger | 専用Capabilityの例 | 最低限の実行Evidence |
+|---|---|---|
+| Current library / framework / SDK仕様へ依存 | Context7等 | Current docs / API / configを実取得 |
+| Bug / unexpected behavior / multi-step implementation | Superpowers等 | 該当Process Skillを実際にinvoke |
+| Electron / Windows / Godot / exe / Setup / PowerShell | Remote Desktop Commander等 | 実Build / Run / Log / Process / Installer確認 |
+| Web UI / localhost / Pages / Navigation / Form確認 | Opera Browser Connector等 | 実Page / State / Navigation / Screenshot確認 |
+| Meaningful UI設計でEditable Designが有効 | Figma等 | Design / component / design contextを実取得・更新 |
+| OSS探索 / 技術比較 /外部事例調査 | Exa等 | Search / research resultを実取得 |
+| 特定Docs / Siteの深掘り | Firecrawl等 | 対象Page / Docsを実取得 |
+| Supabase利用Project | Supabase | Current schema / SQL / RLS / Auth / Log等を実確認 |
+| OpenAI API利用Project | OpenAI Platform / current official docs | Current API / SDK / key setup / official specを実確認 |
+| Security review / vulnerability investigation | Security scanner capability | Scan / finding / investigationを実行 |
+| Provider-specific deploy / runtime | Vercel / Render / Railway等 | Current deploy / service / log / environmentを実確認 |
+| Product analytics / production observability | PostHog / Datadog等 | Current event / metric / log / trace / errorを実確認 |
+
+例外として、次は専用Capabilityを無理に起動しません。
+
+- Typo、文言1行、明白な局所Markdown修正等で専門Evidenceが不要。
+- 専用Capabilityが未接続 / 権限不足 / unavailable。
+- 同じNeedを満たす別の専用Capabilityを今回のTaskですでに実行し、追加実行が同じEvidenceの重複になる。
+- UserがそのCapabilityを使わないよう明示した。
+
+発火条件を満たすのに実行しない場合、Not applicableではなく**Skip / Fallback理由と未確認範囲**をWork Report等へ残します。GitHubだけでできそう、一般知識で分かる、Pluginを増やしたくない、だけではSkip理由になりません。
+
+このGateは毎回Pluginを最低N個使うRuleではありません。**専門Needがあるときに、それへ最も直接対応するCapabilityを実際に使う**ことを要求します。
+
 ### SHOULD: Capability Selectionを実行経路へ接続する
 
 Capability RoutingはOwner本文に存在するだけでは十分ではありません。Meaningful / Systemicな作業、外部SystemへのWrite、専用Runtime確認、またはFallback /未確認が発生した作業では、必要に応じてProject側の`AGENTS.md` / Work Report / Quality Checklist等の**実際に使うExecution Surface**へ短く接続します。
