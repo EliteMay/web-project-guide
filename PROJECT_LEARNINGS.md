@@ -245,6 +245,19 @@ Common Rule本文は`docs/`、一般化済みのFailure / Success / Anti-Pattern
 - Prevention: 高Impact Validator変更では「正常RepositoryがPASSする」だけでなく、「守るContractを壊すとFAILする」を代表Caseで確認する。stale PRは閉じる前にCurrent mainへ未統合の有効Fixがないかsemantic reviewする。
 - Guide candidate: yes — Testing / Continuous Improvement / Deep Auditの既存方針とNegative Regressionへ反映。新Ownerは追加しない。
 
+### PL-F-020 Capability Routingを接続しても実行必須でなければPluginが使われなかった
+
+- Date: 2026-10-01
+- Status: resolved
+- Severity: high
+- Symptom: Capability / Plugin Routingをdocs/21、AGENTS、Quality Checklist、Work Reportへ接続した後も、実際の開発TaskでGitHub以外の専用Plugin / Skillがほとんど発火せず、Userが毎回明示指定しない限りContext7、Remote Runtime、Browser、Research等の専門Capabilityが使われない状態が残った。
+- Root Cause: Capability Selection自体は定義したが、実行経路の中心がSHOULD / 必要ならのままで、AgentがGitHubだけで足りると判断した時に専用Capabilityを選択・記録だけして未実行で完了できた。Capability Countを増やさない方針はあった一方、専門Needへ直接対応するConnected Capabilityを実行するCompletion Gateが無かった。
+- Final Fix: docs/21へSpecialized Capability Execution GateをMUSTとして追加し、専門Need + connected capability + material valueの3条件で発火。選択・言及ではなく実Tool / Plugin / Skill actionとEvidenceを要求し、AGENTS / Quality Checklist / Work ReportへExecution / Skip / Fallback記録を接続した。
+- Detection method: User feedbackとCurrent Capability Routing Contract / execution surfaceの照合。
+- Regression Guard: Guide ValidatorでOwnerのMUST Gateと3つのExecution Surfaceを構造確認し、fault-injection testでGate見出しを壊すとValidatorが期待理由でFAILすることを確認する。
+- Prevention: Plugin数を固定Quotaにしない一方、専門NeedがあるTaskで対応するConnected CapabilityをGeneric GitHub / text-only経路だけに置き換えない。Skipする場合は許可された理由と未確認範囲を残す。
+- Guide candidate: yes — docs/21 / AGENTS / Quality Checklist / Work Reportへ反映。
+
 ## Success
 
 ### PL-S-001 Ruleを消さず責務を戻す整理

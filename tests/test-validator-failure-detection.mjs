@@ -71,6 +71,12 @@ try {
   mutate('templates/AGENTS_TEMPLATE.md',
     (text) => text.replace('../docs/21-rule-routing-preflight.md#capability--plugin-routing', '../docs/21-rule-routing-preflight.md'),
     'validate-guide.mjs', 'templates/AGENTS_TEMPLATE.md: missing capability routing owner link');
+  mutate('docs/21-rule-routing-preflight.md',
+    (text) => text.replace('### MUST: Specialized Capability Execution Gate', '### Specialized Capability Execution Gate'),
+    'validate-guide.mjs', 'docs/21: missing specialized capability execution gate');
+  mutate('templates/QUALITY_CHECKLIST.md',
+    (text) => text.replace('### Specialized Capability Execution Gate', '### Capability Execution Notes'),
+    'validate-guide.mjs', 'templates/QUALITY_CHECKLIST.md: missing specialized capability execution gate');
 
   // Current Loop phase status must not regress to the stale pre-Phase-E contract.
   mutate('LOOP_ENGINEERING_REQUIREMENTS.md',
