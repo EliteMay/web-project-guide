@@ -32,6 +32,8 @@
 
 - [ ] 必要なEvidence / ActionからCapabilityを選び、Project Typeだけの固定Plugin Setにしていない
 - [ ] Current Availabilityを確認し、未接続・権限不足・利用不可を使用済み扱いにしていない
+- [ ] 明確に該当する接続済み専用Capabilityがある場合、選択・言及だけでなく実際のTool / Plugin / Skill actionを実行しEvidenceを確認した
+- [ ] 発火条件を満たす専用Capabilityを使わなかった場合、許可されたSkip / Fallback理由と未確認範囲を記録した
 - [ ] 外部SystemへのWrite前に対象 / Current StateをReadで確認した
 - [ ] Scope / Risk / Runtime変化時に必要ならCapabilityをRe-routeした
 - [ ] Fallback /未確認がある場合、代替手段と証明できない範囲をWork Report等へ残した
