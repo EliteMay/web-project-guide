@@ -155,7 +155,7 @@ Machine-readable Routingは [`maintenance/rule-router.json`](maintenance/rule-ro
 - Meaningful Visual Changeは必要なResearchを先に行う。
 - MeaningfulなIA / Navigation / Task Flow変更ではTask-first Structure / Flow Researchを使う。
 - AI生成Codeも既存仕様・Test・最終状態のValidationを通す。
-- Plugin / ToolはProject Typeだけで固定せず、Work Type / Domain / Scope / Risk / Runtime / Current Availabilityから [21 Rule Routing / Preflight](docs/21-rule-routing-preflight.md) で必要なCapabilityだけを選ぶ。
+- Plugin / ToolはProject Typeだけで固定せず、Work Type / Domain / Scope / Risk / Runtime / Current Availabilityから [21 Rule Routing / Preflight](docs/21-rule-routing-preflight.md) で必要なCapabilityだけを選び、対象のCurrent Data / Runtimeへ最も直接アクセスできる経路を優先する。
 - 明確に該当する専用Capabilityが接続済みなら、選択・言及だけで終えず [Specialized Capability Execution Gate](docs/21-rule-routing-preflight.md#must-specialized-capability-execution-gate) に従って実際に使い、Evidenceを得る。
 - 新しいCommon Ruleを追加する前に、既存Owner / Catalog / Checklist / Project側へ統合できないか確認する。
 - Requirementsへ実装済み改善履歴を積み続けない。
