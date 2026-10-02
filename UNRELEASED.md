@@ -58,6 +58,8 @@
 
 ## Changed
 
+- Capability / Plugin Routingを補強し、対象のCurrent Data / Runtimeへ最も直接アクセスできるCapabilityを優先するDirect Source原則、Capability不足時だけのPlugin Discovery、Read-only / Low-risk Write / External Commit / DestructiveのRisk分類、未接続・権限不足・unsupported・temporary error等のFailure分類とFallback境界を`docs/21`へ追加。README / START_HEREは詳細を複製せずDirect Source優先だけを短く同期
+
 - Capability / Plugin Routingをv0.4相当に強化し、専門Needへ明確に対応する接続済みCapabilityがある場合は選択・言及だけで終えず実Tool / Plugin / Skill actionを必須化。Context7 / Superpowers / Remote Runtime / Browser / Figma / Research / Supabase / Security / Deploy / Observability等の代表Triggerをdocs/21へ追加し、AGENTS / Quality Checklist / Work Report / Validator / Negative RegressionへExecution Gateを接続
 
 - Human Guide P1のSearch / Task Router / Manifest / Shared Shellが実装済みなのに`site/README.md`が旧構成のままだったDocumentation Driftを修正し、Current public surface / metadata / compatibility adapter構成へ同期
