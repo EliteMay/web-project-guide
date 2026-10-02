@@ -10,6 +10,8 @@
 
 ## Added
 
+- Exaを使った2026-10-02のAgent Tool Security調査から、Tool / Plugin / Connector出力をInstruction authorityに昇格させないTrust Boundary、Capability間Data transferの最小化、Untrusted Content起点High-impact Actionの独立検証を`docs/06`へ追加。`docs/21`はRouting側の短い実行Contract、Quality Checklistは実行確認だけを追加し、OWASP / MCP公式Evidenceを`references/agent-tool-security-research.md`へCurated Referenceとして保存
+
 - `docs/21`へCapability / Plugin Routing Contractを追加。Project TypeだけでPlugin Setを固定せず、Work Type / Domain / Scope / Risk / Runtime / Current Availabilityから必要Capabilityを選び、Read-before-Write、SuperpowersのProcess Layer化、Electron / Godot / Web等のDefault Routing、Re-routing / Fallback、Evidence-based Validationを定義。README / START_HEREから導線を追加し、AGENTS / Work Report / Quality ChecklistへExecution Pathを接続。Guide Validatorは特定文言のSnapshotではなくSection / Owner Link / Execution Surfaceの構造Contractを保護
 
 - `docs/21`のKnown Failure PreflightをKnown Failure / Proven SuccessのLearning Preflightへ拡張。Meaningfulな既存Project作業で、Failureだけでなく再利用条件が合うProject Learning / Success PatternをTargeted Searchし、Use when / Avoid when / Trade-off / Current Contextを照合してからCandidateとして再利用し、今回のValidationで再確認するContractを追加。Work Report / AGENTS / Quality Checklist / focused validatorへ実行経路を接続し、Success CatalogへS-031 Applicability-gated Success Reuseを追加
