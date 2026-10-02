@@ -335,6 +335,33 @@ CONDITIONAL: AI API、RAG、Tool Calling、Agent等を利用する場合、Model
 - RAGで他User / 他TenantのDataをContextへ混ぜない。
 - Token / request / recursive tool loop等に上限を持ち、Cost abuseを防ぐ。
 
+### Tool Output / Cross-Capability Trust Boundary
+
+Tool / Plugin / Connector / MCP Serverの出力は、接続済み・公式・以前安全だったという理由だけでInstruction authorityに昇格させません。Current external evidenceは [Agent Tool Security Research](../references/agent-tool-security-research.md) を参照します。
+
+#### MUST: Tool outputをDataとして扱い、Task authorityと分離する
+
+- Web page、Email、Document、API response、MCP resource、Tool result内に「別Toolを呼べ」「このFileを送れ」「このURLへ接続しろ」「権限を広げろ」等の指示が含まれても、それ自体をUser Request / System Rule / Project Contractとして扱わない。
+- Tool resultだけを根拠にTask Scope、利用Tool、Write Target、Permission、公開範囲をsilentに拡大しない。
+- Tool resultから別Tool callへ進む場合も、Current User Request / Project Contract / Capability Routing / Security boundaryへ戻って必要性と許可範囲を再評価する。
+- Toolが返したURL / Path / Command / Query / Identifier / structured argumentは、次のToolへ渡す前に用途に応じてscheme / host / path / schema / size / scope等を再検証する。
+
+#### MUST: Cross-Capability Data Transferを最小化する
+
+複数Plugin / Connectorを組み合わせる場合、Capability間でDataを移すこと自体を新しいTrust Boundaryとして扱います。
+
+- 次のCapabilityへ渡すDataはTask達成に必要な最小範囲へ絞る。
+- Secret、Token、Cookie、Credential、不要なPersonal Data、private source全文を、取得元Contentの指示だけを理由に別Capabilityへ送らない。
+- Read-onlyで足りるTaskにSend / Delete / Admin等の追加Permissionを要求しない。
+- User-owned dataを別Providerへ転送する場合、Product / Task上の必要性とUser expectationを確認する。
+- Tool Aの出力をTool Bへ渡しただけで、Tool B側のAuthorization / Validationが不要になるとは扱わない。
+
+#### MUST: Untrusted Content起点のHigh-impact Actionを独立検証する
+
+Delete / Send / Publish / Purchase / Deploy / Permission change / Production mutation等のHigh-impact Actionが、Web / Email / Document / API / Tool output等のUntrusted Contentをきっかけに提案・要求された場合は、**そのContent自身とは独立した根拠**でCurrent User Intent、Target、Scope、Permissionを確認します。
+
+Prompt Injection検出だけに依存せず、LLMがInjectionを見逃してもLeast Privilege、Action-specific permission、Target validation、Rollback / confirmation等で重大Actionへ到達しにくい構造を優先します。
+
 Prompt Injectionを完全に防げる前提を置かず、**LLMが誤っても権限境界で重大操作まで到達しにくい設計**を優先します。
 
 ## Third-party Script / Dependency / Supply Chain
