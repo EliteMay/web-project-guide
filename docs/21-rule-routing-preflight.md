@@ -156,6 +156,31 @@ Read-only確認
 Validation
 ```
 
+### MUST: 最も直接的なData Source / Capabilityを優先する
+
+同じNeedを複数経路で満たせる場合は、**対象のCurrent Data / Runtime / External Systemへ最も直接アクセスできるCapability**を優先します。
+
+代表例:
+
+- Current Repository / PR / Actions / Release → GitHubを優先し、一般Web検索だけで代用しない。
+- Gmail / Calendar / Drive / Notion等のUser-owned data → 対応Connectorを優先し、公開WebやMemoryから推測しない。
+- PC内File / Process / Installer / Windows Runtime → Remote Desktop系Capabilityを優先する。
+- Supabase / Analytics / Deploy Provider等のManaged Service → 対応するProvider-specific Capabilityを優先する。
+- Current Library / SDK仕様 → Current Documentation capabilityを優先する。
+- Academic Evidence → Academic search capabilityを優先し、一般Web検索だけで論文確認済みと扱わない。
+
+Generic Web / Search / text-only経路は、直接Capabilityで取得できない情報の補完、Cross-check、Discoveryに使います。
+
+直接Capabilityを使うことでCorrectness / Freshness / Runtime Verification / Design Fidelity / Security / Deployment / Observabilityのいずれも実質的に改善しない単純Taskでは、Plugin利用自体を目的化しません。
+
+### SHOULD: Plugin Discoveryは不足Capabilityがある時だけ使う
+
+Current Availabilityだけでは必要Needを十分に満たせず、専用Capabilityがあれば結果が実質的に改善する場合はPlugin / Tool discoveryを使えます。
+
+Discovery後は「見つけた」だけで完了せず、接続済み・利用可能なら今回のTaskに必要な範囲で実行します。未導入・未接続・権限不足なら、その状態を区別し、User actionが必要な場合だけ明示します。
+
+同種Pluginを増やすこと自体を目的にせず、Current Capabilityで同じEvidence / Actionを十分に満たせる場合は追加Discoveryを行いません。
+
 ### MUST: Current Availabilityを基準にする
 
 Plugin / Connector / Skillの一覧を永久固定の前提にしません。
@@ -322,6 +347,35 @@ GitHub / PC / Supabase / Figma / Notion / Drive / Linear等に共通です。
 破壊的・不可逆変更、Production Data、Secrets / Permission、課金Resource、外部公開範囲へ影響する場合は、[06 Security](06-security.md)、[10 Project Management](10-project-management.md)、必要な専門OwnerへRouteし、Backup / Rollback / Cost / User Decision条件を確認します。
 
 Secret、Token、Password、Cookie、`.env`等をRepository、Log、Chatへ不用意に露出しません。
+
+### MUST: Read / Write Riskを区別する
+
+Capability Actionは少なくとも次の4種類へ分けて扱います。
+
+1. **Read-only** — Search / Fetch / List / Inspect / Status確認等。Task達成に必要なら原則としてAgent側で実行する。
+2. **Low-risk Write** — Draft作成、非破壊的なMetadata変更、容易にRollbackできる局所変更等。Target / Current Stateを確認して実行する。
+3. **External Commit / Publish** — Mail送信、Calendar作成、GitHub write、Deploy、公開共有等。User RequestとTargetが十分に特定されていることを確認する。
+4. **Destructive / High-impact** — Delete、不可逆上書き、Production Data変更、Permission変更、Secret、課金Resource、大量変更等。専門OwnerへRouteし、Rollback / Backup / Cost / User Decision条件を確認する。
+
+「Writeだから常に再確認」「Readだから常に安全」と機械的に扱いません。Current User Request、対象、可逆性、影響範囲、外部Systemの性質から判断します。
+
+Userが明確に実行を依頼し、Target / Scope / Actionが一意で安全条件も満たしている場合、同じ承認を何度も取り直しません。
+
+### MUST: Capability Failureを分類してFallbackする
+
+Capability利用に失敗した場合は、可能な範囲で少なくとも次を区別します。
+
+- not installed / not available
+- not connected / authentication expired
+- permission denied / insufficient scope
+- unsupported action / capability mismatch
+- target data not found
+- temporary provider / network / runtime error
+- ambiguous target / unsafe write target
+
+失敗を一律に「使えない」と丸めません。安全な代替経路がある場合はFallbackして続行し、代替では証明できない範囲だけ未確認として残します。
+
+Capabilityが失敗したのに、Memory・古い会話・推測だけでCurrent Stateを確認済みとして扱いません。
 
 ### Re-routingとFallback
 
