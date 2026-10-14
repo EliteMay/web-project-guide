@@ -196,6 +196,27 @@ User Decisionを要求する条件は [01 Requirements](01-requirements.md#user-
 
 Cleanup後のFinal Commit / Merge Commitに対するValidationを完成判定に使います。詳細は [07 Final-state Validation](07-testing-quality.md#final-state-validation) を正本とします。
 
+## Write State / Verification Evidence
+
+### SHOULD: 意味のある外部変更は提案・実行可能・反映確認・失敗を区別する
+
+GitHub Repository / Issue / PR、ProjectのCurrent Contract、外部System等への**意味のあるWrite**では、報告・引き継ぎで必要な場合に次の語彙を使い、**状態を上げる根拠**を保持します。毎回すべての状態を記録する義務や、新しいStatus DBを要求するものではありません。
+
+| State | この状態で確認できたこと |
+|---|---|
+| `PROPOSED` | 案・変更候補を提示しただけ。承認やWriteは未確認 |
+| `AUTHORIZED` | 現在のUser Intent /正式Contract /既存権限から、その対象と範囲のWriteを実行してよいと判断できる。まだ反映済みとは限らない |
+| `COMMITTED` | 目的の保存先へWriteし、再取得やCurrent State / Commit / Diff等の**実Evidence**で期待した内容の反映を確認した |
+| `FAILED` | Writeまたは反映確認が失敗・未確定。部分反映の可能性も含めて現在状態を調査する |
+
+- `AUTHORIZED` は**毎回Userへ再承認を求める**意味ではありません。明示済み依頼と安全な実行範囲で進め、User Decisionが必要な場合だけ [01](01-requirements.md#user-decisionが本当に必要な条件) に従います。
+- APIが成功しただけ、ローカルで変更しただけ、PRを作っただけで、**意図した最終状態**を `COMMITTED` と断定しません。GitHubなら対象File / Branch / PR / Merge結果を目的に応じて再確認します。
+- `FAILED` は必ずしも旧状態が維持されたという意味ではありません。部分成功・競合・不明な反映を確認し、盲目的に同じWriteを繰り返しません。
+- `COMMITTED` は**デプロイ成功・テスト成功・実機動作成功**を意味しません。これらは [07](07-testing-quality.md#verification-state) とFinal-state Validationで別に判定します。
+- Conversation Persistence / Durable GuardのReceiptとSettlementは [23](23-conversation-handoff-recovery.md#development-conversation-persistence) とData側のCurrent Contractが正本です。この4語で置き換えません。
+
+軽微で自明な局所変更に4状態の長い報告を強制しません。重要な変更では、少なくとも対象・確認できた反映・未確認範囲を短く示します。
+
 ## User-facing Completion Status
 
 ### MUST: 作業の区切りで「何が終わったか」と「Userが次に何をするか」を明示する

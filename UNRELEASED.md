@@ -60,6 +60,9 @@
 
 ## Changed
 
+- 意味のあるGitHub /外部Writeでは`PROPOSED` / `AUTHORIZED` / `COMMITTED` / `FAILED`を必要に応じて区別し、実際の再取得 / Current State確認なしに反映完了と報告せず、実機・Test検証とは分離する`docs/10`のEvidence境界を追加
+- 重要なRequirement /設計判断では失敗条件・反証Evidence・小さな代替案・Rollback / Stop条件を比例的に1回検証する`docs/01`のDecision Reviewを追加。軽微な判断に追加承認や疑似会議を強制しない
+
 - Capability / Plugin Routingを補強し、対象のCurrent Data / Runtimeへ最も直接アクセスできるCapabilityを優先するDirect Source原則、Capability不足時だけのPlugin Discovery、Read-only / Low-risk Write / External Commit / DestructiveのRisk分類、未接続・権限不足・unsupported・temporary error等のFailure分類とFallback境界を`docs/21`へ追加。README / START_HEREは詳細を複製せずDirect Source優先だけを短く同期
 
 - Capability / Plugin Routingをv0.4相当に強化し、専門Needへ明確に対応する接続済みCapabilityがある場合は選択・言及だけで終えず実Tool / Plugin / Skill actionを必須化。Context7 / Superpowers / Remote Runtime / Browser / Figma / Research / Supabase / Security / Deploy / Observability等の代表Triggerをdocs/21へ追加し、AGENTS / Quality Checklist / Work Report / Validator / Negative RegressionへExecution Gateを接続
