@@ -82,6 +82,20 @@ File分割、Naming、一般的Error handling、Test方法、標準的Accessibil
 
 Default Decisionは原則Agentが決めて進めます。
 
+## Important Decision / Failure-mode Review
+
+### SHOULD: 重要な方向決定では反証を短く確認する
+
+Core Decision、High-cost / Risk Decision、大規模なArchitecture / Platform変更等で、誤判断の手戻りや安全上の影響が大きい場合は、決定を固定する前に**一度だけ失敗側から検証**します。
+
+1. **失敗条件** — この案が本来のOutcomeを達成しない、または既存Contractを壊すとしたら何が原因か。
+2. **対抗Evidence / 代替案** — 採用案に不利な根拠、現状維持・小さな変更・既存Asset再利用の選択肢はあるか。
+3. **検証と撤退** — 最も安価な確認方法、Rollback / Stop条件、未確認事項は何か。
+
+必要に応じてSecurity・利用者・運用・費用等の視点を加えますが、**役割を演じる複数AIの賛否や長い架空会議を必須としません**。反対意見の数ではなく、Current Evidenceと重大な見落としを減らせたかで判断します。
+
+軽微・可逆・既にEvidenceで十分裏付けられたDecisionには追加Reviewを強制せず、重要な判断でも合理的に決定できるなら不要なUser確認を増やしません。採否が変わるだけのEvidenceを見つけた場合に限り、要件・Scope・Validationへ反映します。
+
 ## User Decisionが本当に必要な条件
 
 Userへの質問は例外です。次のどれかが成立するときだけ優先します。
